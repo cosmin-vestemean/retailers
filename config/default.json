@@ -1,0 +1,21 @@
+{
+  "host": "localhost",
+  "port": 5000,
+  "public": "./public/",
+  "origins": [
+    "http://localhost:5000"
+  ],
+  "paginate": {
+    "default": 100,
+    "max": 500
+  },
+  "mssql": {
+    "client": "mssql",
+    "connection": {
+    "host": "37.251.146.15",
+    "user":"sa",
+    "password":"3Y\\+pa7um!3U)DA(Vd",
+    "database":"PetFactory"
+    }
+  }
+}

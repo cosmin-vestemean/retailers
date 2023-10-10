@@ -1,0 +1,222 @@
+<DXInvoice xmlns="http://www.doc-process.com/schema/extended/invoice">
+	<Invoice xmlns="">
+		<CustomizationID>FMF</CustomizationID>
+		<ID>16448</ID>
+		<CopyIndicator>FALSE</CopyIndicator>
+		<IssueDate>2023-09-13</IssueDate>
+		<InvoiceTypeCode>380</InvoiceTypeCode>
+		<DocumentCurrencyCode>RON</DocumentCurrencyCode>
+		<LineCountNumeric>3</LineCountNumeric>
+		<OrderReference>
+			<ID>1000088210</ID>
+		</OrderReference>
+		<AccountingSupplierParty>
+			<CustomerAssignedAccountID>3446</CustomerAssignedAccountID>
+			<Party>
+				<PartyIdentification>RO25190857</PartyIdentification>
+				<PartyName>PET FACTORY SRL</PartyName>
+				<PostalAddress>
+					<StreetName>Sos. Giurgiului</StreetName>
+					<BuildingNumber>118</BuildingNumber>
+					<CityName>Bucuresti Sector 4</CityName>
+					<PostalZone>040676</PostalZone>
+					<Country>
+						<IdentificationCode>RO</IdentificationCode>
+					</Country>
+				</PostalAddress>
+				<PartyLegalEntity>
+					<CompanyID>J40/2551/2009</CompanyID>
+					<CorporateStockAmount currencyID="RON">1000</CorporateStockAmount>
+				</PartyLegalEntity>
+			</Party>
+		</AccountingSupplierParty>
+		<AccountingCustomerParty>
+			<Party>
+				<PartyIdentification>RO14399840</PartyIdentification>
+				<PartyName>DANTE INTERNATIONAL SA</PartyName>
+				<PostalAddress>
+					<StreetName>Sos. Virtutii</StreetName>
+					<BuildingNumber>148</BuildingNumber>
+					<CityName>BUCURESTI, SECTOR 6</CityName>
+					<PostalZone>60787</PostalZone>
+					<Country>
+						<IdentificationCode>RO</IdentificationCode>
+					</Country>
+				</PostalAddress>
+				<PartyLegalEntity>
+					<CompanyID>J40/372/2002</CompanyID>
+				</PartyLegalEntity>
+			</Party>
+		</AccountingCustomerParty>
+		<Delivery>
+			<ActualDeliveryDate>2023-09-12</ActualDeliveryDate>
+			<DeliveryLocation>
+				<ID>5949129999824</ID>
+				<Description>Depozit Central 2 (DC2)</Description>
+				<LocationAddress>
+					<StreetName>Str. Ciorogarla nr.214, Sat Bacu, cod postal 087151</StreetName>
+					<CityName>Bacu</CityName>
+					<Country>
+						<IdentificationCode>RO</IdentificationCode>
+					</Country>
+				</LocationAddress>
+			</DeliveryLocation>
+		</Delivery>
+		<PaymentMeans>
+			<PaymentMeansCode>42</PaymentMeansCode>
+			<PaymentDueDate>2023-12-02</PaymentDueDate>
+			<PayerFinancialAccount>
+				<ID>RO81RNCB0082155066260001</ID>
+				<CurrencyCode>RON</CurrencyCode>
+				<FinancialInstitutionBranch>
+					<FinancialInstitution>
+						<Name>Banca Comerciala Romana</Name>
+						<Address>
+							<Country>
+								<IdentificationCode>RO</IdentificationCode>
+							</Country>
+						</Address>
+					</FinancialInstitution>
+				</FinancialInstitutionBranch>
+			</PayerFinancialAccount>
+			<PayeeFinancialAccount>
+				<ID>RO60RNCB0082B00132506875</ID>
+				<CurrencyCode>RON</CurrencyCode>
+				<FinancialInstitutionBranch>
+					<FinancialInstitution>
+						<Name>BANCA COMERCIALA ROMANA</Name>
+						<Address>
+							<Country>
+								<IdentificationCode>RO</IdentificationCode>
+							</Country>
+						</Address>
+					</FinancialInstitution>
+				</FinancialInstitutionBranch>
+			</PayeeFinancialAccount>
+		</PaymentMeans>
+		<PaymentTerms>
+			<SettlementPeriod>
+				<DurationMeasure>80</DurationMeasure>
+				<DescriptionCode>D</DescriptionCode>
+			</SettlementPeriod>
+		</PaymentTerms>
+		<TaxTotal>
+			<TaxAmount>1793.96</TaxAmount>
+			<TaxSubtotal>
+				<TaxableAmount>282.72</TaxableAmount>
+				<TaxAmount>25.44</TaxAmount>
+				<Percent>9</Percent>
+				<TaxCategory>
+					<TaxScheme>
+						<ID>7</ID>
+						<Name>S</Name>
+						<TaxTypeCode>VAT</TaxTypeCode>
+					</TaxScheme>
+				</TaxCategory>
+			</TaxSubtotal>
+			<TaxSubtotal>
+				<TaxableAmount>9307.98</TaxableAmount>
+				<TaxAmount>1768.52</TaxAmount>
+				<Percent>19</Percent>
+				<TaxCategory>
+					<TaxScheme>
+						<ID>7</ID>
+						<Name>S</Name>
+						<TaxTypeCode>VAT</TaxTypeCode>
+					</TaxScheme>
+				</TaxCategory>
+			</TaxSubtotal>
+		</TaxTotal>
+		<LegalMonetaryTotal>
+			<TaxExclusiveAmount>9590.7</TaxExclusiveAmount>
+			<TaxInclusiveAmount>11384.66</TaxInclusiveAmount>
+		</LegalMonetaryTotal>
+	</Invoice>
+	<InvoiceLine xmlns="">
+		<ID>1</ID>
+		<InvoicedQuantity unitCode="PC">576</InvoicedQuantity>
+		<LineExtensionAmount>9216</LineExtensionAmount>
+		<TaxTotal>
+			<TaxAmount>1751.04</TaxAmount>
+			<TaxSubtotal>
+				<TaxableAmount>9216</TaxableAmount>
+				<TaxAmount>1751.04</TaxAmount>
+				<Percent>19</Percent>
+				<TaxCategory>
+					<TaxScheme>
+						<ID>7</ID>
+						<Name>S</Name>
+						<TaxTypeCode>VAT</TaxTypeCode>
+					</TaxScheme>
+				</TaxCategory>
+			</TaxSubtotal>
+		</TaxTotal>
+		<Item>
+			<Description>ASTERNUT SILICATIC MIAU MIAU 3.8L</Description>
+			<BuyersItemIdentification>
+				<ID>5948303000240</ID>
+			</BuyersItemIdentification>
+		</Item>
+		<Price>
+			<PriceAmount>16</PriceAmount>
+		</Price>
+	</InvoiceLine>
+	<InvoiceLine xmlns="">
+		<ID>2</ID>
+		<InvoicedQuantity unitCode="PC">12</InvoicedQuantity>
+		<LineExtensionAmount>282.72</LineExtensionAmount>
+		<TaxTotal>
+			<TaxAmount>25.44</TaxAmount>
+			<TaxSubtotal>
+				<TaxableAmount>282.72</TaxableAmount>
+				<TaxAmount>25.44</TaxAmount>
+				<Percent>9</Percent>
+				<TaxCategory>
+					<TaxScheme>
+						<ID>7</ID>
+						<Name>S</Name>
+						<TaxTypeCode>VAT</TaxTypeCode>
+					</TaxScheme>
+				</TaxCategory>
+			</TaxSubtotal>
+		</TaxTotal>
+		<Item>
+			<Description>MERA BISCUITI GOODY SNACKS CURCAN CARTOF 600GR</Description>
+			<BuyersItemIdentification>
+				<ID>4025877592188</ID>
+			</BuyersItemIdentification>
+		</Item>
+		<Price>
+			<PriceAmount>23.56</PriceAmount>
+		</Price>
+	</InvoiceLine>
+	<InvoiceLine xmlns="">
+		<ID>3</ID>
+		<InvoicedQuantity unitCode="PC">6</InvoicedQuantity>
+		<LineExtensionAmount>91.98</LineExtensionAmount>
+		<TaxTotal>
+			<TaxAmount>17.48</TaxAmount>
+			<TaxSubtotal>
+				<TaxableAmount>91.98</TaxableAmount>
+				<TaxAmount>17.48</TaxAmount>
+				<Percent>19</Percent>
+				<TaxCategory>
+					<TaxScheme>
+						<ID>7</ID>
+						<Name>S</Name>
+						<TaxTypeCode>VAT</TaxTypeCode>
+					</TaxScheme>
+				</TaxCategory>
+			</TaxSubtotal>
+		</TaxTotal>
+		<Item>
+			<Description>Castron 4Dog inox, baza albastra, 1,75L, 21cm</Description>
+			<BuyersItemIdentification>
+				<ID>5949060216240</ID>
+			</BuyersItemIdentification>
+		</Item>
+		<Price>
+			<PriceAmount>15.33</PriceAmount>
+		</Price>
+	</InvoiceLine>
+</DXInvoice>

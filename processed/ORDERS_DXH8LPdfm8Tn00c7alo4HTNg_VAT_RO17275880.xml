@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Order xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/ddescultescu/Downloads/docxchange-order-dx2.xsd">
+	<UBLExtension>Original</UBLExtension>
+	<UBLVersionID>2.1</UBLVersionID>
+	<CustomizationID>ver2.0</CustomizationID>
+	<ID>1000097308</ID>
+	<UUID>DXH8LPdfm8Tn00c7alo4HTNg</UUID>
+	<IssueDate>2023-10-04</IssueDate>
+	<OrderTypeCode>220</OrderTypeCode>
+	<Note/>
+	<CustomerReference>0</CustomerReference>
+	<LineCountNumeric>1</LineCountNumeric>
+	<RequestedDeliveryPeriod>
+		<StartDate>2023-10-17</StartDate>
+		<EndDate>2023-10-17</EndDate>
+		<Description/>
+	</RequestedDeliveryPeriod>
+	<BuyerCustomerParty>
+		<CustomerAssignedAccountID>master_order</CustomerAssignedAccountID>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</BuyerCustomerParty>
+	<SellerSupplierParty>
+		<CustomerAssignedAccountID>3446</CustomerAssignedAccountID>
+		<EndpointID>5940475754006</EndpointID>
+		<PartyIdentification>RO25190857</PartyIdentification>
+		<PartyName>PET FACTORY SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Sos. Giurgiului , Bl. 12, Ap. 130</StreetName>
+			<CityName>Bucuresti, Sector 4</CityName>
+			<PostalZone>40676</PostalZone>
+			<AddressLine>Sos. Giurgiului , Bl. 12, Ap. 130   Bucuresti, Sector 4 40676</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</SellerSupplierParty>
+	<AccountingCustomerParty>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyIdentification>RO14399840</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</AccountingCustomerParty>
+	<DeliveryParty>
+		<EndpointID>5949129999824</EndpointID>
+		<PartyIdentification>34</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>34 DEPOZIT CENTRAL 2 - DC2 , STR. CIOROGARLA, NR. 214, SAT BACU</StreetName>
+			<CityName>BACU, GR</CityName>
+			<PostalZone>087151</PostalZone>
+			<AddressLine>34 DEPOZIT CENTRAL 2 - DC2 , STR. CIOROGARLA, NR. 214, SAT BACU   BACU, GR 087151</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</DeliveryParty>
+	<OrderLine>
+		<ID>1</ID>
+		<Note>CustomerLineID:20539212</Note>
+		<Price CurrencyID="RON">
+			<Amount>11.21</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>134.52</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Stefanplast Break Dog Feeder, Lime  Green, 0.65 L</Description>
+			<BuyersItemIdentification>8003507040977</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06762</SellersItemIdentification>
+			<StandardItemIdentification>8003507040977</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-17</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-17</StartDate>
+				<EndDate>2023-10-17</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+</Order>

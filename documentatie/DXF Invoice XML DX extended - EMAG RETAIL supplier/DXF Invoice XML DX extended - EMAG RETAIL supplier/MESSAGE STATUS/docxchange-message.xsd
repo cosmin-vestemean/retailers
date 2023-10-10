@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Docprocess S.R.L. 2015. All Rights Reserved.
+  ~
+  ~ No part of software may be distributed or reproduced without
+  ~ Docprocess S.R.L.'s express consent.
+  -->
+<!-- versiunea 11112015 13.30 -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified" jaxb:version="2.0">
+	<xs:element name="DXMessage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="MessageDate"/>
+				<xs:element ref="MessageTime"/>
+				<xs:element ref="MessageOrigin"/>
+				<xs:element ref="DocumentReference"/>
+				<xs:element ref="DocumentUID"/>
+				<xs:element ref="SupplierReceiverCode"/>
+				<xs:element ref="DocumentResponse"/>
+				<xs:element ref="DocumentDetail"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="MessageDate" type="xs:date"/>
+	<xs:element name="MessageTime" type="xs:time"/>
+	<xs:element name="MessageOrigin" type="xs:string"/>
+	<xs:element name="DocumentReference" type="xs:string"/>
+	<xs:element name="DocumentUID" type="xs:string"/>
+	<xs:element name="SupplierReceiverCode" type="xs:string"/>
+	<xs:element name="DocumentResponse" type="xs:string"/>
+	<xs:element name="DocumentDetail" type="xs:string"/>
+</xs:schema>

@@ -1,0 +1,144 @@
+<DXInvoice>
+    <InvoiceLine>dummy<ID>dummy</ID>
+        <InvoicedQuantity>dummy<__attributes>dummy<unitCode>dummy</unitCode>
+        </__attributes>
+        <__value>dummy</__value>
+    </InvoicedQuantity>
+    <Item>dummy<BuyersItemIdentification>dummy<ID>dummy</ID>
+    </BuyersItemIdentification>
+    <Description>dummy</Description>
+    <SellersItemIdentification>dummy<ID>dummy</ID>
+    </SellersItemIdentification>
+    <StandardItemIdentification>dummy<ID>dummy</ID>
+    </StandardItemIdentification>
+</Item>
+<LineExtensionAmount>dummy</LineExtensionAmount>
+<Price>dummy<PriceAmount>dummy</PriceAmount>
+</Price>
+<TaxTotal>dummy<TaxAmount>dummy</TaxAmount>
+    <TaxSubtotal>dummy<TaxCategory>dummy<TaxScheme>dummy<Name>dummy</Name>
+        <TaxTypeCode>dummy</TaxTypeCode>
+    </TaxScheme>
+</TaxCategory>
+<Percent>dummy</Percent>
+<TaxableAmount>dummy</TaxableAmount>
+<TaxAmount>dummy</TaxAmount>
+</TaxSubtotal>
+</TaxTotal>
+</InvoiceLine>
+<Invoice>dummy<CustomizationID>dummy</CustomizationID>
+<CopyIndicator>dummy</CopyIndicator>
+<InvoiceTypeCode>dummy</InvoiceTypeCode>
+<LineCountNumeric>dummy</LineCountNumeric>
+<PaymentTerms>dummy<SettlementPeriod>dummy<DescriptionCode>dummy</DescriptionCode>
+</SettlementPeriod>
+</PaymentTerms>
+<AccountingCustomerParty>dummy<Party>dummy<PartyIdentification>14399840</PartyIdentification>
+<PartyLegalEntity>dummy<CompanyID>J40/372/2002</CompanyID>
+</PartyLegalEntity>
+<PartyName>Dante International S.A.</PartyName>
+<PostalAddress>dummy<BuildingNumber>dummy</BuildingNumber>
+<CityName>dummy</CityName>
+<StreetName>dummy</StreetName>
+<Country>dummy<IdentificationCode>RO</IdentificationCode>
+</Country>
+</PostalAddress>
+</Party>
+</AccountingCustomerParty>
+<AccountingSupplierParty>dummy<CustomerAssignedAccountID>dummy</CustomerAssignedAccountID>
+<Party>dummy<PartyIdentification>RO25190857</PartyIdentification>
+<PartyLegalEntity>dummy<CompanyID>J40/2551/2009</CompanyID>
+<CorporateStockAmount>dummy<__attributes>dummy<currencyID>RON</currencyID>
+</__attributes>
+<__value>1000</__value>
+</CorporateStockAmount>
+</PartyLegalEntity>
+<PartyName>RO25190857</PartyName>
+<PostalAddress>dummy<BuildingNumber>dummy</BuildingNumber>
+<CityName>dummy</CityName>
+<Country>dummy<IdentificationCode>dummy</IdentificationCode>
+</Country>
+<StreetName>dummy</StreetName>
+<PostalZone>040676</PostalZone>
+</PostalAddress>
+</Party>
+</AccountingSupplierParty>
+<Delivery>dummy<ActualDeliveryDate>2023-09-19</ActualDeliveryDate>
+<DeliveryLocation>dummy<LocationAddress>dummy<Country>dummy<IdentificationCode>dummy</IdentificationCode>
+</Country>
+<CityName>Bacu</CityName>
+<StreetName>Str. Ciorogarla nr.214, Sat Bacu, cod postal 087151</StreetName>
+</LocationAddress>
+</DeliveryLocation>
+</Delivery>
+<DespatchDocumentReference>dummy<ID>AEX-AE-021974</ID>
+</DespatchDocumentReference>
+<DocumentCurrencyCode>RON</DocumentCurrencyCode>
+<ID>16625</ID>
+<LegalMonetaryTotal>dummy<TaxExclusiveAmount>1642.36</TaxExclusiveAmount>
+<TaxInclusiveAmount>1888.45</TaxInclusiveAmount>
+</LegalMonetaryTotal>
+<IssueDate>2023-09-20</IssueDate>
+<Note/>
+<OrderReference>dummy<IssueDate/>
+<ID>1000090256</ID>
+</OrderReference>
+<PaymentMeans>dummy<PayerFinancialAccount>dummy<CurrencyCode>dummy</CurrencyCode>
+<FinancialInstitutionBranch>dummy<FinancialInstitution>dummy<Address>dummy<Country>dummy<IdentificationCode>dummy</IdentificationCode>
+</Country>
+</Address>
+</FinancialInstitution>
+</FinancialInstitutionBranch>
+</PayerFinancialAccount>
+<PaymentMeansCode>dummy</PaymentMeansCode>
+<PayeeFinancialAccount>dummy<FinancialInstitutionBranch>dummy<FinancialInstitution>dummy<Address>dummy<Country>dummy<IdentificationCode>dummy</IdentificationCode>
+</Country>
+</Address>
+</FinancialInstitution>
+</FinancialInstitutionBranch>
+<ID>dummy</ID>
+<CurrencyCode>RON</CurrencyCode>
+</PayeeFinancialAccount>
+</PaymentMeans>
+<TaxTotal>dummy<TaxSubtotal>dummy<Percent>dummy</Percent>
+<TaxableAmount>dummy</TaxableAmount>
+<TaxAmount>dummy</TaxAmount>
+<TaxCategory>dummy<TaxScheme>dummy<ID>dummy</ID>
+<Name>dummy</Name>
+<TaxTypeCode>dummy</TaxTypeCode>
+</TaxScheme>
+</TaxCategory>
+</TaxSubtotal>
+<TaxSubtotal>dummy<Percent>dummy</Percent>
+<TaxableAmount>dummy</TaxableAmount>
+<TaxAmount>dummy</TaxAmount>
+<TaxCategory>dummy<TaxScheme>dummy<ID>dummy</ID>
+<Name>dummy</Name>
+<TaxTypeCode>dummy</TaxTypeCode>
+</TaxScheme>
+</TaxCategory>
+<Percent>190|TVA 19% - Marfuri regim normal</Percent>
+<TaxableAmount>982.8</TaxableAmount>
+<TaxAmount>186.73</TaxAmount>
+<ID/>
+<Name/>
+<TaxTypeCode/>
+</TaxSubtotal>
+<TaxSubtotal>dummy<Percent>dummy</Percent>
+<TaxableAmount>dummy</TaxableAmount>
+<TaxAmount>dummy</TaxAmount>
+<TaxCategory>dummy<TaxScheme>dummy<ID>dummy</ID>
+<Name>dummy</Name>
+<TaxTypeCode>dummy</TaxTypeCode>
+</TaxScheme>
+</TaxCategory>
+<Percent>90|TVA 9% - Marfuri regim normal</Percent>
+<TaxableAmount>659.56</TaxableAmount>
+<TaxAmount>59.36</TaxAmount>
+<ID/>
+<Name/>
+<TaxTypeCode/>
+</TaxSubtotal>
+</TaxTotal>
+</Invoice>
+</DXInvoice>

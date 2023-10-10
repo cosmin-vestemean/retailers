@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Order xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/ddescultescu/Downloads/docxchange-order-dx2.xsd">
+	<UBLExtension>Original</UBLExtension>
+	<UBLVersionID>2.1</UBLVersionID>
+	<CustomizationID>ver2.0</CustomizationID>
+	<ID>1000092762</ID>
+	<UUID>DXzBfHOqlKU2OKhXZe9ywFlw</UUID>
+	<IssueDate>2023-09-20</IssueDate>
+	<OrderTypeCode>220</OrderTypeCode>
+	<Note/>
+	<CustomerReference>0</CustomerReference>
+	<LineCountNumeric>26</LineCountNumeric>
+	<RequestedDeliveryPeriod>
+		<StartDate>2023-09-26</StartDate>
+		<EndDate>2023-09-26</EndDate>
+		<Description/>
+	</RequestedDeliveryPeriod>
+	<BuyerCustomerParty>
+		<CustomerAssignedAccountID>master_order</CustomerAssignedAccountID>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</BuyerCustomerParty>
+	<SellerSupplierParty>
+		<CustomerAssignedAccountID>3446</CustomerAssignedAccountID>
+		<EndpointID>5940475754006</EndpointID>
+		<PartyIdentification>RO25190857</PartyIdentification>
+		<PartyName>PET FACTORY SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Sos. Giurgiului , Bl. 12, Ap. 130</StreetName>
+			<CityName>Bucuresti, Sector 4</CityName>
+			<PostalZone>40676</PostalZone>
+			<AddressLine>Sos. Giurgiului , Bl. 12, Ap. 130   Bucuresti, Sector 4 40676</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</SellerSupplierParty>
+	<AccountingCustomerParty>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyIdentification>RO14399840</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</AccountingCustomerParty>
+	<DeliveryParty>
+		<EndpointID>5949129999824</EndpointID>
+		<PartyIdentification>34</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>34 DEPOZIT CENTRAL 2 - DC2 , STR. CIOROGARLA, NR. 214, SAT BACU</StreetName>
+			<CityName>BACU, GR</CityName>
+			<PostalZone>087151</PostalZone>
+			<AddressLine>34 DEPOZIT CENTRAL 2 - DC2 , STR. CIOROGARLA, NR. 214, SAT BACU   BACU, GR 087151</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</DeliveryParty>
+	<OrderLine>
+		<ID>1</ID>
+		<Note>CustomerLineID:20398332</Note>
+		<Price CurrencyID="RON">
+			<Amount>49.18</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>6</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>295.08</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats Desire, Chicken fillet and duck, 12 pcs x 70g</Description>
+			<BuyersItemIdentification>5949060209952</BuyersItemIdentification>
+			<SellersItemIdentification>MF.05390</SellersItemIdentification>
+			<StandardItemIdentification>5949060209952</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>2</ID>
+		<Note>CustomerLineID:20398333</Note>
+		<Price CurrencyID="RON">
+			<Amount>32.31</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>144</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>4652.64</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats, Miau Miau, Vita in sauce, 24 buc x 100g</Description>
+			<BuyersItemIdentification>5949060206500</BuyersItemIdentification>
+			<SellersItemIdentification>MF.03976</SellersItemIdentification>
+			<StandardItemIdentification>5949060206500</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>3</ID>
+		<Note>CustomerLineID:20398334</Note>
+		<Price CurrencyID="RON">
+			<Amount>32.31</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>120</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>3877.2</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats, Miau Miau, salmon in sauce, 24 buc x 100g</Description>
+			<BuyersItemIdentification>5949060206487</BuyersItemIdentification>
+			<SellersItemIdentification>MF.03977</SellersItemIdentification>
+			<StandardItemIdentification>5949060206487</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>4</ID>
+		<Note>CustomerLineID:20398335</Note>
+		<Price CurrencyID="RON">
+			<Amount>53.93</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>161.79</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Interactive toy for cats Miau Miau Rotating Butterfly</Description>
+			<BuyersItemIdentification>5949060211924</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06033</SellersItemIdentification>
+			<StandardItemIdentification>5949060211924</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>5</ID>
+		<Note>CustomerLineID:20398336</Note>
+		<Price CurrencyID="RON">
+			<Amount>11.39</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>48</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>546.72</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Antibacterial napkins for animals Record, Aloe Vera, 40 pcs</Description>
+			<BuyersItemIdentification>8011391706954</BuyersItemIdentification>
+			<SellersItemIdentification>MF.04795</SellersItemIdentification>
+			<StandardItemIdentification>8011391970737</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>6</ID>
+		<Note>CustomerLineID:20398337</Note>
+		<Price CurrencyID="RON">
+			<Amount>40.06</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>480.72</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>4Dog Smart interactive dog toy</Description>
+			<BuyersItemIdentification>5949060211962</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06042</SellersItemIdentification>
+			<StandardItemIdentification>5949060211962</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>7</ID>
+		<Note>CustomerLineID:20398338</Note>
+		<Price CurrencyID="RON">
+			<Amount>22.66</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>271.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Rewards for dogs Mera Goody Snack, Turkey  Rice, 600g</Description>
+			<BuyersItemIdentification>4025877590184</BuyersItemIdentification>
+			<SellersItemIdentification>MF.05570</SellersItemIdentification>
+			<StandardItemIdentification>4025877590184</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>8</ID>
+		<Note>CustomerLineID:20398339</Note>
+		<Price CurrencyID="RON">
+			<Amount>11.4</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>273.6</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Maxi Record animal sanitary napkins, Talc, 40 pcs</Description>
+			<BuyersItemIdentification>8011391709986</BuyersItemIdentification>
+			<SellersItemIdentification>MF.07044</SellersItemIdentification>
+			<StandardItemIdentification>8011391709986</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>9</ID>
+		<Note>CustomerLineID:20398340</Note>
+		<Price CurrencyID="RON">
+			<Amount>21.06</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>18</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>379.08</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Litter deodorant  Pilou, Lavanda, 750 g</Description>
+			<BuyersItemIdentification>3420900121426</BuyersItemIdentification>
+			<SellersItemIdentification>3420900121426</SellersItemIdentification>
+			<StandardItemIdentification>3420900121426</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>10</ID>
+		<Note>CustomerLineID:20398341</Note>
+		<Price CurrencyID="RON">
+			<Amount>15.32</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>367.68</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog,Mini waist, Blue, 3 m</Description>
+			<BuyersItemIdentification>5949060220131</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220131</SellersItemIdentification>
+			<StandardItemIdentification>5949060220131</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>11</ID>
+		<Note>CustomerLineID:20398342</Note>
+		<Price CurrencyID="RON">
+			<Amount>15.32</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>367.68</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog,Mini waist, Pink, 3 m</Description>
+			<BuyersItemIdentification>5949060220117</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220117</SellersItemIdentification>
+			<StandardItemIdentification>5949060220117</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>12</ID>
+		<Note>CustomerLineID:20398343</Note>
+		<Price CurrencyID="RON">
+			<Amount>22.47</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>269.64</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, Talie mica, Pink, 3 m</Description>
+			<BuyersItemIdentification>5949060220070</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220070</SellersItemIdentification>
+			<StandardItemIdentification>5949060220070</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>13</ID>
+		<Note>CustomerLineID:20398344</Note>
+		<Price CurrencyID="RON">
+			<Amount>34.74</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>416.88</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, Elegance, Blue, 3 m</Description>
+			<BuyersItemIdentification>5949060220186</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220186</SellersItemIdentification>
+			<StandardItemIdentification>5949060220186</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>14</ID>
+		<Note>CustomerLineID:20398345</Note>
+		<Price CurrencyID="RON">
+			<Amount>26.15</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>313.8</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Zebra, 3 m</Description>
+			<BuyersItemIdentification>5949060220223</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220223</SellersItemIdentification>
+			<StandardItemIdentification>5949060220223</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>15</ID>
+		<Note>CustomerLineID:20398346</Note>
+		<Price CurrencyID="RON">
+			<Amount>29.21</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>701.04</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Green, 5 m</Description>
+			<BuyersItemIdentification>5949060220049</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220049</SellersItemIdentification>
+			<StandardItemIdentification>5949060220049</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>16</ID>
+		<Note>CustomerLineID:20398347</Note>
+		<Price CurrencyID="RON">
+			<Amount>29.21</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>701.04</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Purple, 5 m</Description>
+			<BuyersItemIdentification>5949060220032</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220032</SellersItemIdentification>
+			<StandardItemIdentification>5949060220032</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>17</ID>
+		<Note>CustomerLineID:20398348</Note>
+		<Price CurrencyID="RON">
+			<Amount>27.58</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,BlueBlack,5 m</Description>
+			<BuyersItemIdentification>5949060220018</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220018</SellersItemIdentification>
+			<StandardItemIdentification>5949060220018</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>18</ID>
+		<Note>CustomerLineID:20398349</Note>
+		<Price CurrencyID="RON">
+			<Amount>27.58</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,GreenBlack,5 m</Description>
+			<BuyersItemIdentification>5949060220001</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220001</SellersItemIdentification>
+			<StandardItemIdentification>5949060220001</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>19</ID>
+		<Note>CustomerLineID:20398350</Note>
+		<Price CurrencyID="RON">
+			<Amount>27.58</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Pink, 5 m</Description>
+			<BuyersItemIdentification>5949060219999</BuyersItemIdentification>
+			<SellersItemIdentification>5949060219999</SellersItemIdentification>
+			<StandardItemIdentification>5949060219999</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>20</ID>
+		<Note>CustomerLineID:20398351</Note>
+		<Price CurrencyID="RON">
+			<Amount>27.58</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Zebra, 5 m</Description>
+			<BuyersItemIdentification>5949060220209</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220209</SellersItemIdentification>
+			<StandardItemIdentification>5949060220209</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>21</ID>
+		<Note>CustomerLineID:20398352</Note>
+		<Price CurrencyID="RON">
+			<Amount>27.58</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.92</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Retractable leash 4Dog, medium waist,Floral, 5 m</Description>
+			<BuyersItemIdentification>5949060220193</BuyersItemIdentification>
+			<SellersItemIdentification>5949060220193</SellersItemIdentification>
+			<StandardItemIdentification>5949060220193</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>22</ID>
+		<Note>CustomerLineID:20398353</Note>
+		<Price CurrencyID="RON">
+			<Amount>101.76</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>6</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>610.56</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats ND ocean, tuna, sardines, shrimps, 30 x 70 g</Description>
+			<BuyersItemIdentification>5949060222272</BuyersItemIdentification>
+			<SellersItemIdentification>8606014106831</SellersItemIdentification>
+			<StandardItemIdentification>8606014106831</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>23</ID>
+		<Note>CustomerLineID:20398354</Note>
+		<Price CurrencyID="RON">
+			<Amount>15.32</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>183.84</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food Mera Vital, Skin Control, 400 g</Description>
+			<BuyersItemIdentification>4025877204142</BuyersItemIdentification>
+			<SellersItemIdentification>4025877204142</SellersItemIdentification>
+			<StandardItemIdentification>4025877204142</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>24</ID>
+		<Note>CustomerLineID:20398355</Note>
+		<Price CurrencyID="RON">
+			<Amount>10.26</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>123.12</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry cat food Mera Vital, Skin Control, 200 g</Description>
+			<BuyersItemIdentification>4025877604034</BuyersItemIdentification>
+			<SellersItemIdentification>4025877604034</SellersItemIdentification>
+			<StandardItemIdentification>4025877604034</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>25</ID>
+		<Note>CustomerLineID:20398356</Note>
+		<Price CurrencyID="RON">
+			<Amount>99.09</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>1189.08</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Supplement for dogs K9POWER, Puppy Gold, 0.454 Kg</Description>
+			<BuyersItemIdentification>859933006616</BuyersItemIdentification>
+			<SellersItemIdentification>859933006616</SellersItemIdentification>
+			<StandardItemIdentification>859933006616</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>26</ID>
+		<Note>CustomerLineID:20398357</Note>
+		<Price CurrencyID="RON">
+			<Amount>85.46</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>6</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>512.76</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Supplement for dogs K9POWER, Show Stopper, 0.454 Kg</Description>
+			<BuyersItemIdentification>859933006715</BuyersItemIdentification>
+			<SellersItemIdentification>859933006715</SellersItemIdentification>
+			<StandardItemIdentification>859933006715</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-09-26</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-09-26</StartDate>
+				<EndDate>2023-09-26</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+</Order>

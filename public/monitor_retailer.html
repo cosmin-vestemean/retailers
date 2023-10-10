@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>monitor retailer</title>
+    <meta name="description" content="integrating Pet Factory S1 with various retailers" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+    <!--load feathers-->
+    <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
+    <!--load socket.io-->
+    <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
+    <!--import client.js-->
+    <script src="client.js"></script>
+  </head>
+  <body>
+    <nav class="navbar top" role="navigation" aria-label="main navigation">
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="./"> Retailers list </a>
+          <!-- retailer's logo: src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg">-->
+          <a class="navbar-item" href="https://www.emag.ro/">
+            <img
+              src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg"
+              alt="emag"
+              width="112"
+              height="28"
+            />
+          </a>
+          <!--ADD A Preluare comenzi button-->
+          <a class="navbar-item" href="#">
+            <button class="button is-primary ml-2 is-small" onclick="fetchXMLFromRemoteServer()">Preluare comenzi</button>
+            <button class="button is-info ml-2 is-small" onclick="fetchDocsFromS1WS(11639, 1351, 712, 7121)">Preluare Facturi</button>
+            <!--add spinner text input with default value 7-->
+            <input id="daysOlder" class="input is-small is-info" type="number" value="7" min="1" max="30" />
+
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="tabs is-boxed p-2">
+      <ul>
+        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'comenzi')">
+          <a>Comenzi</a>
+        </li>
+        <li id="facturi_link" class="tab" onclick="openTab(event, 'facturi')">
+          <a>Facturi</a>
+        </li>
+      </ul>
+    </div>
+    <div id="comenzi" class="content-tab">
+      <div class="table-container">
+        <table id="xmlTable" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+          <thead>
+            <tr>
+              <th>XMLDATE</th>
+              <th>XMLFILENAME</th>
+              <th>XML</th>
+              <th>Actions</th>
+              <th>findoc</th>
+            </tr>
+          </thead>
+          <tbody id="xmlTableBody" class="is-size-7"></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="facturi" class="content-tab">
+      <div class="table-container">
+        <table id="facturiTable" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Document</th>
+              <th>Suma</th>
+              <th>Actions</th>
+              <th>Trimis</th>
+            </tr>
+          </thead>
+          <tbody id="facturiTableBody" class="is-size-7"></tbody>
+        </table>
+      </div>
+    <script type="text/javascript">
+      //call promise getRetailerXMLData(69999);
+      displayXmlDataForRetailer(11639)
+      //displayDocsForRetailer(11639, 7121)
+    </script>
+  </body>
+</html>

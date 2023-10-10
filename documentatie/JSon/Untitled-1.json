@@ -1,0 +1,355 @@
+{
+  "Order": {
+    "$": {
+      "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+      "xsi:noNamespaceSchemaLocation": "file:///C:/Users/ddescultescu/Downloads/docxchange-order-dx2.xsd"
+    },
+    "UBLExtension": ["Original"],
+    "UBLVersionID": ["2.1"],
+    "CustomizationID": ["ver2.0"],
+    "ID": ["4500060821"],
+    "UUID": ["DXzdEQtZ2S3UemGDVi0yli1w"],
+    "IssueDate": ["2023-06-15"],
+    "OrderTypeCode": ["220"],
+    "Note": [""],
+    "CustomerReference": ["0"],
+    "LineCountNumeric": ["9"],
+    "RequestedDeliveryPeriod": [
+      {
+        "StartDate": ["2023-06-20"],
+        "EndDate": ["2023-06-20"],
+        "Description": [""]
+      }
+    ],
+    "BuyerCustomerParty": [
+      {
+        "CustomerAssignedAccountID": ["pm"],
+        "EndpointID": ["5949358000001"],
+        "PartyName": ["EMAG RETAIL SRL"],
+        "PostalAddress": [
+          {
+            "StreetName": ["RO60 Soseaua Bucuresti-Nord"],
+            "CityName": ["VOLUNTARI, IF"],
+            "PostalZone": ["077190"],
+            "AddressLine": ["RO60 Soseaua Bucuresti-Nord VOLUNTARI, IF 077190"],
+            "Country": ["RO"]
+          }
+        ]
+      }
+    ],
+    "SellerSupplierParty": [
+      {
+        "CustomerAssignedAccountID": ["3446"],
+        "EndpointID": ["5940475754006"],
+        "PartyIdentification": ["RO25190857"],
+        "PartyName": ["PET FACTORY SRL"],
+        "PostalAddress": [
+          {
+            "StreetName": ["Sos. Giurgiului"],
+            "CityName": ["Bucuresti, Sector 4"],
+            "PostalZone": ["40676"],
+            "AddressLine": ["Sos. Giurgiului Bucuresti, Sector 4 40676"],
+            "Country": ["RO"]
+          }
+        ]
+      }
+    ],
+    "AccountingCustomerParty": [
+      {
+        "EndpointID": ["5949358000001"],
+        "PartyIdentification": ["RO44231872"],
+        "PartyName": ["EMAG RETAIL SRL"],
+        "PostalAddress": [
+          {
+            "StreetName": ["RO60 Soseaua Bucuresti-Nord"],
+            "CityName": ["VOLUNTARI, IF"],
+            "PostalZone": ["077190"],
+            "AddressLine": ["RO60 Soseaua Bucuresti-Nord VOLUNTARI, IF 077190"],
+            "Country": ["RO"]
+          }
+        ]
+      }
+    ],
+    "DeliveryParty": [
+      {
+        "EndpointID": ["5949358000018"],
+        "PartyIdentification": ["5949358000018"],
+        "PartyName": ["EMAG RETAIL SRL"],
+        "PostalAddress": [
+          {
+            "StreetName": ["5949358000018 Sinaia"],
+            "CityName": ["Stefanestii de Jos, IF"],
+            "PostalZone": ["077175"],
+            "AddressLine": [
+              "5949358000018 Sinaia Stefanestii de Jos, IF 077175"
+            ],
+            "Country": ["RO"]
+          }
+        ]
+      }
+    ],
+    "OrderLine": [
+      {
+        "ID": ["1"],
+        "Note": ["CustomerLineID:10"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["7.76"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["18"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["139.68"] }
+        ],
+        "Item": [
+          {
+            "Description": ["ND Pate Feel Good Senior Lite 390g"],
+            "BuyersItemIdentification": ["100143964"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5023308001086"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["2"],
+        "Note": ["CustomerLineID:20"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.43"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["24"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["34.32"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU KITTEN 100G"],
+            "BuyersItemIdentification": ["100141981"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060207705"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["3"],
+        "Note": ["CustomerLineID:30"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["24"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["32.4"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU CU VITA IN SOS 100G"],
+            "BuyersItemIdentification": ["100141980"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060205985"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["4"],
+        "Note": ["CustomerLineID:40"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["22.8"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["56"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["1276.8"] }
+        ],
+        "Item": [
+          {
+            "Description": ["ASTERNUT SILICATIC MIAU MIAU 3.8L"],
+            "BuyersItemIdentification": ["100141971"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5948303000240"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["5"],
+        "Note": ["CustomerLineID:50"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["96"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["129.6"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU IEPURE IN SOS 100G"],
+            "BuyersItemIdentification": ["100148543"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060213959"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["6"],
+        "Note": ["CustomerLineID:60"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["120"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["162"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU RATA IN SOS 100G"],
+            "BuyersItemIdentification": ["100148542"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060213942"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["7"],
+        "Note": ["CustomerLineID:70"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["144"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["194.4"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU CU SOMON IN SOS 100G"],
+            "BuyersItemIdentification": ["100141979"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060205992"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["8"],
+        "Note": ["CustomerLineID:80"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["168"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["226.8"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU CU PUI FICAT IN SOS 100G"],
+            "BuyersItemIdentification": ["100141978"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060205961"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      },
+      {
+        "ID": ["9"],
+        "Note": ["CustomerLineID:90"],
+        "Price": [{ "$": { "CurrencyID": "RON" }, "Amount": ["1.35"] }],
+        "Quantity": [{ "$": { "UnitCode": "PCE" }, "Amount": ["288"] }],
+        "LineExtensionAmount": [
+          { "$": { "CurrencyID": "RON" }, "Amount": ["388.8"] }
+        ],
+        "Item": [
+          {
+            "Description": ["PLIC MIAU MIAU STERILISED 100G"],
+            "BuyersItemIdentification": ["100148478"],
+            "SellersItemIdentification": [""],
+            "StandardItemIdentification": ["5949060207699"],
+            "AdditionalItemIdentification": [
+              "DeliveryDate:2023-06-20",
+              "LineStatus:valid",
+              "ClientConfirmationStatus:confirmed"
+            ]
+          }
+        ],
+        "Delivery": [
+          {
+            "RequestedDeliveryPeriod": [
+              { "StartDate": ["2023-06-20"], "EndDate": ["2023-06-20"] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

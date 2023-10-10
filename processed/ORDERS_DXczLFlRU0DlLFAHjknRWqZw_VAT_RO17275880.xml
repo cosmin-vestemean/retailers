@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Order xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/ddescultescu/Downloads/docxchange-order-dx2.xsd">
+	<UBLExtension>Original</UBLExtension>
+	<UBLVersionID>2.1</UBLVersionID>
+	<CustomizationID>ver2.0</CustomizationID>
+	<ID>1000094709</ID>
+	<UUID>DXczLFlRU0DlLFAHjknRWqZw</UUID>
+	<IssueDate>2023-09-27</IssueDate>
+	<OrderTypeCode>220</OrderTypeCode>
+	<Note/>
+	<CustomerReference>0</CustomerReference>
+	<LineCountNumeric>23</LineCountNumeric>
+	<RequestedDeliveryPeriod>
+		<StartDate>2023-10-03</StartDate>
+		<EndDate>2023-10-03</EndDate>
+		<Description/>
+	</RequestedDeliveryPeriod>
+	<BuyerCustomerParty>
+		<CustomerAssignedAccountID>master_order</CustomerAssignedAccountID>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</BuyerCustomerParty>
+	<SellerSupplierParty>
+		<CustomerAssignedAccountID>3446</CustomerAssignedAccountID>
+		<EndpointID>5940475754006</EndpointID>
+		<PartyIdentification>RO25190857</PartyIdentification>
+		<PartyName>PET FACTORY SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Sos. Giurgiului , Bl. 12, Ap. 130</StreetName>
+			<CityName>Bucuresti, Sector 4</CityName>
+			<PostalZone>40676</PostalZone>
+			<AddressLine>Sos. Giurgiului , Bl. 12, Ap. 130   Bucuresti, Sector 4 40676</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</SellerSupplierParty>
+	<AccountingCustomerParty>
+		<EndpointID>5949129999992</EndpointID>
+		<PartyIdentification>RO14399840</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>1 Headquarter , SOS. VIRTUTII 148</StreetName>
+			<CityName>Bucuresti, Sector 6</CityName>
+			<PostalZone/>
+			<AddressLine>1 Headquarter , SOS. VIRTUTII 148   Bucuresti, Sector 6 </AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</AccountingCustomerParty>
+	<DeliveryParty>
+		<EndpointID>5940477490162</EndpointID>
+		<PartyIdentification>2</PartyIdentification>
+		<PartyName>DANTE INTERNATIONAL SA</PartyName>
+		<PostalAddress>
+			<StreetName>2 Depozit Central 1 (DC1) , Str. Ciorogarla, Sat Bacu</StreetName>
+			<CityName>Sat Bacu, Jud. Giurgiu</CityName>
+			<PostalZone>087151</PostalZone>
+			<AddressLine>2 Depozit Central 1 (DC1) , Str. Ciorogarla, Sat Bacu   Sat Bacu, Jud. Giurgiu 087151</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</DeliveryParty>
+	<OrderLine>
+		<ID>1</ID>
+		<Note>CustomerLineID:20458801</Note>
+		<Price CurrencyID="RON">
+			<Amount>55.09</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>12</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>661.08</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>MiauMiau square cat ensemble, 40x40x49 cm</Description>
+			<BuyersItemIdentification>5949060203325</BuyersItemIdentification>
+			<SellersItemIdentification>MF.02995</SellersItemIdentification>
+			<StandardItemIdentification>5949060203325</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>2</ID>
+		<Note>CustomerLineID:20458802</Note>
+		<Price CurrencyID="RON">
+			<Amount>15.8</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>48</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>758.4</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>4D42  4Dog absorbent dogmat, 60x90 cm, 10 pcs</Description>
+			<BuyersItemIdentification>5949060200546</BuyersItemIdentification>
+			<SellersItemIdentification>MF.02255</SellersItemIdentification>
+			<StandardItemIdentification>5949060200546</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>3</ID>
+		<Note>CustomerLineID:20458803</Note>
+		<Price CurrencyID="RON">
+			<Amount>143.7</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>24</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>3448.8</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for cats, Miau Miau, Urinary, 12 kg</Description>
+			<BuyersItemIdentification>5949060208405</BuyersItemIdentification>
+			<SellersItemIdentification>MF.05136</SellersItemIdentification>
+			<StandardItemIdentification>5949060208405</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>4</ID>
+		<Note>CustomerLineID:20458804</Note>
+		<Price CurrencyID="RON">
+			<Amount>32.31</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>120</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>3877.2</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats, Miau Miau, chicken and liver in sauce, 24 buc x 100g</Description>
+			<BuyersItemIdentification>5949060206517</BuyersItemIdentification>
+			<SellersItemIdentification>MF.03978</SellersItemIdentification>
+			<StandardItemIdentification>5949060206517</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>5</ID>
+		<Note>CustomerLineID:20458805</Note>
+		<Price CurrencyID="RON">
+			<Amount>32.31</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>72</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>2326.32</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Wet food for cats, Miau Miau, turkey in sauce, 24 buc x 100g</Description>
+			<BuyersItemIdentification>5949060206494</BuyersItemIdentification>
+			<SellersItemIdentification>MF.03979</SellersItemIdentification>
+			<StandardItemIdentification>5949060206494</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>6</ID>
+		<Note>CustomerLineID:20458806</Note>
+		<Price CurrencyID="RON">
+			<Amount>95.29</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>6</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>571.74</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for dogs Mera Pure Sensitive, Mini, Adult, Miel  Orez, 4Kg</Description>
+			<BuyersItemIdentification>4025877575341</BuyersItemIdentification>
+			<SellersItemIdentification>MF.05579</SellersItemIdentification>
+			<StandardItemIdentification>4025877575341</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>7</ID>
+		<Note>CustomerLineID:20458807</Note>
+		<Price CurrencyID="RON">
+			<Amount>14.03</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>60</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>841.8</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Mat absorbent 4Dog Charcoal, 60x60 cm, 10 pcs</Description>
+			<BuyersItemIdentification>5949060213430</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06325</SellersItemIdentification>
+			<StandardItemIdentification>5949060213430</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>8</ID>
+		<Note>CustomerLineID:20458808</Note>
+		<Price CurrencyID="RON">
+			<Amount>35.97</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>400</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>14388</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Hygienic bedding for cats Meow Meow, Fresh Tofu, 10L</Description>
+			<BuyersItemIdentification>5949060213478</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06414</SellersItemIdentification>
+			<StandardItemIdentification>5949060213478</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>9</ID>
+		<Note>CustomerLineID:20458809</Note>
+		<Price CurrencyID="RON">
+			<Amount>40.26</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>120.78</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Bed for dogs and cats 4Dog Deluxe Round Plush S, Red, 52x9 cm</Description>
+			<BuyersItemIdentification>5949060214703</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06712</SellersItemIdentification>
+			<StandardItemIdentification>5949060214703</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>10</ID>
+		<Note>CustomerLineID:20458810</Note>
+		<Price CurrencyID="RON">
+			<Amount>41.81</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>125.43</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Pillow for dogs and cats 4Dog Deluxe Camping S, Orange, 66x48 cm</Description>
+			<BuyersItemIdentification>5949060214765</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06718</SellersItemIdentification>
+			<StandardItemIdentification>5949060214765</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>11</ID>
+		<Note>CustomerLineID:20458811</Note>
+		<Price CurrencyID="RON">
+			<Amount>73.78</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>221.34</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Pillow for dogs and cats 4Dog Deluxe Camping L, Blue, 106x66 cm</Description>
+			<BuyersItemIdentification>5949060214826</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06724</SellersItemIdentification>
+			<StandardItemIdentification>5949060214826</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>12</ID>
+		<Note>CustomerLineID:20458812</Note>
+		<Price CurrencyID="RON">
+			<Amount>36.89</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>18</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>664.02</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Pillow for dogs and cats 4Dog Deluxe Camouflage M, GrayBlack, 70x48 cm</Description>
+			<BuyersItemIdentification>5949060214895</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06730</SellersItemIdentification>
+			<StandardItemIdentification>5949060214895</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>13</ID>
+		<Note>CustomerLineID:20458813</Note>
+		<Price CurrencyID="RON">
+			<Amount>15.48</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>20</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>309.6</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Rewards for dogs Mera Biscuits Bones Lamb and Rice, 1 Kg</Description>
+			<BuyersItemIdentification>4025877436260</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06551</SellersItemIdentification>
+			<StandardItemIdentification>4025877436260</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>14</ID>
+		<Note>CustomerLineID:20458814</Note>
+		<Price CurrencyID="RON">
+			<Amount>193.2</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>15</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>2898</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for dogs Mera Pure Fresh Meat, Turkey and Potato, 12.5 Kg</Description>
+			<BuyersItemIdentification>4025877571503</BuyersItemIdentification>
+			<SellersItemIdentification>MF.05580</SellersItemIdentification>
+			<StandardItemIdentification>4025877571503</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>15</ID>
+		<Note>CustomerLineID:20458815</Note>
+		<Price CurrencyID="RON">
+			<Amount>167.81</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>5</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>839.05</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Semiwet dog food Mera Essential Soft Brocken, 12.5 Kg</Description>
+			<BuyersItemIdentification>4025877612503</BuyersItemIdentification>
+			<SellersItemIdentification>MF.06418</SellersItemIdentification>
+			<StandardItemIdentification>4025877612503</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>16</ID>
+		<Note>CustomerLineID:20458816</Note>
+		<Price CurrencyID="RON">
+			<Amount>31.08</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>10</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>310.8</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food ND, Puppy, Mini, pumpkin, lamb, blueberry, 0.8 Kg</Description>
+			<BuyersItemIdentification>8010276033185</BuyersItemIdentification>
+			<SellersItemIdentification>8010276033185</SellersItemIdentification>
+			<StandardItemIdentification>8010276033185</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>17</ID>
+		<Note>CustomerLineID:20458817</Note>
+		<Price CurrencyID="RON">
+			<Amount>63.57</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>4</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>254.28</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food ND Low grain, MediumMaxi, chicken, oats, pomegranate, 2.5 Kg</Description>
+			<BuyersItemIdentification>8010276036230</BuyersItemIdentification>
+			<SellersItemIdentification>8010276036230</SellersItemIdentification>
+			<StandardItemIdentification>8010276036230</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>18</ID>
+		<Note>CustomerLineID:20458818</Note>
+		<Price CurrencyID="RON">
+			<Amount>74.88</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>4</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>299.52</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food ND, Mini, pumpkin, lamb, blueberry, 2.5 Kg</Description>
+			<BuyersItemIdentification>8010276033277</BuyersItemIdentification>
+			<SellersItemIdentification>8010276033277</SellersItemIdentification>
+			<StandardItemIdentification>8010276033277</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>19</ID>
+		<Note>CustomerLineID:20458819</Note>
+		<Price CurrencyID="RON">
+			<Amount>76.29</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>4</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>305.16</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food ND, Puppy, Mini, pumpkin, lamb, blueberry, 2.5 Kg</Description>
+			<BuyersItemIdentification>8010276033239</BuyersItemIdentification>
+			<SellersItemIdentification>8010276033239</SellersItemIdentification>
+			<StandardItemIdentification>8010276033239</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>20</ID>
+		<Note>CustomerLineID:20458820</Note>
+		<Price CurrencyID="RON">
+			<Amount>77.7</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>8</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>621.6</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for cats ND, Kitten, chicken, pomegranate, 1.5 Kg</Description>
+			<BuyersItemIdentification>8010276032584</BuyersItemIdentification>
+			<SellersItemIdentification>8010276032584</SellersItemIdentification>
+			<StandardItemIdentification>8010276032584</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>21</ID>
+		<Note>CustomerLineID:20458821</Note>
+		<Price CurrencyID="RON">
+			<Amount>289.63</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>868.89</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry dog food ND, MediumMaxi, lamb, blueberries, 12 Kg</Description>
+			<BuyersItemIdentification>8010276036117</BuyersItemIdentification>
+			<SellersItemIdentification>8010276036117</SellersItemIdentification>
+			<StandardItemIdentification>8010276036117</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>22</ID>
+		<Note>CustomerLineID:20458822</Note>
+		<Price CurrencyID="RON">
+			<Amount>332.01</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>6</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>1992.06</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for cats ND, Kitten, chicken  pomegranate, 10 Kg</Description>
+			<BuyersItemIdentification>8010276031976</BuyersItemIdentification>
+			<SellersItemIdentification>8010276031976</SellersItemIdentification>
+			<StandardItemIdentification>8010276031976</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+	<OrderLine>
+		<ID>23</ID>
+		<Note>CustomerLineID:20458823</Note>
+		<Price CurrencyID="RON">
+			<Amount>79.03</Amount>
+		</Price>
+		<Quantity UnitCode="PC">
+			<Amount>3</Amount>
+		</Quantity>
+		<LineExtensionAmount CurrencyID="RON">
+			<Amount>237.09</Amount>
+		</LineExtensionAmount>
+		<Item>
+			<Description>Dry food for cats Miau Miau, Salmon, 10 Kg</Description>
+			<BuyersItemIdentification>5949060217483</BuyersItemIdentification>
+			<SellersItemIdentification>5949060217483</SellersItemIdentification>
+			<StandardItemIdentification>5949060217483</StandardItemIdentification>
+			<AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification>
+			<AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification>
+			<AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification>
+		</Item>
+		<Delivery>
+			<RequestedDeliveryPeriod>
+				<StartDate>2023-10-03</StartDate>
+				<EndDate>2023-10-03</EndDate>
+			</RequestedDeliveryPeriod>
+		</Delivery>
+	</OrderLine>
+</Order>

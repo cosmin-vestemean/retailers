@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>retailers</title>
+    <meta name="description" content="integrating Pet Factory S1 with various retailers" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+  </head>
+  <body class="p-2">
+    <!--
+      use bulma to create (no php):
+      1. a navbar at the top with logo https://cdn.contentspeed.ro/slir/h200/petfactory.websales.ro/cs-content//cs-skins/cs_lider/custom/logo-image_1642419375.png?v=466253127f368204e54670062c01c2a3816869175610606-08-2018, like in https://bulma.io/documentation/components/navbar/
+      2. vertical list (sections) of cards, left aligned, with a title "Retailers"; one card on each row;
+      a card is a container with a title, image, description and three buttons (configureaza, statistici, monitorizeaza), 
+        like in this link https://bulma.io/documentation/components/card/, example 6; There will be 6 cards in total: Pepco, Kaufland, Profi, eMag, Auchan, Carrefour
+      3. every card has a different color
+      4. when buttons are pressed a new page is opened, with a title, a description and a button "back to home"
+      and it represents a retailer.
+    -->
+    <nav class="navbar top" role="navigation" aria-label="main navigation">
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="./"> Retailers list </a>
+
+          <a class="navbar-item"> Documentation </a>
+
+          <div class="navbar-item has-dropdown is-hoverable has-text-black">
+            <a class="navbar-link"> More </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item"> About </a>
+              <a class="navbar-item"> Contact </a>
+              <hr class="navbar-divider" />
+              <a class="navbar-item"> Report an issue </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-light"> Log in </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="hero has-text-centered p-3 is-primary">
+      <h1 class="title">Retailers</h1>
+      <h2 class="subtitle">Integrating Pet Factory S1 with various retailers</h2>
+    </div>
+
+    <!-- begin list of cards -->
+    <section class="p-2">
+      <div class="columns">
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">eMag</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #fff"
+                  src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="monitor_retailer.html" class="card-footer-item">Monitorizeaza</a>
+              <a href="config_retailer.html" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Kaufland</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #fff"
+                  src="https://media.kaufland.com/images/PPIM/AP_Content_1354/rum/86/85/Asset_1088685.jpg"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="#" class="card-footer-item">Monitorizeaza</a>
+              <a href="#" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Profi</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #e70000"
+                  src="https://www.profi.ro/wp-content/uploads/2022/06/profi-logo-nou.png"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="#" class="card-footer-item">Monitorizeaza</a>
+              <a href="#" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- next 3 cards -->
+    <section class="p-2">
+      <div class="columns">
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Carrefour</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #fff"
+                  src="https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="#" class="card-footer-item">Monitorizeaza</a>
+              <a href="#" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Auchan</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #fff"
+                  src="https://auchan.vtexassets.com/assets/vtex/assets-builder/auchan.store-theme/1.0.16/header/logo___b12269ef7e65e8c49c7c5dac38dd7b92.svg"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="#" class="card-footer-item">Monitorizeaza</a>
+              <a href="#" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+        <div class="column coumn-is-third">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Supeco</p>
+              <button class="card-header-icon" aria-label="more options">
+                <span class="icon">
+                  <i class="fas fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </button>
+            </header>
+            <div class="card-image">
+              <figure class="image is-128x128">
+                <img
+                  style="background-color: #fcb900"
+                  src="https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg"
+                  alt="Placeholder image"
+                />
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="content">
+                44 comenzii procesate<br />
+                43 facturi emise<br />
+                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <a href="#" class="card-footer-item">Statistici</a>
+              <a href="#" class="card-footer-item">Monitorizeaza</a>
+              <a href="#" class="card-footer-item">Configureaza</a>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- import CLient.js as module-->
+    <script type="module" src="client.js"></script>
+  </body>
+</html>

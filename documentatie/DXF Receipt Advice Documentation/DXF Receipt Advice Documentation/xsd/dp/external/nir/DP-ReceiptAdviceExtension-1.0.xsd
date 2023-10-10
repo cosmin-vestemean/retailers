@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright (c) Docprocess S.R.L. 2014. All Rights Reserved.
+  ~
+  ~ No part of software may be distributed or reproduced without
+  ~ Docprocess S.R.L.'s express consent.
+  -->
+<xsd:schema xmlns="urn:com:docprocess:nir:model:specification:schema:xsd:ReceiptAdviceExtension-1" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:com:docprocess:nir:model:specification:schema:xsd:ReceiptAdviceExtension-1" version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- ===== Imports ===== -->
+    <xsd:import schemaLocation="../../../ubl/common/UBL-CommonBasicComponents-2.1.xsd" namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"/>
+    <xsd:import schemaLocation="../../../ubl/common/UBL-CommonAggregateComponents-2.1.xsd" namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"/>
+    <xsd:import schemaLocation="../../../ubl/common/UBL-UnqualifiedDataTypes-2.1.xsd" namespace="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2"/>
+
+    <!-- ===== Element Declarations ===== -->
+    <xsd:element name="ReceiptAdviceExtension">
+        <xsd:annotation>
+            <xsd:documentation>The ReceiptAdvice extension</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ReceiptAdviceLineExtension" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="TaxTotal" type="cac:TaxTotalType"/>
+                <xsd:element minOccurs="0" name="LegalMonetaryTotal" type="cac:MonetaryTotalType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ReceiptAdviceLineExtension" type="ReceiptAdviceLineExtensionType"/>
+
+    <xsd:complexType name="ReceiptAdviceLineExtensionType">
+        <xsd:sequence>
+            <xsd:element name="ReceiptLineReferenceID" type="cbc:IDType" minOccurs="1" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Receipt advice line reference ID</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="LineExtensionAmount" type="cbc:LineExtensionAmountType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="TaxtTotal" type="cac:TaxTotalType"/>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Price" type="cac:PriceType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>
