@@ -3,7 +3,7 @@
   "port": 4433,
   "public": "./public/",
   "origins": [
-    "http://127.0.0.1:4433"
+    "https://127.0.0.1:4433"
   ],
   "paginate": {
     "default": 100,
