@@ -1,9 +1,9 @@
 {
   "host": "localhost",
-  "port": 5055,
+  "port": 6893,
   "public": "./public/",
   "origins": [
-    "http://localhost:5055"
+    "http://localhost:6893"
   ],
   "paginate": {
     "default": 100,
