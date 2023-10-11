@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/acctro/retailers.acct.ro/
+    - export DEPLOYPATH=/home/acctro/retailers.acct.ro/retailers
     - /bin/cp -R * $DEPLOYPATH
