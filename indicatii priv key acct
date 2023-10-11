@@ -1,0 +1,27 @@
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/acctro/.ssh/vestemean.cosmin.
+Your public key has been saved in /home/acctro/.ssh/vestemean.cosmin.pub.
+The key fingerprint is:
+SHA256:xyatAWvSO4ELY4NoafkOtiyDgUxe87gnmPEJ9Qzx76k 
+The key's randomart image is:
++---[RSA 2048]----+
+|                 |
+|   .             |
+|    o .          |
+|.oo= + o o       |
+|B=B X * S =      |
+|=*.= B + *       |
+|.+*.+ + o        |
+|*o+= . +         |
+|.+ .oE.          |
++----[SHA256]-----+
+
+
+
+
+
+_%8@)5p6;RIB
+
+source /home/acctro/nodevenv/retailers.acct.ro/retailers/20/bin/activate && cd /home/acctro/retailers.acct.ro/retailers
