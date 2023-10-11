@@ -1,9 +1,9 @@
 {
-  "host": "retailers.acct.ro",
+  "host": "127.0.0.1",
   "port": 4433,
   "public": "./public/",
   "origins": [
-    "retailers.acct.ro:4433"
+    "http://127.0.0.1:4433"
   ],
   "paginate": {
     "default": 100,
