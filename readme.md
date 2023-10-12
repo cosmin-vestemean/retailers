@@ -39,3 +39,14 @@ $ npx feathers generate service               # Generate a new Service
 ## Help
 
 For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+
+heroku:
+```````
+heroku login
+git push heroku main
+git remote -v
+heroku ps
+heroku ps: scale web=1
+heroku ps:exec --app=retailers
+heroku update
+heroku open
