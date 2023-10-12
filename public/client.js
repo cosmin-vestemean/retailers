@@ -1,6 +1,15 @@
 console.log('Client.js loaded')
 
-const socket = io('https://retailers-ac9953f6caca.herokuapp.com:5000')
+const herokuPort = process.env.PORT
+let actualPort;
+if (herokuPort) {
+  console.log('herokuPort', herokuPort)
+  actualPort = herokuPort
+} else {
+  actualPort = 5000
+}
+
+const socket = io('https://retailers-ac9953f6caca.herokuapp.com:' + actualPort)
 const client = feathers()
 const socketClient = feathers.socketio(socket)
 
