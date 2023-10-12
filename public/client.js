@@ -1,6 +1,6 @@
 console.log('Client.js loaded')
 
-const socket = io('http://localhost:5000')
+const socket = io('https://retailers-ac9953f6caca.herokuapp.com:5000')
 const client = feathers()
 const socketClient = feathers.socketio(socket)
 
