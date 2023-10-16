@@ -1,0 +1,18 @@
+1. Nu gasesesc emailul utilizatorului pentru care se cere aprobarea. din cauza ca este user web => se foloseste email salesman
+2. A se actiona functia btn "Refresh disponibilitate stoc" inainte de salvare
+3. Fields Conversie in && La aprobare nu se completeaza
+
+4. Doua filoane de aprobare:
+4.1. Comenzi online
+4.2. Oferte
+
+Fiecare cu index si form (form: create de Marian) 7005 && 7001
+
+La introducerea nr companda/oferta sa propuna doar documente cu fprms corespunzator
+
+Inserare comenzi online: bool02 = 1
+
+oferta vs comanda in mesaje
+
+
+verifica departajarea dintre oferta si comanda in subiect si in corp (body)
