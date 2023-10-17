@@ -1546,7 +1546,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       textarea.className = 'textarea is-small'
       textarea.rows = 10
       textarea.cols = 50
-      textarea.innerHTML = domObj.xml
+      textarea.innerHTML = domObj.dom
       //add cell
       var td = tr.insertCell()
       td.appendChild(textarea)
