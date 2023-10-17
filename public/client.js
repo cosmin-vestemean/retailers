@@ -1563,7 +1563,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button3.className = 'button is-small is-info ml-2'
     button3.innerHTML = 'Save XML'
     button3.onclick = async function () {
-      const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
+      //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
+      const xml = await cheatGetXmlFromS1(row.findoc)
       //save the xml to file
       var xmlBlob = new Blob([xml], { type: 'text/xml' })
       var xmlURL = window.URL.createObjectURL(xmlBlob)
