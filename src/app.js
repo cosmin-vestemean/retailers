@@ -442,7 +442,7 @@ class getInvoiceDom {
 app.use('getInvoiceDom', new getInvoiceDom())
 
 //test getInvoiceDom service
-app
+/* app
   .service('getInvoiceDom')
   .find({
     query: {
@@ -460,7 +460,7 @@ app
   .then(async (result) => {
     //var_dump(result) as in php
     console.debug(JSON.stringify(result, null, 2))
-  })
+  }) */
 
 /*
 example of use

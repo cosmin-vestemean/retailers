@@ -1540,7 +1540,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
       //await createXML(row.findoc, trdr, sosource, fprms, series)
-      console.log(await cheatGetXmlFromS1(row.findoc))
+      var domObj = await cheatGetXmlFromS1(row.findoc)
+      alert('Trimis:' + domObj.trimis + '\n' + 'XML:' + domObj.dom)
     }
     actions.appendChild(button2)
     //save xml button
