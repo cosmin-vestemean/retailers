@@ -248,10 +248,10 @@ class SftpServiceClass {
       .connect(config)
       .then(() => {
         console.log('connected')
-        sftp.put(localPath, initialDir + '/' + filename)
+        return sftp.put(localPath, initialDir + '/' + filename)
       })
-      .then(() => {
-        console.log(`File ${filename} uploaded successfully!`)
+      .then(data => {
+        console.log(`File ${filename} uploaded successfully!`, data)
         sftp.end()
         const response = { findoc: findoc, filename: filename, success: true }
         console.log('response', response)
