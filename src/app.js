@@ -253,7 +253,9 @@ class SftpServiceClass {
       .then(() => {
         console.log(`File ${filename} uploaded successfully!`)
         sftp.end()
-        return { findoc: findoc, filename: filename, success: true }
+        const response = { findoc: findoc, filename: filename, success: true }
+        console.log('response', response)
+        return response
       })
       .catch((err) => {
         console.error(err)
