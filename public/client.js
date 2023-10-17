@@ -1610,7 +1610,7 @@ async function sendInvoice(findoc) {
     console.log('uploadXml', response)
     if (response.success == true) {
       alert(
-        'Factura pentru findoc ' + response.findoc + ' trimisa cu succes cu denumirea ' + response.filename
+        'Factura pentru findoc ' + response.findoc + ' a fost trimisa cu succes sub denumirea ' + response.filename
       )
     } else {
       alert('Eroare la trimiterea facturii')
