@@ -234,7 +234,8 @@ class SftpServiceClass {
     //data is a object with filename and xml
     //send xml to sftp server
     const filename = data.filename
-    const xml = data.dom
+    const xml = data.xml
+    const findoc = data.findoc
     const localPath = 'xml/' + filename
     //create path if not exists
     if (!fs.existsSync('xml')) {
@@ -252,12 +253,12 @@ class SftpServiceClass {
       .then(() => {
         console.log(`File ${filename} uploaded successfully!`)
         sftp.end()
-        return { filename: filename, success: true }
+        return { findoc: findoc, filename: filename, success: true }
       })
       .catch((err) => {
         console.error(err)
         sftp.end()
-        return { filename: filename, success: false }
+        return { findoc: findoc, filename: filename, success: false }
       })
   }
 }

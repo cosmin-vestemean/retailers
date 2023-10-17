@@ -464,7 +464,7 @@ function createSomeInvoice(dsIte) {
     }
     
     if (X.SYS.USER == 1002) {
-        return {dom: dom, trimis: trimis};
+        return {dom: dom, trimis: trimis, filename: denumireDocProcess, computername: computerName};
     } else {
         SaveStringToFile(folderPath + denumireDocProcess, dom, trimis);
         if (!test_mode.trimiteInv2DanteFromDocProc) {

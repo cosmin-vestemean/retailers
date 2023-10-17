@@ -1593,7 +1593,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendInvoice(findoc, filename) {
+async function sendInvoice(findoc) {
   const domObj = await cheatGetXmlFromS1(findoc)
   if (domObj.success == false) {
     alert('Factura a fost deja trimisa')
@@ -1603,13 +1603,15 @@ async function sendInvoice(findoc, filename) {
   if (domObj.trimis == false) {
     //uploadXml service
     var xml = domObj.dom
-
+    var filename = domObj.filename
     var response = await client
       .service('sftp')
-      .uploadXml({}, { query: { findoc: findoc, xml: xml, filename: filename } })
+      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
     console.log('uploadXml', response)
     if (response.success == true) {
-      alert('Factura trimisa cu succes cu denumirea ' + filename)
+      alert(
+        'Factura pentru findoc ' + response.findoc + ' trimisa cu succes cu denumirea ' + response.filename
+      )
     } else {
       alert('Eroare la trimiterea facturii')
     }
