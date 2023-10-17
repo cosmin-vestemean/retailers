@@ -1556,7 +1556,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.onclick = async function () {
       //await createXML(row.findoc, trdr, sosource, fprms, series)
       var domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.success == false) {
+      if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
       }
@@ -1582,23 +1582,18 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button3.onclick = async function () {
       //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
       const domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.success == false) {
+      if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
       } else {
         const xml = domObj.dom
-        const trimis = domObj.trimis
-        if (!trimis) {
-          //save the xml to file
-          var xmlBlob = new Blob([xml], { type: 'text/xml' })
-          var xmlURL = window.URL.createObjectURL(xmlBlob)
-          var tempLink = document.createElement('a')
-          tempLink.href = xmlURL
-          tempLink.setAttribute('download', row.findoc + '.xml')
-          tempLink.click()
-        } else {
-          alert('Factura trimisa deja')
-        }
+        //save the xml to file
+        var xmlBlob = new Blob([xml], { type: 'text/xml' })
+        var xmlURL = window.URL.createObjectURL(xmlBlob)
+        var tempLink = document.createElement('a')
+        tempLink.href = xmlURL
+        tempLink.setAttribute('download', row.findoc + '.xml')
+        tempLink.click()
       }
     }
     actions.appendChild(button3)
