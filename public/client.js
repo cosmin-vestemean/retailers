@@ -1622,20 +1622,20 @@ async function sendInvoice(findoc) {
               ' a fost trimisa cu succes sub denumirea ' +
               response.filename
           )
+          return { success: true, xml: xml }
         } else {
           alert('Eroare la trimiterea facturii')
+          return { success: false, xml: xml }
         }
       })
       .catch((err) => {
         console.log('Eroare serviciu sftp uploadXml', err)
+        return { success: false, xml: xml }
       })
   } else {
     alert('Factura trimisa deja')
+    return { success: false, xml: xml }
   }
-
-  response.xml = xml
-
-  return response
 }
 
 async function createLOCATEINFO(trdr, sosource, fprms, series) {
