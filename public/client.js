@@ -1623,7 +1623,8 @@ async function sendInvoice(findoc) {
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
     console.log('uploadXml', response)
-    if (response.success == true) {
+    //if response has key success, and success is true
+    if (Object.keys(response).indexOf('success') > -1 && response.success == true) {
       alert(
         'Factura pentru findoc ' +
           response.findoc +
