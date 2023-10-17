@@ -1531,7 +1531,19 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-primary'
     button.innerHTML = 'Send Invoice'
     button.onclick = function () {
-      sendInvoice(row.findoc)
+      var response = sendInvoice(row.findoc)
+      var xml = response.xml
+      //add cell and textarea
+      var textarea = document.createElement('textarea')
+      textarea.className = 'textarea is-small'
+      textarea.rows = 10
+      textarea.cols = 50
+      textarea.innerHTML = xml
+      //no spellcheck
+      textarea.spellcheck = false
+      //add cell
+      var td = tr.insertCell()
+      td.appendChild(textarea)
     }
     actions.appendChild(button)
     //create xml button
@@ -1618,6 +1630,10 @@ async function sendInvoice(findoc) {
   } else {
     alert('Factura trimisa deja')
   }
+
+  response.xml = xml
+
+  return response
 }
 
 async function createLOCATEINFO(trdr, sosource, fprms, series) {
