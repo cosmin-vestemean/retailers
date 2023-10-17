@@ -1530,8 +1530,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     var button = document.createElement('button')
     button.className = 'button is-small is-primary'
     button.innerHTML = 'Send Invoice'
-    button.onclick = function () {
-      var response = sendInvoice(row.findoc)
+    button.onclick = async function () {
+      var response = await sendInvoice(row.findoc)
       var xml = response.xml
       var success = response.success
       if (success == true) {
@@ -1615,20 +1615,25 @@ async function sendInvoice(findoc) {
     //uploadXml service
     var xml = domObj.dom
     var filename = domObj.filename
-    var response = await client
+    client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-    console.log('uploadXml', response)
-    if (response.success == true) {
-      alert(
-        'Factura pentru findoc ' +
-          response.findoc +
-          ' a fost trimisa cu succes sub denumirea ' +
-          response.filename
-      )
-    } else {
-      alert('Eroare la trimiterea facturii')
-    }
+      .then((response) => {
+        console.log('uploadXml', response)
+        if (response.success == true) {
+          alert(
+            'Factura pentru findoc ' +
+              response.findoc +
+              ' a fost trimisa cu succes sub denumirea ' +
+              response.filename
+          )
+        } else {
+          alert('Eroare la trimiterea facturii')
+        }
+      })
+      .catch((err) => {
+        console.log('Eroare serviciu sftp uploadXml', err)
+      })
   } else {
     alert('Factura trimisa deja')
   }
