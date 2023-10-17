@@ -1547,6 +1547,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       textarea.rows = 10
       textarea.cols = 50
       textarea.innerHTML = domObj.dom
+      //no spellcheck
+      textarea.spellcheck = false
       //add cell
       var td = tr.insertCell()
       td.appendChild(textarea)
