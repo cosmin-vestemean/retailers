@@ -18,7 +18,7 @@ import Client from 'ssh2-sftp-client'
 import { parseStringPromise } from 'xml2js'
 
 //fs
-import fs from 'fs'
+import * as fs from 'fs'
 
 import fetch from 'node-fetch'
 
@@ -242,7 +242,7 @@ class SftpServiceClass {
       fs.mkdirSync('xml')
     }
     //write xml to file
-    fs.WriteFileSync(localPath, xml)
+    fs.writeFileSync(localPath, xml)
     //upload file
     sftp
       .connect(config)

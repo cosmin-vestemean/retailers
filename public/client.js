@@ -1533,17 +1533,20 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.onclick = function () {
       var response = sendInvoice(row.findoc)
       var xml = response.xml
-      //add cell and textarea
-      var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small'
-      textarea.rows = 10
-      textarea.cols = 50
-      textarea.innerHTML = xml
-      //no spellcheck
-      textarea.spellcheck = false
-      //add cell
-      var td = tr.insertCell()
-      td.appendChild(textarea)
+      var success = response.success
+      if (success == true) {
+        //add cell and textarea
+        var textarea = document.createElement('textarea')
+        textarea.className = 'textarea is-small'
+        textarea.rows = 10
+        textarea.cols = 50
+        textarea.innerHTML = xml
+        //no spellcheck
+        textarea.spellcheck = false
+        //add cell
+        var td = tr.insertCell()
+        td.appendChild(textarea)
+      }
     }
     actions.appendChild(button)
     //create xml button
@@ -1622,7 +1625,10 @@ async function sendInvoice(findoc) {
     console.log('uploadXml', response)
     if (response.success == true) {
       alert(
-        'Factura pentru findoc ' + response.findoc + ' a fost trimisa cu succes sub denumirea ' + response.filename
+        'Factura pentru findoc ' +
+          response.findoc +
+          ' a fost trimisa cu succes sub denumirea ' +
+          response.filename
       )
     } else {
       alert('Eroare la trimiterea facturii')
