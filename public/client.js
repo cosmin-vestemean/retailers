@@ -1610,10 +1610,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
 
 async function sendInvoice(findoc) {
   const domObj = await cheatGetXmlFromS1(findoc)
-  if (domObj.success == false) {
-    alert('Factura a fost deja trimisa')
-    return
-  }
 
   if (domObj.trimis == false) {
     //uploadXml service
@@ -1623,8 +1619,7 @@ async function sendInvoice(findoc) {
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
     console.log('uploadXml', response)
-    //if response has key success, and success is true
-    if (Object.keys(response).indexOf('success') > -1 && response.success == true) {
+    if (response.success == true) {
       alert(
         'Factura pentru findoc ' +
           response.findoc +

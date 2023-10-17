@@ -91,7 +91,7 @@ function createSomeInvoice(dsIte) {
     }
 
     if (trimis)
-        return;
+        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Xml file already sent in ' + data_trimitere};
 
     //dependente:
     var companyData = X.GETSQLDATASET('select coalesce(afm, null) as PartyIdentification, coalesce(name, null) as PartyName, coalesce(city, null) as CityName, ' +
@@ -101,7 +101,7 @@ function createSomeInvoice(dsIte) {
             'from company where isactive = 1 and company=' + X.SYS.COMPANY, null);
     if (!companyData.RECORDCOUNT) {
         X.WARNING('Nu gasesc datele companiei PET FACTORY)...');
-        return;
+        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc datele companiei PET FACTORY)'};
     }
 
     if (SALDOC.TRDR) {
@@ -110,7 +110,7 @@ function createSomeInvoice(dsIte) {
                 'from trdr where isactive=1 and company=' + X.SYS.COMPANY + ' and trdr=' + SALDOC.TRDR, null);
         if (!danteData.RECORDCOUNT) {
             X.WARNING('Nu gasesc datele companiei EMAG (DANTE)...');
-            return;
+            return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc datele companiei EMAG (DANTE)'};
         }
     } else {
         X.WARNING('Alegeti clientul...');
@@ -121,17 +121,17 @@ function createSomeInvoice(dsIte) {
                 'coalesce(city, null) as CityName from trdbranch where isactive=1 and trdbranch=' + SALDOC.TRDBRANCH, null);
         if (!depozitLivrare) {
             X.WARNING('Nu gasesc date depozit livrare.');
-            return;
+            return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc date depozit livrare'};
         }
     } else {
         X.WARNING('Alegeti filiala...');
-        return;
+        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Alegeti filiala'};
     }
 
     //first level; create _Invoice var:
     var inv = createInvoice();
     if (SALDOC.FINDOC < 0)
-        return;
+        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc documentul de vanzare'};
 
     //atribuie-i valori din S1 UI:
     inv.set_Invoice({
@@ -435,7 +435,7 @@ function createSomeInvoice(dsIte) {
     xmlMess = debugg_mode.trimiteInv2DanteFromDocProc ? inv.get_XMLMessages() : '';
     if (mess || xmlMess) {
         X.WARNING('Erori de rezolvat:\n' + mess + '\n\nXML errors:\n' + xmlMess);
-        return;
+        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Erori de rezolvat:\n' + mess + '\n\nXML errors:\n' + xmlMess};
     }
 
     if (debugg_mode.trimiteInv2DanteFromDocProc)
