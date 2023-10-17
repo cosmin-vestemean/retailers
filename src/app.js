@@ -79,25 +79,7 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
-    const retailer = params.query.retailer
-    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
-    //console.log('Date conexiune', sftpData)
-    const sftpDataObj = sftpData.data[0]
-    const privateKey = sftpDataObj.PRIVATEKEY
-    const privateKeyPath = 'privateKey.txt'
-    fs.writeFileSync(privateKeyPath, privateKey)
-    const sftp = new Client()
-    const config = {
-      host: sftpDataObj.URL,
-      port: sftpDataObj.PORT,
-      username: sftpDataObj.USERNAME,
-      passphrase: sftpDataObj.PASSPHRASE,
-      privateKey: fs.readFileSync(privateKeyPath),
-      cipher: 'aes256-cbc',
-      algorithm: 'ssh-rsa',
-      readyTimeout: 99999
-    }
-
+    const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
     const initialDir = sftpDataObj.INITIALDIRIN
 
     var returnedData = []
@@ -168,6 +150,29 @@ class SftpServiceClass {
       })
   }
 
+  async prepareConection(data, params) {
+    const retailer = params.query.retailer
+    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
+    //console.log('Date conexiune', sftpData)
+    const sftpDataObj = sftpData.data[0]
+    const privateKey = sftpDataObj.PRIVATEKEY
+    const privateKeyPath = 'privateKey.txt'
+    fs.writeFileSync(privateKeyPath, privateKey)
+    const sftp = new Client()
+    const config = {
+      host: sftpDataObj.URL,
+      port: sftpDataObj.PORT,
+      username: sftpDataObj.USERNAME,
+      passphrase: sftpDataObj.PASSPHRASE,
+      privateKey: fs.readFileSync(privateKeyPath),
+      cipher: 'aes256-cbc',
+      algorithm: 'ssh-rsa',
+      readyTimeout: 99999
+    }
+
+    return { sftp: sftp, config: config, sftpDataObj: sftpDataObj }
+  }
+
   async storeXmlInDB(data, params) {
     const retailer = params.query.retailer
     const folderPath = 'xml'
@@ -222,11 +227,44 @@ class SftpServiceClass {
 
     return returnedData
   }
+
+  async uploadXml(data, params) {
+    const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
+    const initialDir = sftpDataObj.INITIALDIROUT
+    //data is a object with filename and xml
+    //send xml to sftp server
+    const filename = data.filename
+    const xml = data.dom
+    const localPath = 'xml/' + filename
+    //create path if not exists
+    if (!fs.existsSync('xml')) {
+      fs.mkdirSync('xml')
+    }
+    //write xml to file
+    fs.WriteFileSync(localPath, xml)
+    //upload file
+    sftp
+      .connect(config)
+      .then(() => {
+        console.log('connected')
+        return sftp.put(localPath, initialDir + '/' + filename)
+      })
+      .then(() => {
+        console.log(`File ${filename} uploaded successfully!`)
+        sftp.end()
+        return { filename: filename, success: true }
+      })
+      .catch((err) => {
+        console.error(err)
+        sftp.end()
+        return { filename: filename, success: false }
+      })
+  }
 }
 
 //register the service
 app.use('sftp', new SftpServiceClass(), {
-  methods: ['downloadXml', 'storeXmlInDB']
+  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml']
 })
 
 class storeXmlServiceClass {

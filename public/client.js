@@ -8,7 +8,7 @@ const socketClient = feathers.socketio(socket)
 client.configure(socketClient)
 
 client.use('sftp', socketClient.service('sftp'), {
-  methods: ['downloadXml', 'storeXmlInDB']
+  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml']
 })
 
 client.use('storeXml', socketClient.service('storeXml'), {
@@ -1593,7 +1593,30 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-function sendInvoice(findoc) {}
+async function sendInvoice(findoc, filename) {
+  const domObj = await cheatGetXmlFromS1(findoc)
+  if (domObj.success == false) {
+    alert('Factura a fost deja trimisa')
+    return
+  }
+
+  if (domObj.trimis == false) {
+    //uploadXml service
+    var xml = domObj.dom
+
+    var response = await client
+      .service('sftp')
+      .uploadXml({}, { query: { findoc: findoc, xml: xml, filename: filename } })
+    console.log('uploadXml', response)
+    if (response.success == true) {
+      alert('Factura trimisa cu succes cu denumirea ' + filename)
+    } else {
+      alert('Eroare la trimiterea facturii')
+    }
+  } else {
+    alert('Factura trimisa deja')
+  }
+}
 
 async function createLOCATEINFO(trdr, sosource, fprms, series) {
   //scenariul 2
