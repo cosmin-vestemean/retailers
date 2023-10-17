@@ -246,9 +246,9 @@ class SftpServiceClass {
     //upload file
     sftp
       .connect(config)
-      .then(() => {
+      .then(async () => {
         console.log('connected')
-        return sftp.put(localPath, initialDir + '/' + filename)
+        return await sftp.put(localPath, initialDir + '/' + filename)
       })
       .then(() => {
         console.log(`File ${filename} uploaded successfully!`)
