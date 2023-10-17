@@ -1541,17 +1541,21 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.onclick = async function () {
       //await createXML(row.findoc, trdr, sosource, fprms, series)
       var domObj = await cheatGetXmlFromS1(row.findoc)
-      //add cell and textarea
-      var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small'
-      textarea.rows = 10
-      textarea.cols = 50
-      textarea.innerHTML = domObj.dom
-      //no spellcheck
-      textarea.spellcheck = false
-      //add cell
-      var td = tr.insertCell()
-      td.appendChild(textarea)
+      if (!domObj.trimis) {
+        //add cell and textarea
+        var textarea = document.createElement('textarea')
+        textarea.className = 'textarea is-small'
+        textarea.rows = 10
+        textarea.cols = 50
+        textarea.innerHTML = domObj.dom
+        //no spellcheck
+        textarea.spellcheck = false
+        //add cell
+        var td = tr.insertCell()
+        td.appendChild(textarea)
+      } else {
+        alert('Factura trimisa deja')
+      }
     }
     actions.appendChild(button2)
     //save xml button
