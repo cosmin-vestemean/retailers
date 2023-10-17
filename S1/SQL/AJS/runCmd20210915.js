@@ -31,10 +31,12 @@ function runExternalCode(objFindoc) {
     }
   }
 
-  createDanteInvoice()
+  return createDanteInvoice()
 }
 
 function createDanteInvoice() {
+    denumireDocProcess = 'INVOIC_' + SALDOC.SERIESNUM + '_VAT_' +
+        X.SQL("select coalesce(afm, 'RO25190857') as PartyIdentification from company where company=" + X.SYS.COMPANY, null) + '.xml';
     //createSomeInvoice(ITELINES);
     var cols = X.SQL("select stuff(( select distinct '], [' + a.name from " +
     'sys.columns a ' +
@@ -77,7 +79,7 @@ function createDanteInvoice() {
         dsSrc.NEXT;
     }
 
-    createSomeInvoice(dsNoDups);
+    return createSomeInvoice(dsNoDups);
 }
 
 function createSomeInvoice(dsIte) {
@@ -448,12 +450,29 @@ function createSomeInvoice(dsIte) {
             denumireDocProcess = splt[0] + '_' + splt[1] + '_' + apendice.toString(apendice) + '_' + splt[2] + '_' + splt[3];
         }
     }
-    SaveStringToFile(folderPath + denumireDocProcess, dom, trimis);
-    if (!test_mode.trimiteInv2DanteFromDocProc) {
-        ftp2DocProc(folderPath + denumireDocProcess, folderPath, trimis);
-        X.WARNING('Am trimis XML la DocProcess. Mai multe detalii in fisierul ' + folderPath + 'WinSCP.log');
+    //X.EXCEPTION(folderPath + denumireDocProcess + ' ' + dom + ' ' + trimis);
+    var computerName;
+    //get computer name through WMI
+    try {
+        var locator = new ActiveXObject("WbemScripting.SWbemLocator");
+        var service = locator.ConnectServer(".");
+        var properties = service.ExecQuery("SELECT * FROM Win32_OperatingSystem");
+        var e = new Enumerator(properties);
+        computerName = e.item().CSName;
+    } catch (e) {
+        computerName = 'N/A';
+    }
+    
+    if (X.SYS.USER == 1002) {
+        return {dom: dom, trimis: trimis};
     } else {
-        X.WARNING('XML salvat local, netrimis.');
+        SaveStringToFile(folderPath + denumireDocProcess, dom, trimis);
+        if (!test_mode.trimiteInv2DanteFromDocProc) {
+            ftp2DocProc(folderPath + denumireDocProcess, folderPath, trimis);
+            X.WARNING('Am trimis XML la DocProcess. Mai multe detalii in fisierul ' + folderPath + 'WinSCP.log');
+        } else {
+            X.WARNING('XML salvat local, netrimis.');
+        }
     }
 }
 
@@ -1499,11 +1518,10 @@ function createInvoice() {
 function SaveStringToFile(temp_filename, text, trimis) {
     if (trimis)
         return;
-
     var fso,
     f1;
-    fso = new ActiveXObject("Scripting.FileSystemObject");
     try {
+    fso = new ActiveXObject("Scripting.FileSystemObject");
     f1 = fso.CreateTextFile(temp_filename, true);
     //f1 = fso.OpenTextFile(temp_filename, 2);
     f1.write(text);

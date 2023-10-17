@@ -47,6 +47,11 @@ client.use('getS1SqlData', socketClient.service('getS1SqlData'), {
   methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
 })
 
+//getInvoiceDom
+client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
+  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+})
+
 var url = '',
   username = '',
   passphrase = '',
@@ -1172,14 +1177,15 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
             /*2.1. example
             <Item><Description>Litter without roof Stefanplast Sprint Corner Plus, Blue, 40x56x h 14</Description><BuyersItemIdentification>8003507968158</BuyersItemIdentification><SellersItemIdentification>MF.06759</SellersItemIdentification><StandardItemIdentification>8003507968158</StandardItemIdentification><AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification><AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification><AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification></Item>
             */
-           //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
+            //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
             var xpath = `//*[contains(text(), '${item[key].value}')]`
             var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
             var node = nodes.iterateNext()
             //2.3. get sibling "Description"
             var description = node.parentNode.getElementsByTagName('Description')[0].innerHTML
             //2.4. get sibling "BuyersItemIdentification"
-            var BuyersItemIdentification = node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
+            var BuyersItemIdentification =
+              node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
             //make error message fiendly
             errors.push(
               `Error in converting code ${item[key].value} to S1 value.\nDescription: ${description},\nBuyersItemIdentification: ${BuyersItemIdentification}`
@@ -1381,8 +1387,8 @@ function displayXmlDataForRetailer(retailer) {
       row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
       row.insertCell().innerHTML =
         '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.XMLDATA + '</textarea>'
-        //spellcheck="false"
-        row.cells[2].spellcheck = false
+      //spellcheck="false"
+      row.cells[2].spellcheck = false
       //row.insertCell().innerHTML = xml.JSONDATA
       //create the actions cell
       var actionsCell = row.insertCell()
@@ -1533,7 +1539,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.className = 'button is-small is-info ml-2'
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
-      await createXML(row.findoc, trdr, sosource, fprms, series)
+      //await createXML(row.findoc, trdr, sosource, fprms, series)
+      console.log(await cheatGetXmlFromS1(row.findoc))
     }
     actions.appendChild(button2)
     //save xml button
@@ -2120,4 +2127,21 @@ FROM FINDOC WHERE FINDOC={S1Table2.S1Field2}"			SALDOC	FINDOC	33	380 = original 
 
   //return xml innerHTML
   return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+}
+
+async function cheatGetXmlFromS1(findoc) {
+  var dom = await client.service('getInvoiceDom').find({
+    query: {
+      clientID: await client
+        .service('connectToS1')
+        .find()
+        .then((result) => {
+          return result.token
+        }),
+      appID: '1001',
+      findoc: findoc
+    }
+  })
+  console.log('dom', dom)
+  return dom
 }

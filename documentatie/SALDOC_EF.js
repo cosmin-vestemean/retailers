@@ -1473,10 +1473,6 @@ function ON_LOCATE() {
 
     X.ABCST.REFRESH;
     X.INVALIDATEFIELD('ITELINES.CCCABCDIM2');
-
-    denumireDocProcess = 'INVOIC_' + SALDOC.SERIESNUM + '_VAT_' +
-        X.SQL("select coalesce(afm, 'RO25190857') as PartyIdentification from company where company=" + X.SYS.COMPANY, null) + '.xml';
-
 }
 
 function saveABC() {

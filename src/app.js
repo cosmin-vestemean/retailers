@@ -418,6 +418,50 @@ class getS1SqlData {
 
 //register the service
 app.use('getS1SqlData', new getS1SqlData())
+
+class getInvoiceDom {
+  async find(params) {
+    const clientID = params.query.clientID
+    const appID = params.query.appID
+    const findoc = params.query.findoc
+    const url = mainURL + '/JS/runCmd20210915/runExternalCode'
+    const method = 'POST'
+    const body = {
+      clientID: clientID,
+      appID: appID,
+      findoc: findoc
+    }
+    console.log(body)
+    const response = await fetch(url, { method: method, body: JSON.stringify(body) })
+    const json = await response.json()
+    console.log(json)
+    return json
+  }
+}
+
+app.use('getInvoiceDom', new getInvoiceDom())
+
+//test getInvoiceDom service
+app
+  .service('getInvoiceDom')
+  .find({
+    query: {
+      clientID:
+        await app
+          .service('connectToS1')
+          .find()
+          .then((result) => {
+            return result.token
+          }),
+      appID: '1001',
+      findoc: '1222852'
+    }
+  })
+  .then(async (result) => {
+    //var_dump(result) as in php
+    console.debug(JSON.stringify(result, null, 2))
+  })
+
 /*
 example of use
 {
