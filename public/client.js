@@ -1610,10 +1610,10 @@ async function sendInvoice(findoc) {
     //uploadXml service
     var xml = domObj.dom
     var filename = domObj.filename
-    client
+    await client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-      .then(response => {
+      .then((response) => {
         console.log('uploadXml', response)
         if (response.success == true) {
           alert(
