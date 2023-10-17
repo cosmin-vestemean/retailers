@@ -1613,7 +1613,7 @@ async function sendInvoice(findoc) {
     client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-      .then((response) => {
+      .then(async (response) => {
         console.log('uploadXml', response)
         if (response.success == true) {
           alert(
