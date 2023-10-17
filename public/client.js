@@ -1532,7 +1532,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       var response = await sendInvoice(row.findoc)
-      var xml = response.xml
+      /* var xml = response.xml
       var success = response.success
       if (success == true) {
         //add cell and textarea
@@ -1546,7 +1546,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         //add cell
         var td = tr.insertCell()
         td.appendChild(textarea)
-      }
+      } */
     }
     actions.appendChild(button)
     //create xml button
