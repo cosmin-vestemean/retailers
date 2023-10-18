@@ -2231,25 +2231,23 @@ async function cheatGetXmlFromS1(findoc) {
 }
 
 //add on click event to checkbox with id comenziTrimise: if checked, show only orders with row.findoc not null
-function toggleComenziTrimise() {
-  var checkbox = document.getElementById('comenziTrimise')
-  checkbox.onclick = function () {
-    if (checkbox.checked) {
-      //show only orders with row.findoc not null
-      var rows = document.querySelectorAll('#xmlTableBody tbody tr')
-      rows.forEach((row) => {
-        //get cell with class findoc
-        var findoc = row.querySelector('.findoc')
-        if (findoc.innerHTML == '') {
-          row.style.display = 'none'
-        }
-      })
-    } else {
-      //show all orders
-      var rows = document.querySelectorAll('#xmlTableBody tbody tr')
-      rows.forEach((row) => {
-        row.style.display = ''
-      })
-    }
+var checkboxTrimise = document.getElementById('comenziTrimise')
+checkboxTrimise.onclick = function () {
+  if (checkboxTrimise.checked) {
+    //show only orders with row.findoc not null
+    var rows = document.querySelectorAll('#xmlTableBody tbody tr')
+    rows.forEach((row) => {
+      //get cell with class findoc
+      var findoc = row.querySelector('.findoc')
+      if (findoc.innerHTML == '') {
+        row.style.display = 'none'
+      }
+    })
+  } else {
+    //show all orders
+    var rows = document.querySelectorAll('#xmlTableBody tbody tr')
+    rows.forEach((row) => {
+      row.style.display = ''
+    })
   }
 }
