@@ -55,10 +55,14 @@
           <thead>
             <tr>
               <th>XMLDATE</th>
-              <th>XMLFILENAME</th>
+              <th width="20%">XMLFILENAME</th>
               <th>XML</th>
               <th>Actions</th>
-              <th>Trimis</th>
+              <th>
+                <label class="checkbox">
+                  <input id="comenziTrimise" type="checkbox" onclick="toggleComenziTrimise()" />
+                  Trimise
+              </label></th>
             </tr>
           </thead>
           <tbody id="xmlTableBody" class="is-size-7"></tbody>
@@ -82,9 +86,8 @@
         </table>
       </div>
     <script type="text/javascript">
-      //call promise getRetailerXMLData(69999);
-      displayXmlDataForRetailer(11639)
-      fetchDocsFromS1WS(11639, 1351, 712, 7121)
+      displayXmlDataForRetailer(11639);
+      fetchDocsFromS1WS(11639, 1351, 712, 7121);
     </script>
   </body>
 </html>

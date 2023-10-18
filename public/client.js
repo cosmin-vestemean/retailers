@@ -1440,6 +1440,8 @@ function displayXmlDataForRetailer(retailer) {
 
       //add cell for findoc
       var findoc = row.insertCell()
+      //add class for findoc
+      findoc.className = 'findoc'
       //if findoc is not null, add a green tick, else add a red cross; big icons
       if (xml.FINDOC) {
         findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
@@ -2226,4 +2228,28 @@ async function cheatGetXmlFromS1(findoc) {
   })
   console.log('dom', dom)
   return dom
+}
+
+//add on click event to checkbox with id comenziTrimise: if checked, show only orders with row.findoc not null
+function toggleComenziTrimise() {
+  var checkbox = document.getElementById('comenziTrimise')
+  checkbox.onclick = function () {
+    if (checkbox.checked) {
+      //show only orders with row.findoc not null
+      var rows = document.querySelectorAll('#xmlTableBody tbody tr')
+      rows.forEach((row) => {
+        //get cell with class findoc
+        var findoc = row.querySelector('.findoc')
+        if (findoc.innerHTML == '') {
+          row.style.display = 'none'
+        }
+      })
+    } else {
+      //show all orders
+      var rows = document.querySelectorAll('#xmlTableBody tbody tr')
+      rows.forEach((row) => {
+        row.style.display = ''
+      })
+    }
+  }
 }
