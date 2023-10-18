@@ -1531,29 +1531,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
-    var actions = tr.insertCell()
-    var button = document.createElement('button')
-    button.className = 'button is-small is-primary'
-    button.innerHTML = 'Send Invoice'
-    button.onclick = async function () {
-      var response = await sendInvoice(row.findoc)
-      /* var xml = response.xml
-      var success = response.success
-      if (success == true) {
-        //add cell and textarea
-        var textarea = document.createElement('textarea')
-        textarea.className = 'textarea is-small'
-        textarea.rows = 10
-        textarea.cols = 50
-        textarea.innerHTML = xml
-        //no spellcheck
-        textarea.spellcheck = false
-        //add cell
-        var td = tr.insertCell()
-        td.appendChild(textarea)
-      } */
-    }
-    actions.appendChild(button)
     //create xml button
     var button2 = document.createElement('button')
     button2.className = 'button is-small is-info ml-2'
@@ -1602,11 +1579,34 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       }
     }
     actions.appendChild(button3)
+    var actions = tr.insertCell()
+    var button = document.createElement('button')
+    button.className = 'button is-small is-primary'
+    button.innerHTML = 'Send Invoice'
+    button.onclick = async function () {
+      var response = await sendInvoice(row.findoc)
+      /* var xml = response.xml
+      var success = response.success
+      if (success == true) {
+        //add cell and textarea
+        var textarea = document.createElement('textarea')
+        textarea.className = 'textarea is-small'
+        textarea.rows = 10
+        textarea.cols = 50
+        textarea.innerHTML = xml
+        //no spellcheck
+        textarea.spellcheck = false
+        //add cell
+        var td = tr.insertCell()
+        td.appendChild(textarea)
+      } */
+    }
+    actions.appendChild(button)
     //add cell trimis
     var trimis = tr.insertCell()
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i> la ' + row.CCCXMLSendDate
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
