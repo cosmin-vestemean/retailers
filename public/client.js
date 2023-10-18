@@ -1440,12 +1440,11 @@ function displayXmlDataForRetailer(retailer) {
 
       //add cell for findoc
       var findoc = row.insertCell()
-      findoc.innerHTML = xml.FINDOC
       //if findoc is not null, add a green tick, else add a red cross; big icons
       if (xml.FINDOC) {
-        findoc.innerHTML += '<br><i class="fas fa-2x fa-check-circle has-text-success"></i>'
+        findoc.innerHTML = '<i class="fas fa-2x fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
-        findoc.innerHTML += '<br><i class="fas fa-2x fa-times-circle has-text-danger"></i>'
+        findoc.innerHTML = '<i class="fas fa-2x fa-times-circle has-text-danger"></i>'
       }
     })
   })
