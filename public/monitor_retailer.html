@@ -60,9 +60,10 @@
               <th>Actions</th>
               <th>
                 <label class="checkbox is-info">
-                  <input id="comenziTrimise" type="checkbox" />
+                  <input id="comenziTrimise" type="checkbox" onclick="toggleComenziNetrimise()" />
                   Trimise
-              </label></th>
+                </label>
+              </th>
             </tr>
           </thead>
           <tbody id="xmlTableBody" class="is-size-7"></tbody>
@@ -78,7 +79,12 @@
               <th>Document</th>
               <th>Suma</th>
               <th>Actions</th>
-              <th>Trimis</th>
+              <th>
+                <label class="checkbox is-info">
+                  <input id="facturiTrimise" type="checkbox" />
+                  Trimise
+                </label>
+              </th>
               <th>XML</th>
             </tr>
           </thead>

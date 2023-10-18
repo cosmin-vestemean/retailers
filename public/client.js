@@ -2230,24 +2230,24 @@ async function cheatGetXmlFromS1(findoc) {
   return dom
 }
 
-//add on click event to checkbox with id comenziTrimise: if checked, show only orders with row.findoc not null
-var checkboxTrimise = document.getElementById('comenziTrimise')
-checkboxTrimise.onclick = function () {
-  if (checkboxTrimise.checked) {
-    //show only orders with row.findoc not null
-    var rows = document.querySelectorAll('#xmlTableBody tbody tr')
-    rows.forEach((row) => {
-      //get cell with class findoc
-      var findoc = row.querySelector('.findoc')
-      if (findoc.innerHTML == '') {
+function toggleComenziNetrimise() {
+  var comenziTrimise = document.getElementById('comenziTrimise')
+  var table = document.getElementById('xmlTableBody tbody')
+  if (comenziTrimise.checked) {
+    //show only rows with cell class="findoc" innerHTML empty if checkbox is checked, else show all rows
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('findoc')[0]
+      if (cell.innerHTML == '') {
         row.style.display = 'none'
       }
-    })
+    }
   } else {
-    //show all orders
-    var rows = document.querySelectorAll('#xmlTableBody tbody tr')
-    rows.forEach((row) => {
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
       row.style.display = ''
-    })
+    }
   }
 }
