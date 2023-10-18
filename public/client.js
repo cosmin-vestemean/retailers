@@ -1442,9 +1442,9 @@ function displayXmlDataForRetailer(retailer) {
       var findoc = row.insertCell()
       //if findoc is not null, add a green tick, else add a red cross; big icons
       if (xml.FINDOC) {
-        findoc.innerHTML = '<i class="fas fa-2x fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
+        findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
-        findoc.innerHTML = '<i class="fas fa-2x fa-times-circle has-text-danger"></i>'
+        findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
       }
     })
   })
@@ -1604,7 +1604,12 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     actions.appendChild(button3)
     //add cell trimis
     var trimis = tr.insertCell()
-    trimis.innerHTML = row.CCCXMLSendDate
+    //trimis.innerHTML = row.CCCXMLSendDate
+    if (row.CCCXMLSendDate) {
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + row.CCCXMLSendDate
+    } else {
+      trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+    }
   })
 }
 
