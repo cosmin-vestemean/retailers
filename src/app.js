@@ -64,6 +64,12 @@ app.hooks({
 })
 
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
+const orderPath = 'data/order'
+const orderXmlPath = orderPath + '/xml'
+const orderProcessedPath = orderPath + '/processed'
+const orderErrorPath = orderPath + '/error'
+const invoicePath = 'data/invoice'
+const invoiceXmlPath = invoicePath + '/xml'
 
 //create a class as feathersjs service
 class SftpServiceClass {
@@ -115,10 +121,10 @@ class SftpServiceClass {
         //download each xml file and send it to storeXml service
         data.forEach((item) => {
           const filename = item.name
-          const localPath = 'data/order/xml/' + filename
+          const localPath = orderXmlPath + filename
           //create path if not exists
-          if (!fs.existsSync('data/order/xml')) {
-            fs.mkdirSync('data/order/xml')
+          if (!fs.existsSync(orderXmlPath)) {
+            fs.mkdirSync(orderXmlPath)
           }
           let dst = fs.createWriteStream(localPath)
           sftp
@@ -175,7 +181,7 @@ class SftpServiceClass {
 
   async storeXmlInDB(data, params) {
     const retailer = params.query.retailer
-    const folderPath = 'data/order/xml'
+    const folderPath = orderXmlPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
@@ -204,7 +210,7 @@ class SftpServiceClass {
           if (result.success) {
             returnedData.push({ filename: filename, success: true })
             //move file to processed folder
-            const processedPath = 'data/order/processed'
+            const processedPath = orderProcessedPath
             if (!fs.existsSync(processedPath)) {
               fs.mkdirSync(processedPath)
             }
@@ -212,7 +218,7 @@ class SftpServiceClass {
           } else {
             returnedData.push({ filename: filename, success: false })
             //move file to error folder
-            const errorPath = 'data/order/error'
+            const errorPath = orderErrorPath
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
             }
@@ -236,10 +242,10 @@ class SftpServiceClass {
     const filename = data.filename
     const xml = data.xml
     const findoc = data.findoc
-    const localPath = 'data/invoice/xml/' + filename
+    const localPath = invoiceXmlPath + filename
     //create path if not exists
-    if (!fs.existsSync('data/invoice/xml')) {
-      fs.mkdirSync('data/invoice/xml')
+    if (!fs.existsSync(invoiceXmlPath)) {
+      fs.mkdirSync(invoiceXmlPath)
     }
     //write xml to file
     fs.writeFileSync(localPath, xml)
