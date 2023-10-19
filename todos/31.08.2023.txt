@@ -1,3 +1,0 @@
-1. party identification (contine RO + CUI) => trdr CUI (fara RO) => xml asociat trdr
-2. daca nu se gaseste mtrl din cod dante => eroare
-3. semnalizare trimis in s1
