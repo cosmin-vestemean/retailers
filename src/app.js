@@ -253,7 +253,7 @@ class SftpServiceClass {
     fs.writeFileSync(localPath, xml)
     var response = null
     //upload file
-    sftp
+    await sftp
       .connect(config)
       .then(() => {
         console.log('connected')
@@ -274,6 +274,7 @@ class SftpServiceClass {
 
     //return response
     this.emit('uploadXml', response)
+    return response
   }
 }
 

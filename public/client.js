@@ -53,6 +53,10 @@ client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
   methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
 })
 
+client.service('sftp').on('uploadXml', (data) => {
+  console.log('uploadXml', data)
+})
+
 var url = '',
   username = '',
   passphrase = '',
@@ -1626,9 +1630,6 @@ async function sendInvoice(findoc) {
     await client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-    client.service('sftp').on('uploadXml', (data) => {
-      console.log('uploadXml', data)
-    })
     /* if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
       if (res.success == true) {
         alert(
