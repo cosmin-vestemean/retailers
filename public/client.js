@@ -1644,22 +1644,26 @@ async function sendInvoice(findoc) {
         console.log('Eroare serviciu sftp uploadXml', err)
         return { success: false, xml: xml }
       }) */
-      var res = await client.service('sftp').uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-      console.log('uploadXml', res)
-      if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success') && res.success == true) {
+    var res = await client
+      .service('sftp')
+      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
+    console.log('uploadXml', res)
+    if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
+      if (res.success == true) {
         alert(
-          'Factura pentru findoc ' +
-            res.findoc +
-            ' a fost trimisa cu succes sub denumirea ' +
-            res.filename
+          'Factura pentru findoc ' + res.findoc + ' a fost trimisa cu succes sub denumirea ' + res.filename
         )
         return { success: true, xml: xml }
       } else {
         alert('Eroare la trimiterea facturii')
         return { success: false, xml: xml }
       }
+    } else {
+      alert('No response from server')
+      return { success: false, xml: xml }
+    }
   } else {
-    alert('Factura trimisa deja')
+    alert('Factura a fost deja trimisa')
     return { success: false, xml: xml }
   }
 }
