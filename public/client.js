@@ -9,7 +9,7 @@ client.configure(socketClient)
 
 client.use('sftp', socketClient.service('sftp'), {
   methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
-  events: ['uploadXml']
+  events: ['uploadResult']
 })
 
 client.use('storeXml', socketClient.service('storeXml'), {
@@ -53,8 +53,8 @@ client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
   methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
 })
 
-client.service('sftp').on('uploadXml', (data) => {
-  console.log('uploadXml', data)
+client.service('sftp').on('uploadResult', (data) => {
+  console.log('uploadResult', data)
 })
 
 var url = '',

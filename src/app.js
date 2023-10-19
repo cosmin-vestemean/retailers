@@ -273,7 +273,7 @@ class SftpServiceClass {
       })
 
     //return response
-    this.emit('uploadXml', response)
+    this.emit('uploadResult', response)
     return response
   }
 }
@@ -281,7 +281,7 @@ class SftpServiceClass {
 //register the service
 app.use('sftp', new SftpServiceClass(), {
   methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
-  events: ['uploadXml']
+  events: ['uploadResult']
 })
 
 class storeXmlServiceClass {
