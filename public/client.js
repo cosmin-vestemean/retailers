@@ -1622,7 +1622,7 @@ async function sendInvoice(findoc) {
     //uploadXml service
     var xml = domObj.dom
     var filename = domObj.filename
-    var res = await client
+    await client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
     client.service('sftp').on('uploadXml', (data) => {
