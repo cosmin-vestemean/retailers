@@ -1622,33 +1622,13 @@ async function sendInvoice(findoc) {
     //uploadXml service
     var xml = domObj.dom
     var filename = domObj.filename
-    /* await client
-      .service('sftp')
-      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-      .then((response) => {
-        console.log('uploadXml', response)
-        if (response.success == true) {
-          alert(
-            'Factura pentru findoc ' +
-              response.findoc +
-              ' a fost trimisa cu succes sub denumirea ' +
-              response.filename
-          )
-          return { success: true, xml: xml }
-        } else {
-          alert('Eroare la trimiterea facturii')
-          return { success: false, xml: xml }
-        }
-      })
-      .catch((err) => {
-        console.log('Eroare serviciu sftp uploadXml', err)
-        return { success: false, xml: xml }
-      }) */
     var res = await client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
-    console.log('uploadXml', res)
-    if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
+    client.service('sftp').on('uploadXml', (data) => {
+      console.log('uploadXml', data)
+    })
+    /* if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
       if (res.success == true) {
         alert(
           'Factura pentru findoc ' + res.findoc + ' a fost trimisa cu succes sub denumirea ' + res.filename
@@ -1661,7 +1641,7 @@ async function sendInvoice(findoc) {
     } else {
       alert('No response from server')
       return { success: false, xml: xml }
-    }
+    } */
   } else {
     alert('Factura a fost deja trimisa')
     return { success: false, xml: xml }

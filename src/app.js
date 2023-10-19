@@ -272,13 +272,15 @@ class SftpServiceClass {
         sftp.end()
       })
 
-    return response
+    //return response
+    this.emit('uploadXml', response)
   }
 }
 
 //register the service
 app.use('sftp', new SftpServiceClass(), {
-  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml']
+  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
+  events: ['uploadXml']
 })
 
 class storeXmlServiceClass {
