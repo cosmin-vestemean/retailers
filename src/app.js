@@ -251,6 +251,7 @@ class SftpServiceClass {
     }
     //write xml to file
     fs.writeFileSync(localPath, xml)
+    var response = null
     //upload file
     sftp
       .connect(config)
@@ -260,17 +261,18 @@ class SftpServiceClass {
       })
       .then((data) => {
         console.log(`File ${filename} uploaded successfully!`, data)
-        const response = { findoc: findoc, filename: filename, success: true }
+        response = { findoc: findoc, filename: filename, success: true }
         console.log('response', response)
-        return response
       })
       .catch((err) => {
         console.error(err)
-        return { findoc: findoc, filename: filename, success: false }
+        response = { findoc: findoc, filename: filename, success: false }
       })
       .finally(() => {
         sftp.end()
       })
+
+    return response
   }
 }
 
