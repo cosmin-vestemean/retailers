@@ -1630,6 +1630,9 @@ async function sendInvoice(findoc) {
     await client
       .service('sftp')
       .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
+      .then((res) => {
+        console.log('sftp uploadXml', res)
+      })
     /* if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
       if (res.success == true) {
         alert(
