@@ -1646,7 +1646,7 @@ async function sendInvoice(findoc) {
       }) */
       var res = await client.service('sftp').uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
       console.log('uploadXml', res)
-      if (res.success == true) {
+      if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success') && res.success == true) {
         alert(
           'Factura pentru findoc ' +
             res.findoc +
