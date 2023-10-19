@@ -187,48 +187,50 @@ class SftpServiceClass {
 
     files.forEach((file) => {
       const filename = file
-      const localPath = folderPath + '/' + filename
-      console.log('localPath', localPath)
-      const xml = fs.readFileSync(localPath, 'utf8')
-      //remove xml declaration
-      var xmlClean = xml.replace(/<\?xml.*\?>/g, '')
-      //remove unneeded characters from xml
-      xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-      //parse xml to json
-      const json = parseStringPromise(xmlClean)
-      const d = {
-        filename: filename,
-        xml: xmlClean,
-        json: JSON.stringify(json)
-      }
-      console.log('data', d)
-      app
-        .service('storeXml')
-        .create(d, { query: { retailer: retailer } })
-        .then((result) => {
-          console.log('storeXml result', result)
-          if (result.success) {
-            returnedData.push({ filename: filename, success: true })
-            //move file to processed folder
-            const processedPath = orderProcessedPath
-            if (!fs.existsSync(processedPath)) {
-              fs.mkdirSync(processedPath)
+      if (filename.endsWith('.xml')) {
+        const localPath = folderPath + '/' + filename
+        console.log('localPath', localPath)
+        const xml = fs.readFileSync(localPath, 'utf8')
+        //remove xml declaration
+        var xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+        //remove unneeded characters from xml
+        xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
+        //parse xml to json
+        const json = parseStringPromise(xmlClean)
+        const d = {
+          filename: filename,
+          xml: xmlClean,
+          json: JSON.stringify(json)
+        }
+        console.log('data', d)
+        app
+          .service('storeXml')
+          .create(d, { query: { retailer: retailer } })
+          .then((result) => {
+            console.log('storeXml result', result)
+            if (result.success) {
+              returnedData.push({ filename: filename, success: true })
+              //move file to processed folder
+              const processedPath = orderProcessedPath
+              if (!fs.existsSync(processedPath)) {
+                fs.mkdirSync(processedPath)
+              }
+              fs.renameSync(localPath, processedPath + '/' + filename)
+            } else {
+              returnedData.push({ filename: filename, success: false })
+              //move file to error folder
+              const errorPath = orderErrorPath
+              if (!fs.existsSync(errorPath)) {
+                fs.mkdirSync(errorPath)
+              }
+              fs.renameSync(localPath, errorPath + '/' + filename)
             }
-            fs.renameSync(localPath, processedPath + '/' + filename)
-          } else {
+          })
+          .catch((err) => {
+            console.error(err)
             returnedData.push({ filename: filename, success: false })
-            //move file to error folder
-            const errorPath = orderErrorPath
-            if (!fs.existsSync(errorPath)) {
-              fs.mkdirSync(errorPath)
-            }
-            fs.renameSync(localPath, errorPath + '/' + filename)
-          }
-        })
-        .catch((err) => {
-          console.error(err)
-          returnedData.push({ filename: filename, success: false })
-        })
+          })
+      }
     })
 
     return returnedData
@@ -254,19 +256,20 @@ class SftpServiceClass {
       .connect(config)
       .then(() => {
         console.log('connected')
-        return sftp.put(localPath, initialDir + '/' + filename)
+        sftp.put(localPath, initialDir + '/' + filename)
       })
-      .then(data => {
+      .then((data) => {
         console.log(`File ${filename} uploaded successfully!`, data)
-        sftp.end()
         const response = { findoc: findoc, filename: filename, success: true }
         console.log('response', response)
         return response
       })
       .catch((err) => {
         console.error(err)
-        sftp.end()
         return { findoc: findoc, filename: filename, success: false }
+      })
+      .finally(() => {
+        sftp.end()
       })
   }
 }
