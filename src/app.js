@@ -115,10 +115,10 @@ class SftpServiceClass {
         //download each xml file and send it to storeXml service
         data.forEach((item) => {
           const filename = item.name
-          const localPath = 'xml/' + filename
+          const localPath = 'data/order/xml/' + filename
           //create path if not exists
-          if (!fs.existsSync('xml')) {
-            fs.mkdirSync('xml')
+          if (!fs.existsSync('data/order/xml')) {
+            fs.mkdirSync('data/order/xml')
           }
           let dst = fs.createWriteStream(localPath)
           sftp
@@ -175,7 +175,7 @@ class SftpServiceClass {
 
   async storeXmlInDB(data, params) {
     const retailer = params.query.retailer
-    const folderPath = 'xml'
+    const folderPath = 'data/order/xml'
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
@@ -204,7 +204,7 @@ class SftpServiceClass {
           if (result.success) {
             returnedData.push({ filename: filename, success: true })
             //move file to processed folder
-            const processedPath = 'processed'
+            const processedPath = 'data/order/processed'
             if (!fs.existsSync(processedPath)) {
               fs.mkdirSync(processedPath)
             }
@@ -212,7 +212,7 @@ class SftpServiceClass {
           } else {
             returnedData.push({ filename: filename, success: false })
             //move file to error folder
-            const errorPath = 'error'
+            const errorPath = 'data/order/error'
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
             }
@@ -236,10 +236,10 @@ class SftpServiceClass {
     const filename = data.filename
     const xml = data.xml
     const findoc = data.findoc
-    const localPath = 'xml/' + filename
+    const localPath = 'data/invoice/xml/' + filename
     //create path if not exists
-    if (!fs.existsSync('xml')) {
-      fs.mkdirSync('xml')
+    if (!fs.existsSync('data/invoice/xml')) {
+      fs.mkdirSync('data/invoice/xml')
     }
     //write xml to file
     fs.writeFileSync(localPath, xml)

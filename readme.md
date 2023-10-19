@@ -48,5 +48,6 @@ git remote -v
 heroku ps
 heroku ps: scale web=1
 heroku ps:exec --app=retailers
+heroku run bash --app retailers
 heroku update
 heroku open
