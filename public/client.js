@@ -1586,7 +1586,10 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
           })
       })
       //update btn caption to sent
-      button.innerHTML = 'Send Invoice'
+      button.innerHTML = 'Sent Invoice'
+      //find cell class="trimis" in current row and add date now and green check
+      var trimis = tr.getElementsByClassName('trimis')[0]
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + new Date().toISOString().slice(0, 19).replace('T', ' ')      
     }
     actions.appendChild(button)
     //create xml button
@@ -1639,6 +1642,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     actions.appendChild(button3)
     //add cell trimis
     var trimis = tr.insertCell()
+    //add class for trimis
+    trimis.className = 'trimis'
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
