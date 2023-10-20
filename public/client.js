@@ -1544,6 +1544,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       var response = await sendInvoice(row.findoc)
+      console.log('response', response)
       var xml = response.xml
       var success = response.success
       if (success == true) {
