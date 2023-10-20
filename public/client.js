@@ -1544,7 +1544,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       var response = await sendInvoice(row.findoc)
-      /* var xml = response.xml
+      var xml = response.xml
       var success = response.success
       if (success == true) {
         //add cell and textarea
@@ -1558,7 +1558,22 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         //add cell
         var td = tr.insertCell()
         td.appendChild(textarea)
-      } */
+      }
+      var body = {}
+      body['service'] = 'setData'
+      body['clientID'] = await client.service('connectToS1').find()
+      body['appId'] = 1001
+      body['OBJECT'] = 'SALDOC'
+      body['FORM'] = 'EFIntegrareRetailers'
+      body['KEY'] = row.findoc
+      body['DATA'] = {}
+      body['DATA']['MTRDOC'] = [{"CCCXMLSendDate": new Date().toISOString().slice(0, 19).replace('T', ' ')}]
+      client
+            .service('setDocument')
+            .create(body)
+            .then((res) => {
+              console.log(res)
+            })
     }
     actions.appendChild(button)
     //create xml button
