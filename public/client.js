@@ -1669,10 +1669,9 @@ async function sendInvoice(findoc) {
         if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
           if (res.success == true) {
             alert(
-              'Factura pentru findoc ' +
-                res.findoc +
-                ' a fost trimisa cu succes sub denumirea ' +
-                res.filename
+              'Factura fost trimisa cu succes sub denumirea ' +
+                res.filename +
+                ' (' + res.findoc + ')'
             )
             response = { success: true, xml: xml }
           } else {
