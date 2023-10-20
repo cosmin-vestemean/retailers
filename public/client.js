@@ -1567,7 +1567,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         }
         var body = {}
         body['service'] = 'setData'
-        body['clientID'] = await client.service('connectToS1').find()
+        body['clientID'] = await client.service('connectToS1').find().then((result) => {return result.token})
         body['appId'] = '1001'
         body['OBJECT'] = 'SALDOC'
         body['FORM'] = 'EFIntegrareRetailers'
