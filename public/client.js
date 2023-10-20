@@ -1543,7 +1543,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-primary'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      var response = await sendInvoice(row.findoc)
+      sendInvoice(row.findoc)
+      .then(async (response) => {
       console.log('response', response)
       var xml = response.xml
       var success = response.success
@@ -1575,6 +1576,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
             .then((res) => {
               console.log(res)
             })
+          })
     }
     actions.appendChild(button)
     //create xml button
