@@ -1568,7 +1568,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         var body = {}
         body['service'] = 'setData'
         body['clientID'] = await client.service('connectToS1').find()
-        body['AppId'] = 1001
+        body['appId'] = '1001'
         body['OBJECT'] = 'SALDOC'
         body['FORM'] = 'EFIntegrareRetailers'
         body['KEY'] = row.findoc
@@ -1579,6 +1579,9 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
           .create(body)
           .then((res) => {
             console.log(res)
+          })
+          .catch((err) => {
+            console.log(err)
           })
       })
       //update btn caption to sent
