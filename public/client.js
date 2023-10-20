@@ -1544,7 +1544,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       //update btn caption to sending
-      button.innerHTML = 'Sending...'
+      //font awesome spinner
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
       await sendInvoice(row.findoc)
       .then(async (response) => {
         //update btn caption to sent
