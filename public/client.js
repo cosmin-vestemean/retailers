@@ -1547,6 +1547,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       button.innerHTML = 'Sending...'
       await sendInvoice(row.findoc)
       .then(async (response) => {
+        //update btn caption to sent
+        button.innerHTML = 'Sent'
       console.log('response', response)
       var xml = response.xml
       var success = response.success
@@ -1580,7 +1582,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
             })
           })
       //update btn caption to sent
-      button.innerHTML = 'Sent'
+      button.innerHTML = 'Send Invoice'
     }
     actions.appendChild(button)
     //create xml button
