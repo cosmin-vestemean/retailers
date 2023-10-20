@@ -1546,42 +1546,41 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       //update btn caption to sending
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
-      await sendInvoice(row.findoc)
-      .then(async (response) => {
+      await sendInvoice(row.findoc).then(async (response) => {
         //update btn caption to sent
         button.innerHTML = 'Sent'
-      console.log('response', response)
-      var xml = response.xml
-      var success = response.success
-      if (success == true) {
-        //add cell and textarea
-        var textarea = document.createElement('textarea')
-        textarea.className = 'textarea is-small'
-        textarea.rows = 10
-        textarea.cols = 50
-        textarea.innerHTML = xml
-        //no spellcheck
-        textarea.spellcheck = false
-        //add cell
-        var td = tr.insertCell()
-        td.appendChild(textarea)
-      }
-      var body = {}
-      body['service'] = 'setData'
-      body['clientID'] = await client.service('connectToS1').find()
-      body['appId'] = 1001
-      body['OBJECT'] = 'SALDOC'
-      body['FORM'] = 'EFIntegrareRetailers'
-      body['KEY'] = row.findoc
-      body['DATA'] = {}
-      body['DATA']['MTRDOC'] = [{"CCCXMLSendDate": new Date().toISOString().slice(0, 19).replace('T', ' ')}]
-      await client
-            .service('setDocument')
-            .create(body)
-            .then((res) => {
-              console.log(res)
-            })
+        console.log('response', response)
+        var xml = response.xml
+        var success = response.success
+        if (success == true) {
+          //add cell and textarea
+          var textarea = document.createElement('textarea')
+          textarea.className = 'textarea is-small'
+          textarea.rows = 10
+          textarea.cols = 50
+          textarea.innerHTML = xml
+          //no spellcheck
+          textarea.spellcheck = false
+          //add cell
+          var td = tr.insertCell()
+          td.appendChild(textarea)
+        }
+        var body = {}
+        body['service'] = 'setData'
+        body['clientID'] = await client.service('connectToS1').find()
+        body['appId'] = 1001
+        body['OBJECT'] = 'SALDOC'
+        body['FORM'] = 'EFIntegrareRetailers'
+        body['KEY'] = row.findoc
+        body['DATA'] = {}
+        body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+        await client
+          .service('setDocument')
+          .create(body)
+          .then((res) => {
+            console.log(res)
           })
+      })
       //update btn caption to sent
       button.innerHTML = 'Send Invoice'
     }
@@ -1646,6 +1645,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
 }
 
 async function sendInvoice(findoc) {
+  var response = { success: false, xml: '' }
   const domObj = await cheatGetXmlFromS1(findoc)
 
   if (domObj.trimis == false) {
@@ -1665,20 +1665,21 @@ async function sendInvoice(findoc) {
                 ' a fost trimisa cu succes sub denumirea ' +
                 res.filename
             )
-            return { success: true, xml: xml }
+            response = { success: true, xml: xml }
           } else {
             alert('Eroare la trimiterea facturii')
-            return { success: false, xml: xml }
+            response = { success: false, xml: xml }
           }
         } else {
           alert('No response from server')
-          return { success: false, xml: xml }
+          response = { success: false, xml: xml }
         }
       })
   } else {
     alert('Factura a fost deja trimisa')
-    return { success: false, xml: xml }
+    response = { success: false, xml: xml }
   }
+  return response
 }
 
 async function createLOCATEINFO(trdr, sosource, fprms, series) {
