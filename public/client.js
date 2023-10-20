@@ -1574,6 +1574,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         body['KEY'] = row.findoc
         body['DATA'] = {}
         body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+        console.log('body', body)
         await client
           .service('setDocument')
           .create(body)
