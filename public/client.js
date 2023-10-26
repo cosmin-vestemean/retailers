@@ -1267,26 +1267,26 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
 }
 
-function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
+async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
   //1. url, username and password returnd from call to service CCCRETAILERSCLIENTS
   //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
   //3. call setDocument service with jsonOrder and token
 
   //1. url, username and password returnd from call to service CCCRETAILERSCLIENTS
-  client
+  await client
     .service('CCCRETAILERSCLIENTS')
     .find({
       query: {
         TRDR_CLIENT: 1
       }
     })
-    .then((res) => {
+    .then(async (res) => {
       console.log('date logare', res)
       //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
       var url = res.data[0].WSURL
       var username = res.data[0].WSUSER
       var password = res.data[0].WSPASS
-      client
+      await client
         .service('connectToS1')
         .find({
           query: {
@@ -1295,14 +1295,14 @@ function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
             password: password
           }
         })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res)
           console.log('s1 token', res.token)
           //replace jsonOrder clientID with token
           jsonOrder['clientID'] = res.token
           console.log('jsonOrder', jsonOrder)
           console.log('url', url)
-          client
+          await client
             .service('setDocument')
             .create(jsonOrder)
             .then((res) => {
@@ -1319,6 +1319,8 @@ function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   )
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
+                    //refresh xml table
+                    displayXmlDataForRetailer(retailer)
                   })
               } else {
                 alert('Error: ' + res.error)
