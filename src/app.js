@@ -234,7 +234,7 @@ class SftpServiceClass {
     })
 
     //if no files found
-    if (files.length === 0) {
+    if (returnedData.length === 0) {
       returnedData.push({ filename: '', success: false, error: 'No files found' })
     }
 
