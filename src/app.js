@@ -227,7 +227,7 @@ class SftpServiceClass {
           })
           .catch((err) => {
             console.error(err)
-            returnedData.push({ filename: filename, success: false })
+            returnedData.push({ filename: filename, success: false, error: err })
           })
       }
     })
