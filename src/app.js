@@ -206,7 +206,7 @@ class SftpServiceClass {
         await app
           .service('storeXml')
           .create(d, { query: { retailer: retailer } })
-          .then((result) => {
+          .then(async (result) => {
             console.log('storeXml result', result)
             if (result.success) {
               returnedData.push({ filename: filename, success: true })
@@ -232,6 +232,11 @@ class SftpServiceClass {
           })
       }
     })
+
+    //if no files found
+    if (files.length === 0) {
+      returnedData.push({ filename: '', success: false, error: 'No files found' })
+    }
 
     return returnedData
   }

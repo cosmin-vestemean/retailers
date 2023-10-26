@@ -1368,7 +1368,6 @@ async function fetchXMLFromRemoteServer() {
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
         .then((res) => {
-          myBtn.innerHTML = "Displaying newly added retailer's xml files..."
           console.log('sftp create', res)
         })
         .catch((err) => {
