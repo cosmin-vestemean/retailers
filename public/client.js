@@ -1374,7 +1374,7 @@ async function fetchXMLFromRemoteServer() {
         .catch((err) => {
           console.log('Eroare serviciu sftp create', err)
         })
-      displayXmlDataForRetailer(11639).then((res) => {
+      await displayXmlDataForRetailer(11639).then((res) => {
         myBtn.innerHTML = 'Preluare comenzi'
       })
     })
