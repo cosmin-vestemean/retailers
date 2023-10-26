@@ -1355,12 +1355,12 @@ function getValFromXML(xml, node) {
 async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: 11639 to get xml from remote server to database
   //then displayXmlDataForRetailer(11639) from database
-  await client
+  client
     .service('sftp')
     .downloadXml({}, { query: { retailer: 11639 } })
-    .then(async (res) => {
+    .then((res) => {
       console.log('sftp find', res)
-      await client
+      client
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
         .then(async (res) => {
