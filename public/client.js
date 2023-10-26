@@ -1365,7 +1365,7 @@ async function fetchXMLFromRemoteServer() {
         .storeXmlInDB({}, { query: { retailer: 11639 } })
         .then(async (res) => {
           console.log('sftp create', res)
-          displayXmlDataForRetailer(11639)
+          await displayXmlDataForRetailer(11639)
         })
         .catch((err) => {
           console.log('Eroare serviciu sftp create', err)

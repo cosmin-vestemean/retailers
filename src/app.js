@@ -184,7 +184,7 @@ class SftpServiceClass {
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
-    files.forEach((file) => {
+    files.forEach(async (file) => {
       const filename = file
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename
@@ -202,7 +202,7 @@ class SftpServiceClass {
           json: JSON.stringify(json)
         }
         console.log('data', d)
-        app
+        await app
           .service('storeXml')
           .create(d, { query: { retailer: retailer } })
           .then((result) => {
