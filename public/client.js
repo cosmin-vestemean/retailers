@@ -1363,8 +1363,8 @@ async function fetchXMLFromRemoteServer() {
   console.log('sftp download', downloadResponse)
   var storeResponse = await client.service('sftp').storeXmlInDB({}, { query: { retailer: 11639 } })
   console.log('sftp store', storeResponse)
-  var displayResponse = await displayXmlDataForRetailer(11639)
-  console.log('displayXmlDataForRetailer', displayResponse)
+  myBtn.innerHTML = 'Displaying xml files...'
+  await displayXmlDataForRetailer(11639)
   myBtn.innerHTML = 'Preluare comenzi'
 }
 
