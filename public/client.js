@@ -1408,7 +1408,7 @@ async function displayXmlDataForRetailer(retailer) {
       }
       var copyButton = document.createElement('button')
       copyButton.innerHTML = 'Copy'
-      copyButton.className = 'button is-small is-primary'
+      copyButton.className = 'button is-small is-primary ml-2'
       copyButton.onclick = function () {
         //copy the xml to clipboard
         navigator.clipboard.writeText(xml.XMLDATA).then(
