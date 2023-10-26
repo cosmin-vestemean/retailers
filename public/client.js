@@ -1370,13 +1370,13 @@ async function fetchXMLFromRemoteServer() {
         .then((res) => {
           myBtn.innerHTML = "Displaying newly added retailer's xml files..."
           console.log('sftp create', res)
-          displayXmlDataForRetailer(11639).then((res) => {
-            myBtn.innerHTML = 'Preluare comenzi'
-          })
         })
         .catch((err) => {
           console.log('Eroare serviciu sftp create', err)
         })
+      displayXmlDataForRetailer(11639).then((res) => {
+        myBtn.innerHTML = 'Preluare comenzi'
+      })
     })
     .catch((err) => {
       console.log('Eroare serviciu sftp find', err)
@@ -1546,7 +1546,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
     var actions = tr.insertCell()
-    
+
     //create xml button
     var button2 = document.createElement('button')
     button2.className = 'button is-small is-info ml-2'
@@ -1623,7 +1623,12 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         }
         var body = {}
         body['service'] = 'setData'
-        body['clientID'] = await client.service('connectToS1').find().then((result) => {return result.token})
+        body['clientID'] = await client
+          .service('connectToS1')
+          .find()
+          .then((result) => {
+            return result.token
+          })
         body['appId'] = '1001'
         body['OBJECT'] = 'SALDOC'
         body['FORM'] = 'EFIntegrareRetailers'
@@ -1645,7 +1650,9 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       button.innerHTML = 'Sent Invoice'
       //find cell class="trimis" in current row and add date now and green check
       var trimis = tr.getElementsByClassName('trimis')[0]
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + new Date().toISOString().slice(0, 19).replace('T', ' ')      
+      trimis.innerHTML =
+        '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
+        new Date().toISOString().slice(0, 19).replace('T', ' ')
     }
     actions.appendChild(button)
     //add cell trimis
@@ -1676,11 +1683,7 @@ async function sendInvoice(findoc) {
         console.log('sftp uploadXml', res)
         if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
           if (res.success == true) {
-            alert(
-              'Factura fost trimisa cu succes sub denumirea ' +
-                res.filename +
-                ' (' + res.findoc + ')'
-            )
+            alert('Factura fost trimisa cu succes sub denumirea ' + res.filename + ' (' + res.findoc + ')')
             response = { success: true, xml: xml }
           } else {
             alert('Eroare la trimiterea facturii')
