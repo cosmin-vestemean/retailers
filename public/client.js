@@ -1374,6 +1374,8 @@ async function displayXmlDataForRetailer(retailer) {
     console.log('getRetailerXMLData', data)
     //get the table body
     const xmlTableBody = document.getElementById('xmlTableBody')
+    //empty the table body
+    xmlTableBody.innerHTML = ''
     //loop through the data
     data.data.forEach((xml) => {
       //create a new row
