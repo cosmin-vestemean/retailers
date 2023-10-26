@@ -1590,6 +1590,13 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-primary'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
+      //find cell class="trimis" in current row
+      //if it exists, alert "Factura a fost deja trimisa"
+      var trimis = tr.getElementsByClassName('trimis')[0]
+      if (trimis) {
+        alert('Factura a fost deja trimisa')
+        return
+      }
       //update btn caption to sending
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
