@@ -112,7 +112,6 @@ class SftpServiceClass {
         if (data.length === 0) {
           console.log('No files on server')
           sftp.end()
-          return []
         }
         //console log file names
         data.forEach((item) => {
@@ -145,15 +144,15 @@ class SftpServiceClass {
               }
             })
         })
-
-        //return data
-        return returnedData
       })
       .catch((err) => {
         console.error('list error', err)
         sftp.end()
-        return err
+        returnedData.push({ filename: '', success: false, error: err })
       })
+
+    //return response
+    return returnedData
   }
 
   async prepareConection(data, params) {
