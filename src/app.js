@@ -90,7 +90,7 @@ class SftpServiceClass {
 
     var returnedData = []
 
-    sftp
+    await sftp
       .connect(config)
       .then(() => {
         console.log('connected')
@@ -108,7 +108,7 @@ class SftpServiceClass {
           )
         })
       })
-      .then((data) => {
+      .then(async (data) => {
         if (data.length === 0) {
           console.log('No files on server')
           sftp.end()

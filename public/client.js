@@ -1356,8 +1356,8 @@ async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: 11639 to get xml from remote server to database
   //then displayXmlDataForRetailer(11639) from database
   //change caption of id="preluareComenziBtn"
-  var caption = document.getElementById('preluareComenziBtn').innerHTML
-  caption = 'Downloading xml files...'
+  var myBtn = document.getElementById('preluareComenziBtn')
+  myBtn.innerHTML = 'Downloading xml files...'
   await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: 11639 } })
@@ -1368,10 +1368,10 @@ async function fetchXMLFromRemoteServer() {
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
         .then((res) => {
-          caption = "Displaying newly added retailer's xml files..."
+          myBtn.innerHTML = "Displaying newly added retailer's xml files..."
           console.log('sftp create', res)
           displayXmlDataForRetailer(11639).then((res) => {
-            caption = 'Preluare comenzi'
+            myBtn.innerHTML = 'Preluare comenzi'
           })
         })
         .catch((err) => {
