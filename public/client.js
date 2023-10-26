@@ -1422,14 +1422,14 @@ async function displayXmlDataForRetailer(retailer) {
       }
       var deleteButton = document.createElement('button')
       deleteButton.innerHTML = 'Delete'
-      deleteButton.className = 'button is-small is-danger'
+      deleteButton.className = 'button is-small is-danger ml-2'
       deleteButton.onclick = function () {
         alert('delete')
       }
       //send order
       var sendOrderButton = document.createElement('button')
       sendOrderButton.innerHTML = 'Send Order'
-      sendOrderButton.className = 'button is-small is-success'
+      sendOrderButton.className = 'button is-small is-success ml-2'
       sendOrderButton.onclick = async function () {
         sendOrderButton.innerHTML = 'Sending...'
         await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
@@ -1587,7 +1587,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     }
     actions.appendChild(button3)
     var button = document.createElement('button')
-    button.className = 'button is-small is-success'
+    button.className = 'button is-small is-success ml-2'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       //find cell class="trimis" in current row
