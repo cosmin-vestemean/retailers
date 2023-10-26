@@ -132,7 +132,7 @@ function updateRetailerConfData() {
     })
 }
 
-function getRetailerXMLData(retailer) {
+async function getRetailerXMLData(retailer) {
   return new Promise((resolve, reject) => {
     client
       .service('CCCSFTPXML')
@@ -1355,17 +1355,24 @@ function getValFromXML(xml, node) {
 async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: 11639 to get xml from remote server to database
   //then displayXmlDataForRetailer(11639) from database
+  //change caption of id="preluareComenziBtn"
+  var caption = document.getElementById('preluareComenziBtn').innerHTML
+  caption = 'Downloading xml files...'
   await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: 11639 } })
     .then(async (res) => {
-      console.log('sftp find', res)
+      caption = 'Storing in database...'
+      console.log('sftp download', res)
       await client
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
         .then((res) => {
+          caption = "Displaying newly added retailer's xml files..."
           console.log('sftp create', res)
-          displayXmlDataForRetailer(11639)
+          displayXmlDataForRetailer(11639).then((res) => {
+            caption = 'Preluare comenzi'
+          })
         })
         .catch((err) => {
           console.log('Eroare serviciu sftp create', err)
@@ -1378,7 +1385,7 @@ async function fetchXMLFromRemoteServer() {
 
 async function displayXmlDataForRetailer(retailer) {
   //11639
-  getRetailerXMLData(retailer).then((data) => {
+  await getRetailerXMLData(retailer).then((data) => {
     console.log('getRetailerXMLData', data)
     //get the table body
     const xmlTableBody = document.getElementById('xmlTableBody')
