@@ -184,7 +184,7 @@ class SftpServiceClass {
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
-    files.forEach(async (file) => {
+    files.forEach((file) => {
       const filename = file
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename
@@ -202,7 +202,7 @@ class SftpServiceClass {
           json: JSON.stringify(json)
         }
         console.log('data', d)
-        await app
+        app
           .service('storeXml')
           .create(d, { query: { retailer: retailer } })
           .then((result) => {
@@ -293,14 +293,16 @@ class storeXmlServiceClass {
     const xmlDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
     const xmlStatus = 'NEW'
     const xmlError = ''
+    var response = null
     //check if filename exists in database
     const xmlExists = await app.service('CCCSFTPXML').find({ query: { XMLFILENAME: filename } })
     if (xmlExists.total > 0) {
       console.log('XML file already exists in database')
-      return {
+      response = {
         xmlInsert: xmlExists.data[0],
         filename: filename,
-        success: false
+        success: false,
+        message: 'XML file already exists in database'
       }
     } else {
       console.log('XML file does not exist in database')
@@ -315,12 +317,14 @@ class storeXmlServiceClass {
           XMLERROR: xmlError,
           XMLFILENAME: filename
         })
-        return { xmlInsert: xmlInsert, filename: filename, success: true }
+        response = { xmlInsert: xmlInsert, filename: filename, success: true, message: 'XML file inserted in database' }
       } catch (err) {
         console.error(err)
-        return { filename: filename, success: false }
+        response = { filename: filename, success: false, message: 'XML file not inserted in database', error: err }
       }
     }
+    //return response
+    return response
   }
 }
 
