@@ -1363,7 +1363,7 @@ async function fetchXMLFromRemoteServer() {
       client
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
-        .then(async (res) => {
+        .then((res) => {
           console.log('sftp create', res)
           displayXmlDataForRetailer(11639)
         })
