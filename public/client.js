@@ -1052,8 +1052,8 @@ function searchTable(tableId, searchBoxId) {
   }
 }
 
-function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
+  await createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
 
 async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
@@ -1264,7 +1264,7 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   console.log('jsonOrder', jsonOrder)
 
   //send order to server
-  sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
+  await sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
 }
 
 async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
@@ -1430,8 +1430,10 @@ async function displayXmlDataForRetailer(retailer) {
       var sendOrderButton = document.createElement('button')
       sendOrderButton.innerHTML = 'Send Order'
       sendOrderButton.className = 'button is-small is-success'
-      sendOrderButton.onclick = function () {
-        sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
+      sendOrderButton.onclick = async function () {
+        sendOrderButton.innerHTML = 'Sending...'
+        await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
+        sendOrderButton.innerHTML = 'Sent Order'
       }
       //append the buttons to the actions cell
       actionsCell.appendChild(saveButton)
