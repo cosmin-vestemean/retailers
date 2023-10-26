@@ -241,7 +241,7 @@ class SftpServiceClass {
     })
 
     await loopPromise.then((result) => {
-      console.log('files loop result', result)
+      console.log('inserted files loop result', result)
       returnedData = result
     })
   }
