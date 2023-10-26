@@ -112,13 +112,14 @@ class SftpServiceClass {
         if (data.length === 0) {
           console.log('No files on server')
           sftp.end()
+          returnedData.push({ filename: '', success: false, error: 'No files on server' })
         }
         //console log file names
         data.forEach((item) => {
-          console.log(item.name)
+          console.log('found on server: '+item.name)
         })
         //download each xml file and send it to storeXml service
-        data.forEach((item) => {
+        data.forEach(async (item) => {
           const filename = item.name
           const localPath = orderXmlPath + filename
           //create path if not exists
@@ -126,7 +127,7 @@ class SftpServiceClass {
             fs.mkdirSync(orderXmlPath)
           }
           let dst = fs.createWriteStream(localPath)
-          sftp
+          await sftp
             .get(initialDir + '/' + filename, dst)
             .then(() => {
               console.log(`File ${filename} downloaded successfully!`)
@@ -134,7 +135,7 @@ class SftpServiceClass {
             })
             .catch((err) => {
               console.error(err)
-              returnedData.push({ filename: filename, success: false })
+              returnedData.push({ filename: filename, success: false, error: err })
             })
             .finally(() => {
               dst.end()
@@ -184,7 +185,7 @@ class SftpServiceClass {
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
-    files.forEach((file) => {
+    files.forEach(async (file) => {
       const filename = file
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename
@@ -202,7 +203,7 @@ class SftpServiceClass {
           json: JSON.stringify(json)
         }
         console.log('data', d)
-        app
+        await app
           .service('storeXml')
           .create(d, { query: { retailer: retailer } })
           .then((result) => {

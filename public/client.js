@@ -1355,7 +1355,7 @@ function getValFromXML(xml, node) {
 async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: 11639 to get xml from remote server to database
   //then displayXmlDataForRetailer(11639) from database
-  client
+  await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: 11639 } })
     .then(async (res) => {
@@ -1363,9 +1363,9 @@ async function fetchXMLFromRemoteServer() {
       await client
         .service('sftp')
         .storeXmlInDB({}, { query: { retailer: 11639 } })
-        .then(async (res) => {
+        .then((res) => {
           console.log('sftp create', res)
-          await displayXmlDataForRetailer(11639)
+          displayXmlDataForRetailer(11639)
         })
         .catch((err) => {
           console.log('Eroare serviciu sftp create', err)
