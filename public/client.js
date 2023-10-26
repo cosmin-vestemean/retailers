@@ -1539,6 +1539,55 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
     var actions = tr.insertCell()
+    
+    //create xml button
+    var button2 = document.createElement('button')
+    button2.className = 'button is-small is-info ml-2'
+    button2.innerHTML = 'Create XML'
+    button2.onclick = async function () {
+      //await createXML(row.findoc, trdr, sosource, fprms, series)
+      var domObj = await cheatGetXmlFromS1(row.findoc)
+      if (domObj.trimis == true) {
+        alert('Factura a fost deja trimisa')
+        return
+      }
+      if (domObj.trimis == false) {
+        //add cell and textarea
+        var textarea = document.createElement('textarea')
+        textarea.className = 'textarea is-small'
+        textarea.rows = 10
+        textarea.cols = 50
+        textarea.innerHTML = domObj.dom
+        //no spellcheck
+        textarea.spellcheck = false
+        //add cell
+        var td = tr.insertCell()
+        td.appendChild(textarea)
+      }
+    }
+    actions.appendChild(button2)
+    //save xml button
+    var button3 = document.createElement('button')
+    button3.className = 'button is-small is-info ml-2'
+    button3.innerHTML = 'Save XML'
+    button3.onclick = async function () {
+      //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
+      const domObj = await cheatGetXmlFromS1(row.findoc)
+      if (domObj.trimis == true) {
+        alert('Factura a fost deja trimisa')
+        return
+      } else {
+        const xml = domObj.dom
+        //save the xml to file
+        var xmlBlob = new Blob([xml], { type: 'text/xml' })
+        var xmlURL = window.URL.createObjectURL(xmlBlob)
+        var tempLink = document.createElement('a')
+        tempLink.href = xmlURL
+        tempLink.setAttribute('download', row.findoc + '.xml')
+        tempLink.click()
+      }
+    }
+    actions.appendChild(button3)
     var button = document.createElement('button')
     button.className = 'button is-small is-primary'
     button.innerHTML = 'Send Invoice'
@@ -1592,54 +1641,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + new Date().toISOString().slice(0, 19).replace('T', ' ')      
     }
     actions.appendChild(button)
-    //create xml button
-    var button2 = document.createElement('button')
-    button2.className = 'button is-small is-info ml-2'
-    button2.innerHTML = 'Create XML'
-    button2.onclick = async function () {
-      //await createXML(row.findoc, trdr, sosource, fprms, series)
-      var domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.trimis == true) {
-        alert('Factura a fost deja trimisa')
-        return
-      }
-      if (domObj.trimis == false) {
-        //add cell and textarea
-        var textarea = document.createElement('textarea')
-        textarea.className = 'textarea is-small'
-        textarea.rows = 10
-        textarea.cols = 50
-        textarea.innerHTML = domObj.dom
-        //no spellcheck
-        textarea.spellcheck = false
-        //add cell
-        var td = tr.insertCell()
-        td.appendChild(textarea)
-      }
-    }
-    actions.appendChild(button2)
-    //save xml button
-    var button3 = document.createElement('button')
-    button3.className = 'button is-small is-info ml-2'
-    button3.innerHTML = 'Save XML'
-    button3.onclick = async function () {
-      //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
-      const domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.trimis == true) {
-        alert('Factura a fost deja trimisa')
-        return
-      } else {
-        const xml = domObj.dom
-        //save the xml to file
-        var xmlBlob = new Blob([xml], { type: 'text/xml' })
-        var xmlURL = window.URL.createObjectURL(xmlBlob)
-        var tempLink = document.createElement('a')
-        tempLink.href = xmlURL
-        tempLink.setAttribute('download', row.findoc + '.xml')
-        tempLink.click()
-      }
-    }
-    actions.appendChild(button3)
     //add cell trimis
     var trimis = tr.insertCell()
     //add class for trimis
