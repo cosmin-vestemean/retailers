@@ -116,7 +116,7 @@ class SftpServiceClass {
         }
         //console log file names
         data.forEach((item) => {
-          console.log('found on server: '+item.name)
+          console.log('found on server: ' + item.name)
         })
         //download each xml file and send it to storeXml service
         data.forEach(async (item) => {
@@ -185,62 +185,65 @@ class SftpServiceClass {
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
-    files.forEach(async (file) => {
-      const filename = file
-      if (filename.endsWith('.xml')) {
-        const localPath = folderPath + '/' + filename
-        console.log('localPath', localPath)
-        const xml = fs.readFileSync(localPath, 'utf8')
-        //remove xml declaration
-        var xmlClean = xml.replace(/<\?xml.*\?>/g, '')
-        //remove unneeded characters from xml
-        xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-        //parse xml to json
-        const json = parseStringPromise(xmlClean)
-        const d = {
-          filename: filename,
-          xml: xmlClean,
-          json: JSON.stringify(json)
+    var index = 0
+    var loopPromise = new Promise((resolve, reject) => {
+      files.forEach(async (file) => {
+        const filename = file
+        if (filename.endsWith('.xml')) {
+          const localPath = folderPath + '/' + filename
+          console.log('localPath', localPath)
+          const xml = fs.readFileSync(localPath, 'utf8')
+          //remove xml declaration
+          var xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+          //remove unneeded characters from xml
+          xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
+          //parse xml to json
+          const json = parseStringPromise(xmlClean)
+          const d = {
+            filename: filename,
+            xml: xmlClean,
+            json: JSON.stringify(json)
+          }
+          console.log('data', d)
+          await app
+            .service('storeXml')
+            .create(d, { query: { retailer: retailer } })
+            .then(async (result) => {
+              console.log('storeXml result', result)
+              if (result.success) {
+                returnedData.push({ filename: filename, success: true })
+                //move file to processed folder
+                const processedPath = orderProcessedPath
+                if (!fs.existsSync(processedPath)) {
+                  fs.mkdirSync(processedPath)
+                }
+                fs.renameSync(localPath, processedPath + '/' + filename)
+              } else {
+                returnedData.push({ filename: filename, success: false })
+                //move file to error folder
+                const errorPath = orderErrorPath
+                if (!fs.existsSync(errorPath)) {
+                  fs.mkdirSync(errorPath)
+                }
+                fs.renameSync(localPath, errorPath + '/' + filename)
+              }
+            })
+            .catch((err) => {
+              console.error(err)
+              returnedData.push({ filename: filename, success: false, error: err })
+            })
         }
-        console.log('data', d)
-        await app
-          .service('storeXml')
-          .create(d, { query: { retailer: retailer } })
-          .then(async (result) => {
-            console.log('storeXml result', result)
-            if (result.success) {
-              returnedData.push({ filename: filename, success: true })
-              //move file to processed folder
-              const processedPath = orderProcessedPath
-              if (!fs.existsSync(processedPath)) {
-                fs.mkdirSync(processedPath)
-              }
-              fs.renameSync(localPath, processedPath + '/' + filename)
-            } else {
-              returnedData.push({ filename: filename, success: false })
-              //move file to error folder
-              const errorPath = orderErrorPath
-              if (!fs.existsSync(errorPath)) {
-                fs.mkdirSync(errorPath)
-              }
-              fs.renameSync(localPath, errorPath + '/' + filename)
-            }
-          })
-          .catch((err) => {
-            console.error(err)
-            returnedData.push({ filename: filename, success: false, error: err })
-          })
-      }
+        index++
+        if (index === files.length) {
+          resolve(returnedData)
+        }
+      })
     })
 
-    //if no files found
-    if (returnedData.length === 0) {
-      returnedData.push({ filename: '', success: false, error: 'No files found' })
-    }
-
-    console.log('returnedData', returnedData)
-
-    return returnedData
+    await loopPromise.then((result) => {
+      console.log('files loop result', result)
+      returnedData = result
+    })
   }
 
   async uploadXml(data, params) {
@@ -325,10 +328,20 @@ class storeXmlServiceClass {
           XMLERROR: xmlError,
           XMLFILENAME: filename
         })
-        response = { xmlInsert: xmlInsert, filename: filename, success: true, message: 'XML file inserted in database' }
+        response = {
+          xmlInsert: xmlInsert,
+          filename: filename,
+          success: true,
+          message: 'XML file inserted in database'
+        }
       } catch (err) {
         console.error(err)
-        response = { filename: filename, success: false, message: 'XML file not inserted in database', error: err }
+        response = {
+          filename: filename,
+          success: false,
+          message: 'XML file not inserted in database',
+          error: err
+        }
       }
     }
     //return response
