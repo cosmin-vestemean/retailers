@@ -1358,28 +1358,14 @@ async function fetchXMLFromRemoteServer() {
   //change caption of id="preluareComenziBtn"
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
-  await client
-    .service('sftp')
-    .downloadXml({}, { query: { retailer: 11639 } })
-    .then(async (res) => {
-      caption = 'Storing in database...'
-      console.log('sftp download', res)
-      await client
-        .service('sftp')
-        .storeXmlInDB({}, { query: { retailer: 11639 } })
-        .then((res) => {
-          console.log('sftp create', res)
-        })
-        .catch((err) => {
-          console.log('Eroare serviciu sftp create', err)
-        })
-      await displayXmlDataForRetailer(11639).then((res) => {
-        myBtn.innerHTML = 'Preluare comenzi'
-      })
-    })
-    .catch((err) => {
-      console.log('Eroare serviciu sftp find', err)
-    })
+  var downloadResponse = await client.service('sftp').downloadXml({}, { query: { retailer: 11639 } })
+  myBtn.innerHTML = 'Storing in database...'
+  console.log('sftp download', downloadResponse)
+  var storeResponse = await client.service('sftp').storeXmlInDB({}, { query: { retailer: 11639 } })
+  console.log('sftp store', storeResponse)
+  var displayResponse = await displayXmlDataForRetailer(11639)
+  console.log('displayXmlDataForRetailer', displayResponse)
+  myBtn.innerHTML = 'Preluare comenzi'
 }
 
 async function displayXmlDataForRetailer(retailer) {
