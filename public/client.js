@@ -1396,7 +1396,7 @@ async function displayXmlDataForRetailer(retailer) {
       //create the buttons
       var saveButton = document.createElement('button')
       saveButton.innerHTML = 'Save'
-      saveButton.className = 'button is-small is-info'
+      saveButton.className = 'button is-small is-info ml-2'
       saveButton.onclick = function () {
         //save the xml to file
         var xmlBlob = new Blob([xml.XMLDATA], { type: 'text/xml' })
@@ -1566,7 +1566,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     actions.appendChild(button2)
     //save xml button
     var button3 = document.createElement('button')
-    button3.className = 'button is-small is-info ml-2'
+    button3.className = 'button is-small is-primary ml-2'
     button3.innerHTML = 'Save XML'
     button3.onclick = async function () {
       //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
@@ -1587,7 +1587,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     }
     actions.appendChild(button3)
     var button = document.createElement('button')
-    button.className = 'button is-small is-primary'
+    button.className = 'button is-small is-success'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       //find cell class="trimis" in current row
