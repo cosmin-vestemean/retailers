@@ -238,6 +238,8 @@ class SftpServiceClass {
       returnedData.push({ filename: '', success: false, error: 'No files found' })
     }
 
+    console.log('returnedData', returnedData)
+
     return returnedData
   }
 
