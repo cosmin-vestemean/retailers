@@ -1545,7 +1545,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.onclick = async function () {
       //await createXML(row.findoc, trdr, sosource, fprms, series)
       var domObj = await cheatGetXmlFromS1(row.findoc)
-      console.log('domObj', domObj)
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
@@ -1591,10 +1590,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-success ml-2'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      //find cell class="trimis" in current row
-      //if it exists, alert "Factura a fost deja trimisa"
-      var trimis = tr.getElementsByClassName('trimis')[0]
-      if (trimis) {
+      var domObj = await cheatGetXmlFromS1(row.findoc)
+      if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
       }
