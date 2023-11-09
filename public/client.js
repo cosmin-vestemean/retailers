@@ -1391,6 +1391,11 @@ async function displayXmlDataForRetailer(retailer) {
       //spellcheck="false"
       row.cells[2].spellcheck = false
       //row.insertCell().innerHTML = xml.JSONDATA
+      //parse xml to dom and find first <PartyName> node
+      var parser = new DOMParser()
+      var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
+      var partyName = xmlDoc.getElementsByTagName('PartyName')[0]
+      row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
       //create the actions cell
       var actionsCell = row.insertCell()
       //create the buttons
