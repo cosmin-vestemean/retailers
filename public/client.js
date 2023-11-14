@@ -2330,6 +2330,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         root = node
       }
     }
+    node.textContent = item.value
   })
 
   console.log('xmlDom', xmlDom)
