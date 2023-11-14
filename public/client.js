@@ -2300,13 +2300,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   //sort _HEADER by xmlNode alphabetically
   _HEADER.sort((a, b) => {
-    if (a.xmlNode < b.xmlNode) {
-      return -1
-    }
-    if (a.xmlNode > b.xmlNode) {
-      return 1
-    }
-    return 0
+    var txtA = a.xmlNode.toUpperCase()
+    var txtB = b.xmlNode.toUpperCase()
+    return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
   })
 
   console.log('_HEADER', _HEADER)
