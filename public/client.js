@@ -2284,7 +2284,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           //upper case
           s1table = s1table.toUpperCase()
           s1field = s1field.toUpperCase()
-          if (S1ObjData[s1table][0][s1field])
+          if (S1ObjData[s1table] && S1ObjData[s1table][0] && S1ObjData[s1table][0][s1field])
             sqlQuery = item.SQL.replace(match, S1ObjData[s1table][0][s1field])
         })
 
