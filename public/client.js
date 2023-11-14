@@ -2323,6 +2323,39 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
   })
 
+  //create xml dom
+  var xmlDom = document.implementation.createDocument('', '', null)
+  var root = 'DXInvoice'
+  var root = xmlDom.createElement(root)
+  xmlDom.appendChild(root)
+  //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
+  _HEADER.forEach((item) => {
+    console.log({ xml: item.xmlNode, value: item.value })
+    var xmlNodes = item.xmlNode.split('/')
+    //add xml elements to xml dom
+    var root = xmlDom.documentElement
+    for (var i = 1; i < xmlNodes.length; i++) {
+      var node
+      var existingElements = root.getElementsByTagName(xmlNodes[i])
+      //verify if node already exists
+      if (existingElements.length > 0) {
+        node = existingElements[existingElements.length - 1]
+        root.appendChild(node)
+        root = node
+      } else {
+        try {
+          node = xmlDom.createElement(xmlNodes[i])
+          //give it a dummy value in order to be able to append it; but just for the last node
+          if (i == xmlNodes.length - 1) node.textContent = item.value
+          root.appendChild(node)
+          root = node
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+  })
+
   //find in _HEADER item.value as array
   _HEADER.forEach((item) => {
     if (Array.isArray(item.value)) {
@@ -2349,44 +2382,6 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       })
     }
   })
-
-  //lines
-  //...
-
-  //create xml dom
-  var xmlDom = document.implementation.createDocument('', '', null)
-  var root = 'DXInvoice'
-  var root = xmlDom.createElement(root)
-  xmlDom.appendChild(root)
-  //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _HEADER.forEach((item) => {
-    console.log({ xml: item.xmlNode, value: item.value })
-    var xmlNodes = item.xmlNode.split('/')
-    //add xml elements to xml dom
-    var root = xmlDom.documentElement    
-    for (var i = 1; i < xmlNodes.length; i++) {
-      var node
-      var existingElements = root.getElementsByTagName(xmlNodes[i])
-      //verify if node already exists
-      if (existingElements.length > 0) {
-        node = existingElements[existingElements.length - 1]
-        root.appendChild(node)
-        root = node
-      } else {
-        try {
-          node = xmlDom.createElement(xmlNodes[i])
-          //give it a dummy value in order to be able to append it; but just for the last node
-          if (i == xmlNodes.length - 1) node.textContent = item.value
-          root.appendChild(node)
-          root = node
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
-  })
-
-  //find 
 
   console.log('xmlDom', xmlDom)
 
