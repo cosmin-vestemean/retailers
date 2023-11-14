@@ -2323,6 +2323,22 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
   })
 
+  //find in _HEADER item.value as array
+  _HEADER.forEach((item) => {
+    if (Array.isArray(item.value)) {
+      var parent = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
+      var i = item.xmlNode.split('/')[item.xmlNode.split('/').length - 1]
+      item.value.forEach((item2) => {
+        var o = {}
+        o.xmlNode = item.xmlNode
+        o.parent = [parent]
+        o.i = i
+        o.root = item.xmlNode.split('/')[0]
+        o.value = item2
+        _HEADER.push(o)
+      })
+    }
+  })
 
   //lines
   //...
@@ -2337,12 +2353,13 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
-    var root = xmlDom.documentElement //Order or...
+    var root = xmlDom.documentElement    
     for (var i = 1; i < xmlNodes.length; i++) {
       var node
+      var existingElements = root.getElementsByTagName(xmlNodes[i])
       //verify if node already exists
-      if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
-        node = root.getElementsByTagName(xmlNodes[i])[0]
+      if (existingElements.length > 0) {
+        node = existingElements[existingElements.length - 1]
         root.appendChild(node)
         root = node
       } else {
@@ -2358,6 +2375,8 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       }
     }
   })
+
+  //find 
 
   console.log('xmlDom', xmlDom)
 
