@@ -2262,6 +2262,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.field1 = item.S1FIELD1
       o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || null
     } else {
+      item.SQL = item.SQL.replace(/\n/g, ' ')
       var o = {}
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1 || null
@@ -2342,7 +2343,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('xmlDom', xmlDom)
 
   //return xml innerHTML
-  return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+  return xmlDom
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
