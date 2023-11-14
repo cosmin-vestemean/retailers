@@ -2407,7 +2407,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //then change the values of the childToChange nodes
   groupedByParent.forEach((item) => {
     var parent = item.parent
-    var times = item.children.value.length
+    var times = item.children[0].value.length
     //clone parent times times
     for (var i = 1; i < times; i++) {
       var clone = parent.cloneNode(true)
