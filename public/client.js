@@ -2235,17 +2235,51 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('S1ObjData(LocateInfo)', S1Obj)
   const S1ObjData = S1Obj.data
 
-  var noSQLEntries = [];
+  var header = 'DXInvoice/Invoice'
+  var lines = 'DXInvoice/InvoiceLine'
+
+  var CCCXMLS1MAPPINGS_HEADER = []
+  var CCCXMLS1MAPPINGS_LINES = []
   CCCXMLS1MAPPINGS.forEach((item) => {
+    if (item.XMLNODE.includes(header)) {
+      CCCXMLS1MAPPINGS_HEADER.push(item)
+    }
+    if (item.XMLNODE.includes(lines)) {
+      CCCXMLS1MAPPINGS_LINES.push(item)
+    }
+  })
+
+  console.log('CCCXMLS1MAPPINGS_HEADER', CCCXMLS1MAPPINGS_HEADER)
+  console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
+
+  //header
+  var noSQLEntries_HEADER = [];
+  CCCXMLS1MAPPINGS_HEADER.forEach((item) => {
     if (!item.SQL) {
       var o = {}
       o.xmlNode = item.XMLNODE
       o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
     }
-    noSQLEntries.push(o)
+    noSQLEntries_HEADER.push(o)
   })
 
-  console.log('noSQLEntries', noSQLEntries)
+  console.log('noSQLEntries_HEADER', noSQLEntries_HEADER)
+
+  //lines
+  var noSQLEntries_LINES = [];
+  var itelines = S1ObjData['ITELINES']
+  itelines.forEach((line) => {
+    CCCXMLS1MAPPINGS_LINES.forEach((item) => {
+      if (!item.SQL) {
+        var o = {}
+        o.xmlNode = item.XMLNODE
+        o.value = line[item.S1FIELD1]
+      }
+      noSQLEntries_LINES.push(o)
+    })
+  })
+
+  console.log('noSQLEntries_LINES', noSQLEntries_LINES)
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
