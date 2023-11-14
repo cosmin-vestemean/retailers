@@ -2254,7 +2254,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   //header
   var _HEADER = []
-  CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
+  CCCXMLS1MAPPINGS_HEADER.forEach((item) => {
     item.SQL = item.SQL.trim()
     if (item.SQL == '') {
       var o = {}
@@ -2289,7 +2289,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       var params = {}
       params['query'] = {}
       params['query']['sqlQuery'] = sqlQuery
-      var res = await client.service('getDataset').find(params)
+      var res = client.service('getDataset').find(params)
       console.log('getDataset', res)
       if (res.data) {
         o.value = res.data
