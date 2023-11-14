@@ -2359,27 +2359,19 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //find in _HEADER item.value as array
   _HEADER.forEach((item) => {
     if (Array.isArray(item.value)) {
-      var parent = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
+      var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
       //copy parent node with all its children item.value times with different values
-      var parentNodes = []
-      var parentNodes = xmlDom.getElementsByTagName(parent)
-      console.log('parentNodes', parentNodes)
-      //for each parent node, copy it item.value times
-      parentNodes.forEach((parentNode) => {
-        //copy parent node item.value times
-        var node = parentNode
-        for (var i = 0; i < item.value.length - 1; i++) {
-          var newNode = node.cloneNode(true)
-          parentNode.parentNode.appendChild(newNode)
-        }
+      var parentNode = xmlDom.getElementsByTagName(parentName)[0]
+      console.log('parentNode', parentNode)      
+      whatToReplace = item.xmlNode.split('/')[item.xmlNode.split('/').length - 1]
+      console.log('whatToReplace', whatToReplace)
+      item.value.forEach((item2) => {
+        var newNode = parentNode.cloneNode(true)
+        newNode.getElementsByTagName(whatToReplace)[0].textContent = item2
+        parentNode.parentNode.appendChild(newNode)
       })
-      //find all nodes with parent node
-      var nodes = xmlDom.getElementsByTagName(parent)
-      console.log('nodes', nodes)
-      //for each node, set item.value[i]
-      nodes.forEach((node, index) => {
-        node.textContent = item.value[index]
-      })
+      //delete parent node
+      parentNode.parentNode.removeChild(parentNode)
     }
   })
 
