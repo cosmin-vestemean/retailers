@@ -2344,6 +2344,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
 
     arr.forEach((value) => {
+      //log value and xmlNodes
+      console.log('value', value)
+      console.log('xmlNodes', xmlNodes)
       //add xml elements to xml dom
       var root = xmlDom.documentElement //Order or...
       for (var i = 1; i < xmlNodes.length; i++) {
