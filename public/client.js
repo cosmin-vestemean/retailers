@@ -2380,18 +2380,25 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
   })
 
+  var groupedByParent = []
   distinctParents.forEach((parent) => {
     whatToReplace.forEach((item) => {
       if (item.parent == parent) {
-        distinctParents[distinctParents.indexOf(parent)] = {
-          parent: parent,
-          children: [...(distinctParents[distinctParents.indexOf(parent)].children || []), item]
-        }
+        //find in groupedByParent if parent exists
+        var found = false
+        groupedByParent.every((item2) => {
+          if (item2.parent == parent) {
+            found = true
+            item2.children.push({ childToChange: item.childToChange, value: item.value })
+            return false
+          }
+          return true
+        })
       }
     })
   })
 
-  console.log('distinctParents', distinctParents)
+  console.log('groupedByParent', groupedByParent)
 
   //for each distinct parent, clone it and append it to xmlDom
 
