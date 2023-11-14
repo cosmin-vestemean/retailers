@@ -421,7 +421,6 @@ class getDatasetServiceClass {
     const sqlQuery = params.query.sqlQuery
     console.log('sqlQuery', sqlQuery)
     const response = await fetch(url, { method: method, body: JSON.stringify({ sqlQuery: sqlQuery }) })
-    console.log('response', response)
     const json = await response.json()
     console.log(json)
     return json
