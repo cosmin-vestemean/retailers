@@ -2261,9 +2261,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1
       o.field1 = item.S1FIELD1
-      o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || 'n/a'
+      o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
     } else {
-      item.SQL = item.SQL.replace(/\n/g, ' ')
+      item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
       var o = {}
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1 || null
@@ -2320,7 +2320,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = xmlDom.createElement(root)
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _HEADER.forEach(async (item) => {
+  _HEADER.forEach((item) => {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
