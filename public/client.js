@@ -2298,11 +2298,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     _HEADER.push(o)
   })
 
-  //wait for all promises to resolve
-  await Promise.all(_HEADER).then((values) => {
-    console.log('_HEADER', _HEADER)
-    console.log('values', values)
-  })
+  //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
+  while (_HEADER.length < CCCXMLS1MAPPINGS_HEADER.length) {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
 
   //sort _HEADER by xmlNode alphabetically
   _HEADER.sort((a, b) => {
