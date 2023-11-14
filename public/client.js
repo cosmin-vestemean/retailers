@@ -2268,7 +2268,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1 || null
       o.field1 = item.S1FIELD1 || null
-      o.value1 = item.S1TABLE1 && o.item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+      o.value1 = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
       o.table2 = item.S1TABLE2 || null
       o.field2 = item.S1FIELD2 || null
       o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
