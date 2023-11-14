@@ -2261,7 +2261,20 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1
       o.field1 = item.S1FIELD1
-      o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+      //o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+      if (item.S1TABLE1 && item.S1FIELD1) {
+        possibleArray = S1ObjData[item.S1TABLE1]
+        if (possibleArray && possibleArray.length == 1) {
+          o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
+        } else if (possibleArray && possibleArray.length > 1) {
+          o.value = []
+          possibleArray.forEach((item2) => {
+            o.value.push(item2[item.S1FIELD1])
+          })
+        } else {
+          o.value = 'n/a'
+        }
+      }
     } else {
       item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
       var o = {}
