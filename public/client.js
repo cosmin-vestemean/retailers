@@ -2372,22 +2372,28 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   console.log('whatToReplace', whatToReplace)
 
-  //clone parent node whatToReplace[i].value times
-  //delete whatToReplace[i].parent
-  //replace for each clone whatToReplace[i].childToChange with whatToReplace[i].value[i]
+  //regroup children of whatToReplace by parent; eg: whatToReplace.parent <> array of childToChange/value with said parent
+  var distinctParents = []
   whatToReplace.forEach((item) => {
-    var parent = item.parent
-    var childToChange = item.childToChange
-    var value = item.value
-    //clone parent node value times
-    for (var i = 1; i < value.length; i++) {
-      var node = parent.cloneNode(true)
-      //replace childToChange with value[i]
-      node.getElementsByTagName(childToChange)[0].textContent = value[i]
-      //add node to xmlDom
-      parent.parentNode.appendChild(node)
+    if (distinctParents.indexOf(item.parent) == -1) {
+      distinctParents.push(item.parent)
     }
   })
+
+  whatToReplace.forEach((item) => {
+    distinctParents.forEach((parent) => {
+      if (item.parent == parent) {
+        if (!parent.children) {
+          parent.children = []
+        }
+        parent.children.push({ childToChange: item.childToChange, value: item.value })
+      }
+    })
+  })
+
+  console.log('distinctParents', distinctParents)
+
+  //for each distinct parent, clone it and append it to xmlDom
 
   console.log('xmlDom', xmlDom)
 
