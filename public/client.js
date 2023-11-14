@@ -2403,7 +2403,27 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   console.log('groupedByParent', groupedByParent)
 
-  //for each distinct parent, clone it and append it to xmlDom
+  //for each distinct parent, clone it by the first childToChange/value
+  //then change the values of the childToChange nodes
+  groupedByParent.forEach((item) => {
+    var parent = item.parent
+    var times = item.children.value.length
+    //clone parent times times
+    for (var i = 1; i < times; i++) {
+      var clone = parent.cloneNode(true)
+      parent.parentNode.appendChild(clone)
+    }
+    //change values of childToChange nodes
+    var children = item.children
+    children.forEach((item2) => {
+      var childToChange = item2.childToChange
+      var value = item2.value
+      var nodes = parent.getElementsByTagName(childToChange)
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].textContent = value[i]
+      }
+    })
+  })
 
   console.log('xmlDom', xmlDom)
 
