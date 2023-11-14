@@ -2380,13 +2380,13 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
   })
 
-  whatToReplace.forEach((item) => {
-    distinctParents.forEach((parent) => {
+  distinctParents.forEach((parent) => {
+    whatToReplace.forEach((item) => {
       if (item.parent == parent) {
-        if (!parent.children) {
-          parent.children = []
+        distinctParents[distinctParents.indexOf(parent)] = {
+          parent: parent,
+          children: [...(distinctParents[distinctParents.indexOf(parent)].children || []), item]
         }
-        parent.children.push({ childToChange: item.childToChange, value: item.value })
       }
     })
   })
