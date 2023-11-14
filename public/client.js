@@ -2208,25 +2208,6 @@ async function populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData) {
 }
 
 async function createXML(findoc, trdr, sosource, fprms, series) {
-  console.log('createXML', findoc)
-  /*
-  Campuri: CCCXMLS1MAPPINGS	XMLNODE	MANDATORY	SQL	S1TABLE1	S1FIELD1	S1TABLE2	S1FIELD2	CCCDOCUMENTES1MAPPINGS	OBSERVATII
-  Scenarii:
-  1. eg: 692	DXInvoice/InvoiceLine/TaxTotal/TaxSubtotal/TaxCategory/TaxScheme/ID	1	SELECT '7'					33		
-  1.1. are sql si nu sql nu contine campuri de tip {something}, eg {S1Table1.S1Field1}
-  1.2. se executa sql cu metoda getDataset
-  2. eg: 700	DXInvoice/Invoice/AccountingCustomerParty/Party/PostalAddress/Country/IdentificationCode	1		SALDOC	TRDR_CUSTOMER_BGBULSTAT			33	
-  2.1. nu are sql, are campuri de tip S1 table 1 si S1 field 1
-  2.2. acestea vor forma LOCATEINFO
-  3. eg: 724	DXInvoice/Invoice/InvoiceTypeCode	1	"SELECT case series 
-when 7121 then 380
-when 7531 then 381
-end
-FROM FINDOC WHERE FINDOC={S1Table2.S1Field2}"			SALDOC	FINDOC	33	380 = original invoice, 381 = storno invoice, 384 = correction invoice
-  3.1. are sql si contine campuri de tip {something}, eg {S1Table2.S1Field2}
-  3.2. se executa sql cu metoda getDataset dupa ce se inlocuiesc campurile de tip {something} cu valorile din coloanele din cccxmls1mappings
-  */
-
   var ret = await createLOCATEINFO(trdr, sosource, fprms, series)
   var LOCATEINFO = ret.LOCATEINFO
   var CCCXMLS1MAPPINGS = ret.CCCXMLS1MAPPINGS
@@ -2251,23 +2232,35 @@ FROM FINDOC WHERE FINDOC={S1Table2.S1Field2}"			SALDOC	FINDOC	33	380 = original 
     }
   })
 
-  console.log('getS1ObjData', S1Obj)
+  console.log('S1ObjData(LocateInfo)', S1Obj)
   const S1ObjData = S1Obj.data
 
-  var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
+  var noSQLEntries = [];
+  CCCXMLS1MAPPINGS.forEach((item) => {
+    if (!item.SQL) {
+      var o = {}
+      o.xmlNode = item.XMLNODE
+      o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
+    }
+    noSQLEntries.push(o)
+  })
 
-  console.log('xmlDom', xmlDom)
+  console.log('noSQLEntries', noSQLEntries)
 
-  await populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
+  // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
-  //await populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS)
+  // console.log('xmlDom', xmlDom)
 
-  //await populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
+  // await populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
 
-  console.log('xmlDom', xmlDom)
+  // //await populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS)
 
-  //return xml innerHTML
-  return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+  // //await populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
+
+  // console.log('xmlDom', xmlDom)
+
+  // //return xml innerHTML
+  // return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
 }
 
 async function cheatGetXmlFromS1(findoc) {
