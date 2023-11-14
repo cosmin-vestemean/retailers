@@ -2258,6 +2258,8 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     if (!item.SQL) {
       var o = {}
       o.xmlNode = item.XMLNODE
+      o.table = item.S1TABLE1
+      o.field = item.S1FIELD1
       o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
     }
     noSQLEntries_HEADER.push(o)
