@@ -2255,7 +2255,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //header
   var _HEADER = []
   CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
-    if (!item.SQL) {
+    if (trim(item.SQL) == '') {
       var o = {}
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1
