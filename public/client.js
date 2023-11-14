@@ -2312,9 +2312,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = 'DXInvoice'
   var root = xmlDom.createElement(root)
   xmlDom.appendChild(root)
-  //add xml elements to xml dom
-  CCCXMLS1MAPPINGS.forEach((item) => {
-    var xmlNodes = item.XMLNODE.split('/')
+  //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
+  _HEADER.forEach(async (item) => {
+    var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
     var root = xmlDom.documentElement //Order or...
     for (var i = 1; i < xmlNodes.length; i++) {
@@ -2328,7 +2328,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         try {
           node = xmlDom.createElement(xmlNodes[i])
           //give it a dummy value in order to be able to append it; but just for the last node
-          if (i == xmlNodes.length - 1) node.textContent = 'dummy'
+          if (i == xmlNodes.length - 1) node.textContent = item.value
           root.appendChild(node)
           root = node
         } catch (err) {
@@ -2336,11 +2336,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         }
       }
     }
+    //set node value
+    node.textContent = item.value
   })
-
-  console.log('xmlDom', xmlDom)
-
-  return xmlDom
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
