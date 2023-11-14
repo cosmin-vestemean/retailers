@@ -2277,11 +2277,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
       //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
       if (item.SQL.includes('{S1Table1.S1Field1}')) {
-        sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', value1)
+        sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', o.value1)
       }
 
       if (item.SQL.includes('{S1Table2.S1Field2}')) {
-        sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', value2)
+        sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', o.value2)
       }
 
       o.sqlQuery = sqlQuery
