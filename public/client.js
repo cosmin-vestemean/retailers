@@ -2315,7 +2315,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
   _HEADER.forEach(async (item) => {
     console.log({xml: item.xmlNode, value: item.value})
-    //create xml path
+    //create xml dom
     var xmlPath = item.xmlNode.split('/')
     //add xml elements to xml dom
     var root = xmlDom.documentElement
@@ -2324,7 +2324,6 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       //verify if node already exists
       if (root.getElementsByTagName(xmlPath[i]).length > 0) {
         node = root.getElementsByTagName(xmlPath[i])[0]
-        root.appendChild(node)
         node.textContent = item.value
         root = node
       } else {
