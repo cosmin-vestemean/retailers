@@ -2357,35 +2357,20 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   })
 
   //find in _HEADER item.value as array
-  var parentsNodesToChange = []
   var whatToReplace = []
   _HEADER.forEach((item) => {
     if (Array.isArray(item.value)) {
       var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
       //copy parent node with all its children item.value times with different values
-      parentsNodesToChange.push(xmlDom.getElementsByTagName(parentName)[0])
       whatToReplace.push({
-        node: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
+        parent: xmlDom.getElementsByTagName(parentName)[0],
+        childToChange: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
         value: item.value
       })
     }
   })
 
-  //find parentsToChange in xmlDom and replace children in whatToReplace with values from whatToReplace.value
-  parentsNodesToChange.forEach((item, index) => {
-    var node = item
-    var what = whatToReplace[index]
-    for (var i = 0; i < what.value.length - 1; i++) {
-      //clone node
-      var newNode = node.cloneNode(true)
-      //change values
-      newNode.getElementsByTagName(what.node)[0].textContent = what.value[i]
-      //append node
-      node.parentNode.appendChild(newNode)
-    }
-  })
-
-  
+  console.log('whatToReplace', whatToReplace)
 
   console.log('xmlDom', xmlDom)
 
