@@ -2327,15 +2327,25 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   _HEADER.forEach((item) => {
     if (Array.isArray(item.value)) {
       var parent = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
-      var i = item.xmlNode.split('/')[item.xmlNode.split('/').length - 1]
-      item.value.forEach((item2) => {
-        var o = {}
-        o.xmlNode = item.xmlNode
-        o.parent = [parent]
-        o.i = i
-        o.root = item.xmlNode.split('/')[0]
-        o.value = item2
-        _HEADER.push(o)
+      //copy parent node with all its children item.value times with different values
+      var parentNodes = []
+      var parentNodes = xmlDom.getElementsByTagName(parent)
+      console.log('parentNodes', parentNodes)
+      //for each parent node, copy it item.value times
+      parentNodes.forEach((parentNode) => {
+        //copy parent node item.value times
+        var node = parentNode
+        for (var i = 0; i < item.value.length - 1; i++) {
+          var newNode = node.cloneNode(true)
+          parentNode.parentNode.appendChild(newNode)
+        }
+      })
+      //find all nodes with parent node
+      var nodes = xmlDom.getElementsByTagName(parent)
+      console.log('nodes', nodes)
+      //for each node, set item.value[i]
+      nodes.forEach((node, index) => {
+        node.textContent = item.value[index]
       })
     }
   })
