@@ -2301,6 +2301,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //wait for all promises to resolve
   await Promise.all(_HEADER).then((values) => {
     console.log('_HEADER', _HEADER)
+    console.log('values', values)
   })
 
   //sort _HEADER by xmlNode alphabetically
