@@ -2260,7 +2260,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1
       o.field1 = item.S1FIELD1
-      o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
+      o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || null
     } else {
       var o = {}
       o.xmlNode = item.XMLNODE
@@ -2303,6 +2303,44 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   })
 
   console.log('_HEADER', _HEADER)
+
+  //lines
+  //...
+
+  //create xml dom
+  var xmlDom = document.implementation.createDocument('', '', null)
+  var root = 'DXInvoice'
+  var root = xmlDom.createElement(root)
+  xmlDom.appendChild(root)
+  //add xml elements to xml dom
+  CCCXMLS1MAPPINGS.forEach((item) => {
+    var xmlNodes = item.XMLNODE.split('/')
+    //add xml elements to xml dom
+    var root = xmlDom.documentElement //Order or...
+    for (var i = 1; i < xmlNodes.length; i++) {
+      var node
+      //verify if node already exists
+      if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
+        node = root.getElementsByTagName(xmlNodes[i])[0]
+        root.appendChild(node)
+        root = node
+      } else {
+        try {
+          node = xmlDom.createElement(xmlNodes[i])
+          //give it a dummy value in order to be able to append it; but just for the last node
+          if (i == xmlNodes.length - 1) node.textContent = 'dummy'
+          root.appendChild(node)
+          root = node
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+  })
+
+  console.log('xmlDom', xmlDom)
+
+  return xmlDom
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
