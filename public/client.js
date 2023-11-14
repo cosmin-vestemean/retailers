@@ -2254,7 +2254,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   //header
   var _HEADER = []
-  CCCXMLS1MAPPINGS_HEADER.forEach((item) => {
+  CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
     item.SQL = item.SQL.trim()
     if (item.SQL == '') {
       var o = {}
@@ -2289,7 +2289,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       var params = {}
       params['query'] = {}
       params['query']['sqlQuery'] = sqlQuery
-      var res = client.service('getDataset').find(params)
+      var res = await client.service('getDataset').find(params)
       console.log('getDataset', res)
       if (res.data) {
         o.value = res.data
@@ -2316,7 +2316,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = xmlDom.createElement(root)
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _HEADER.forEach((item) => {
+  _HEADER.forEach(async (item) => {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
