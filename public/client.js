@@ -1548,8 +1548,10 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.className = 'button is-small is-info ml-2'
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
-      //await createXML(row.findoc, trdr, sosource, fprms, series)
-      var domObj = await cheatGetXmlFromS1(row.findoc)
+      var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
+      console.log('domObj', domObj)
+      return
+      //var domObj = await cheatGetXmlFromS1(row.findoc)
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
