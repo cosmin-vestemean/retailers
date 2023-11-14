@@ -2271,7 +2271,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.field2 = item.S1FIELD2 || null
       o.value2 = o.table2 && o.field2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : null
       o.sql = item.SQL
-      var sqlQuery = ''
+      var sqlQuery = item.SQL
       //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
       //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
       var regex = /{([^}]+)}/g
