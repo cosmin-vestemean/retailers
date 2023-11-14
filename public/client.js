@@ -2341,6 +2341,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
   })
 
+  console.log('xmlDom', xmlDom)
+
+  //return xml innerHTML
+  return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
   // console.log('xmlDom', xmlDom)
