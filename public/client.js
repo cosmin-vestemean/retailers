@@ -2253,14 +2253,48 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
 
   //header
-  var noSQLEntries_HEADER = [];
-  CCCXMLS1MAPPINGS_HEADER.forEach((item) => {
+  var noSQLEntries_HEADER = []
+  CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
     if (!item.SQL) {
       var o = {}
       o.xmlNode = item.XMLNODE
-      o.table = item.S1TABLE1
-      o.field = item.S1FIELD1
+      o.table1 = item.S1TABLE1
+      o.field1 = item.S1FIELD1
       o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
+    } else {
+      var o = {}
+      o.xmlNode = item.XMLNODE
+      o.table1 = item.S1TABLE1 || null
+      o.field1 = item.S1FIELD1 || null
+      o.value1 = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || null
+      o.table2 = item.S1TABLE2 || null
+      o.field2 = item.S1FIELD2 || null
+      o.value2 = S1ObjData[item.S1TABLE2][0][item.S1FIELD2] || null
+      o.sql = item.SQL
+      var sqlQuery = ''
+      //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2} 
+      //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
+      var regex = /{([^}]+)}/g
+      var matches = item.SQL.match(regex)
+      console.log('matches', matches)
+      matches.forEach((match) => {
+        var s1table = match.split('.')[0].replace('{', '')
+        var s1field = match.split('.')[1].replace('}', '')
+        //upper case
+        s1table = s1table.toUpperCase()
+        s1field = s1field.toUpperCase()
+        sqlQuery = item.SQL.replace(match, S1ObjData[s1table][0][s1field])
+      })
+
+      //value = await client.service('getDataset').find(params)
+      var params = {}
+      params['query'] = {}
+      params['query']['sqlQuery'] = sqlQuery
+      var res = await client.service('getDataset').find(params)
+      console.log('getDataset', res)
+      if (res.data) {
+        o.value = res.data
+      }
     }
     noSQLEntries_HEADER.push(o)
   })
@@ -2268,7 +2302,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('noSQLEntries_HEADER', noSQLEntries_HEADER)
 
   //lines
-  var noSQLEntries_LINES = [];
+  var noSQLEntries_LINES = []
   var itelines = S1ObjData['ITELINES']
   itelines.forEach((line) => {
     CCCXMLS1MAPPINGS_LINES.forEach((item) => {
