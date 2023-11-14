@@ -2323,7 +2323,6 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
   })
 
-
   //lines
   //...
 
@@ -2336,27 +2335,38 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   _HEADER.forEach((item) => {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
-    //add xml elements to xml dom
-    var root = xmlDom.documentElement //Order or...
-    for (var i = 1; i < xmlNodes.length; i++) {
-      var node
-      //verify if node already exists
-      if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
-        node = root.getElementsByTagName(xmlNodes[i])[0]
-        root.appendChild(node)
-        root = node
-      } else {
-        try {
-          node = xmlDom.createElement(xmlNodes[i])
-          //give it a dummy value in order to be able to append it; but just for the last node
-          if (i == xmlNodes.length - 1) node.textContent = item.value
+    var arr = []
+    //if item.value is an array, then arr = item.value else arr = [item.value]
+    if (Array.isArray(item.value)) {
+      arr = item.value
+    } else {
+      arr.push(item.value)
+    }
+
+    arr.forEach((value) => {
+      //add xml elements to xml dom
+      var root = xmlDom.documentElement //Order or...
+      for (var i = 1; i < xmlNodes.length; i++) {
+        var node
+        var foundedNodes = root.getElementsByTagName(xmlNodes[i])
+        //verify if node already exists
+        if (foundedNodes.length > 0) {
+          node = foundedNodes[foundedNodes.length - 1]
           root.appendChild(node)
           root = node
-        } catch (err) {
-          console.log(err)
+        } else {
+          try {
+            node = xmlDom.createElement(xmlNodes[i])
+            //give it a dummy value in order to be able to append it; but just for the last node
+            if (i == xmlNodes.length - 1) node.textContent = value
+            root.appendChild(node)
+            root = node
+          } catch (err) {
+            console.log(err)
+          }
         }
       }
-    }
+    })
   })
 
   console.log('xmlDom', xmlDom)
