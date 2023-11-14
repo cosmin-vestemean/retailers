@@ -2394,6 +2394,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           }
           return true
         })
+        if (!found) {
+          groupedByParent.push({ parent: parent, children: [{ childToChange: item.childToChange, value: item.value }] })
+        }
       }
     })
   })
