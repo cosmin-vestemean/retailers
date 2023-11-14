@@ -2276,19 +2276,13 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       var sqlQuery = item.SQL
       //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
       //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
-      var regex = /{([^}]+)}/g
-      var matches = item.SQL.match(regex)
-      console.log('matches', matches)
-      if (matches)
-        matches.forEach((match) => {
-          var s1table = match.split('.')[0].replace('{', '')
-          var s1field = match.split('.')[1].replace('}', '')
-          //upper case
-          s1table = s1table.toUpperCase()
-          s1field = s1field.toUpperCase()
-          if (S1ObjData[s1table] && S1ObjData[s1table][0] && S1ObjData[s1table][0][s1field])
-            sqlQuery = item.SQL.replace(match, S1ObjData[s1table][0][s1field])
-        })
+      if (item.SQL.includes('{S1Table1.S1Field1}')) {
+        sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', value1)
+      }
+
+      if (item.SQL.includes('{S1Table2.S1Field2}')) {
+        sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', value2)
+      }
 
       o.sqlQuery = sqlQuery
       //value = await client.service('getDataset').find(params)
