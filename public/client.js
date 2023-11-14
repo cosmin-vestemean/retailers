@@ -2387,13 +2387,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       //add node to xmlDom
       parent.parentNode.appendChild(node)
     }
-    //delete parent
-    parent.parentNode.removeChild(parent)
   })
 
   console.log('xmlDom', xmlDom)
 
-  //return xml innerHTML
   return xmlDom
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
