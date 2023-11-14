@@ -2314,8 +2314,31 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
   _HEADER.forEach(async (item) => {
-    console.log('xml', item.xmlNode)
-    console.log('value', item.value)
+    console.log({xml: item.xmlNode, value: item.value})
+    //create xml path
+    var xmlPath = item.xmlNode.split('/')
+    //add xml elements to xml dom
+    var root = xmlDom.documentElement
+    for (var i = 1; i < xmlPath.length; i++) {
+      var node
+      //verify if node already exists
+      if (root.getElementsByTagName(xmlPath[i]).length > 0) {
+        node = root.getElementsByTagName(xmlPath[i])[0]
+        root.appendChild(node)
+        node.textContent = item.value
+        root = node
+      } else {
+        try {
+          node = xmlDom.createElement(xmlPath[i])
+          //give it a dummy value in order to be able to append it; but just for the last node
+          if (i == xmlPath.length - 1) node.textContent = item.value
+          root.appendChild(node)
+          root = node
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
   })
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
