@@ -2256,6 +2256,8 @@ FROM FINDOC WHERE FINDOC={S1Table2.S1Field2}"			SALDOC	FINDOC	33	380 = original 
 
   var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
+  console.log('xmlDom', xmlDom)
+
   await populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
 
   //await populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS)
