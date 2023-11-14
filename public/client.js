@@ -2094,6 +2094,7 @@ async function mapS1ObjDataToArrayOfObjects(xmlDom, S1ObjData, CCCXMLS1MAPPINGS,
         })
         console.log('sequenceNewNodes', sequenceNewNodes)
         sequenceNewNodes.forEach((item) => {
+          console.log('itemToBeAppended', item)
           newChild.appendChild(item)
         })
         console.log('newChild', newChild)
