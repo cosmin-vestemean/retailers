@@ -2382,6 +2382,19 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('distinctParentsNodesToChange', distinctParentsNodesToChange)
   console.log('whatToReplace', whatToReplace)
 
+  //clone and replace all children in whatToReplace
+  distinctParentsNodesToChange.forEach((item) => {
+    //clone and replace all children in whatToReplace
+    var node = item
+    whatToReplace.forEach((item2) => {
+      var node2 = node.cloneNode(true)
+      node.parentNode.insertBefore(node2, node.nextSibling)
+      node = node2
+    })
+    //remove original node
+    item.parentNode.removeChild(item)
+  })
+
   console.log('xmlDom', xmlDom)
 
   //return xml innerHTML
