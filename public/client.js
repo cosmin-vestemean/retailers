@@ -2268,10 +2268,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       o.xmlNode = item.XMLNODE
       o.table1 = item.S1TABLE1 || null
       o.field1 = item.S1FIELD1 || null
-      o.value1 = o.table1 && o.field1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+      o.value1 = item.S1TABLE1 && o.item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
       o.table2 = item.S1TABLE2 || null
       o.field2 = item.S1FIELD2 || null
-      o.value2 = o.table2 && o.field2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
+      o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
       o.sql = item.SQL
       var sqlQuery = item.SQL
       //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
@@ -2304,6 +2304,17 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     _HEADER.push(o)
   })
 
+  //sort _HEADER by xmlNode alphabetically
+  _HEADER.sort((a, b) => {
+    if (a.xmlNode < b.xmlNode) {
+      return -1
+    }
+    if (a.xmlNode > b.xmlNode) {
+      return 1
+    }
+    return 0
+  })
+
   console.log('_HEADER', _HEADER)
 
   //lines
@@ -2316,7 +2327,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
   _HEADER.forEach(async (item) => {
-    console.log({xml: item.xmlNode, value: item.value})
+    console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
     var root = xmlDom.documentElement //Order or...
