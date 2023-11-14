@@ -2298,6 +2298,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     _HEADER.push(o)
   })
 
+  //wait for all promises to resolve
+  await Promise.all(_HEADER).then((values) => {
+    console.log('_HEADER', _HEADER)
+  })
+
   //sort _HEADER by xmlNode alphabetically
   _HEADER.sort((a, b) => {
     var txtA = a.xmlNode.toUpperCase()
@@ -2305,7 +2310,6 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
   })
 
-  console.log('_HEADER', _HEADER)
 
   //lines
   //...
@@ -2316,7 +2320,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = xmlDom.createElement(root)
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _HEADER.forEach(async (item) => {
+  _HEADER.forEach((item) => {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
