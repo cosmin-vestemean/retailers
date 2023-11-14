@@ -2357,22 +2357,46 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   })
 
   //find in _HEADER item.value as array
+  var parentsNodesToChange = []
+  var whatToReplace = []
   _HEADER.forEach((item) => {
     if (Array.isArray(item.value)) {
       var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
       //copy parent node with all its children item.value times with different values
-      var parentNode = xmlDom.getElementsByTagName(parentName)[0]
-      console.log('parentNode', parentNode)      
-      whatToReplace = item.xmlNode.split('/')[item.xmlNode.split('/').length - 1]
-      console.log('whatToReplace', whatToReplace)
-      item.value.forEach((item2) => {
-        var newNode = parentNode.cloneNode(true)
-        newNode.getElementsByTagName(whatToReplace)[0].textContent = item2
-        parentNode.parentNode.appendChild(newNode)
+      parentsNodesToChange.push(xmlDom.getElementsByTagName(parentName)[0])
+      whatToReplace.push({
+        node: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
+        value: item.value
       })
-      //delete parent node
-      parentNode.parentNode.removeChild(parentNode)
     }
+  })
+
+  //get distinct parentsNodesToChange
+  var distinctParentsNodesToChange = []
+  parentsNodesToChange.forEach((item) => {
+    if (distinctParentsNodesToChange.indexOf(item) == -1) {
+      distinctParentsNodesToChange.push(item)
+    }
+  })
+
+  distinctParentsNodesToChange.forEach((item) => {
+    var parent = item
+    var whatToReplaceForThisParent = []
+    whatToReplace.forEach((item2) => {
+      if (item2.node == parent.nodeName) {
+        whatToReplaceForThisParent.push(item2)
+      }
+    })
+    //remove parent node
+    parent.parentNode.removeChild(parent)
+    //add parent node item.value times
+    whatToReplaceForThisParent.forEach((item2) => {
+      item2.value.forEach((item3) => {
+        var node = parent.cloneNode(true)
+        node.textContent = item3
+        parent.parentNode.appendChild(node)
+      })
+    })
   })
 
   console.log('xmlDom', xmlDom)
