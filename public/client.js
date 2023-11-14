@@ -2236,7 +2236,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   const S1ObjData = S1Obj.data
 
   var header = 'DXInvoice/Invoice/'
-  var lines = 'DXInvoice/InvoiceLine'
+  var lines = 'DXInvoice/InvoiceLine/'
 
   var CCCXMLS1MAPPINGS_HEADER = []
   var CCCXMLS1MAPPINGS_LINES = []
