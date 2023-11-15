@@ -2282,7 +2282,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine).then((part) => {
       console.log('part', part)
       var xmlDomLine = document.implementation.createDocument('', '', null)
-      var root = 'InvoiceLine'
+      var root = 'DXInvoice'
       var root = xmlDomLine.createElement(root)
       xmlDomLine.appendChild(root)
 
