@@ -1550,7 +1550,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.onclick = async function () {
       var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
       console.log('domObj', domObj)
-      return
       //var domObj = await cheatGetXmlFromS1(row.findoc)
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
@@ -2504,7 +2503,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     var parser = new DOMParser()
     var xmlDomm = parser.parseFromString(xmlString, 'text/xml')
 
-    return xmlDomm
+    return { dom: xmlDomm, trimis: false }
   }
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
