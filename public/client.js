@@ -2395,7 +2395,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           return true
         })
         if (!found) {
-          groupedByParent.push({ parent: parent, children: [{ childToChange: item.childToChange, value: item.value }] })
+          groupedByParent.push({
+            parent: parent,
+            children: [{ childToChange: item.childToChange, value: item.value }]
+          })
         }
       }
     })
@@ -2409,11 +2412,16 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     var parent = item.parent
     var times = item.children[0].value.length
     console.log('times', times)
-    //clone parent times times
-    for (var i = 0; i < times; i++) {
+    //clone parent times times but keep the original parent, so I don't have to delete it later
+    for (var i = 1; i < times; i++) {
       var clone = parent.cloneNode(true)
       parent.parentNode.appendChild(clone)
     }
+
+    var clones = []
+    //get cloned elements plus the original one
+    clones = xmlDom.getElementsByTagName(parent.nodeName)
+    console.log('clones', clones)
   })
 
   console.log('xmlDom', xmlDom)
