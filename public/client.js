@@ -2253,15 +2253,20 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
 
   //header
-  var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER)
+  var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData)
 
   //lines
-  var _LINES = await joinThings(CCCXMLS1MAPPINGS_LINES)
+  var _LINES = []
+  var S1ITELINES = S1ObjData['ITELINES']
+  S1ITELINES.forEach(async (line) => {
+    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, { ITELINES: [line] })
+    _LINES.push(_LINE)
+  })
   console.log('_LINES', _LINES)
 
   var _DOC = _HEADER.concat(_LINES)
 
-  async function joinThings(CCCXMLS1MAPPINGS_HEADER) {
+  async function joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData) {
     var _HEADER = []
     CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
       item.SQL = item.SQL.trim()
