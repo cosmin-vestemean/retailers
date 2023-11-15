@@ -2311,6 +2311,8 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   console.log('xmlDom', xmlDom)
 
+  return {dom: xmlDom, trimise: false}
+
   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
     var _PART = []
     CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
@@ -2509,8 +2511,6 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
     return xmlDomm
   }
-
-  return {dom: xmlDom, trimise: false}
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
