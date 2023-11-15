@@ -2276,6 +2276,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('_LINES', _LINES)
 
   var _DOC = _HEADER.concat(_LINES)
+  console.log('_DOC', _DOC)
 
   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
     var _PART = []
