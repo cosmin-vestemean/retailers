@@ -2311,7 +2311,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   console.log('xmlDom', xmlDom)
 
-  return {dom: xmlDom, trimise: false}
+  //return DXInvoice from document
+  var xml = xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+
+  return { dom: xml, trimis: false }
 
   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
     var _PART = []
