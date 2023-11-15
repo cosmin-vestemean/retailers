@@ -2259,7 +2259,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var _LINES = []
   var S1ITELINES = S1ObjData['ITELINES']
   S1ITELINES.forEach(async (line) => {
-    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, { ITELINES: [line] })
+    var currLine = { ITELINES: [line] }
+    console.log('currLine', currLine)
+    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, currLine)
     _LINES.push(_LINE)
   })
   console.log('_LINES', _LINES)
