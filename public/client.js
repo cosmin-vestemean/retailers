@@ -2277,9 +2277,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   var _DOC = _HEADER.concat(_LINES)
 
-  async function joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData) {
-    var _HEADER = []
-    CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
+  async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
+    var _PART = []
+    CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
       item.SQL = item.SQL.trim()
       if (item.SQL == '') {
         var o = {}
@@ -2341,22 +2341,22 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           o.value = res.data
         }
       }
-      _HEADER.push(o)
+      _PART.push(o)
     })
 
     //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
-    while (_HEADER.length < CCCXMLS1MAPPINGS_HEADER.length) {
+    while (_PART.length < CCCXMLS1MAPPINGS_PART.length) {
       await new Promise((resolve) => setTimeout(resolve, 100))
     }
 
     //sort _HEADER by xmlNode alphabetically
-    _HEADER.sort((a, b) => {
+    _PART.sort((a, b) => {
       var txtA = a.xmlNode.toUpperCase()
       var txtB = b.xmlNode.toUpperCase()
       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
     })
 
-    return _HEADER
+    return _PART
   }
 
   //create xml dom
