@@ -2256,14 +2256,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER)
 
   //lines
-  var S1ITELINES = S1ObjData['ITELINES']
-  var _LINES = []
-  S1ITELINES.forEach(async (line) => {
-    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES)
-    _LINES.push(_LINE)
-  })
-
+  var _LINES = await joinThings(CCCXMLS1MAPPINGS_LINES)
   console.log('_LINES', _LINES)
+
+  var _DOC = _HEADER.concat(_LINES)
 
   async function joinThings(CCCXMLS1MAPPINGS_HEADER) {
     var _HEADER = []
@@ -2345,7 +2341,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = xmlDom.createElement(root)
   xmlDom.appendChild(root)
   //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _HEADER.forEach((item) => {
+  _DOC.forEach((item) => {
     console.log({ xml: item.xmlNode, value: item.value })
     var xmlNodes = item.xmlNode.split('/')
     //add xml elements to xml dom
@@ -2374,7 +2370,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   //find in _HEADER item.value as array
   var whatToReplace = []
-  _HEADER.forEach((item) => {
+  _DOC.forEach((item) => {
     if (Array.isArray(item.value)) {
       var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
       //copy parent node with all its children item.value times with different values
