@@ -2418,7 +2418,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     children.forEach((item2) => {
       var childToChange = item2.childToChange
       var value = item2.value
+      console.log('parent', parent, 'childToChange', childToChange, 'value', value)
       var nodes = parent.getElementsByTagName(childToChange)
+      console.log('nodes', nodes)
       for (var i = 0; i < nodes.length; i++) {
         nodes[i].textContent = value[i]
       }
