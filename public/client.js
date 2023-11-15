@@ -2264,7 +2264,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var root = xmlDomHeader.createElement(root)
   xmlDomHeader.appendChild(root)
 
-  xmlDomHeader = createDomPart(_HEADER, xmlDomHeader).dom
+  xmlDomHeader = createDomPart(_HEADER, xmlDomHeader)
   console.log('xmlDomHeader', xmlDomHeader)
 
   //lines
@@ -2288,7 +2288,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       var root = 'DXInvoice'
       var root = xmlDomLine.createElement(root)
       xmlDomLine.appendChild(root)
-      xmlDomLine = createDomPart(part, xmlDomLine).dom
+      xmlDomLine = createDomPart(part, xmlDomLine)
       xmlDomLines.push(xmlDomLine)
     })
   })
@@ -2507,8 +2507,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     var parser = new DOMParser()
     var xmlDomm = parser.parseFromString(xmlString, 'text/xml')
 
-    return { dom: xmlDomm, trimis: false }
+    return xmlDomm
   }
+
+  return {dom: xmlDom, trimise: false}
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
