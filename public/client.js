@@ -2289,6 +2289,12 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       xmlDomLines.push(xmlDomLine)
     })
   })
+
+  //wait until xmlDomLines is populated, meaning xmlDomLines.length == S1ITELINES.length
+  while (xmlDomLines.length < S1ITELINES.length) {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+
   console.log('xmlDomLines', xmlDomLines)
 
   //take xmlDomHeader and xmlDomLines and merge them into one xmlDom
