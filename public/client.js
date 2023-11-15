@@ -2255,6 +2255,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //header
   var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER)
 
+  //lines
+  var _LINES = await joinThings(CCCXMLS1MAPPINGS_LINES)
+  console.log('_LINES', _LINES)
+
   async function joinThings(CCCXMLS1MAPPINGS_HEADER) {
     var _HEADER = []
     CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
