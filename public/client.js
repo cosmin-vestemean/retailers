@@ -2327,9 +2327,8 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         var params = {}
         params['query'] = {}
         params['query']['sqlQuery'] = sqlQuery
-        console.log('sqlQuery', sqlQuery)
         var res = await client.service('getDataset').find(params)
-        console.log('getDataset', res)
+        console.log('sqlQuery', sqlQuery, 'queryResponse', res)
         if (res.data) {
           o.value = res.data
         }
