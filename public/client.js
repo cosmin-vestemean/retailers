@@ -2482,6 +2482,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       })
     })
 
+    //parse xmlDom thru DOMParser
+    var xmlString = new XMLSerializer().serializeToString(xmlDom)
+    var parser = new DOMParser()
+    var xmlDom = parser.parseFromString(xmlString, 'text/xml')
+
     return xmlDom
   }
 
