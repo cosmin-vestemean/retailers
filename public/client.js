@@ -2291,6 +2291,15 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   })
   console.log('xmlDomLines', xmlDomLines)
 
+  //take xmlDomHeader and xmlDomLines and merge them into one xmlDom
+  var xmlDom = xmlDomHeader
+  xmlDomLines.forEach((item) => {
+    var xmlNodes = item.documentElement.childNodes
+    for (var i = 0; i < xmlNodes.length; i++) {
+      xmlDom.documentElement.appendChild(xmlNodes[i])
+    }
+  })
+
   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
     var _PART = []
     CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
@@ -2485,9 +2494,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     //parse xmlDom thru DOMParser
     var xmlString = new XMLSerializer().serializeToString(xmlDom)
     var parser = new DOMParser()
-    var xmlDom = parser.parseFromString(xmlString, 'text/xml')
+    var xmlDomm = parser.parseFromString(xmlString, 'text/xml')
 
-    return xmlDom
+    return xmlDomm
   }
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
