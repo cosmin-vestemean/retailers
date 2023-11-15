@@ -2275,6 +2275,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   })
   console.log('_LINES', _LINES)
 
+  //wait until _LINES is populated, meaning _LINES.length == S1ITELINES.length
+  while (_LINES.length < S1ITELINES.length) {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
   var _DOC = _HEADER.concat(_LINES)
   console.log('_DOC', _DOC)
 
