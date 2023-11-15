@@ -2257,11 +2257,20 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
 
   //lines
   var _LINES = []
+  //S1ObjData but without ITELINES
+  var S1ObjDataNoITELINES = {}
+  Object.keys(S1ObjData).forEach((key) => {
+    if (key != 'ITELINES') {
+      S1ObjDataNoITELINES[key] = S1ObjData[key]
+    }
+  })
   var S1ITELINES = S1ObjData['ITELINES']
   S1ITELINES.forEach(async (line) => {
     var currLine = { ITELINES: [line] }
+    //add currLine to S1ObjDataNoITELINES
+    var S1ObjDataNoITELINES_currLine = Object.assign({}, S1ObjDataNoITELINES, currLine)
     console.log('currLine', currLine)
-    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, currLine)
+    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine)
     _LINES.push(_LINE)
   })
   console.log('_LINES', _LINES)
