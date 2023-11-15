@@ -2255,8 +2255,16 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   //header
   var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData)
 
+  //create xml dom
+  var xmlDomHeader = document.implementation.createDocument('', '', null)
+  var root = 'DXInvoice'
+  var root = xmlDomHeader.createElement(root)
+  xmlDomHeader.appendChild(root)
+
+  xmlDomHeader = createDomPart(_HEADER, xmlDomHeader)
+  console.log('xmlDomHeader', xmlDomHeader)
+
   //lines
-  var _LINES = []
   //S1ObjData but without ITELINES
   var S1ObjDataNoITELINES = {}
   Object.keys(S1ObjData).forEach((key) => {
@@ -2265,22 +2273,23 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
   })
   var S1ITELINES = S1ObjData['ITELINES']
+  var xmlDomLines = []
   S1ITELINES.forEach(async (line) => {
     var currLine = { ITELINES: [line] }
     //add currLine to S1ObjDataNoITELINES
     var S1ObjDataNoITELINES_currLine = Object.assign({}, S1ObjDataNoITELINES, currLine)
     console.log('currLine', currLine)
-    var _LINE = await joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine)
-    _LINES.push(_LINE)
-  })
-  console.log('_LINES', _LINES)
+    joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine).then((part) => {
+      console.log('part', part)
+      var xmlDomLine = document.implementation.createDocument('', '', null)
+      var root = 'DXInvoice/InvoiceLine'
+      var root = xmlDomLine.createElement(root)
+      xmlDomLine.appendChild(root)
 
-  //wait until _LINES is populated, meaning _LINES.length == S1ITELINES.length
-  while (_LINES.length < S1ITELINES.length) {
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-  var _DOC = _HEADER.concat(_LINES)
-  console.log('_DOC', _DOC)
+      xmlDomLines.push(createDomPart(part, xmlDomLine))
+    })
+  })
+  console.log('xmlDomLines', xmlDomLines)
 
   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
     var _PART = []
@@ -2364,123 +2373,117 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     return _PART
   }
 
-  //create xml dom
-  var xmlDom = document.implementation.createDocument('', '', null)
-  var root = 'DXInvoice'
-  var root = xmlDom.createElement(root)
-  xmlDom.appendChild(root)
-  //CCCXMLS1MAPPINGS_HEADER add xmlNode/value to xmlDom
-  _DOC.forEach((item) => {
-    console.log({ xml: item.xmlNode, value: item.value })
-    var xmlNodes = item.xmlNode.split('/')
-    //add xml elements to xml dom
-    var root = xmlDom.documentElement
-    for (var i = 1; i < xmlNodes.length; i++) {
-      var node
-      var existingElements = root.getElementsByTagName(xmlNodes[i])
-      //verify if node already exists
-      if (existingElements.length > 0) {
-        node = existingElements[existingElements.length - 1]
-        root.appendChild(node)
-        root = node
-      } else {
-        try {
-          node = xmlDom.createElement(xmlNodes[i])
-          //give it a dummy value in order to be able to append it; but just for the last node
-          if (i == xmlNodes.length - 1) node.textContent = item.value
+  function createDomPart(_PART, xmlDom) {
+    _PART.forEach((item) => {
+      console.log({ xml: item.xmlNode, value: item.value })
+      var xmlNodes = item.xmlNode.split('/')
+      //add xml elements to xml dom
+      var root = xmlDom.documentElement
+      for (var i = 1; i < xmlNodes.length; i++) {
+        var node
+        var existingElements = root.getElementsByTagName(xmlNodes[i])
+        //verify if node already exists
+        if (existingElements.length > 0) {
+          node = existingElements[existingElements.length - 1]
           root.appendChild(node)
           root = node
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
-  })
-
-  //find in _HEADER item.value as array
-  var whatToReplace = []
-  _DOC.forEach((item) => {
-    if (Array.isArray(item.value)) {
-      var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
-      //copy parent node with all its children item.value times with different values
-      whatToReplace.push({
-        parent: xmlDom.getElementsByTagName(parentName)[0],
-        childToChange: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
-        value: item.value
-      })
-    }
-  })
-
-  console.log('whatToReplace', whatToReplace)
-
-  //regroup children of whatToReplace by parent; eg: whatToReplace.parent <> array of childToChange/value with said parent
-  var distinctParents = []
-  whatToReplace.forEach((item) => {
-    if (distinctParents.indexOf(item.parent) == -1) {
-      distinctParents.push(item.parent)
-    }
-  })
-
-  var groupedByParent = []
-  distinctParents.forEach((parent) => {
-    whatToReplace.forEach((item) => {
-      if (item.parent == parent) {
-        //find in groupedByParent if parent exists
-        var found = false
-        groupedByParent.every((item2) => {
-          if (item2.parent == parent) {
-            found = true
-            item2.children.push({ childToChange: item.childToChange, value: item.value })
-            return false
+        } else {
+          try {
+            node = xmlDom.createElement(xmlNodes[i])
+            //give it a dummy value in order to be able to append it; but just for the last node
+            if (i == xmlNodes.length - 1) node.textContent = item.value
+            root.appendChild(node)
+            root = node
+          } catch (err) {
+            console.log(err)
           }
-          return true
-        })
-        if (!found) {
-          groupedByParent.push({
-            parent: parent,
-            children: [{ childToChange: item.childToChange, value: item.value }]
-          })
         }
       }
     })
-  })
 
-  console.log('groupedByParent', groupedByParent)
+    //find in _HEADER item.value as array
+    var whatToReplace = []
+    _PART.forEach((item) => {
+      if (Array.isArray(item.value)) {
+        var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
+        //copy parent node with all its children item.value times with different values
+        whatToReplace.push({
+          parent: xmlDom.getElementsByTagName(parentName)[0],
+          childToChange: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
+          value: item.value
+        })
+      }
+    })
 
-  //for each distinct parent, clone it by the first childToChange/value
-  //then change the values of the childToChange nodes
-  groupedByParent.forEach((item) => {
-    var parent = item.parent
-    var times = item.children[0].value.length
-    console.log('times', times)
-    //clone parent times times but keep the original parent, so I don't have to delete it later
-    for (var i = 1; i < times; i++) {
-      var clone = parent.cloneNode(true)
-      parent.parentNode.appendChild(clone)
-    }
+    console.log('whatToReplace', whatToReplace)
 
-    var clones = []
-    //get cloned elements plus the original one
-    clones = xmlDom.getElementsByTagName(parent.nodeName)
-    console.log('clones', clones)
+    //regroup children of whatToReplace by parent; eg: whatToReplace.parent <> array of childToChange/value with said parent
+    var distinctParents = []
+    whatToReplace.forEach((item) => {
+      if (distinctParents.indexOf(item.parent) == -1) {
+        distinctParents.push(item.parent)
+      }
+    })
 
-    var arrClones = Array.from(clones)
-
-    arrClones.forEach((clone, index) => {
-      //change childToChange/value
-      item.children.forEach((item2) => {
-        var childToChange = item2.childToChange
-        var value = item2.value[index]
-        console.log('childToChange', childToChange)
-        console.log('value', value)
-        clone.getElementsByTagName(childToChange)[0].textContent = value
+    var groupedByParent = []
+    distinctParents.forEach((parent) => {
+      whatToReplace.forEach((item) => {
+        if (item.parent == parent) {
+          //find in groupedByParent if parent exists
+          var found = false
+          groupedByParent.every((item2) => {
+            if (item2.parent == parent) {
+              found = true
+              item2.children.push({ childToChange: item.childToChange, value: item.value })
+              return false
+            }
+            return true
+          })
+          if (!found) {
+            groupedByParent.push({
+              parent: parent,
+              children: [{ childToChange: item.childToChange, value: item.value }]
+            })
+          }
+        }
       })
     })
-  })
 
-  console.log('xmlDom', xmlDom)
+    console.log('groupedByParent', groupedByParent)
 
-  return xmlDom
+    //for each distinct parent, clone it by the first childToChange/value
+    //then change the values of the childToChange nodes
+    groupedByParent.forEach((item) => {
+      var parent = item.parent
+      var times = item.children[0].value.length
+      console.log('times', times)
+      //clone parent times times but keep the original parent, so I don't have to delete it later
+      for (var i = 1; i < times; i++) {
+        var clone = parent.cloneNode(true)
+        parent.parentNode.appendChild(clone)
+      }
+
+      var clones = []
+      //get cloned elements plus the original one
+      clones = xmlDom.getElementsByTagName(parent.nodeName)
+      console.log('clones', clones)
+
+      var arrClones = Array.from(clones)
+
+      arrClones.forEach((clone, index) => {
+        //change childToChange/value
+        item.children.forEach((item2) => {
+          var childToChange = item2.childToChange
+          var value = item2.value[index]
+          console.log('childToChange', childToChange)
+          console.log('value', value)
+          clone.getElementsByTagName(childToChange)[0].textContent = value
+        })
+      })
+    })
+
+    return xmlDom
+  }
 
   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
 
