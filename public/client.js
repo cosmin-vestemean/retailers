@@ -2312,7 +2312,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('xmlDom', xmlDom)
 
   //return DXInvoice from document
-  var xml = xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+  var xml = xmlDom.getElementsByTagName('DXInvoice')[0].outerHTML
 
   return { dom: xml, trimis: false }
 
