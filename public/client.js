@@ -2422,8 +2422,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     //get cloned elements plus the original one
     clones = xmlDom.getElementsByTagName(parent.nodeName)
     console.log('clones', clones)
+  
+    var arrClones = Array.from(clones)
 
-    clones.forEach((clone, index) => {
+    arrClones.forEach((clone, index) => {
       //change childToChange/value
       item.children.forEach((item2) => {
         var childToChange = item2.childToChange
