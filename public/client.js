@@ -2408,8 +2408,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   groupedByParent.forEach((item) => {
     var parent = item.parent
     var times = item.children[0].value.length
+    console.log('times', times)
     //clone parent times times
-    for (var i = 1; i < times; i++) {
+    for (var i = 0; i < times; i++) {
       var clone = parent.cloneNode(true)
       parent.parentNode.appendChild(clone)
     }
