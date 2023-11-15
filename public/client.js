@@ -1549,6 +1549,10 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
       var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
+      //wait for domObj
+      while (domObj == undefined) {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
       console.log('domObj', domObj)
       //var domObj = await cheatGetXmlFromS1(row.findoc)
       if (domObj.trimis == true) {
