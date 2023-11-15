@@ -2285,8 +2285,8 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
       var root = 'DXInvoice'
       var root = xmlDomLine.createElement(root)
       xmlDomLine.appendChild(root)
-
-      xmlDomLines.push(createDomPart(part, xmlDomLine))
+      xmlDomLine = createDomPart(part, xmlDomLine)
+      xmlDomLines.push(xmlDomLine)
     })
   })
   console.log('xmlDomLines', xmlDomLines)
