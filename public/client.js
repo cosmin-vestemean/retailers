@@ -2253,75 +2253,81 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
 
   //header
-  var _HEADER = []
-  CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
-    item.SQL = item.SQL.trim()
-    if (item.SQL == '') {
-      var o = {}
-      o.xmlNode = item.XMLNODE
-      o.table1 = item.S1TABLE1
-      o.field1 = item.S1FIELD1
-      //o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
-      if (item.S1TABLE1 && item.S1FIELD1) {
-        possibleArray = S1ObjData[item.S1TABLE1]
-        if (possibleArray && possibleArray.length == 1) {
-          o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
-        } else if (possibleArray && possibleArray.length > 1) {
-          o.value = []
-          possibleArray.forEach((item2) => {
-            o.value.push(item2[item.S1FIELD1])
-          })
-        } else {
-          o.value = 'n/a'
+  var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER)
+
+  async function joinThings(CCCXMLS1MAPPINGS_HEADER) {
+    var _HEADER = []
+    CCCXMLS1MAPPINGS_HEADER.forEach(async (item) => {
+      item.SQL = item.SQL.trim()
+      if (item.SQL == '') {
+        var o = {}
+        o.xmlNode = item.XMLNODE
+        o.table1 = item.S1TABLE1
+        o.field1 = item.S1FIELD1
+        //o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+        if (item.S1TABLE1 && item.S1FIELD1) {
+          possibleArray = S1ObjData[item.S1TABLE1]
+          if (possibleArray && possibleArray.length == 1) {
+            o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
+          } else if (possibleArray && possibleArray.length > 1) {
+            o.value = []
+            possibleArray.forEach((item2) => {
+              o.value.push(item2[item.S1FIELD1])
+            })
+          } else {
+            o.value = 'n/a'
+          }
+        }
+      } else {
+        item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
+        var o = {}
+        o.xmlNode = item.XMLNODE
+        o.table1 = item.S1TABLE1 || null
+        o.field1 = item.S1FIELD1 || null
+        o.value1 = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
+        o.table2 = item.S1TABLE2 || null
+        o.field2 = item.S1FIELD2 || null
+        o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
+        o.sql = item.SQL
+        var sqlQuery = item.SQL
+        //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
+        //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
+        if (item.SQL.includes('{S1Table1.S1Field1}')) {
+          sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', o.value1)
+        }
+
+        if (item.SQL.includes('{S1Table2.S1Field2}')) {
+          sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', o.value2)
+        }
+
+        o.sqlQuery = sqlQuery
+        //value = await client.service('getDataset').find(params)
+        var params = {}
+        params['query'] = {}
+        params['query']['sqlQuery'] = sqlQuery
+        var res = await client.service('getDataset').find(params)
+        console.log('getDataset', res)
+        if (res.data) {
+          o.value = res.data
         }
       }
-    } else {
-      item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
-      var o = {}
-      o.xmlNode = item.XMLNODE
-      o.table1 = item.S1TABLE1 || null
-      o.field1 = item.S1FIELD1 || null
-      o.value1 = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
-      o.table2 = item.S1TABLE2 || null
-      o.field2 = item.S1FIELD2 || null
-      o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
-      o.sql = item.SQL
-      var sqlQuery = item.SQL
-      //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
-      //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
-      if (item.SQL.includes('{S1Table1.S1Field1}')) {
-        sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', o.value1)
-      }
+      _HEADER.push(o)
+    })
 
-      if (item.SQL.includes('{S1Table2.S1Field2}')) {
-        sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', o.value2)
-      }
-
-      o.sqlQuery = sqlQuery
-      //value = await client.service('getDataset').find(params)
-      var params = {}
-      params['query'] = {}
-      params['query']['sqlQuery'] = sqlQuery
-      var res = await client.service('getDataset').find(params)
-      console.log('getDataset', res)
-      if (res.data) {
-        o.value = res.data
-      }
+    //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
+    while (_HEADER.length < CCCXMLS1MAPPINGS_HEADER.length) {
+      await new Promise((resolve) => setTimeout(resolve, 100))
     }
-    _HEADER.push(o)
-  })
 
-  //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
-  while (_HEADER.length < CCCXMLS1MAPPINGS_HEADER.length) {
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    //sort _HEADER by xmlNode alphabetically
+    _HEADER.sort((a, b) => {
+      var txtA = a.xmlNode.toUpperCase()
+      var txtB = b.xmlNode.toUpperCase()
+      return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
+    })
+
+    return _HEADER
   }
-
-  //sort _HEADER by xmlNode alphabetically
-  _HEADER.sort((a, b) => {
-    var txtA = a.xmlNode.toUpperCase()
-    var txtB = b.xmlNode.toUpperCase()
-    return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
-  })
 
   //create xml dom
   var xmlDom = document.implementation.createDocument('', '', null)
@@ -2422,7 +2428,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     //get cloned elements plus the original one
     clones = xmlDom.getElementsByTagName(parent.nodeName)
     console.log('clones', clones)
-  
+
     var arrClones = Array.from(clones)
 
     arrClones.forEach((clone, index) => {
