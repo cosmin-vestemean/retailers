@@ -1467,7 +1467,7 @@ function copyFromAnotherDocument(id) {
 }
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
-  trdr_retailer = localStorage.getItem('trdr_retailer')
+  trdr_retailer = localStorage.getItem('retailer')
   trdr = trdr_retailer;
   alert(trdr)
   //Open tab facturi
