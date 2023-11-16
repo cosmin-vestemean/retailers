@@ -72,8 +72,18 @@
             </div>
             <footer class="card-footer">
               <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item">File manager</a>
-              <a href="config_retailer.html" class="card-footer-item">Configureaza</a>
+              <a
+                href="monitor_retailer.html"
+                class="card-footer-item"
+                onclick="() => {localStorage.setItem('retailer', 11639)}"
+                >File manager</a
+              >
+              <a
+                href="config_retailer.html"
+                class="card-footer-item"
+                onclick="() => {localStorage.setItem('retailer', 11639)}"
+                >Configureaza</a
+              >
             </footer>
           </div>
         </div>
@@ -251,8 +261,6 @@
       </div>
     </section>
     <!-- import CLient.js as module-->
-    <script type="module" src="client.js">
-      trdr = 11639;
-    </script>
+    <script type="module" src="client.js"></script>
   </body>
 </html>
