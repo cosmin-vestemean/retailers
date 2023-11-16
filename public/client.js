@@ -785,7 +785,13 @@ function loadListaDocumente() {
   //get all documents from database table CCCDOCUMENTES1MAPPINGS
   client
     .service('CCCDOCUMENTES1MAPPINGS')
-    .find()
+    .find(
+      {
+        query: {
+          TRDR_RETAILER: parseInt(document.getElementById('TRDR_RETAILER').value)
+        }
+      }
+    )
     .then((res) => {
       console.log(res)
       var table = document.getElementById('documenteBody')
