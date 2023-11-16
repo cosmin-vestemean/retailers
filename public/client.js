@@ -1,7 +1,5 @@
 console.log('Client.js loaded')
 
-var trdr_retailer = 0
-
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
 const socket = io('www.retailers.acct.ro')
 const client = feathers()
@@ -94,8 +92,8 @@ function getRetailerConfData() {
 }
 
 function setRetailerId(trdr) {
-  trdr_retailer = trdr
-  alert('Retailer id set to ' + trdr_retailer)
+  localStorage.setItem('trdr_retailer', trdr)
+  alert('Retailer id set to ' + localStorage.getItem('trdr_retailer'))
 }
 
 function updateRetailerConfData() {
@@ -1472,8 +1470,8 @@ function copyFromAnotherDocument(id) {
 }
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
-  alert(trdr_retailer)
-  var trdr = trdr_retailer
+  var trdr = localStorage.getItem('trdr_retailer')
+  alert(trdr)
   //Open tab facturi
   document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value
