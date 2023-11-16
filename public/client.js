@@ -95,6 +95,7 @@ function getRetailerConfData() {
 
 function setRetailerId(trdr) {
   trdr_retailer = trdr
+  alert('Retailer id set to ' + trdr_retailer)
 }
 
 function updateRetailerConfData() {
