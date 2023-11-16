@@ -788,7 +788,7 @@ function loadListaDocumente() {
     .find(
       {
         query: {
-          TRDR_RETAILER: parseInt(document.getElementById('TRDR_RETAILER').value)
+          TRDR_RETAILER: localStorage.getItem('trdr_retailer')
         }
       }
     )
