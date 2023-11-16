@@ -14,7 +14,7 @@
     <!--import client.js-->
     <script src="client.js"></script>
   </head>
-  <body onload="() => {trdr_retailer = localStorage.getItem('retailer'); alert(trdr_retailer)}">
+  <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
@@ -31,7 +31,7 @@
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
             <button id="preluareComenziBtn" class="button is-primary ml-2 is-small" onclick="fetchXMLFromRemoteServer()">Preluare comenzi</button>
-            <button class="button is-info ml-2 is-small" onclick="fetchDocsFromS1WS(11639, 1351, 712, 7121)">Preluare Facturi</button>
+            <button class="button is-info ml-2 is-small" onclick="() => {trdr_retailer = localStorage.getItem('retailer'); alert(trdr_retailer); fetchDocsFromS1WS(trdr_retailer, 1351, 712, 7121);}">Preluare Facturi</button>
             <!--add spinner text input with default value 7-->
             <input id="daysOlder" class="input is-small is-info" type="number" value="7" min="1" max="30" />
 
