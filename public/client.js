@@ -93,6 +93,10 @@ function getRetailerConfData() {
     })
 }
 
+function setRetailerId(trdr) {
+  trdr_retailer = trdr
+}
+
 function updateRetailerConfData() {
   //URL
   url = document.getElementById('URL').value
@@ -1467,9 +1471,7 @@ function copyFromAnotherDocument(id) {
 }
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
-  trdr_retailer = localStorage.getItem('retailer')
-  trdr = trdr_retailer;
-  alert(trdr)
+  var trdr = trdr_retailer
   //Open tab facturi
   document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value
