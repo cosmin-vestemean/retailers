@@ -1466,7 +1466,10 @@ function copyFromAnotherDocument(id) {
   alert('to be implemented')
 }
 
-async function fetchDocsFromS1WS(trdr, sosource, fprms, series) {
+async function fetchDocsFromS1WS(sosource, fprms, series) {
+  trdr_retailer = localStorage.getItem('trdr_retailer')
+  trdr = trdr_retailer;
+  alert(trdr)
   //Open tab facturi
   document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value
