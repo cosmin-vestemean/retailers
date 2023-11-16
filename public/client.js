@@ -68,7 +68,7 @@ function getRetailerConfData() {
     .service('CCCSFTP')
     .find({
       query: {
-        TRDR_RETAILER: 11639
+        TRDR_RETAILER: localStorage.getItem('trdr_retailer')
       }
     })
     .then((res) => {
@@ -93,7 +93,7 @@ function getRetailerConfData() {
 
 function setRetailerId(trdr) {
   localStorage.setItem('trdr_retailer', trdr)
-  alert('Retailer id set to ' + localStorage.getItem('trdr_retailer'))
+  console.log('Retailer id set to ',  localStorage.getItem('trdr_retailer'))
 }
 
 function updateRetailerConfData() {
@@ -1264,7 +1264,7 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   //add series and trdr to SALDOC
   jsonOrder['DATA']['SALDOC'][0]['SERIES'] = series
   //TRDR_RETAILER
-  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = 11639
+  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = localStorage.getItem('trdr_retailer')
 
   console.log('jsonOrder', jsonOrder)
 
@@ -1360,23 +1360,23 @@ function getValFromXML(xml, node) {
 }
 
 async function fetchXMLFromRemoteServer() {
-  //use sftp service find method with query retailer: 11639 to get xml from remote server to database
-  //then displayXmlDataForRetailer(11639) from database
+  //use sftp service find method with query retailer: localStorage.getItem('trdr_retailer') to get xml from remote server to database
+  //then displayXmlDataForRetailer(localStorage.getItem('trdr_retailer')) from database
   //change caption of id="preluareComenziBtn"
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
-  var downloadResponse = await client.service('sftp').downloadXml({}, { query: { retailer: 11639 } })
+  var downloadResponse = await client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   myBtn.innerHTML = 'Storing in database...'
   console.log('sftp download', downloadResponse)
-  var storeResponse = await client.service('sftp').storeXmlInDB({}, { query: { retailer: 11639 } })
+  var storeResponse = await client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
-  await displayXmlDataForRetailer(11639)
+  await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
   myBtn.innerHTML = 'Preluare comenzi'
 }
 
 async function displayXmlDataForRetailer(retailer) {
-  //11639
+  //localStorage.getItem('trdr_retailer')
   await getRetailerXMLData(retailer).then((data) => {
     console.log('getRetailerXMLData', data)
     //get the table body
@@ -1471,7 +1471,7 @@ function copyFromAnotherDocument(id) {
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
   var trdr = localStorage.getItem('trdr_retailer')
-  alert(trdr)
+  console.log('trdr', trdr)
   //Open tab facturi
   document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value
@@ -1691,7 +1691,7 @@ async function sendInvoice(findoc) {
     var filename = domObj.filename
     await client
       .service('sftp')
-      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: 11639 } })
+      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: localStorage.getItem('trdr_retailer') } })
       .then((res) => {
         console.log('sftp uploadXml', res)
         if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
