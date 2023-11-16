@@ -1472,6 +1472,7 @@ function copyFromAnotherDocument(id) {
 }
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
+  alert(trdr_retailer)
   var trdr = trdr_retailer
   //Open tab facturi
   document.getElementById('facturi_link').click()
