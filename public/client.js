@@ -1,5 +1,9 @@
 console.log('Client.js loaded')
 
+var trdr = 0;
+
+alert(trdr);
+
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
 const socket = io('www.retailers.acct.ro')
 const client = feathers()
