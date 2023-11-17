@@ -2435,6 +2435,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
             //find elements with name = '__attributes' and retain them with everything after them
             var attributes = xmlNodes[i].split('__attributes')[1]
             xmlNodes[i] = xmlNodes[i].split('__attributes')[0]
+            console.log('xmlNodes[i]', xmlNodes[i], 'attributes', attributes)
             node = xmlDom.createElement(xmlNodes[i])
             //create attributes; eg: __attributes/currencyID => currencyID as node attribute
             if (attributes) {
