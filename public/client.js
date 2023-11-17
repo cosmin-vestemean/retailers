@@ -2354,7 +2354,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         } else {
           o.value1 = 'n/a'
         }
-        if (o.value1&& o.value1.indexOf('|') > -1) {
+        if (o.value1 && o.value1.indexOf('|') > -1) {
           o.value1 = o.value1.split('|')[0]
         }
         //if o.value1 is an arrat then check every item for | and split it
@@ -2364,6 +2364,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
               o.value1[index] = item2.split('|')[0]
             }
           })
+        }
         o.value = o.value1
       } else {
         o.value1 = 'n/a'
