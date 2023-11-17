@@ -2358,6 +2358,9 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           o.value1 = o.value1.split('|')[0]
         }
         o.value = o.value1
+      } else {
+        o.value1 = 'n/a'
+        o.value = 'n/a'
       }
       if (item.SQL == '') {
         //...
