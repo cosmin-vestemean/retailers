@@ -2398,7 +2398,12 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
         var res = await client.service('getDataset').find(params)
         console.log('sqlQuery', sqlQuery, 'queryResponse', res)
         if (res.data) {
-          o.value = JSON.parse(res.data)
+          //for xml path ('') [1,2,3]
+          if (res.data.indexOf('[') > -1) {
+            o.value = JSON.parse(res.data)
+          } else {
+            o.value = res.data
+          }
         }
       }
       _PART.push(o)
