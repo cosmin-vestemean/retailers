@@ -2338,44 +2338,36 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     var _PART = []
     CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
       item.SQL = item.SQL.trim()
-      if (item.SQL == '') {
-        var o = {}
-        o.xmlNode = item.XMLNODE
-        o.table1 = item.S1TABLE1
-        o.field1 = item.S1FIELD1
-        //o.value = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
-        if (item.S1TABLE1 && item.S1FIELD1) {
-          possibleArray = S1ObjData[item.S1TABLE1]
-          if (possibleArray && possibleArray.length == 1) {
-            o.value = S1ObjData[item.S1TABLE1][0][item.S1FIELD1]
-          } else if (possibleArray && possibleArray.length > 1) {
-            o.value = []
-            possibleArray.forEach((item2) => {
-              o.value.push(item2[item.S1FIELD1])
-            })
-          } else {
-            o.value = 'n/a'
-          }
+      var o = {}
+      o.xmlNode = item.XMLNODE
+      o.table1 = item.S1TABLE1 || null
+      o.field1 = item.S1FIELD1 || null
+      if (item.S1TABLE1 && item.S1FIELD1) {
+        possibleArray = S1ObjData[item.S1TABLE1]
+        if (possibleArray && possibleArray.length == 1) {
+          o.value1 = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || 'n/a'
+        } else if (possibleArray && possibleArray.length > 1) {
+          o.value1 = []
+          possibleArray.forEach((item2) => {
+            o.value1.push(item2[item.S1FIELD1])
+          })
+        } else {
+          o.value1 = 'n/a'
         }
+        if (o.value1&& o.value1.indexOf('|') > -1) {
+          o.value1 = o.value1.split('|')[0]
+        }
+        o.value = o.value1
+      }
+      if (item.SQL == '') {
+        //...
       } else {
         item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
-        var o = {}
-        o.xmlNode = item.XMLNODE
-        o.table1 = item.S1TABLE1 || null
-        o.field1 = item.S1FIELD1 || null
-        o.value1 = item.S1TABLE1 && item.S1FIELD1 ? S1ObjData[item.S1TABLE1][0][item.S1FIELD1] : 'n/a'
         o.table2 = item.S1TABLE2 || null
         o.field2 = item.S1FIELD2 || null
         o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
         o.sql = item.SQL
         var sqlQuery = item.SQL
-        //replace in SELECT CODE FROM CCCS1DXTRDRMTRL WHERE MTRL={S1Table1.S1Field1} AND TRDR={S1Table2.S1Field2}
-        //{S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1] and {S1Table2.S1Field2} with S1ObjData[S1Table2][0][S1Field2]
-        //o.value1 or 2 could be in this format: 1|Buc
-        //if o.value1 or 2 is in this format, then o.value1 or 2 = 1
-        if (o.value1 && o.value1.indexOf('|') > -1) {
-          o.value1 = o.value1.split('|')[0]
-        }
         if (o.value2 && o.value2.indexOf('|') > -1) {
           o.value2 = o.value2.split('|')[0]
         }
@@ -2432,15 +2424,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           root = node
         } else {
           try {
-            //find elements with name = '__attributes' and retain them with everything after them
-            var attributes = xmlNodes[i].split('__attributes')[1]
-            xmlNodes[i] = xmlNodes[i].split('__attributes')[0]
-            console.log('xmlNodes[i]', xmlNodes[i], 'attributes', attributes)
             node = xmlDom.createElement(xmlNodes[i])
-            //create attributes; eg: __attributes/currencyID => currencyID as node attribute
-            if (attributes) {
-              node.setAttribute(attributes.split('/')[1], item.value)
-            }
             //give it a dummy value in order to be able to append it; but just for the last node
             if (i == xmlNodes.length - 1) node.textContent = item.value
             root.appendChild(node)
