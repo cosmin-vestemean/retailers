@@ -93,7 +93,7 @@ function getRetailerConfData() {
 
 function setRetailerId(trdr) {
   localStorage.setItem('trdr_retailer', trdr)
-  console.log('Retailer id set to ',  localStorage.getItem('trdr_retailer'))
+  console.log('Retailer id set to ', localStorage.getItem('trdr_retailer'))
 }
 
 function updateRetailerConfData() {
@@ -785,13 +785,11 @@ function loadListaDocumente() {
   //get all documents from database table CCCDOCUMENTES1MAPPINGS
   client
     .service('CCCDOCUMENTES1MAPPINGS')
-    .find(
-      {
-        query: {
-          TRDR_RETAILER: localStorage.getItem('trdr_retailer')
-        }
+    .find({
+      query: {
+        TRDR_RETAILER: localStorage.getItem('trdr_retailer')
       }
-    )
+    })
     .then((res) => {
       console.log(res)
       var table = document.getElementById('documenteBody')
@@ -1371,10 +1369,14 @@ async function fetchXMLFromRemoteServer() {
   //change caption of id="preluareComenziBtn"
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
-  var downloadResponse = await client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  var downloadResponse = await client
+    .service('sftp')
+    .downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   myBtn.innerHTML = 'Storing in database...'
   console.log('sftp download', downloadResponse)
-  var storeResponse = await client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  var storeResponse = await client
+    .service('sftp')
+    .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
   await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
@@ -1697,7 +1699,10 @@ async function sendInvoice(findoc) {
     var filename = domObj.filename
     await client
       .service('sftp')
-      .uploadXml({ findoc: findoc, xml: xml, filename: filename }, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+      .uploadXml(
+        { findoc: findoc, xml: xml, filename: filename },
+        { query: { retailer: localStorage.getItem('trdr_retailer') } }
+      )
       .then((res) => {
         console.log('sftp uploadXml', res)
         if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
@@ -2427,7 +2432,14 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
           root = node
         } else {
           try {
+            //find elements with name = '__attributes' and retain them with everything after them
+            var attributes = xmlNodes[i].split('__attributes')[1]
+            xmlNodes[i] = xmlNodes[i].split('__attributes')[0]
             node = xmlDom.createElement(xmlNodes[i])
+            //create attributes; eg: __attributes/currencyID => currencyID as node attribute
+            if (attributes) {
+              node.setAttribute(attributes.split('/')[1], item.value)
+            }
             //give it a dummy value in order to be able to append it; but just for the last node
             if (i == xmlNodes.length - 1) node.textContent = item.value
             root.appendChild(node)
