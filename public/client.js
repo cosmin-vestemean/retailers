@@ -2678,53 +2678,6 @@ function mandatoryFields() {
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
 
-    //in table id="xmlAsTable" fill column "Mandatory" with "Yes" or "No" by path
-    var table = document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
-    var rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      var cell = row.getElementsByClassName('xmlPath')[0]
-      var path = cell.innerHTML
-      mandatoryFields.every((item) => {
-        if (item.path == path) {
-          cell = row.getElementsByClassName('mandatory')[0]
-          //child select
-          cell.value = true
-          return false
-        }
-        return true
-      })
-    }
-
-    //xmlOrderNumber
-    table = document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
-    rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      var cell = row.getElementsByClassName('xmlPath')[0]
-      var path = cell.innerHTML
-      mandatoryFields.every((item) => {
-        console.log('path', path, 'item.path', item.path)
-        //if (item.path == path) {
-        if (path.includes(item.path)) {
-          cell = row.getElementsByClassName('xmlOrder')[0]
-          cell.innerHTML = item.orderNumber
-          return false
-        }
-        return true
-      })
-      //search in nonMandatoryFields if not found in mandatoryFields
-      nonMandatoryFields.every((item) => {
-        //if (item.path == path) {
-        if (path.includes(item.path)) {
-          cell = row.getElementsByClassName('xmlOrder')[0]
-          cell.innerHTML = item.orderNumber
-          return false
-        }
-        return true
-      })
-    }
-
     var label = document.getElementById('mandatoryFieldsLabel')
     label.innerHTML = 'Obligatorii: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
@@ -2827,6 +2780,55 @@ function mandatoryFields() {
       tr.appendChild(td)
       tbody.appendChild(tr)
     })
+
+    setMandatoryAndFieldOrder(mandatoryFields, nonMandatoryFields, document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0])
+  }
+
+  function setMandatoryAndFieldOrder(mandatoryFields, nonMandatoryFields, table) {
+    //in table id="xmlAsTable" fill column "Mandatory" with "Yes" or "No" by path
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('xmlPath')[0]
+      var path = cell.innerHTML
+      mandatoryFields.every((item) => {
+        if (item.path == path) {
+          cell = row.getElementsByClassName('mandatory')[0]
+          //child select
+          cell.value = true
+          return false
+        }
+        return true
+      })
+    }
+
+    //xmlOrderNumber
+    rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('xmlPath')[0]
+      var path = cell.innerHTML
+      mandatoryFields.every((item) => {
+        console.log('path', path, 'item.path', item.path)
+        //if (item.path == path) {
+        if (path.includes(item.path)) {
+          cell = row.getElementsByClassName('xmlOrder')[0]
+          cell.innerHTML = item.orderNumber
+          return false
+        }
+        return true
+      })
+
+      nonMandatoryFields.every((item) => {
+        //if (item.path == path) {
+        if (path.includes(item.path)) {
+          cell = row.getElementsByClassName('xmlOrder')[0]
+          cell.innerHTML = item.orderNumber
+          return false
+        }
+        return true
+      })
+    }
   }
 }
 
