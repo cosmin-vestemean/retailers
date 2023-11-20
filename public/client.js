@@ -2603,7 +2603,8 @@ function mandatoryFields() {
   //find elements without minOccurs="0" and push xpath in array
   var mandatoryFields = []
   var reader = new FileReader()
-  reader.onload = function(e) {
+  reader.readAsText(xsdFile)
+  reader.onload = function (e) {
     var xsd = e.target.result
     console.log('xsd', xsd)
     var parser = new DOMParser()
