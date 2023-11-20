@@ -370,6 +370,8 @@ function addRowsToTable(arr) {
     //root as class name
     row.className = root
     var xmlOrder = row.insertCell()
+    //class
+    xmlOrder.className = 'xmlOrder'
     xmlOrder.innerHTML = 0
     var remains = row.insertCell()
     var mandatory = row.insertCell()
@@ -417,6 +419,7 @@ function addRowsToTable(arr) {
     //wrap
     xmlPath.style.wordWrap = 'break-word'
     xmlPath.innerHTML = root + '/' + xmlJoinBySlash
+    xmlPath.className = 'xmlPath'
     //xmlPath.style.paddingLeft = parent.length * 10 + 'px'
     //s1Tbl1
     var input3 = document.createElement('input')
@@ -903,6 +906,10 @@ function addTableBody(table, data) {
     //add rows
     var row = tbody.insertRow()
     //add cells
+    //xml order
+    var xmlOrder = row.insertCell()
+    xmlOrder.innerHTML = 0
+    xmlOrder.className = 'xmlOrder'
     var pick = row.insertCell()
     var req = row.insertCell()
     var xmlPath = row.insertCell()
@@ -944,6 +951,7 @@ function addTableBody(table, data) {
     //wrap
     xmlPath.style.wordWrap = 'break-word'
     xmlPath.innerHTML = item.XMLNODE
+    xmlPath.className = 'xmlPath'
     //s1Tbl1
     var input3 = document.createElement('input')
     input3.type = 'text'
@@ -2658,6 +2666,58 @@ function mandatoryFields() {
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
 
+    //in table id="xmlTableBody" fill column "Mandatory" with "Yes" or "No" by path
+    var table = document.getElementById('xmlTableBody')
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('xmlPath')[0]
+      var path = cell.innerHTML
+      mandatoryFields.every((item) => {
+        if (item.path == path) {
+          cell = row.getElementsByClassName('mandatory')[0]
+          //child select
+          var select = cell.getElementsByTagName('select')[0]
+          select.value = true
+          return false
+        }
+        return true
+      })
+    }
+
+    //xmlOrderNumber
+    table = document.getElementById('xmlTableBody')
+    rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('xmlPath')[0]
+      var path = cell.innerHTML
+      mandatoryFields.every((item) => {
+        if (item.path == path) {
+          cell = row.getElementsByClassName('xmlOrder')[0]
+          cell.innerHTML = item.orderNumber
+          return false
+        }
+        return true
+      })
+    }
+    //nonMandatoryFields
+    table = document.getElementById('xmlTableBody')
+    rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('xmlPath')[0]
+      var path = cell.innerHTML
+      nonMandatoryFields.every((item) => {
+        if (item.path == path) {
+          cell = row.getElementsByClassName('xmlOrder')[0]
+          cell.innerHTML = item.orderNumber
+          return false
+        }
+        return true
+      })
+    }
+
     var label = document.getElementById('mandatoryFieldsLabel')
     label.innerHTML = 'Obligatorii: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
@@ -2804,7 +2864,7 @@ function showCommonType(type) {
       mandatoryFields.forEach((item) => {
         txtMessageToDisplay += item.name + ' ' + item.type + '\n'
       })
-      txtMessageToDisplay += 'Facultative: ' + nonMandatoryFields.length + '\n'
+      txtMessageToDisplay += '\nFacultative: ' + nonMandatoryFields.length + '\n'
       nonMandatoryFields.forEach((item) => {
         txtMessageToDisplay += item.name + ' ' + item.type + '\n'
       })
