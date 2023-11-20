@@ -2635,7 +2635,7 @@ function mandatoryFields() {
       }
       var path = ''
       for (var j = parents.length - 1; j >= 0; j--) {
-        var parentName = parents[j].getAttribute('name');
+        var parentName = parents[j].getAttribute('name')
         if (parentName) {
           path += parentName + '/'
         }
@@ -2648,7 +2648,7 @@ function mandatoryFields() {
 					<xs:documentation>Invoice Currency</xs:documentation>
 				</xs:annotation>
       */
-     //get documentation value if exists
+      //get documentation value if exists
       var documentationValue = ''
       var annotation = element.getElementsByTagName('xs:annotation')[0]
       if (annotation) {
@@ -2658,9 +2658,21 @@ function mandatoryFields() {
         }
       }
       if (element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
+        nonMandatoryFields.push({
+          name: element.getAttribute('name'),
+          type: element.getAttribute('type'),
+          path: path,
+          documentation: documentationValue,
+          orderNumber: i
+        })
       } else {
-        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
+        mandatoryFields.push({
+          name: element.getAttribute('name'),
+          type: element.getAttribute('type'),
+          path: path,
+          documentation: documentationValue,
+          orderNumber: i
+        })
       }
     }
     console.log('mandatoryFields', mandatoryFields)
@@ -2674,7 +2686,8 @@ function mandatoryFields() {
       var cell = row.getElementsByClassName('xmlPath')[0]
       var path = cell.innerHTML
       mandatoryFields.every((item) => {
-        if (item.path == path) {
+        //if (item.path == path) {
+        if (item.path.includes(path)) {
           cell = row.getElementsByClassName('mandatory')[0]
           //child select
           cell.value = true
@@ -2693,7 +2706,8 @@ function mandatoryFields() {
       var path = cell.innerHTML
       var found = false
       mandatoryFields.every((item) => {
-        if (item.path == path) {
+        //if (item.path == path) {
+        if (item.path.includes(path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
           found = true
@@ -2704,7 +2718,8 @@ function mandatoryFields() {
       //search in nonMandatoryFields if not found in mandatoryFields
       if (!found) {
         nonMandatoryFields.every((item) => {
-          if (item.path == path) {
+          //if (item.path == path) {
+          if (item.path.includes(path)) {
             cell = row.getElementsByClassName('xmlOrder')[0]
             cell.innerHTML = item.orderNumber
             return false
@@ -2853,7 +2868,16 @@ function showCommonType(type) {
           mandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
         }
       }
-      console.log('element', element, 'children', children, 'mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
+      console.log(
+        'element',
+        element,
+        'children',
+        children,
+        'mandatoryFields',
+        mandatoryFields,
+        'nonMandatoryFields',
+        nonMandatoryFields
+      )
 
       var txtMessageToDisplay = ''
       txtMessageToDisplay += 'Obligatorii: ' + mandatoryFields.length + '\n'
@@ -2864,7 +2888,7 @@ function showCommonType(type) {
       nonMandatoryFields.forEach((item) => {
         txtMessageToDisplay += item.name + ' ' + item.type + '\n'
       })
-      alert(txtMessageToDisplay)    
+      alert(txtMessageToDisplay)
     }
   }
 }
