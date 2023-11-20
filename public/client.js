@@ -2649,6 +2649,9 @@ function mandatoryFields() {
     }
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
+
+    var label = document.createElement('label')
+    label.innerHTML = 'Mandatory: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
     var table = document.getElementById('mandatoryFieldsTable')
     //Create table head
@@ -2670,6 +2673,46 @@ function mandatoryFields() {
     //create table body
     var tbody = table.createTBody()
     mandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
+
+    //label
+    var label = document.createElement('label')
+    label.innerHTML = 'Not mandatory: ' + nonMandatoryFields.length
+    //table id="nonMandatoryFieldsTable"
+    var table = document.getElementById('nonMandatoryFieldsTable')
+    //Create table head
+    var thead = table.createTHead()
+    var row = thead.insertRow()
+    var th = document.createElement('th')
+    th.innerHTML = 'Name'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Type'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Path'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Documentation'
+    row.appendChild(th)
+
+    //create table body
+    var tbody = table.createTBody()
+    nonMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
       td.innerHTML = item.name
