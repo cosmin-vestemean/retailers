@@ -2787,7 +2787,16 @@ function showCommonType(type) {
       }
       console.log('element', element, 'children', children, 'mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
 
-      alert(element.getAttribute('name') + '\nObligatorii: ' + mandatoryFields.join(', ') + '\nFacultative: ' + nonMandatoryFields.join(', '))
+      var txtMessageToDisplay = ''
+      txtMessageToDisplay += 'Obligatorii: ' + mandatoryFields.length + '\n'
+      mandatoryFields.forEach((item) => {
+        txtMessageToDisplay += item.name + ' ' + item.type + '\n'
+      })
+      txtMessageToDisplay += 'Facultative: ' + nonMandatoryFields.length + '\n'
+      nonMandatoryFields.forEach((item) => {
+        txtMessageToDisplay += item.name + ' ' + item.type + '\n'
+      })
+      alert(txtMessageToDisplay)    
     }
   }
 }
