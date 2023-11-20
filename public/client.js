@@ -2682,6 +2682,10 @@ function mandatoryFields() {
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.type
+      //onclick event
+      td.onclick = function () {
+        showCommonType(this.innerHTML)
+      }
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.path
