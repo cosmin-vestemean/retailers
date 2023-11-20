@@ -2785,9 +2785,7 @@ function showCommonType(type) {
           mandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
         }
       }
+      console.log('element', element, 'children', children, 'mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
     }
   }
-
-  //alert to user
-  alert('Obligatorii: ' + mandatoryFields.length + '\nFacultative: ' + nonMandatoryFields.length)
 }
