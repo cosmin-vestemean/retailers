@@ -2742,3 +2742,7 @@ function mandatoryFields() {
     })
   }
 }
+
+function extractType() {
+  
+}
