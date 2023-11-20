@@ -2602,6 +2602,7 @@ function mandatoryFields() {
   console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
   var mandatoryFields = []
+  var nonMandatoryFields = []
   var reader = new FileReader()
   reader.readAsText(xsdFile)
   reader.onload = function (e) {
@@ -2613,10 +2614,21 @@ function mandatoryFields() {
     console.log('elements', elements)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
+      //find parents
+      var parents = []
+      var parent = element.parentNode
+      while (parent.nodeName != 'xs:schema') {
+        parents.push(parent)
+        parent = parent.parentNode
+      }
+      var path = ''
+      for (var j = parents.length - 1; j >= 0; j--) {
+        path += parents[j].getAttribute('name') + '/'
+      }
       if (element.getAttribute('minOccurs') == '0') {
-        //do nothing
+        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path })
       } else {
-        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type') })
+        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path })
       }
     }
     console.log('mandatoryFields', mandatoryFields)
