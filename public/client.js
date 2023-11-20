@@ -2428,11 +2428,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
 
     //sort _HEADER by xmlNode alphabetically
-    _PART.sort((a, b) => {
+    /* _PART.sort((a, b) => {
       var txtA = a.xmlNode.toUpperCase()
       var txtB = b.xmlNode.toUpperCase()
       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
-    })
+    }) */
 
     return _PART
   }
@@ -2686,8 +2686,7 @@ function mandatoryFields() {
       var cell = row.getElementsByClassName('xmlPath')[0]
       var path = cell.innerHTML
       mandatoryFields.every((item) => {
-        //if (item.path == path) {
-        if (item.path.includes(path)) {
+        if (item.path == path) {
           cell = row.getElementsByClassName('mandatory')[0]
           //child select
           cell.value = true
@@ -2707,7 +2706,7 @@ function mandatoryFields() {
       var found = false
       mandatoryFields.every((item) => {
         //if (item.path == path) {
-        if (item.path.includes(path)) {
+        if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
           found = true
@@ -2719,7 +2718,7 @@ function mandatoryFields() {
       if (!found) {
         nonMandatoryFields.every((item) => {
           //if (item.path == path) {
-          if (item.path.includes(path)) {
+          if (path.includes(item.path)) {
             cell = row.getElementsByClassName('xmlOrder')[0]
             cell.innerHTML = item.orderNumber
             return false
