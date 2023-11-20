@@ -2678,6 +2678,16 @@ function mandatoryFields() {
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
 
+    displayMandatoryFields(mandatoryFields, nonMandatoryFields)
+
+    setMandatoryAndFieldOrder(
+      mandatoryFields,
+      nonMandatoryFields,
+      document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
+    )
+  }
+
+  function displayMandatoryFields(mandatoryFields, nonMandatoryFields) {
     var label = document.getElementById('mandatoryFieldsLabel')
     label.innerHTML = 'Obligatorii: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
@@ -2780,8 +2790,6 @@ function mandatoryFields() {
       tr.appendChild(td)
       tbody.appendChild(tr)
     })
-
-    setMandatoryAndFieldOrder(mandatoryFields, nonMandatoryFields, document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0])
   }
 
   function setMandatoryAndFieldOrder(mandatoryFields, nonMandatoryFields, table) {
