@@ -301,10 +301,6 @@ function addTableHeader(table) {
   cell1.innerHTML += `<button class="button is-small is-success ml-2" onclick="saveMapping()">Save mapping</button>`
 }
 
-function loadXSDFile(event) {
-  
-}
-
 function showHideCell(cellsByName, table) {
   //show hide cells in table
   var rowCount = table.rows.length
@@ -2597,5 +2593,36 @@ function toggleComenziNetrimise() {
       var row = rows[i]
       row.style.display = ''
     }
+  }
+}
+
+function mandatoryFields() {
+  //get file from input id="xsdFile"
+  var xsdFile = document.getElementById('xsdFile').files[0]
+  //find elements without minOccurs="0" and push xpath in array
+  var mandatoryFields = []
+  var reader = new FileReader()
+  reader.onload = function(e) {
+    var xsd = e.target.result
+    var parser = new DOMParser()
+    var xsdDom = parser.parseFromString(xsd, 'text/xml')
+    var elements = xsdDom.getElementsByTagName('xs:element')
+    for (var i = 0; i < elements.length; i++) {
+      var element = elements[i]
+      if (element.getAttribute('minOccurs') == '0') {
+        //do nothing
+      } else {
+        //push xpath in mandatoryFields
+        var xpath = ''
+        var parent = element.parentNode
+        while (parent.nodeName != 'xs:schema') {
+          xpath = parent.getAttribute('name') + '/' + xpath
+          parent = parent.parentNode
+        }
+        xpath = '/' + xpath
+        mandatoryFields.push(xpath)
+      }
+    }
+    console.log('mandatoryFields', mandatoryFields)
   }
 }
