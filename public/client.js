@@ -301,6 +301,10 @@ function addTableHeader(table) {
   cell1.innerHTML += `<button class="button is-small is-success ml-2" onclick="saveMapping()">Save mapping</button>`
 }
 
+function loadXSDFile(event) {
+  
+}
+
 function showHideCell(cellsByName, table) {
   //show hide cells in table
   var rowCount = table.rows.length

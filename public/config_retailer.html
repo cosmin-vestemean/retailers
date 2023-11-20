@@ -305,6 +305,29 @@
             ></textarea>
           </div>
         </div>
+        <div class="field">
+          <label class="label">Incarca fisier XSD</label>
+          <div class="control">
+            <input class="input" type="file" placeholder="Incarca schema XML" onchange="loadXSDFile(event)" />
+          </div>
+        </div>
+        <!--add butons "Mandatory fields" and "Fields' order"-->
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <div class="control">
+                <button class="button is-link" onclick="mandatoryFields()">Mandatory fields</button>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <div class="control">
+                <button class="button is-link" onclick="fieldsOrder()">Fields' order</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <!--add search box for table-->
         <div class="navbar is-fixed-bottom">
           <div class="control">
