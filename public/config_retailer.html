@@ -290,11 +290,43 @@
             </div>
           </div>
         </div>
+        <div class="columns">
+          <div class="column">
         <div class="field">
           <label class="label">Incarca fisier XML</label>
           <div class="control">
             <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
           </div>
+        </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XSD schema</label>
+            <div class="control">
+              <input
+                id="xsdFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+                onchange="mandatoryFields()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XSD custom types</label>
+            <div class="control">
+              <input
+                id="xsdFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+                onchange="extractType()"
+              />
+            </div>
+          </div>
+        </div>
         </div>
         <div class="field">
           <label class="label">XML</label>
@@ -306,19 +338,6 @@
               placeholder="XML"
               rows="10"
             ></textarea>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Incarca fisier XSD</label>
-          <div class="control">
-            <input
-              id="xsdFile"
-              class="input"
-              type="file"
-              multiple="multiple"
-              placeholder="Incarca schema XML"
-              onchange="mandatoryFields()"
-            />
           </div>
         </div>
         <div class="field">

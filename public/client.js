@@ -2599,20 +2599,12 @@ function toggleComenziNetrimise() {
 function mandatoryFields() {
   //get file from input id="xsdFile"
   var xsdFile = document.getElementById('xsdFile').files[0]
-  var commonsFile = document.getElementById('xsdFile').files[1]
   console.log('xsdFile', xsdFile)
-  console.log('commonsFile', commonsFile)
   //find elements without minOccurs="0"
   var mandatoryFields = []
   var nonMandatoryFields = []
   var reader = new FileReader()
   reader.readAsText(xsdFile)
-  var commonsReader = new FileReader()
-  commonsReader.readAsText(commonsFile)
-  commonsReader.onload = function (e) {
-    var commons = e.target.result
-    console.log('commons', commons)
-  }
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
