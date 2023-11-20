@@ -2600,7 +2600,7 @@ function mandatoryFields() {
   //get file from input id="xsdFile"
   var xsdFile = document.getElementById('xsdFile').files[0]
   console.log('xsdFile', xsdFile)
-  //find elements without minOccurs="0" and push xpath in array
+  //find elements without minOccurs="0"
   var mandatoryFields = []
   var reader = new FileReader()
   reader.readAsText(xsdFile)
@@ -2616,15 +2616,7 @@ function mandatoryFields() {
       if (element.getAttribute('minOccurs') == '0') {
         //do nothing
       } else {
-        //push xpath in mandatoryFields
-        var xpath = ''
-        var parent = element.parentNode
-        while (parent.nodeName != 'xs:schema') {
-          xpath = parent.getAttribute('name').nodeValue + '/' + xpath
-          parent = parent.parentNode
-        }
-        xpath = '/' + xpath
-        mandatoryFields.push(xpath)
+        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type') })
       }
     }
     console.log('mandatoryFields', mandatoryFields)
