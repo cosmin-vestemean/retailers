@@ -2610,6 +2610,7 @@ function mandatoryFields() {
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     var elements = xsdDom.getElementsByTagName('xs:element')
+    console.log('elements', elements)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
       if (element.getAttribute('minOccurs') == '0') {
