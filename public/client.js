@@ -2708,7 +2708,7 @@ function mandatoryFields() {
         //if (item.path == path) {
         if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
-          cell.innerHTML = item.orderNumber + 1
+          cell.innerHTML = item.orderNumber
           return false
         }
         return true
