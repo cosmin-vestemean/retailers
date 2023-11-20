@@ -2677,8 +2677,7 @@ function mandatoryFields() {
         if (item.path == path) {
           cell = row.getElementsByClassName('mandatory')[0]
           //child select
-          var select = cell.getElementsByTagName('input')[0]
-          select.value = true
+          cell.value = true
           return false
         }
         return true
