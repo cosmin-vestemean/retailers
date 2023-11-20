@@ -2786,6 +2786,8 @@ function showCommonType(type) {
         }
       }
       console.log('element', element, 'children', children, 'mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
+
+      alert(element.getAttribute('name') + '\nObligatorii: ' + mandatoryFields.join(', ') + '\nFacultative: ' + nonMandatoryFields.join(', '))
     }
   }
 }
