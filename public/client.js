@@ -243,7 +243,10 @@ function loadFile(event) {
 function addTableHeader(table) {
   var thead = table.createTHead()
   var row = thead.insertRow()
-  //make it th
+  var cell0 = document.createElement('th')
+  cell0.innerHTML = 'XML Ord.'
+  cell0.className = 'xmlOrder'
+  row.appendChild(cell0)
   var cell1 = document.createElement('th')
   row.appendChild(cell1)
   cell1.innerHTML = 'Pick'
@@ -366,6 +369,7 @@ function addRowsToTable(arr) {
     var row = tbody.insertRow()
     //root as class name
     row.className = root
+    var xmlOrder = row.insertCell()
     var remains = row.insertCell()
     var mandatory = row.insertCell()
     var xmlPath = row.insertCell()
@@ -2627,6 +2631,7 @@ function mandatoryFields() {
           path += parentName + '/'
         }
       }
+      path += element.getAttribute('name')
       /*
       <xs:annotation>
 					<xs:documentation>Invoice Currency</xs:documentation>
@@ -2654,6 +2659,8 @@ function mandatoryFields() {
     label.innerHTML = 'Obligatorii: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
     var table = document.getElementById('mandatoryFieldsTable')
+    //empty table
+    table.innerHTML = ''
     //Create table head
     var thead = table.createTHead()
     var row = thead.insertRow()
@@ -2704,6 +2711,8 @@ function mandatoryFields() {
     label.innerHTML = 'Facultative: ' + nonMandatoryFields.length
     //table id="nonMandatoryFieldsTable"
     var table = document.getElementById('nonMandatoryFieldsTable')
+    //empty table
+    table.innerHTML = ''
     //Create table head
     var thead = table.createTHead()
     var row = thead.insertRow()
