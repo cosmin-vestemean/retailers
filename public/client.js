@@ -2599,11 +2599,13 @@ function toggleComenziNetrimise() {
 function mandatoryFields() {
   //get file from input id="xsdFile"
   var xsdFile = document.getElementById('xsdFile').files[0]
+  console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0" and push xpath in array
   var mandatoryFields = []
   var reader = new FileReader()
   reader.onload = function(e) {
     var xsd = e.target.result
+    console.log('xsd', xsd)
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     var elements = xsdDom.getElementsByTagName('xs:element')
