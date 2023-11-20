@@ -2633,8 +2633,8 @@ function mandatoryFields() {
         }
       }
       path += element.getAttribute('name')
-      path += path.replace('InvoiceType', 'DXInvoice/Invoice')
-      path += path.replace('InvoiceLineType', 'DXInvoice/InvoiceLine')
+      path = path.replace('InvoiceType', 'DXInvoice/Invoice')
+      path = path.replace('InvoiceLineType', 'DXInvoice/InvoiceLine')
       /*
       <xs:annotation>
 					<xs:documentation>Invoice Currency</xs:documentation>
