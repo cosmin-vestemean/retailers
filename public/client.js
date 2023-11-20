@@ -2607,11 +2607,10 @@ function mandatoryFields() {
   reader.readAsText(xsdFile)
   reader.onload = function (e) {
     var xsd = e.target.result
-    console.log('xsd', xsd)
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     var elements = xsdDom.getElementsByTagName('xs:element')
-    console.log('elements', elements)
+    console.log('numar elemente', elements.length)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
       //find parents
