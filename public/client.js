@@ -2703,31 +2703,27 @@ function mandatoryFields() {
       var row = rows[i]
       var cell = row.getElementsByClassName('xmlPath')[0]
       var path = cell.innerHTML
-      var found = false
       mandatoryFields.every((item) => {
         console.log('path', path, 'item.path', item.path)
         //if (item.path == path) {
         if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
-          found = true
           return false
         }
         return true
       })
       //search in nonMandatoryFields if not found in mandatoryFields
-      if (!found) {
-        nonMandatoryFields.every((item) => {
-          console.log('path', path, 'item.path', item.path)
-          //if (item.path == path) {
-          if (path.includes(item.path)) {
-            cell = row.getElementsByClassName('xmlOrder')[0]
-            cell.innerHTML = item.orderNumber
-            return false
-          }
-          return true
-        })
-      }
+      nonMandatoryFields.every((item) => {
+        console.log('path', path, 'item.path', item.path)
+        //if (item.path == path) {
+        if (path.includes(item.path)) {
+          cell = row.getElementsByClassName('xmlOrder')[0]
+          cell.innerHTML = item.orderNumber
+          return false
+        }
+        return true
+      })
     }
 
     var label = document.getElementById('mandatoryFieldsLabel')
