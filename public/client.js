@@ -2669,6 +2669,8 @@ function mandatoryFields() {
     var th = document.createElement('th')
     th.innerHTML = 'Documentation'
     row.appendChild(th)
+    th.innerHTML = 'Order Number'
+    row.appendChild(th)
 
     //create table body
     var tbody = table.createTBody()
@@ -2686,6 +2688,8 @@ function mandatoryFields() {
       var td = document.createElement('td')
       td.innerHTML = item.documentation
       tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
       tbody.appendChild(tr)
     })
 
@@ -2709,6 +2713,9 @@ function mandatoryFields() {
     var th = document.createElement('th')
     th.innerHTML = 'Documentation'
     row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Order Number'
+    row.appendChild(th)
 
     //create table body
     var tbody = table.createTBody()
@@ -2725,6 +2732,9 @@ function mandatoryFields() {
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.documentation
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
       tr.appendChild(td)
       tbody.appendChild(tr)
     })
