@@ -2634,5 +2634,6 @@ function mandatoryFields() {
       }
     }
     console.log('mandatoryFields', mandatoryFields)
+    console.log('nonMandatoryFields', nonMandatoryFields)
   }
 }
