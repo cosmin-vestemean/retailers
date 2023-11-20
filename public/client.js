@@ -2649,5 +2649,41 @@ function mandatoryFields() {
     }
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
+    //get table id="mandatoryFieldsTable" and create mandatory data
+    var table = document.getElementById('mandatoryFieldsTable')
+    //Create table head
+    var thead = table.createTHead()
+    var row = thead.insertRow()
+    var th = document.createElement('th')
+    th.innerHTML = 'Name'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Type'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Path'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Documentation'
+    row.appendChild(th)
+
+    var tbody = table.getElementsByTagName('tbody')[0]
+    tbody.innerHTML = ''
+    mandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
   }
 }
