@@ -2667,8 +2667,8 @@ function mandatoryFields() {
     th.innerHTML = 'Documentation'
     row.appendChild(th)
 
-    var tbody = table.getElementsByTagName('tbody')[0]
-    tbody.innerHTML = ''
+    //create table body
+    var tbody = document.createElement('tbody')
     mandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
