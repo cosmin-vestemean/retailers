@@ -2620,7 +2620,7 @@ function mandatoryFields() {
         var xpath = ''
         var parent = element.parentNode
         while (parent.nodeName != 'xs:schema') {
-          xpath = parent.getNodeName() + '/' + xpath
+          xpath = parent.getAttribute('name').nodeValue + '/' + xpath
           parent = parent.parentNode
         }
         xpath = '/' + xpath
