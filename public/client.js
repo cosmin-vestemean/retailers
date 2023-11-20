@@ -2728,6 +2728,8 @@ function mandatoryFields() {
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.type
+      //onclick event points to showCommonType()
+      td.setAttribute('onclick', 'showCommonType("' + item.type + '")')
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.path
@@ -2743,6 +2745,78 @@ function mandatoryFields() {
   }
 }
 
-function extractType() {
-  
+function showCommonType(type) {
+  //1.get file from input id="xsdCommonsFile"
+  //2. create dom from file
+  //3. commons:PartyType => search for PartyType and get mandatory fields and non mandatory fields
+
+  //1.get file from input id="xsdCommonsFile"
+  var xsdFile = document.getElementById('xsdCommonsFile').files[0]
+  console.log('xsdFile', xsdFile)
+  //find elements without minOccurs="0"
+  var mandatoryFields = []
+  var nonMandatoryFields = []
+  var reader = new FileReader()
+  var searchFor = type.split(':')[1]
+  reader.readAsText(xsdFile)
+  reader.onload = function (e) {
+    var xsd = e.target.result
+    var parser = new DOMParser()
+    var xsdDom = parser.parseFromString(xsd, 'text/xml')
+    //search for attributes with name = searchFor
+    var elements = xsdDom.querySelectorAll('[name="' + searchFor + '"]')
+    console.log('numar elemente', elements.length)
+    for (var i = 0; i < elements.length; i++) {
+      var element = elements[i]
+      //find parents
+      var parents = []
+      var parent = element.parentNode
+      while (parent.nodeName != 'xs:schema') {
+        parents.push(parent)
+        parent = parent.parentNode
+      }
+      var path = ''
+      for (var j = parents.length - 1; j >= 0; j--) {
+        var parentName = parents[j].getAttribute('name');
+        if (parentName) {
+          path += parentName + '/'
+        }
+      }
+      /*
+      <xs:annotation>
+          <xs:documentation>Invoice Currency</xs:documentation>
+        </xs:annotation>
+      */
+      //get documentation value if exists
+      var documentationValue = ''
+      var annotation = element.getElementsByTagName('xs:annotation')[0]
+      if (annotation) {
+        var documentation = annotation.getElementsByTagName('xs:documentation')[0]
+        if (documentation) {
+          documentationValue = documentation.innerHTML
+        }
+      }
+      if (element.getAttribute('minOccurs') == '0') {
+        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
+      } else {
+        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
+      }
+
+    }
+    console.log('mandatoryFields', mandatoryFields)
+    console.log('nonMandatoryFields', nonMandatoryFields)
+
+    //alert user with mandatoryFields and nonMandatoryFields
+    var alertText = ''
+    alertText += 'Obligatorii: ' + mandatoryFields.length + '\n'
+    mandatoryFields.forEach((item) => {
+      alertText += item.name + '\n'
+    })
+    alertText += '\n'
+    alertText += 'Facultative: ' + nonMandatoryFields.length + '\n'
+    nonMandatoryFields.forEach((item) => {
+      alertText += item.name + '\n'
+    })
+    alert(alertText)
+  }
 }
