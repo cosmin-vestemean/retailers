@@ -2642,9 +2642,9 @@ function mandatoryFields() {
         }
       }
       if (element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue })
+        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
       } else {
-        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue })
+        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
       }
     }
     console.log('mandatoryFields', mandatoryFields)
