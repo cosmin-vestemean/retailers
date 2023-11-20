@@ -370,6 +370,7 @@ function addRowsToTable(arr) {
     //root as class name
     row.className = root
     var xmlOrder = row.insertCell()
+    xmlOrder.innerHTML = 0
     var remains = row.insertCell()
     var mandatory = row.insertCell()
     var xmlPath = row.insertCell()
