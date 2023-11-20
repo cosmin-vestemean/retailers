@@ -2774,55 +2774,20 @@ function showCommonType(type) {
     console.log('numar elemente', elements.length)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
-      //find parents
-      var parents = []
-      var parent = element.parentNode
-      while (parent.nodeName != 'xs:schema') {
-        parents.push(parent)
-        parent = parent.parentNode
-      }
-      var path = ''
-      for (var j = parents.length - 1; j >= 0; j--) {
-        var parentName = parents[j].getAttribute('name');
-        if (parentName) {
-          path += parentName + '/'
+      //get child elements and find minOccurs="0"
+      var children = element.getElementsByTagName('xs:element')
+      console.log('children', children)
+      for (var j = 0; j < children.length; j++) {
+        var child = children[j]
+        if (child.getAttribute('minOccurs') == '0') {
+          nonMandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
+        } else {
+          mandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
         }
       }
-      /*
-      <xs:annotation>
-          <xs:documentation>Invoice Currency</xs:documentation>
-        </xs:annotation>
-      */
-      //get documentation value if exists
-      var documentationValue = ''
-      var annotation = element.getElementsByTagName('xs:annotation')[0]
-      if (annotation) {
-        var documentation = annotation.getElementsByTagName('xs:documentation')[0]
-        if (documentation) {
-          documentationValue = documentation.innerHTML
-        }
-      }
-      if (element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
-      } else {
-        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue, orderNumber: i })
-      }
-
     }
-    console.log('mandatoryFields', mandatoryFields)
-    console.log('nonMandatoryFields', nonMandatoryFields)
-
-    //alert user with mandatoryFields and nonMandatoryFields
-    var alertText = ''
-    alertText += 'Obligatorii: ' + mandatoryFields.length + '\n'
-    mandatoryFields.forEach((item) => {
-      alertText += item.name + '\n'
-    })
-    alertText += '\n'
-    alertText += 'Facultative: ' + nonMandatoryFields.length + '\n'
-    nonMandatoryFields.forEach((item) => {
-      alertText += item.name + '\n'
-    })
-    alert(alertText)
   }
+
+  //alert to user
+  alert('Obligatorii: ' + mandatoryFields.length + '\nFacultative: ' + nonMandatoryFields.length)
 }
