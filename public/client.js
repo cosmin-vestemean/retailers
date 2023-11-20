@@ -2650,8 +2650,8 @@ function mandatoryFields() {
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
 
-    var label = document.createElement('label')
-    label.innerHTML = 'Mandatory: ' + mandatoryFields.length
+    var label = document.getElementById('mandatoryFieldsLabel')
+    label.innerHTML = 'Obligatorii: ' + mandatoryFields.length
     //get table id="mandatoryFieldsTable" and create mandatory data
     var table = document.getElementById('mandatoryFieldsTable')
     //Create table head
@@ -2690,8 +2690,8 @@ function mandatoryFields() {
     })
 
     //label
-    var label = document.createElement('label')
-    label.innerHTML = 'Not mandatory: ' + nonMandatoryFields.length
+    var label = document.getElementById('nonMandatoryFieldsLabel')
+    label.innerHTML = 'Facultative: ' + nonMandatoryFields.length
     //table id="nonMandatoryFieldsTable"
     var table = document.getElementById('nonMandatoryFieldsTable')
     //Create table head

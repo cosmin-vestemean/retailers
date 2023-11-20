@@ -5,7 +5,10 @@
     <meta name="description" content="integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@cityssm/bulma-sticky-table@2.1.0/bulma-with-sticky-table.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@cityssm/bulma-sticky-table@2.1.0/bulma-with-sticky-table.css"
+    />
     <!--load feathers-->
     <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
     <!--load socket.io-->
@@ -308,15 +311,26 @@
         <div class="field">
           <label class="label">Incarca fisier XSD</label>
           <div class="control">
-            <input id="xsdFile" class="input" type="file" placeholder="Incarca schema XML" onchange="mandatoryFields()" />
+            <input
+              id="xsdFile"
+              class="input"
+              type="file"
+              placeholder="Incarca schema XML"
+              onchange="mandatoryFields()"
+            />
           </div>
         </div>
-        <div class="table">
-          <table
-            id="mandatoryFieldsTable"
-            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
-          ></table>
+        <div class="field">
+          <label id="mandatoryFieldsLabel" class="label">Obligatorii</label>
+          <div class="table">
+            <table
+              id="mandatoryFieldsTable"
+              class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
+            ></table>
+          </div>
         </div>
+        <div class="field">
+          <label id="nonMandatoryFieldsLabel" class="label">Facultative</label>
         <div class="table">
           <table
             id="nonMandatoryFieldsTable"
