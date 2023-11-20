@@ -2715,7 +2715,6 @@ function mandatoryFields() {
       })
       //search in nonMandatoryFields if not found in mandatoryFields
       nonMandatoryFields.every((item) => {
-        console.log('path', path, 'item.path', item.path)
         //if (item.path == path) {
         if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
