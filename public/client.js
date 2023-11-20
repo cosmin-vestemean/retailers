@@ -2666,8 +2666,8 @@ function mandatoryFields() {
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
 
-    //in table id="xmlTableBody" fill column "Mandatory" with "Yes" or "No" by path
-    var table = document.getElementById('xmlTableBody')
+    //in table id="xmlAsTable" fill column "Mandatory" with "Yes" or "No" by path
+    var table = document.getElementById('xmlAsTable')
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
