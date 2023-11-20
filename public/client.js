@@ -2623,7 +2623,10 @@ function mandatoryFields() {
       }
       var path = ''
       for (var j = parents.length - 1; j >= 0; j--) {
-        path += parents[j].getAttribute('name') + '/'
+        var parentName = parents[j].getAttribute('name');
+        if (parentName) {
+          path += parentName + '/'
+        }
       }
       if (element.getAttribute('minOccurs') == '0') {
         nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path })
