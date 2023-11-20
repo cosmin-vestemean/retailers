@@ -2627,10 +2627,24 @@ function mandatoryFields() {
           path += parentName + '/'
         }
       }
+      /*
+      <xs:annotation>
+					<xs:documentation>Invoice Currency</xs:documentation>
+				</xs:annotation>
+      */
+     //get documentation value if exists
+      var documentationValue = ''
+      var annotation = element.getElementsByTagName('xs:annotation')[0]
+      if (annotation) {
+        var documentation = annotation.getElementsByTagName('xs:documentation')[0]
+        if (documentation) {
+          documentationValue = documentation.innerHTML
+        }
+      }
       if (element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path })
+        nonMandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue })
       } else {
-        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path })
+        mandatoryFields.push({ name: element.getAttribute('name'), type: element.getAttribute('type'), path: path, documentation: documentationValue })
       }
     }
     console.log('mandatoryFields', mandatoryFields)
