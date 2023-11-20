@@ -2669,6 +2669,7 @@ function mandatoryFields() {
     var th = document.createElement('th')
     th.innerHTML = 'Documentation'
     row.appendChild(th)
+    var th = document.createElement('th')
     th.innerHTML = 'Order Number'
     row.appendChild(th)
 
@@ -2690,6 +2691,7 @@ function mandatoryFields() {
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.orderNumber
+      tr.appendChild(td)
       tbody.appendChild(tr)
     })
 
