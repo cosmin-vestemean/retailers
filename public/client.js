@@ -2691,30 +2691,27 @@ function mandatoryFields() {
       var row = rows[i]
       var cell = row.getElementsByClassName('xmlPath')[0]
       var path = cell.innerHTML
+      var found = false
       mandatoryFields.every((item) => {
         if (item.path == path) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
+          found = true
           return false
         }
         return true
       })
-    }
-    //nonMandatoryFields
-    table = document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
-    rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      var cell = row.getElementsByClassName('xmlPath')[0]
-      var path = cell.innerHTML
-      nonMandatoryFields.every((item) => {
-        if (item.path == path) {
-          cell = row.getElementsByClassName('xmlOrder')[0]
-          cell.innerHTML = item.orderNumber
-          return false
-        }
-        return true
-      })
+      //search in nonMandatoryFields if not found in mandatoryFields
+      if (!found) {
+        nonMandatoryFields.every((item) => {
+          if (item.path == path) {
+            cell = row.getElementsByClassName('xmlOrder')[0]
+            cell.innerHTML = item.orderNumber
+            return false
+          }
+          return true
+        })
+      }
     }
 
     var label = document.getElementById('mandatoryFieldsLabel')
