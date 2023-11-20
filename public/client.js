@@ -2705,6 +2705,7 @@ function mandatoryFields() {
       var path = cell.innerHTML
       var found = false
       mandatoryFields.every((item) => {
+        console.log('path', path, 'item.path', item.path)
         //if (item.path == path) {
         if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
