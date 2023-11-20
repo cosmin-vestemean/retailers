@@ -2686,7 +2686,7 @@ function mandatoryFields() {
     }
 
     //xmlOrderNumber
-    table = document.getElementById('xmlTableBody')
+    table = document.getElementById('xmlAsTable')
     rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
@@ -2702,7 +2702,7 @@ function mandatoryFields() {
       })
     }
     //nonMandatoryFields
-    table = document.getElementById('xmlTableBody')
+    table = document.getElementById('xmlAsTable')
     rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
