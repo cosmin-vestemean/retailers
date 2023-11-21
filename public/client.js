@@ -729,26 +729,28 @@ function getSelectedMappingData() {
   var mapping = []
   for (var i = 1; i < rowCount; i++) {
     var row = table.rows[i]
-    var input = row.cells[0].childNodes[0]
+    var input = row.cells[1].childNodes[0]
     if (input.checked) {
       var obj = {}
       /* obj['XMLNODE'] =
         row.className.toLowerCase().indexOf('line') > -1
           ? row.className + '/' + row.cells[2].innerHTML
           : row.cells[2].innerHTML */
-      obj['XMLNODE'] = row.cells[2].innerHTML
+      obj['XMLNODE'] = row.cells[3].innerHTML
       //cells 3, 4, 5, 6 have an input type text field inside, get the value from input instead of innerHTML
-      obj['S1TABLE1'] = document.getElementById(row.cells[3].childNodes[0].id).value
-      obj['S1FIELD1'] = document.getElementById(row.cells[4].childNodes[0].id).value
-      if (document.getElementById(row.cells[5].childNodes[0].id).value)
-        obj['S1TABLE2'] = document.getElementById(row.cells[5].childNodes[0].id).value
+      obj['S1TABLE1'] = document.getElementById(row.cells[4].childNodes[0].id).value
+      obj['S1FIELD1'] = document.getElementById(row.cells[5].childNodes[0].id).value
       if (document.getElementById(row.cells[6].childNodes[0].id).value)
-        obj['S1FIELD2'] = document.getElementById(row.cells[6].childNodes[0].id).value
-      obj['MANDATORY'] = row.cells[1].childNodes[0].checked ? 1 : 0
+        obj['S1TABLE2'] = document.getElementById(row.cells[6].childNodes[0].id).value
+      if (document.getElementById(row.cells[7].childNodes[0].id).value)
+        obj['S1FIELD2'] = document.getElementById(row.cells[7].childNodes[0].id).value
+      obj['MANDATORY'] = row.cells[2].childNodes[0].checked ? 1 : 0
       //sql
-      obj['SQL'] = document.getElementById(row.cells[7].childNodes[0].id).value
+      obj['SQL'] = document.getElementById(row.cells[8].childNodes[0].id).value
       //Observatii
-      obj['OBSERVATII'] = document.getElementById(row.cells[9].childNodes[0].id).value
+      obj['OBSERVATII'] = document.getElementById(row.cells[10].childNodes[0].id).value
+      //add XMLORDER
+      obj['XMLORDER'] = parseFloat(row.cells[0].innerHTML)
       mapping.push(obj)
     }
   }

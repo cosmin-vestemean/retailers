@@ -15,6 +15,7 @@ export const cccxmls1MappingsSchema = Type.Object(
     S1FIELD2: Type.Optional(Type.String()),
     SQL: Type.Optional(Type.String()),
     OBSERVATII: Type.Optional(Type.String()),
+    XMLORDER: Type.Optional(Type.Number()),
     CCCDOCUMENTES1MAPPINGS: Type.Number(),
   },
   { $id: 'Cccxmls1Mappings', additionalProperties: false }
@@ -25,7 +26,7 @@ export const cccxmls1MappingsResolver = resolve({})
 export const cccxmls1MappingsExternalResolver = resolve({})
 
 // Schema for creating new entries
-export const cccxmls1MappingsDataSchema = Type.Pick(cccxmls1MappingsSchema, ['XMLNODE', 'S1TABLE1', 'S1FIELD1', 'CCCDOCUMENTES1MAPPINGS', 'S1TABLE2', 'S1FIELD2', 'MANDATORY', 'SQL', 'OBSERVATII'], {
+export const cccxmls1MappingsDataSchema = Type.Pick(cccxmls1MappingsSchema, ['XMLNODE', 'S1TABLE1', 'S1FIELD1', 'CCCDOCUMENTES1MAPPINGS', 'S1TABLE2', 'S1FIELD2', 'MANDATORY', 'SQL', 'OBSERVATII', 'XMLORDER'], {
   $id: 'Cccxmls1MappingsData'
 })
 export const cccxmls1MappingsDataValidator = getValidator(cccxmls1MappingsDataSchema, dataValidator)
