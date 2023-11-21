@@ -1390,11 +1390,19 @@ async function fetchXMLFromRemoteServer() {
   var downloadResponse = await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
-  myBtn.innerHTML = 'Storing in database...'
+  //wait for download to finish by checking the response not null
+  while (!downloadResponse) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
   console.log('sftp download', downloadResponse)
+  myBtn.innerHTML = 'Storing in database...'
   var storeResponse = await client
     .service('sftp')
     .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  //wait for store to finish by checking the response not null
+  while (!storeResponse) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
   await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
