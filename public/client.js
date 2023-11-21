@@ -2657,7 +2657,7 @@ function mandatoryFields() {
           documentationValue = documentation.innerHTML
         }
       }
-      if (element.getAttribute('minOccurs') == '0') {
+      if (element.getAttribute('minOccurs') && element.getAttribute('minOccurs') == '0') {
         nonMandatoryFields.push({
           name: element.getAttribute('name'),
           type: element.getAttribute('type'),
