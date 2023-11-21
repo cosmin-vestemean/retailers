@@ -2862,7 +2862,6 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
   var reader = new FileReader()
-  var searchFor = type.split(':')[1]
   reader.readAsText(xsdFile)
   reader.onload = function (e) {
     var xsd = e.target.result
@@ -2883,6 +2882,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
         //get all xs:element children
         var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
         var arrMyElements = Array.from(myElements)
+        console.log('arrMyElements', arrMyElements)
         arrMyElements.forEach((item, index) => {
           if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
             nonMandatoryFields.push({
