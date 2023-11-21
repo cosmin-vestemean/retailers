@@ -2903,7 +2903,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
             var keeper = {
               name: item.getAttribute('name'),
               type: item.getAttribute('type'),
-              path: searchFor + '/' + item.getAttribute('name'),
+              path: path + '/' + item.getAttribute('name'),
               documentation: '',
               orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
             }
@@ -2913,8 +2913,6 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
             var keeper = {
               name: item.getAttribute('name'),
               type: item.getAttribute('type'),
-              //path: searchFor + '/' + item.getAttribute('name'),
-              //path: path + parents + '/' + item.getAttribute('name'),
               path: path + '/' + item.getAttribute('name'),
               documentation: '',
               orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
