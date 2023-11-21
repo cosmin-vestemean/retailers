@@ -2687,7 +2687,7 @@ function mandatoryFields() {
 
     displayMandatoryFields(mandatoryFields, nonMandatoryFields)
 
-    if (!document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0])
+    if (document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0])
       setMandatoryAndFieldOrder(
         mandatoryFields,
         nonMandatoryFields,
