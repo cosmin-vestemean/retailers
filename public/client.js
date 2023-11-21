@@ -2732,7 +2732,7 @@ function mandatoryFields() {
       td.innerHTML = item.type
       //onclick event
       td.onclick = function () {
-        showCommonType(this.innerHTML)
+        showCommonType(this.innerHTML.split(':')[1], item.orderNumber, mandatoryFields, nonMandatoryFields, item.path)
       }
       tr.appendChild(td)
       var td = document.createElement('td')
@@ -2784,7 +2784,7 @@ function mandatoryFields() {
       td.innerHTML = item.type
       //onclick event
       td.onclick = function () {
-        showCommonType(this.innerHTML)
+        showCommonType(this.innerHTML.split(':')[1], item.orderNumber, mandatoryFields, nonMandatoryFields, item.path)
       }
       tr.appendChild(td)
       var td = document.createElement('td')
@@ -2848,7 +2848,7 @@ function mandatoryFields() {
   }
 }
 
-function showCommonType(type) {
+function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
   //1.get file from input id="xsdCommonsFile"
   //2. create dom from file
   //3. commons:PartyType => search for PartyType and get mandatory fields and non mandatory fields
@@ -2861,8 +2861,6 @@ function showCommonType(type) {
   }
   console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
-  var mandatoryFields = []
-  var nonMandatoryFields = []
   var reader = new FileReader()
   var searchFor = type.split(':')[1]
   reader.readAsText(xsdFile)
@@ -2871,8 +2869,8 @@ function showCommonType(type) {
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(xsdDom, searchFor)
-    function recursiveSearchForTypes(xsdDom, searchFor) {
+    recursiveSearchForTypes(xsdDom, searchFor, orderNumber)
+    function recursiveSearchForTypes(xsdDom, searchFor, orderNumber) {
       //search xs:complexType name = searchFor
       //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
       //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
@@ -2885,14 +2883,14 @@ function showCommonType(type) {
         //get all xs:element children
         var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
         var arrMyElements = Array.from(myElements)
-        arrMyElements.forEach((item) => {
+        arrMyElements.forEach((item, index) => {
           if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
             nonMandatoryFields.push({
               name: item.getAttribute('name'),
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
-              orderNumber: ''
+              orderNumber: parserFloat(orderNumber) + (index + 1) * 0.1
             })
           } else {
             mandatoryFields.push({
@@ -2900,7 +2898,7 @@ function showCommonType(type) {
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
-              orderNumber: ''
+              orderNumber: parserFloat(orderNumber) + (index + 1) * 0.1
             })
           }
         })
