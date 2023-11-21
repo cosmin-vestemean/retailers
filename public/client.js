@@ -2854,6 +2854,10 @@ function showCommonType(type) {
 
   //1.get file from input id="xsdCommonsFile"
   var xsdFile = document.getElementById('xsdCommonsFile').files[0]
+  if (!xsdFile) {
+    alert('Select XSD Commons file')
+    return
+  }
   console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
   var mandatoryFields = []
@@ -2866,42 +2870,44 @@ function showCommonType(type) {
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    var elements = xsdDom.querySelectorAll('[name="' + searchFor + '"]')
-    console.log('numar elemente', elements.length)
-    for (var i = 0; i < elements.length; i++) {
-      var element = elements[i]
-      //get child elements and find minOccurs="0"
-      var children = element.getElementsByTagName('xs:element')
-      console.log('children', children)
-      for (var j = 0; j < children.length; j++) {
-        var child = children[j]
-        if (child.getAttribute('minOccurs') == '0') {
-          nonMandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
-        } else {
-          mandatoryFields.push({ name: child.getAttribute('name'), type: child.getAttribute('type') })
+    recursiveSearchForTypes(xsdDom, searchFor)
+    function recursiveSearchForTypes(xsdDom, searchFor) {
+      //search complexType for name = searchFor
+      var elements = xsdDom.getElementsByTagName('xs:complexType')
+      var arrElements = Array.from(elements)
+      arrElements.every((item) => {
+        if (item.getAttribute('name') == searchFor) {
+          elements = item.getElementsByTagName('xs:element')
+          return false
+        }
+        return true
+      })
+      console.log('elemente', elements)
+      for (var i = 0; i < elements.length; i++) {
+        var element = elements[i]
+        //get child elements and find minOccurs="0"
+        var children = element.getElementsByTagName('xs:element')
+        console.log('children', children)
+        for (var j = 0; j < children.length; j++) {
+          var child = children[j]
+          if (child.getAttribute('minOccurs') == '0') {
+            nonMandatoryFields.push({
+              element: element.getAttribute('name'),
+              child: child.getAttribute('name'),
+              type: child.getAttribute('type')
+            })
+            recursiveSearchForTypes(xsdDom, child.getAttribute('type'))
+          } else {
+            mandatoryFields.push({
+              element: element.getAttribute('name'),
+              name: child.getAttribute('name'),
+              type: child.getAttribute('type')
+            })
+          }
         }
       }
-      console.log(
-        'element',
-        element,
-        'children',
-        children,
-        'mandatoryFields',
-        mandatoryFields,
-        'nonMandatoryFields',
-        nonMandatoryFields
-      )
-
-      var txtMessageToDisplay = ''
-      txtMessageToDisplay += 'Obligatorii: ' + mandatoryFields.length + '\n'
-      mandatoryFields.forEach((item) => {
-        txtMessageToDisplay += item.name + ' ' + item.type + '\n'
-      })
-      txtMessageToDisplay += '\nFacultative: ' + nonMandatoryFields.length + '\n'
-      nonMandatoryFields.forEach((item) => {
-        txtMessageToDisplay += item.name + ' ' + item.type + '\n'
-      })
-      alert(txtMessageToDisplay)
     }
+    console.log('mandatoryFields', mandatoryFields)
+    console.log('nonMandatoryFields', nonMandatoryFields)
   }
 }
