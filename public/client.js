@@ -2923,20 +2923,26 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
         })
       }
     }
-    
+
     console.log('mandatoryFields', thisMandatoryFields)
     console.log('nonMandatoryFields', thisNonMandatoryFields)
 
     //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
     //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
     var modal = document.getElementById('commonsDigging')
+    //add listener to modal close button
+    var modalClose = modal.getElementsByClassName('modal-close')[0]
+    modalClose.onclick = function () {
+      modal.classList.remove('is-active')
+    }
     modal.classList.add('is-active')
     //modal-content with data mentioned above
     var modalContent = modal.getElementsByClassName('modal-content')[0]
     //empty modalContent
     modalContent.innerHTML = ''
-    //create table
+    //create table in modalContent
     var table = document.createElement('table')
+    modalContent.appendChild(table)
     table.classList.add('table')
     table.classList.add('is-striped')
     table.classList.add('is-hoverable')
