@@ -2437,7 +2437,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
 
     //sort _HEADER by xmlNode alphabetically
-     _/* PART.sort((a, b) => {
+     /* _PART.sort((a, b) => {
       var txtA = a.xmlNode.toUpperCase()
       var txtB = b.xmlNode.toUpperCase()
       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
