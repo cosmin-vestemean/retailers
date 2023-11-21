@@ -1399,10 +1399,6 @@ async function fetchXMLFromRemoteServer() {
   var storeResponse = await client
     .service('sftp')
     .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
-  //wait for store to finish by checking the response not null
-  while (!storeResponse) {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-  }
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
   await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))

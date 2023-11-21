@@ -85,21 +85,20 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
-    const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
-    const initialDir = sftpDataObj.INITIALDIRIN
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
+        const initialDir = sftpDataObj.INITIALDIRIN
 
-    var returnedData = []
+        var returnedData = []
 
-    await sftp
-      .connect(config)
-      .then(() => {
+        await sftp.connect(config)
         console.log('connected')
         var olderThen = new Date()
-        //not older then n days
+        //not older than n days
         var n = 7
         olderThen.setDate(olderThen.getDate() - n)
-        return sftp.list(initialDir, (item) => {
-          //console.log('item', item)
+        const data = await sftp.list(initialDir, (item) => {
           return (
             item.type === '-' &&
             item.name.endsWith('.xml') &&
@@ -107,53 +106,42 @@ class SftpServiceClass {
             item.name.startsWith('ORD')
           )
         })
-      })
-      .then(async (data) => {
+
         if (data.length === 0) {
           console.log('No files on server')
           sftp.end()
           returnedData.push({ filename: '', success: false, error: 'No files on server' })
         }
-        //console log file names
+
         data.forEach((item) => {
           console.log('found on server: ' + item.name)
         })
-        //download each xml file and send it to storeXml service
-        data.forEach(async (item) => {
+
+        for (const item of data) {
           const filename = item.name
           const localPath = orderXmlPath + filename
-          //create path if not exists
+
           if (!fs.existsSync(orderXmlPath)) {
             fs.mkdirSync(orderXmlPath)
           }
-          let dst = fs.createWriteStream(localPath)
-          await sftp
-            .get(initialDir + '/' + filename, dst)
-            .then(() => {
-              console.log(`File ${filename} downloaded successfully!`)
-              returnedData.push({ filename: filename, success: true })
-            })
-            .catch((err) => {
-              console.error(err)
-              returnedData.push({ filename: filename, success: false, error: err })
-            })
-            .finally(() => {
-              dst.end()
-              //last file downloaded, close connection
-              if (filename === data[data.length - 1].name) {
-                sftp.end()
-              }
-            })
-        })
-      })
-      .catch((err) => {
-        console.error('list error', err)
-        sftp.end()
-        returnedData.push({ filename: '', success: false, error: err })
-      })
 
-    //return response
-    return returnedData
+          let dst = fs.createWriteStream(localPath)
+          await sftp.get(initialDir + '/' + filename, dst)
+          console.log(`File ${filename} downloaded successfully!`)
+          returnedData.push({ filename: filename, success: true })
+          dst.end()
+
+          if (filename === data[data.length - 1].name) {
+            sftp.end()
+          }
+        }
+
+        resolve(returnedData);
+      } catch (err) {
+        console.error('Error:', err);
+        reject(err);
+      }
+    });
   }
 
   async prepareConection(data, params) {
