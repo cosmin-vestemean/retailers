@@ -2956,6 +2956,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     table.classList.add('is-hoverable')
     table.classList.add('is-fullwidth')
     table.classList.add('is-narrow')
+    table.classList.add('is-size-7')
     //create table head
     var thead = table.createTHead()
     var row = thead.insertRow()
