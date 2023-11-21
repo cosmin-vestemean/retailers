@@ -2666,7 +2666,7 @@ function mandatoryFields() {
           type: element.getAttribute('type'),
           path: path,
           documentation: documentationValue,
-          orderNumber: i
+          orderNumber: i + 1
         })
       } else {
         //nu are minOccurs deci este obligatoriu, dar daca este complexType nu inregistrez, vor fi inregistrate elementele care il compun
@@ -2677,7 +2677,7 @@ function mandatoryFields() {
             type: element.getAttribute('type'),
             path: path,
             documentation: documentationValue,
-            orderNumber: i
+            orderNumber: i + 1
           })
         }
       }
