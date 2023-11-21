@@ -2862,6 +2862,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
   var reader = new FileReader()
+  var searchFor = type
   reader.readAsText(xsdFile)
   reader.onload = function (e) {
     var xsd = e.target.result
