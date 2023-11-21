@@ -2890,7 +2890,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
-              orderNumber: parserFloat(orderNumber) + (index + 1) * 0.1
+              orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
             })
           } else {
             mandatoryFields.push({
@@ -2898,7 +2898,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
-              orderNumber: parserFloat(orderNumber) + (index + 1) * 0.1
+              orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
             })
           }
         })
