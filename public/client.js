@@ -2657,22 +2657,24 @@ function mandatoryFields() {
           documentationValue = documentation.innerHTML
         }
       }
-      if (element.hasAttribute('minOccurs') && element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({
-          name: element.getAttribute('name'),
-          type: element.getAttribute('type'),
-          path: path,
-          documentation: documentationValue,
-          orderNumber: i
-        })
-      } else {
-        mandatoryFields.push({
-          name: element.getAttribute('name'),
-          type: element.getAttribute('type'),
-          path: path,
-          documentation: documentationValue,
-          orderNumber: i
-        })
+      if (element.hasAttribute('minOccurs')) {
+        if (element.getAttribute('minOccurs') == '0') {
+          nonMandatoryFields.push({
+            name: element.getAttribute('name'),
+            type: element.getAttribute('type'),
+            path: path,
+            documentation: documentationValue,
+            orderNumber: i
+          })
+        } else {
+          mandatoryFields.push({
+            name: element.getAttribute('name'),
+            type: element.getAttribute('type'),
+            path: path,
+            documentation: documentationValue,
+            orderNumber: i
+          })
+        }
       }
     }
     console.log('mandatoryFields', mandatoryFields)
