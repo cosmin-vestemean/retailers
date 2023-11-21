@@ -2687,11 +2687,12 @@ function mandatoryFields() {
 
     displayMandatoryFields(mandatoryFields, nonMandatoryFields)
 
-    setMandatoryAndFieldOrder(
-      mandatoryFields,
-      nonMandatoryFields,
-      document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
-    )
+    if (!document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0])
+      setMandatoryAndFieldOrder(
+        mandatoryFields,
+        nonMandatoryFields,
+        document.getElementById('xmlAsTable').getElementsByTagName('tbody')[0]
+      )
   }
 
   function displayMandatoryFields(mandatoryFields, nonMandatoryFields) {
@@ -2896,7 +2897,8 @@ function showCommonType(type) {
               child: child.getAttribute('name'),
               type: child.getAttribute('type')
             })
-            recursiveSearchForTypes(xsdDom, child.getAttribute('type'))
+            //search for type until you find a complexType
+            //recursiveSearchForTypes(xsdDom, child.getAttribute('type'))
           } else {
             mandatoryFields.push({
               element: element.getAttribute('name'),
