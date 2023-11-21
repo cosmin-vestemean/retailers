@@ -2967,6 +2967,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     td.setAttribute('colspan', '5')
     td.innerHTML = 'Obligatorii pentru ' + searchFor
     tr.appendChild(td)
+    tbody.appendChild(tr)
     thisMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
@@ -2992,6 +2993,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     td.setAttribute('colspan', '5')
     td.innerHTML = 'Facultative pentru ' + searchFor
     tr.appendChild(td)
+    tbody.appendChild(tr)
     thisNonMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
