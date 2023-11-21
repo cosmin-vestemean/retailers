@@ -2940,7 +2940,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     table.classList.add('is-striped')
     table.classList.add('is-hoverable')
     table.classList.add('is-fullwidth')
-    table.classList.add('is-small')
+    table.classList.add('is-narrow')
     //create table head
     var thead = table.createTHead()
     var row = thead.insertRow()
@@ -2961,17 +2961,12 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     row.appendChild(th)
     //create table body
     var tbody = table.createTBody()
-    //add title as row colspan=5
-    var tr = document.createElement('tr')
-    var td = document.createElement('td')
-    td.setAttribute('colspan', '5')
-    td.innerHTML = 'Obligatorii pentru ' + searchFor
-    tr.appendChild(td)
-    tbody.appendChild(tr)
     thisMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
       td.innerHTML = item.name
+      //color
+      td.style.color = 'red'
       tr.appendChild(td)
       var td = document.createElement('td')
       td.innerHTML = item.type
@@ -2987,13 +2982,6 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
       tr.appendChild(td)
       tbody.appendChild(tr)
     })
-    //facultative
-    var tr = document.createElement('tr')
-    var td = document.createElement('td')
-    td.setAttribute('colspan', '5')
-    td.innerHTML = 'Facultative pentru ' + searchFor
-    tr.appendChild(td)
-    tbody.appendChild(tr)
     thisNonMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
