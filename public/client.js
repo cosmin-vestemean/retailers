@@ -2250,6 +2250,10 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
   var ret = await createLOCATEINFO(trdr, sosource, fprms, series)
   var LOCATEINFO = ret.LOCATEINFO
   var CCCXMLS1MAPPINGS = ret.CCCXMLS1MAPPINGS
+  //sort CCCXMLS1MAPPINGS by XMLORDER
+  CCCXMLS1MAPPINGS.sort((a, b) => {
+    return a.XMLORDER - b.XMLORDER
+  })
 
   console.log('LOCATEINFO', LOCATEINFO)
   console.log('CCCXMLS1MAPPINGS', CCCXMLS1MAPPINGS)
@@ -2433,11 +2437,11 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
 
     //sort _HEADER by xmlNode alphabetically
-    /* _PART.sort((a, b) => {
+     _PART.sort((a, b) => {
       var txtA = a.xmlNode.toUpperCase()
       var txtB = b.xmlNode.toUpperCase()
       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
-    }) */
+    })
 
     return _PART
   }
