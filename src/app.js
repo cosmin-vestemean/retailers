@@ -144,27 +144,33 @@ class SftpServiceClass {
     });
   }
 
-  async prepareConection(data, params) {
-    const retailer = params.query.retailer
-    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
-    //console.log('Date conexiune', sftpData)
-    const sftpDataObj = sftpData.data[0]
-    const privateKey = sftpDataObj.PRIVATEKEY
-    const privateKeyPath = 'privateKey.txt'
-    fs.writeFileSync(privateKeyPath, privateKey)
-    const sftp = new Client()
-    const config = {
-      host: sftpDataObj.URL,
-      port: sftpDataObj.PORT,
-      username: sftpDataObj.USERNAME,
-      passphrase: sftpDataObj.PASSPHRASE,
-      privateKey: fs.readFileSync(privateKeyPath),
-      cipher: 'aes256-cbc',
-      algorithm: 'ssh-rsa',
-      readyTimeout: 99999
-    }
+  async prepareConnection(data, params) {
+    const retailer = params.query.retailer;
+    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } });
+    const sftpDataObj = sftpData.data[0];
+    const privateKey = sftpDataObj.PRIVATEKEY;
+    const privateKeyPath = 'privateKey.txt';
 
-    return { sftp: sftp, config: config, sftpDataObj: sftpDataObj }
+    return new Promise((resolve, reject) => {
+      fs.writeFile(privateKeyPath, privateKey, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          const sftp = new Client();
+          const config = {
+            host: sftpDataObj.URL,
+            port: sftpDataObj.PORT,
+            username: sftpDataObj.USERNAME,
+            passphrase: sftpDataObj.PASSPHRASE,
+            privateKey: fs.readFileSync(privateKeyPath),
+            cipher: 'aes256-cbc',
+            algorithm: 'ssh-rsa',
+            readyTimeout: 99999
+          };
+          resolve({ sftp, config, sftpDataObj });
+        }
+      });
+    });
   }
 
   async storeXmlInDB(data, params) {
