@@ -2622,7 +2622,10 @@ function mandatoryFields() {
     var xsd = e.target.result
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
-    var elements = xsdDom.getElementsByTagName('xs:element')
+    //remove element name='DXInvoice'
+    var dxInvoice = xsdDom.getElementsByTagName('xs:element')[0]
+    dxInvoice.parentNode.removeChild(dxInvoice)
+    var elements = dxInvoice.getElementsByTagName('xs:element')
     console.log('numar elemente', elements.length)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
