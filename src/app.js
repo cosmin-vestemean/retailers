@@ -85,63 +85,61 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
-        const initialDir = sftpDataObj.INITIALDIRIN
+    try {
+      const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params);
+      const initialDir = sftpDataObj.INITIALDIRIN;
+      const returnedData = [];
 
-        var returnedData = []
+      await sftp.connect(config);
+      console.log('Connected');
 
-        await sftp.connect(config)
-        console.log('connected')
-        var olderThen = new Date()
-        //not older than n days
-        var n = 7
-        olderThen.setDate(olderThen.getDate() - n)
-        const data = await sftp.list(initialDir, (item) => {
-          return (
-            item.type === '-' &&
-            item.name.endsWith('.xml') &&
-            item.modifyTime > olderThen &&
-            item.name.startsWith('ORD')
-          )
-        })
+      const olderThan = new Date();
+      const n = 7; // Number of days
+      olderThan.setDate(olderThan.getDate() - n);
 
-        if (data.length === 0) {
-          console.log('No files on server')
-          sftp.end()
-          returnedData.push({ filename: '', success: false, error: 'No files on server' })
-        }
+      const files = await sftp.list(initialDir, (item) => {
+        return (
+          item.type === '-' &&
+          item.name.endsWith('.xml') &&
+          item.modifyTime > olderThan &&
+          item.name.startsWith('ORD')
+        );
+      });
 
-        data.forEach((item) => {
-          console.log('found on server: ' + item.name)
-        })
-
-        for (const item of data) {
-          const filename = item.name
-          const localPath = orderXmlPath + filename
-
-          if (!fs.existsSync(orderXmlPath)) {
-            fs.mkdirSync(orderXmlPath)
-          }
-
-          let dst = fs.createWriteStream(localPath)
-          await sftp.get(initialDir + '/' + filename, dst)
-          console.log(`File ${filename} downloaded successfully!`)
-          returnedData.push({ filename: filename, success: true })
-          dst.end()
-
-          if (filename === data[data.length - 1].name) {
-            sftp.end()
-          }
-        }
-
-        resolve(returnedData);
-      } catch (err) {
-        console.error('Error:', err);
-        reject(err);
+      if (files.length === 0) {
+        console.log('No files on server');
+        sftp.end();
+        returnedData.push({ filename: '', success: false, error: 'No files on server' });
       }
-    });
+
+      files.forEach((item) => {
+        console.log('Found on server: ' + item.name);
+      });
+
+      for (const item of files) {
+        const filename = item.name;
+        const localPath = orderXmlPath + filename;
+
+        if (!fs.existsSync(orderXmlPath)) {
+          fs.mkdirSync(orderXmlPath);
+        }
+
+        const dst = fs.createWriteStream(localPath);
+        await sftp.get(initialDir + '/' + filename, dst);
+        console.log(`File ${filename} downloaded successfully!`);
+        returnedData.push({ filename: filename, success: true });
+        dst.end();
+
+        if (filename === files[files.length - 1].name) {
+          sftp.end();
+        }
+      }
+
+      return returnedData;
+    } catch (err) {
+      console.error('Error:', err);
+      throw err;
+    }
   }
 
   async prepareConnection(data, params) {
