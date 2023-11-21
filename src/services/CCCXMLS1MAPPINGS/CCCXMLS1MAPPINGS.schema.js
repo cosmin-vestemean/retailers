@@ -40,7 +40,7 @@ export const cccxmls1MappingsPatchValidator = getValidator(cccxmls1MappingsPatch
 export const cccxmls1MappingsPatchResolver = resolve({})
 
 // Schema for allowed query properties
-export const cccxmls1MappingsQueryProperties = Type.Pick(cccxmls1MappingsSchema, ['CCCXMLS1MAPPINGS', 'XMLNODE', 'S1TABLE1', 'S1FIELD1', 'CCCDOCUMENTES1MAPPINGS', 'MANDATORY', 'S1TABLE2', 'S1FIELD2'])
+export const cccxmls1MappingsQueryProperties = Type.Pick(cccxmls1MappingsSchema, ['CCCXMLS1MAPPINGS', 'XMLNODE', 'S1TABLE1', 'S1FIELD1', 'CCCDOCUMENTES1MAPPINGS', 'MANDATORY', 'S1TABLE2', 'S1FIELD2', 'XMLORDER'])
 export const cccxmls1MappingsQuerySchema = Type.Intersect(
   [
     querySyntax(cccxmls1MappingsQueryProperties),
