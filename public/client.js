@@ -2961,6 +2961,12 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     row.appendChild(th)
     //create table body
     var tbody = table.createTBody()
+    //add title as row colspan=5
+    var tr = document.createElement('tr')
+    var td = document.createElement('td')
+    td.setAttribute('colspan', '5')
+    td.innerHTML = 'Obligatorii pentru ' + searchFor
+    tr.appendChild(td)
     thisMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
@@ -2980,6 +2986,12 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
       tr.appendChild(td)
       tbody.appendChild(tr)
     })
+    //facultative
+    var tr = document.createElement('tr')
+    var td = document.createElement('td')
+    td.setAttribute('colspan', '5')
+    td.innerHTML = 'Facultative pentru ' + searchFor
+    tr.appendChild(td)
     thisNonMandatoryFields.forEach((item) => {
       var tr = document.createElement('tr')
       var td = document.createElement('td')
