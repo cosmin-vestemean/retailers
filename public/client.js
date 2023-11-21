@@ -2873,41 +2873,39 @@ function showCommonType(type) {
     //search for attributes with name = searchFor
     recursiveSearchForTypes(xsdDom, searchFor)
     function recursiveSearchForTypes(xsdDom, searchFor) {
-      //search complexType for name = searchFor
-      var elements = xsdDom.getElementsByTagName('xs:complexType')
-      var arrElements = Array.from(elements)
-      arrElements.every((item) => {
-        if (item.getAttribute('name') == searchFor) {
-          elements = item.getElementsByTagName('xs:element')
-          return false
-        }
-        return true
-      })
-      console.log('elemente', elements)
-      for (var i = 0; i < elements.length; i++) {
-        var element = elements[i]
-        //get child elements and find minOccurs="0"
-        var children = element.getElementsByTagName('xs:element')
-        console.log('children', children)
-        for (var j = 0; j < children.length; j++) {
-          var child = children[j]
-          if (child.getAttribute('minOccurs') == '0') {
+      //search xs:complexType name = searchFor
+      //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
+      //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
+      var myComplexType = xsdDom.getElementsByTagName('xs:complexType')
+      if (myComplexType.length > 0) {
+        var arrMyComplexType = Array.from(myComplexType)
+        var mySearchedComplexType = arrMyComplexType.find((item) => {
+          return item.getAttribute('name') == searchFor
+        })
+        //get all xs:element children
+        var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
+        var arrMyElements = Array.from(myElements)
+        arrMyElements.forEach((item) => {
+          if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
             nonMandatoryFields.push({
-              element: element.getAttribute('name'),
-              child: child.getAttribute('name'),
-              type: child.getAttribute('type')
+              name: item.getAttribute('name'),
+              type: item.getAttribute('type'),
+              path: searchFor + '/' + item.getAttribute('name'),
+              documentation: '',
+              orderNumber: ''
             })
-            //search for type until you find a complexType
-            //recursiveSearchForTypes(xsdDom, child.getAttribute('type'))
           } else {
             mandatoryFields.push({
-              element: element.getAttribute('name'),
-              name: child.getAttribute('name'),
-              type: child.getAttribute('type')
+              name: item.getAttribute('name'),
+              type: item.getAttribute('type'),
+              path: searchFor + '/' + item.getAttribute('name'),
+              documentation: '',
+              orderNumber: ''
             })
           }
-        }
+        })
       }
+
     }
     console.log('mandatoryFields', mandatoryFields)
     console.log('nonMandatoryFields', nonMandatoryFields)
