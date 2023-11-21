@@ -2899,24 +2899,17 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
         var arrMyElements = Array.from(myElements)
         console.log('arrMyElements', arrMyElements)
         arrMyElements.forEach((item, index) => {
+          var keeper = {
+            name: item.getAttribute('name'),
+            type: item.getAttribute('type'),
+            path: path + '/' + item.getAttribute('name'),
+            documentation: '',
+            orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
+          }
           if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
-            var keeper = {
-              name: item.getAttribute('name'),
-              type: item.getAttribute('type'),
-              path: path + '/' + item.getAttribute('name'),
-              documentation: '',
-              orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
-            }
             nonMandatoryFields.push(keeper)
             thisNonMandatoryFields.push(keeper)
           } else {
-            var keeper = {
-              name: item.getAttribute('name'),
-              type: item.getAttribute('type'),
-              path: path + '/' + item.getAttribute('name'),
-              documentation: '',
-              orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
-            }
             mandatoryFields.push(keeper)
             thisMandatoryFields.push(keeper)
           }
