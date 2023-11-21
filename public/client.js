@@ -2904,7 +2904,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
             type: item.getAttribute('type'),
             path: path + '/' + item.getAttribute('name'),
             documentation: '',
-            orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
+            orderNumber: parseFloat(orderNumber) + (index + 1) * 0.001
           }
           if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
             nonMandatoryFields.push(keeper)
