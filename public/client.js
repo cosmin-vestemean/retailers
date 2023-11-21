@@ -2899,10 +2899,25 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
         var arrMyElements = Array.from(myElements)
         console.log('arrMyElements', arrMyElements)
         arrMyElements.forEach((item, index) => {
+          var parents = []
+          var parent = item.parentNode
+         //while not mySeachedComplexType
+          while (parent.getAttribute('name') != searchFor) {
+            parents.push(parent)
+            parent = parent.parentNode
+          }
+          //construct path
+          var path1 = ''
+          for (var j = parents.length - 1; j >= 0; j--) {
+            var parentName = parents[j].getAttribute('name')
+            if (parentName) {
+              path1 += parentName + '/'
+            }
+          }
           var keeper = {
             name: item.getAttribute('name'),
             type: item.getAttribute('type'),
-            path: path + '/' + item.getAttribute('name'),
+            path: path + '/' + path1 + item.getAttribute('name'),
             documentation: '',
             orderNumber: parseFloat(orderNumber) + (index + 1) * 0.001
           }
