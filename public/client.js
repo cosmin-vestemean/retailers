@@ -2657,16 +2657,18 @@ function mandatoryFields() {
           documentationValue = documentation.innerHTML
         }
       }
-      if (element.hasAttribute('minOccurs')) {
-        if (element.getAttribute('minOccurs') == '0') {
-          nonMandatoryFields.push({
-            name: element.getAttribute('name'),
-            type: element.getAttribute('type'),
-            path: path,
-            documentation: documentationValue,
-            orderNumber: i
-          })
-        } else {
+      if (element.hasAttribute('minOccurs') && element.getAttribute('minOccurs') == '0') {
+        nonMandatoryFields.push({
+          name: element.getAttribute('name'),
+          type: element.getAttribute('type'),
+          path: path,
+          documentation: documentationValue,
+          orderNumber: i
+        })
+      } else {
+        //nu are minOccurs deci este obligatoriu, dar daca este complexType nu inregistrez, vor fi inregistrate elementele care il compun
+        var isComplexType = element.getElementsByTagName('xs:complexType')[0]
+        if (!isComplexType) {
           mandatoryFields.push({
             name: element.getAttribute('name'),
             type: element.getAttribute('type'),
