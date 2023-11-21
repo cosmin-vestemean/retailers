@@ -859,7 +859,10 @@ function loadMapping(id) {
     .service('CCCXMLS1MAPPINGS')
     .find({
       query: {
-        CCCDOCUMENTES1MAPPINGS: id
+        CCCDOCUMENTES1MAPPINGS: id,
+        $sort: {
+          XMLORDER: 1
+        }
       }
     })
     .then((res) => {

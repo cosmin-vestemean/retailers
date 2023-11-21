@@ -51,6 +51,7 @@ export const cccxmls1MappingsQuerySchema = Type.Intersect(
       S1FIELD1: Type.String(),
       S1TABLE2: Type.String(),
       S1FIELD2: Type.String(),
+      XMLODER: Type.Number(),
       CCCDOCUMENTES1MAPPINGS: Type.Number()
     }, { additionalProperties: false })
   ],
