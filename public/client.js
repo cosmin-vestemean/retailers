@@ -2732,7 +2732,13 @@ function mandatoryFields() {
       td.innerHTML = item.type
       //onclick event
       td.onclick = function () {
-        showCommonType(this.innerHTML.split(':')[1], item.orderNumber, mandatoryFields, nonMandatoryFields, item.path)
+        showCommonType(
+          this.innerHTML.split(':')[1],
+          item.orderNumber,
+          mandatoryFields,
+          nonMandatoryFields,
+          item.path
+        )
       }
       tr.appendChild(td)
       var td = document.createElement('td')
@@ -2784,7 +2790,13 @@ function mandatoryFields() {
       td.innerHTML = item.type
       //onclick event
       td.onclick = function () {
-        showCommonType(this.innerHTML.split(':')[1], item.orderNumber, mandatoryFields, nonMandatoryFields, item.path)
+        showCommonType(
+          this.innerHTML.split(':')[1],
+          item.orderNumber,
+          mandatoryFields,
+          nonMandatoryFields,
+          item.path
+        )
       }
       tr.appendChild(td)
       var td = document.createElement('td')
@@ -2860,6 +2872,8 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     return
   }
   console.log('xsdFile', xsdFile)
+  var thisMandatoryFields = []
+  var thisNonMandatoryFields = []
   //find elements without minOccurs="0"
   var reader = new FileReader()
   var searchFor = type
@@ -2886,27 +2900,104 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
         console.log('arrMyElements', arrMyElements)
         arrMyElements.forEach((item, index) => {
           if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
-            nonMandatoryFields.push({
+            var keeper = {
               name: item.getAttribute('name'),
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
               orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
-            })
+            }
+            nonMandatoryFields.push(keeper)
+            thisNonMandatoryFields.push(keeper)
           } else {
-            mandatoryFields.push({
+            var keeper = {
               name: item.getAttribute('name'),
               type: item.getAttribute('type'),
               path: searchFor + '/' + item.getAttribute('name'),
               documentation: '',
               orderNumber: parseFloat(orderNumber) + (index + 1) * 0.1
-            })
+            }
+            mandatoryFields.push(keeper)
+            thisMandatoryFields.push(keeper)
           }
         })
       }
-
     }
-    console.log('mandatoryFields', mandatoryFields)
-    console.log('nonMandatoryFields', nonMandatoryFields)
+    
+    console.log('mandatoryFields', thisMandatoryFields)
+    console.log('nonMandatoryFields', thisNonMandatoryFields)
+
+    //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
+    //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
+    var modal = document.getElementById('commonsDigging')
+    modal.classList.add('is-active')
+    //modal-content with data mentioned above
+    var modalContent = modal.getElementsByClassName('modal-content')[0]
+    //empty modalContent
+    modalContent.innerHTML = ''
+    //create table
+    var table = document.createElement('table')
+    table.classList.add('table')
+    table.classList.add('is-striped')
+    table.classList.add('is-hoverable')
+    table.classList.add('is-fullwidth')
+    //create table head
+    var thead = table.createTHead()
+    var row = thead.insertRow()
+    var th = document.createElement('th')
+    th.innerHTML = 'Name'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Type'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Path'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Documentation'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Order Number'
+    row.appendChild(th)
+    //create table body
+    var tbody = table.createTBody()
+    thisMandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
+    thisNonMandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
   }
 }
