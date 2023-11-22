@@ -198,7 +198,7 @@ class SftpServiceClass {
         };
         console.log('data', d);
         try {
-          const result = await app.service('storeXml').create(d, { query: { TRDR_RETAILER: retailer } });
+          const result = await app.service('storeXml').create(d, { query: { retailer: retailer } });
           console.log('storeXml result', result);
           if (result.success) {
             returnedData.push({ filename: filename, success: true });
@@ -224,7 +224,7 @@ class SftpServiceClass {
       }
     }
 
-    console.log('inserted files loop result', returnedData);
+    console.log('inserted files in S1 DB', returnedData);
   }
 
   async uploadXml(data, params) {
