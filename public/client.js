@@ -913,7 +913,7 @@ function addTableBody(table, data) {
     //add cells
     //xml order
     var xmlOrder = row.insertCell()
-    xmlOrder.innerHTML = 0
+    xmlOrder.innerHTML = item.XMLORDER
     xmlOrder.className = 'xmlOrder'
     var pick = row.insertCell()
     var req = row.insertCell()
