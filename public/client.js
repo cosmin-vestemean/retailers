@@ -2690,7 +2690,7 @@ function mandatoryFields() {
           var isComplexType = element.getElementsByTagName('xs:complexType')[0]
           var needsFurtherInvestigation = false
           //if type is in form commons:something then needs further investigation with commons.xsd
-          needsFurtherInvestigation = element.getAttribute('type').includes('commons:')
+          needsFurtherInvestigation = element.getAttribute('type') ? element.getAttribute('type').includes('commons:') : false
           if (!isComplexType)
             if (!needsFurtherInvestigation) {
               mandatoryFields.push({
