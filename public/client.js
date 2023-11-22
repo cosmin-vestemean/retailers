@@ -3061,6 +3061,11 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
     mySearchedComplexType = myComplexType.find((item) => {
       return item.getAttribute('name') == searchFor
     })
+
+    if (!mySearchedComplexType) {
+      console.log('mySearchedComplexType not found')
+      return { thisMandatoryFields: thisMandatoryFields, thisNonMandatoryFields: thisNonMandatoryFields }
+    }
     console.log('searchFor', searchFor, 'mySearchedComplexType', mySearchedComplexType)
     //get all xs:element children
     var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
