@@ -1387,6 +1387,10 @@ async function fetchXMLFromRemoteServer() {
   //change caption of id="preluareComenziBtn"
   var localStorageRetailer = localStorage.getItem('trdr_retailer')
   console.log('localStorageRetailer', localStorageRetailer)
+  if (!localStorageRetailer) {
+    alert('Please select a retailer')
+    return
+  }
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
   var downloadResponse = await client
