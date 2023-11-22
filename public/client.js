@@ -1407,7 +1407,7 @@ async function fetchXMLFromRemoteServer() {
     .storeXmlInDB({}, { query: { retailer: localStorageRetailer } })
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
-  await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
+  await displayXmlDataForRetailer(localStorageRetailer)
   myBtn.innerHTML = 'Preluare comenzi'
 }
 

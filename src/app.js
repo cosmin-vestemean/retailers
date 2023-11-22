@@ -179,6 +179,7 @@ class SftpServiceClass {
 
     for (const file of files) {
       const filename = file;
+      console.log('storing filename in S1 DB', filename);
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename;
         console.log('localPath', localPath);
