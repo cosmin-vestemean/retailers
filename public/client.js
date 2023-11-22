@@ -2913,7 +2913,7 @@ function mandatoryFields() {
       mandatoryFields.every((item) => {
         console.log('path', path, 'item.path', item.path)
         //if (item.path == path) {
-        if (path.includes(item.path)) {
+        if (path == item.path) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
           return false
