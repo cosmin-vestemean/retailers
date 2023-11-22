@@ -2743,7 +2743,7 @@ function mandatoryFields() {
                 orderNumber: i + 1
               })
             } else {
-              //recursiveSearchForTypes(element.getAttribute('type').split(':')[1], i+1 , mandatoryFields, nonMandatoryFields, path)
+              recursiveSearchForTypes(element.getAttribute('type').split(':')[1], i+1 , mandatoryFields, nonMandatoryFields, path)
             }
         }
       }
@@ -3049,9 +3049,9 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
     console.log('xsdDom not ready')
     return
   }
-  console.log('searchFor', searchFor)
   var thisMandatoryFields = []
   var thisNonMandatoryFields = []
+  var mySearchedComplexType
   //search xs:complexType name = searchFor
   //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
   //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
@@ -3059,7 +3059,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
   console.log('myComplexType', myComplexType)
   if (myComplexType.length > 0) {
     var arrMyComplexType = Array.from(myComplexType)
-    var mySearchedComplexType = arrMyComplexType.find((item) => {
+    mySearchedComplexType = arrMyComplexType.find((item) => {
       return item.getAttribute('name') == searchFor
     })
     console.log('searchFor', searchFor, 'mySearchedComplexType', mySearchedComplexType)
