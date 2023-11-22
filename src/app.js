@@ -232,7 +232,7 @@ class SftpServiceClass {
   }
 
   async uploadXml(data, params) {
-    const { sftp, config, sftpDataObj } = await this.prepareConection(data, params)
+    const { sftp, config, sftpDataObj } = await prepareConection(data, params)
     const initialDir = sftpDataObj.INITIALDIROUT
     //data is a object with filename and xml
     //send xml to sftp server
