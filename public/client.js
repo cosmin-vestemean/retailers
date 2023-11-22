@@ -2896,59 +2896,15 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(xsdDom, searchFor, orderNumber)
-    function recursiveSearchForTypes(xsdDom, searchFor, orderNumber) {
-      //search xs:complexType name = searchFor
-      //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
-      //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
-      var myComplexType = xsdDom.getElementsByTagName('xs:complexType')
-      if (myComplexType.length > 0) {
-        var arrMyComplexType = Array.from(myComplexType)
-        var mySearchedComplexType = arrMyComplexType.find((item) => {
-          return item.getAttribute('name') == searchFor
-        })
-        //get all xs:element children
-        var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
-        var arrMyElements = Array.from(myElements)
-        console.log('arrMyElements', arrMyElements)
-        arrMyElements.forEach((item, index) => {
-          var parents = []
-          var parent = item.parentNode
-         //while not mySeachedComplexType
-          while (parent.getAttribute('name') != searchFor) {
-            parents.push(parent)
-            parent = parent.parentNode
-          }
-          //construct path
-          var path1 = ''
-          for (var j = parents.length - 1; j >= 0; j--) {
-            var parentName = parents[j].getAttribute('name')
-            if (parentName) {
-              path1 += parentName + '/'
-            }
-          }
-          var keeper = {
-            name: item.getAttribute('name'),
-            type: item.getAttribute('type'),
-            path: path + '/' + path1 + item.getAttribute('name'),
-            documentation: '',
-            orderNumber: parseFloat(orderNumber) + (index + 1) * 0.001
-          }
-          if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
-            nonMandatoryFields.push(keeper)
-            thisNonMandatoryFields.push(keeper)
-          } else {
-            mandatoryFields.push(keeper)
-            thisMandatoryFields.push(keeper)
-          }
-        })
-      }
-    }
+    recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
 
     console.log('mandatoryFields', thisMandatoryFields)
     console.log('nonMandatoryFields', thisNonMandatoryFields)
 
-    //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
+    displayDetails()
+
+    function displayDetails() {
+      //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
     //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
     var modal = document.getElementById('commonsDigging')
     //add listener to modal close button
@@ -3029,6 +2985,55 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
       td.innerHTML = item.orderNumber
       tr.appendChild(td)
       tbody.appendChild(tr)
+    })
+    }
+  }
+}
+
+function recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path) {
+  //search xs:complexType name = searchFor
+  //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
+  //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
+  var myComplexType = xsdDom.getElementsByTagName('xs:complexType')
+  if (myComplexType.length > 0) {
+    var arrMyComplexType = Array.from(myComplexType)
+    var mySearchedComplexType = arrMyComplexType.find((item) => {
+      return item.getAttribute('name') == searchFor
+    })
+    //get all xs:element children
+    var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
+    var arrMyElements = Array.from(myElements)
+    console.log('arrMyElements', arrMyElements)
+    arrMyElements.forEach((item, index) => {
+      var parents = []
+      var parent = item.parentNode
+     //while not mySeachedComplexType
+      while (parent.getAttribute('name') != searchFor) {
+        parents.push(parent)
+        parent = parent.parentNode
+      }
+      //construct path
+      var path1 = ''
+      for (var j = parents.length - 1; j >= 0; j--) {
+        var parentName = parents[j].getAttribute('name')
+        if (parentName) {
+          path1 += parentName + '/'
+        }
+      }
+      var keeper = {
+        name: item.getAttribute('name'),
+        type: item.getAttribute('type'),
+        path: path + '/' + path1 + item.getAttribute('name'),
+        documentation: '',
+        orderNumber: parseFloat(orderNumber) + (index + 1) * 0.001
+      }
+      if (item.hasAttribute('minOccurs') && item.getAttribute('minOccurs') == '0') {
+        nonMandatoryFields.push(keeper)
+        thisNonMandatoryFields.push(keeper)
+      } else {
+        mandatoryFields.push(keeper)
+        thisMandatoryFields.push(keeper)
+      }
     })
   }
 }
