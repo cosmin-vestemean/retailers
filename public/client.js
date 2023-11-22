@@ -2676,7 +2676,7 @@ function mandatoryFields() {
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
-    xsdDom = parser.parseFromString(xsd, 'text/xml')
+    var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //find and remove element name='DXInvoice' from xsdDom
     var dxInvoice = xsdDom.getElementsByTagName('xs:element')[0]
     dxInvoice.parentNode.removeChild(dxInvoice)
@@ -2926,7 +2926,7 @@ function mandatoryFields() {
   }
 }
 
-var xsdDom = null
+var xsdCommonsDom = null
 function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
   //1.get file from input id="xsdCommonsFile"
   //2. create dom from file
@@ -2949,7 +2949,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
-    xsdDom = parser.parseFromString(xsd, 'text/xml')
+    xsdCommonsDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
     var response = recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
     thisMandatoryFields = response.thisMandatoryFields
@@ -3045,8 +3045,8 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
 }
 
 function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path) {
-  if (!xsdDom) {
-    console.log('xsdDom not ready')
+  if (!xsdCommonsDom) {
+    console.log('xsdCommonsDom not ready')
     return
   }
   var thisMandatoryFields = []
@@ -3055,7 +3055,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
   //search xs:complexType name = searchFor
   //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
   //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
-  var myComplexType = [...xsdDom.getElementsByTagName('xs:complexType')]
+  var myComplexType = [...xsdCommonsDom.getElementsByTagName('xs:complexType')]
   console.log('myComplexType', myComplexType)
   if (myComplexType.length > 0) {
     mySearchedComplexType = myComplexType.find((item) => {
