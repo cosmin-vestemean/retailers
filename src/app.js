@@ -173,6 +173,7 @@ class SftpServiceClass {
 
   async storeXmlInDB(data, params) {
     const retailer = params.query.retailer;
+    console.log('storing xml in S1 DB for retailer', retailer);
     const folderPath = orderXmlPath;
     const files = fs.readdirSync(folderPath);
     const returnedData = [];
@@ -197,7 +198,7 @@ class SftpServiceClass {
         };
         console.log('data', d);
         try {
-          const result = await app.service('storeXml').create(d, { query: { retailer: retailer } });
+          const result = await app.service('storeXml').create(d, { query: { TRDR_RETAILER: retailer } });
           console.log('storeXml result', result);
           if (result.success) {
             returnedData.push({ filename: filename, success: true });
