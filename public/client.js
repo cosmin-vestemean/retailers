@@ -2896,7 +2896,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
+    recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path, thisMandatoryFields, thisNonMandatoryFields)
 
     console.log('mandatoryFields', thisMandatoryFields)
     console.log('nonMandatoryFields', thisNonMandatoryFields)
@@ -2990,7 +2990,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   }
 }
 
-function recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path) {
+function recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path, thisMandatoryFields, thisNonMandatoryFields) {
   //search xs:complexType name = searchFor
   //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
   //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
