@@ -1765,7 +1765,7 @@ async function sendInvoice(findoc) {
       .service('sftp')
       .uploadXml(
         { findoc: findoc, xml: xml, filename: filename },
-        { query: { retailer: locaStorageRetailer } }
+        { query: { retailer: localStorageRetailer } }
       )
       .then((res) => {
         console.log('sftp uploadXml', res)
