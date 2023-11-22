@@ -2743,7 +2743,7 @@ function mandatoryFields() {
                 orderNumber: i + 1
               })
             } else {
-              recursiveSearchForTypes(element.getAttribute('type').split(':'), i+1 , mandatoryFields, nonMandatoryFields, path)
+              recursiveSearchForTypes(element.getAttribute('type').split(':')[1], i+1 , mandatoryFields, nonMandatoryFields, path)
             }
         }
       }
