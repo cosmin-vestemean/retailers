@@ -3078,7 +3078,6 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
     //get all xs:element children
     var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
     var arrMyElements = Array.from(myElements)
-    console.log('arrMyElements', arrMyElements)
     arrMyElements.forEach((item, index) => {
       var parents = []
       var parent = item.parentNode
@@ -3108,62 +3107,6 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
       } else {
         mandatoryFields.push(keeper)
         thisMandatoryFields.push(keeper)
-      }
-      //try further investigation with commons.xsd by type
-      var type = item.getAttribute('type')
-      if (type) {
-        var response = recursiveSearchForTypes(
-          type,
-          keeper.orderNumber,
-          mandatoryFields,
-          nonMandatoryFields,
-          keeper.path
-        )
-        thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-        thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
-
-        //try once more on data returned by recursiveSearchForTypes
-        listOfPrimitiveTypes = [
-          'xs:string',
-          'xs:decimal',
-          'xs:integer',
-          'xs:boolean',
-          'xs:date',
-          'xs:time',
-          'xs:dateTime',
-          'xs:duration',
-          'xs:hexBinary',
-          'xs:base64Binary',
-          'xs:anyURI',
-          'xs:QName',
-          'xs:NOTATION'
-        ]
-        thisMandatoryFields.forEach((item) => {
-          if (listOfPrimitiveTypes.indexOf(item.type) == -1) {
-            var response = recursiveSearchForTypes(
-              item.type,
-              item.orderNumber,
-              mandatoryFields,
-              nonMandatoryFields,
-              item.path
-            )
-            thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-            thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
-          }
-        })
-        thisNonMandatoryFields.forEach((item) => {
-          if (listOfPrimitiveTypes.indexOf(item.type) == -1) {
-            var response = recursiveSearchForTypes(
-              item.type,
-              item.orderNumber,
-              mandatoryFields,
-              nonMandatoryFields,
-              item.path
-            )
-            thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-            thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
-          }
-        })
       }
     })
   }
