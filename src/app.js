@@ -86,7 +86,7 @@ class SftpServiceClass {
   */
   async downloadXml(data, params) {
     try {
-      const { sftp, config, sftpDataObj } = await prepareConnection(data, params);
+      const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params);
       const initialDir = sftpDataObj.INITIALDIRIN;
       const returnedData = [];
 
@@ -232,7 +232,7 @@ class SftpServiceClass {
   }
 
   async uploadXml(data, params) {
-    const { sftp, config, sftpDataObj } = await prepareConection(data, params)
+    const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
     const initialDir = sftpDataObj.INITIALDIROUT
     //data is a object with filename and xml
     //send xml to sftp server
