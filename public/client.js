@@ -2701,7 +2701,7 @@ function mandatoryFields() {
                 orderNumber: i + 1
               })
             } else {
-              recursiveSearchForTypes(element.getAttribute('type'), i+1 , mandatoryFields, nonMandatoryFields, path)
+              recursiveSearchForTypes(element.getAttribute('type').split(':'), i+1 , mandatoryFields, nonMandatoryFields, path)
             }
         }
       }
@@ -3000,8 +3000,10 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
 
 function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path) {
   if (!xsdDom) {
+    console.log('xsdDom not ready')
     return
   }
+  console.log('searchFor', searchFor)
   var thisMandatoryFields = []
   var thisNonMandatoryFields = []
   //search xs:complexType name = searchFor
@@ -3050,7 +3052,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
     })
   }
 
-  console.log('mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
+  console.log('thisMandatoryFields', thisMandatoryFields, 'thisNonMandatoryFields', thisNonMandatoryFields)
 }
 
 //create function to close bulma modal on escape key
