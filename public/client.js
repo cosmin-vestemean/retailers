@@ -2690,15 +2690,19 @@ function mandatoryFields() {
           var isComplexType = element.getElementsByTagName('xs:complexType')[0]
           var needsFurtherInvestigation = false
           //if type is in form commons:something then needs further investigation with commons.xsd
-          if (!isComplexType) {
-            mandatoryFields.push({
-              name: element.getAttribute('name'),
-              type: element.getAttribute('type'),
-              path: path,
-              documentation: documentationValue,
-              orderNumber: i + 1
-            })
-          }
+          needsFurtherInvestigation = element.getAttribute('type').includes('commons:')
+          if (!isComplexType)
+            if (!needsFurtherInvestigation) {
+              mandatoryFields.push({
+                name: element.getAttribute('name'),
+                type: element.getAttribute('type'),
+                path: path,
+                documentation: documentationValue,
+                orderNumber: i + 1
+              })
+            } else {
+              recursiveSearchForTypes(element.getAttribute('type'), i+1 , mandatoryFields, nonMandatoryFields, path)
+            }
         }
       }
     }
@@ -2880,6 +2884,7 @@ function mandatoryFields() {
   }
 }
 
+var xsdDom = null
 function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
   //1.get file from input id="xsdCommonsFile"
   //2. create dom from file
@@ -2892,7 +2897,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     return
   }
   console.log('xsdFile', xsdFile)
-  
+
   //find elements without minOccurs="0"
   var reader = new FileReader()
   var searchFor = type
@@ -2900,16 +2905,9 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
-    var xsdDom = parser.parseFromString(xsd, 'text/xml')
+    xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(
-      xsdDom,
-      searchFor,
-      orderNumber,
-      mandatoryFields,
-      nonMandatoryFields,
-      path
-    )
+    recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
 
     displayDetails()
 
@@ -3000,14 +2998,10 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   }
 }
 
-function recursiveSearchForTypes(
-  xsdDom,
-  searchFor,
-  orderNumber,
-  mandatoryFields,
-  nonMandatoryFields,
-  path
-) {
+function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path) {
+  if (!xsdDom) {
+    return
+  }
   var thisMandatoryFields = []
   var thisNonMandatoryFields = []
   //search xs:complexType name = searchFor
