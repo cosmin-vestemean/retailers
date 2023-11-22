@@ -86,7 +86,7 @@ class SftpServiceClass {
   */
   async downloadXml(data, params) {
     try {
-      const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params);
+      const { sftp, config, sftpDataObj } = await prepareConnection(data, params);
       const initialDir = sftpDataObj.INITIALDIRIN;
       const returnedData = [];
 
