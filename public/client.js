@@ -1385,11 +1385,13 @@ async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: localStorage.getItem('trdr_retailer') to get xml from remote server to database
   //then displayXmlDataForRetailer(localStorage.getItem('trdr_retailer')) from database
   //change caption of id="preluareComenziBtn"
+  var localStorageRetailer = localStorage.getItem('trdr_retailer')
+  console.log('localStorageRetailer', localStorageRetailer)
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
   var downloadResponse = await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .downloadXml({}, { query: { retailer: localStorageRetailer } })
   //wait for download to finish by checking the response not null
   while (!downloadResponse) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -1398,7 +1400,7 @@ async function fetchXMLFromRemoteServer() {
   myBtn.innerHTML = 'Storing in database...'
   var storeResponse = await client
     .service('sftp')
-    .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .storeXmlInDB({}, { query: { retailer: localStorageRetailer } })
   console.log('sftp store', storeResponse)
   myBtn.innerHTML = 'Displaying xml files...'
   await displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
