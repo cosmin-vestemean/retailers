@@ -3123,16 +3123,33 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
         thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
 
         //try once more on data returned by recursiveSearchForTypes
+        listOfPrimitiveTypes = [
+          'xs:string',
+          'xs:decimal',
+          'xs:integer',
+          'xs:boolean',
+          'xs:date',
+          'xs:time',
+          'xs:dateTime',
+          'xs:duration',
+          'xs:hexBinary',
+          'xs:base64Binary',
+          'xs:anyURI',
+          'xs:QName',
+          'xs:NOTATION'
+        ]
         thisMandatoryFields.forEach((item) => {
-          var response = recursiveSearchForTypes(
-            item.type,
-            item.orderNumber,
-            mandatoryFields,
-            nonMandatoryFields,
-            item.path
-          )
-          thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-          thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+          if (listOfPrimitiveTypes.indexOf(item.type) == -1) {
+            var response = recursiveSearchForTypes(
+              item.type,
+              item.orderNumber,
+              mandatoryFields,
+              nonMandatoryFields,
+              item.path
+            )
+            thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
+            thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+          }
         })
         thisNonMandatoryFields.forEach((item) => {
           var response = recursiveSearchForTypes(
