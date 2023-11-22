@@ -2441,7 +2441,7 @@ async function createXML(findoc, trdr, sosource, fprms, series) {
     }
 
     //sort _HEADER by xmlNode alphabetically
-     /* _PART.sort((a, b) => {
+    /* _PART.sort((a, b) => {
       var txtA = a.xmlNode.toUpperCase()
       var txtB = b.xmlNode.toUpperCase()
       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
@@ -2659,39 +2659,46 @@ function mandatoryFields() {
       path += element.getAttribute('name')
       path = path.replace('InvoiceType', 'DXInvoice/Invoice')
       path = path.replace('InvoiceLineType', 'DXInvoice/InvoiceLine')
-      /*
+
+      recursiveSearchInElement(element, path)
+
+      function recursiveSearchInElement(element, path) {
+        /*
       <xs:annotation>
 					<xs:documentation>Invoice Currency</xs:documentation>
 				</xs:annotation>
       */
-      //get documentation value if exists
-      var documentationValue = ''
-      var annotation = element.getElementsByTagName('xs:annotation')[0]
-      if (annotation) {
-        var documentation = annotation.getElementsByTagName('xs:documentation')[0]
-        if (documentation) {
-          documentationValue = documentation.innerHTML
+        //get documentation value if exists
+        var documentationValue = ''
+        var annotation = element.getElementsByTagName('xs:annotation')[0]
+        if (annotation) {
+          var documentation = annotation.getElementsByTagName('xs:documentation')[0]
+          if (documentation) {
+            documentationValue = documentation.innerHTML
+          }
         }
-      }
-      if (element.hasAttribute('minOccurs') && element.getAttribute('minOccurs') == '0') {
-        nonMandatoryFields.push({
-          name: element.getAttribute('name'),
-          type: element.getAttribute('type'),
-          path: path,
-          documentation: documentationValue,
-          orderNumber: i + 1
-        })
-      } else {
-        //nu are minOccurs deci este obligatoriu, dar daca este complexType nu inregistrez, vor fi inregistrate elementele care il compun
-        var isComplexType = element.getElementsByTagName('xs:complexType')[0]
-        if (!isComplexType) {
-          mandatoryFields.push({
+        if (element.hasAttribute('minOccurs') && element.getAttribute('minOccurs') == '0') {
+          nonMandatoryFields.push({
             name: element.getAttribute('name'),
             type: element.getAttribute('type'),
             path: path,
             documentation: documentationValue,
             orderNumber: i + 1
           })
+        } else {
+          //nu are minOccurs deci este obligatoriu, dar daca este complexType nu inregistrez, vor fi inregistrate elementele care il compun
+          var isComplexType = element.getElementsByTagName('xs:complexType')[0]
+          var needsFurtherInvestigation = false
+          //if type is in form commons:something then needs further investigation with commons.xsd
+          if (!isComplexType) {
+            mandatoryFields.push({
+              name: element.getAttribute('name'),
+              type: element.getAttribute('type'),
+              path: path,
+              documentation: documentationValue,
+              orderNumber: i + 1
+            })
+          }
         }
       }
     }
@@ -2885,8 +2892,7 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     return
   }
   console.log('xsdFile', xsdFile)
-  var thisMandatoryFields = []
-  var thisNonMandatoryFields = []
+  
   //find elements without minOccurs="0"
   var reader = new FileReader()
   var searchFor = type
@@ -2896,101 +2902,114 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     var parser = new DOMParser()
     var xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path, thisMandatoryFields, thisNonMandatoryFields)
-
-    console.log('mandatoryFields', thisMandatoryFields)
-    console.log('nonMandatoryFields', thisNonMandatoryFields)
+    recursiveSearchForTypes(
+      xsdDom,
+      searchFor,
+      orderNumber,
+      mandatoryFields,
+      nonMandatoryFields,
+      path
+    )
 
     displayDetails()
 
     function displayDetails() {
       //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
-    //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
-    var modal = document.getElementById('commonsDigging')
-    //add listener to modal close button
-    var modalClose = modal.getElementsByClassName('modal-close')[0]
-    modalClose.onclick = function () {
-      modal.classList.remove('is-active')
-    }
-    modal.classList.add('is-active')
-    //modal-content with data mentioned above
-    var modalContent = modal.getElementsByClassName('modal-content')[0]
-    //empty modalContent
-    modalContent.innerHTML = ''
-    //create table in modalContent
-    var table = document.createElement('table')
-    modalContent.appendChild(table)
-    table.classList.add('table')
-    table.classList.add('is-striped')
-    table.classList.add('is-hoverable')
-    table.classList.add('is-fullwidth')
-    table.classList.add('is-narrow')
-    table.classList.add('is-size-7')
-    //create table head
-    var thead = table.createTHead()
-    var row = thead.insertRow()
-    var th = document.createElement('th')
-    th.innerHTML = 'Name'
-    row.appendChild(th)
-    var th = document.createElement('th')
-    th.innerHTML = 'Type'
-    row.appendChild(th)
-    var th = document.createElement('th')
-    th.innerHTML = 'Path'
-    row.appendChild(th)
-    var th = document.createElement('th')
-    th.innerHTML = 'Documentation'
-    row.appendChild(th)
-    var th = document.createElement('th')
-    th.innerHTML = 'Order Number'
-    row.appendChild(th)
-    //create table body
-    var tbody = table.createTBody()
-    thisMandatoryFields.forEach((item) => {
-      var tr = document.createElement('tr')
-      var td = document.createElement('td')
-      td.innerHTML = item.name
-      //color
-      td.style.color = 'red'
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.type
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.path
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.documentation
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.orderNumber
-      tr.appendChild(td)
-      tbody.appendChild(tr)
-    })
-    thisNonMandatoryFields.forEach((item) => {
-      var tr = document.createElement('tr')
-      var td = document.createElement('td')
-      td.innerHTML = item.name
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.type
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.path
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.documentation
-      tr.appendChild(td)
-      var td = document.createElement('td')
-      td.innerHTML = item.orderNumber
-      tr.appendChild(td)
-      tbody.appendChild(tr)
-    })
+      //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
+      var modal = document.getElementById('commonsDigging')
+      //add listener to modal close button
+      var modalClose = modal.getElementsByClassName('modal-close')[0]
+      modalClose.onclick = function () {
+        modal.classList.remove('is-active')
+      }
+      modal.classList.add('is-active')
+      //modal-content with data mentioned above
+      var modalContent = modal.getElementsByClassName('modal-content')[0]
+      //empty modalContent
+      modalContent.innerHTML = ''
+      //create table in modalContent
+      var table = document.createElement('table')
+      modalContent.appendChild(table)
+      table.classList.add('table')
+      table.classList.add('is-striped')
+      table.classList.add('is-hoverable')
+      table.classList.add('is-fullwidth')
+      table.classList.add('is-narrow')
+      table.classList.add('is-size-7')
+      //create table head
+      var thead = table.createTHead()
+      var row = thead.insertRow()
+      var th = document.createElement('th')
+      th.innerHTML = 'Name'
+      row.appendChild(th)
+      var th = document.createElement('th')
+      th.innerHTML = 'Type'
+      row.appendChild(th)
+      var th = document.createElement('th')
+      th.innerHTML = 'Path'
+      row.appendChild(th)
+      var th = document.createElement('th')
+      th.innerHTML = 'Documentation'
+      row.appendChild(th)
+      var th = document.createElement('th')
+      th.innerHTML = 'Order Number'
+      row.appendChild(th)
+      //create table body
+      var tbody = table.createTBody()
+      thisMandatoryFields.forEach((item) => {
+        var tr = document.createElement('tr')
+        var td = document.createElement('td')
+        td.innerHTML = item.name
+        //color
+        td.style.color = 'red'
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.type
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.path
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.documentation
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.orderNumber
+        tr.appendChild(td)
+        tbody.appendChild(tr)
+      })
+      thisNonMandatoryFields.forEach((item) => {
+        var tr = document.createElement('tr')
+        var td = document.createElement('td')
+        td.innerHTML = item.name
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.type
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.path
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.documentation
+        tr.appendChild(td)
+        var td = document.createElement('td')
+        td.innerHTML = item.orderNumber
+        tr.appendChild(td)
+        tbody.appendChild(tr)
+      })
     }
   }
 }
 
-function recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path, thisMandatoryFields, thisNonMandatoryFields) {
+function recursiveSearchForTypes(
+  xsdDom,
+  searchFor,
+  orderNumber,
+  mandatoryFields,
+  nonMandatoryFields,
+  path
+) {
+  var thisMandatoryFields = []
+  var thisNonMandatoryFields = []
   //search xs:complexType name = searchFor
   //when found, search for all children xs:element with minOccurs="0" and add them to nonMandatoryFields
   //if not minOccurs="0" or even doesn't have minOccurs, add them to mandatoryFields
@@ -3007,7 +3026,7 @@ function recursiveSearchForTypes(xsdDom, searchFor, orderNumber, mandatoryFields
     arrMyElements.forEach((item, index) => {
       var parents = []
       var parent = item.parentNode
-     //while not mySeachedComplexType
+      //while not mySeachedComplexType
       while (parent.getAttribute('name') != searchFor) {
         parents.push(parent)
         parent = parent.parentNode
