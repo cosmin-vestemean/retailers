@@ -3110,16 +3110,33 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
       }
       //try further investigation with commons.xsd by type
       var type = item.getAttribute('type')
-      if (type) {
-        var response = recursiveSearchForTypes(
-          type,
-          keeper.orderNumber,
-          mandatoryFields,
-          nonMandatoryFields,
-          keeper.path
-        )
-        thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-        thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+      listOfPrimitiveTypes = [
+        'xs:string',
+        'xs:decimal',
+        'xs:integer',
+        'xs:boolean',
+        'xs:date',
+        'xs:time',
+        'xs:dateTime',
+        'xs:duration',
+        'xs:hexBinary',
+        'xs:base64Binary',
+        'xs:anyURI',
+        'xs:QName',
+        'xs:NOTATION'
+      ]
+      if (listOfPrimitiveTypes.indexOf(type) == -1) {
+        if (type) {
+          var response = recursiveSearchForTypes(
+            type,
+            keeper.orderNumber,
+            mandatoryFields,
+            nonMandatoryFields,
+            keeper.path
+          )
+          thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
+          thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+        }
       }
     })
   }
