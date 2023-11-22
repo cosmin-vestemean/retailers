@@ -3049,6 +3049,8 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
       }
     })
   }
+
+  console.log('mandatoryFields', mandatoryFields, 'nonMandatoryFields', nonMandatoryFields)
 }
 
 //create function to close bulma modal on escape key
