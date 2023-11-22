@@ -2902,12 +2902,16 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
   var reader = new FileReader()
   var searchFor = type
   reader.readAsText(xsdFile)
+  var thisMandatoryFields = []
+  var thisNonMandatoryFields = []
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
     xsdDom = parser.parseFromString(xsd, 'text/xml')
     //search for attributes with name = searchFor
-    recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
+    var response = recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
+    thisMandatoryFields = response.thisMandatoryFields
+    thisNonMandatoryFields = response.thisNonMandatoryFields
 
     displayDetails()
 
@@ -3053,6 +3057,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
   }
 
   console.log('thisMandatoryFields', thisMandatoryFields, 'thisNonMandatoryFields', thisNonMandatoryFields)
+  return { thisMandatoryFields: thisMandatoryFields, thisNonMandatoryFields: thisNonMandatoryFields }
 }
 
 //create function to close bulma modal on escape key
