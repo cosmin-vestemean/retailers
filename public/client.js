@@ -1385,10 +1385,16 @@ async function fetchXMLFromRemoteServer() {
   //use sftp service find method with query retailer: localStorage.getItem('trdr_retailer') to get xml from remote server to database
   //then displayXmlDataForRetailer(localStorage.getItem('trdr_retailer')) from database
   //change caption of id="preluareComenziBtn"
-  var localStorageRetailer = localStorage.getItem('trdr_retailer')
+  try {
+  var localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    alert('Please select a retailer')
+    return
+  }
   console.log('localStorageRetailer', localStorageRetailer)
   if (!localStorageRetailer) {
     alert('Please select a retailer')
+    console.log('Please select a retailer')
     return
   }
   var myBtn = document.getElementById('preluareComenziBtn')

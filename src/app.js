@@ -221,10 +221,14 @@ class SftpServiceClass {
           console.error(err);
           returnedData.push({ filename: filename, success: false, error: err });
         }
+      } else {
+        console.log('not an xml file');
+        returnedData.push({ filename: filename, success: false, error: 'not an xml file' });
       }
     }
 
     console.log('inserted files in S1 DB', returnedData);
+    return returnedData;
   }
 
   async uploadXml(data, params) {
