@@ -1400,7 +1400,7 @@ async function fetchXMLFromRemoteServer() {
   //then displayXmlDataForRetailer(localStorage.getItem('trdr_retailer')) from database
   //change caption of id="preluareComenziBtn"
   try {
-  var localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+    var localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
   } catch (err) {
     alert('Please select a retailer')
     return
@@ -2732,7 +2732,9 @@ function mandatoryFields() {
           var isComplexType = element.getElementsByTagName('xs:complexType')[0]
           var needsFurtherInvestigation = false
           //if type is in form commons:something then needs further investigation with commons.xsd
-          needsFurtherInvestigation = element.getAttribute('type') ? element.getAttribute('type').includes('commons:') : false
+          needsFurtherInvestigation = element.getAttribute('type')
+            ? element.getAttribute('type').includes('commons:')
+            : false
           if (!isComplexType)
             if (!needsFurtherInvestigation) {
               mandatoryFields.push({
@@ -2743,7 +2745,13 @@ function mandatoryFields() {
                 orderNumber: i + 1
               })
             } else {
-              recursiveSearchForTypes(element.getAttribute('type').split(':')[1], i+1 , mandatoryFields, nonMandatoryFields, path)
+              recursiveSearchForTypes(
+                element.getAttribute('type').split(':')[1],
+                i + 1,
+                mandatoryFields,
+                nonMandatoryFields,
+                path
+              )
             }
         }
       }
@@ -2926,13 +2934,9 @@ function mandatoryFields() {
   }
 }
 
-var xsdCommonsDom = null
-function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
+function loadCommonXSD() {
   //1.get file from input id="xsdCommonsFile"
   //2. create dom from file
-  //3. commons:PartyType => search for PartyType and get mandatory fields and non mandatory fields
-
-  //1.get file from input id="xsdCommonsFile"
   var xsdFile = document.getElementById('xsdCommonsFile').files[0]
   if (!xsdFile) {
     alert('Select XSD Commons file')
@@ -2942,105 +2946,110 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
 
   //find elements without minOccurs="0"
   var reader = new FileReader()
-  var searchFor = type
   reader.readAsText(xsdFile)
-  var thisMandatoryFields = []
-  var thisNonMandatoryFields = []
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
     xsdCommonsDom = parser.parseFromString(xsd, 'text/xml')
-    //search for attributes with name = searchFor
-    var response = recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
-    thisMandatoryFields = response.thisMandatoryFields
-    thisNonMandatoryFields = response.thisNonMandatoryFields
+  }
+}
 
-    displayDetails()
+var xsdCommonsDom = null
+function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
+  //commons:PartyType => search for PartyType and get mandatory fields and non mandatory fields
+  var thisMandatoryFields = []
+  var thisNonMandatoryFields = []
+  var searchFor = type
+  //search for attributes with name = searchFor
+  var response = recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMandatoryFields, path)
+  thisMandatoryFields = response.thisMandatoryFields
+  thisNonMandatoryFields = response.thisNonMandatoryFields
 
-    function displayDetails() {
-      //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
-      //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
-      var modal = document.getElementById('commonsDigging')
-      //add listener to modal close button
-      var modalClose = modal.getElementsByClassName('modal-close')[0]
-      modalClose.onclick = function () {
-        modal.classList.remove('is-active')
-      }
-      modal.classList.add('is-active')
-      //modal-content with data mentioned above
-      var modalContent = modal.getElementsByClassName('modal-content')[0]
-      //empty modalContent
-      modalContent.innerHTML = ''
-      //create table in modalContent
-      var table = document.createElement('table')
-      modalContent.appendChild(table)
-      table.classList.add('table')
-      table.classList.add('is-striped')
-      table.classList.add('is-hoverable')
-      table.classList.add('is-fullwidth')
-      table.classList.add('is-narrow')
-      table.classList.add('is-size-7')
-      //create table head
-      var thead = table.createTHead()
-      var row = thead.insertRow()
-      var th = document.createElement('th')
-      th.innerHTML = 'Name'
-      row.appendChild(th)
-      var th = document.createElement('th')
-      th.innerHTML = 'Type'
-      row.appendChild(th)
-      var th = document.createElement('th')
-      th.innerHTML = 'Path'
-      row.appendChild(th)
-      var th = document.createElement('th')
-      th.innerHTML = 'Documentation'
-      row.appendChild(th)
-      var th = document.createElement('th')
-      th.innerHTML = 'Order Number'
-      row.appendChild(th)
-      //create table body
-      var tbody = table.createTBody()
-      thisMandatoryFields.forEach((item) => {
-        var tr = document.createElement('tr')
-        var td = document.createElement('td')
-        td.innerHTML = item.name
-        //color
-        td.style.color = 'red'
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.type
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.path
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.documentation
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.orderNumber
-        tr.appendChild(td)
-        tbody.appendChild(tr)
-      })
-      thisNonMandatoryFields.forEach((item) => {
-        var tr = document.createElement('tr')
-        var td = document.createElement('td')
-        td.innerHTML = item.name
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.type
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.path
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.documentation
-        tr.appendChild(td)
-        var td = document.createElement('td')
-        td.innerHTML = item.orderNumber
-        tr.appendChild(td)
-        tbody.appendChild(tr)
-      })
+  displayDetails()
+
+  function displayDetails() {
+    //dislay modal with id-"commonsDigging" with mandatoryFields and nonMandatoryFields
+    //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
+    var modal = document.getElementById('commonsDigging')
+    //add listener to modal close button
+    var modalClose = modal.getElementsByClassName('modal-close')[0]
+    modalClose.onclick = function () {
+      modal.classList.remove('is-active')
     }
+    modal.classList.add('is-active')
+    //modal-content with data mentioned above
+    var modalContent = modal.getElementsByClassName('modal-content')[0]
+    //empty modalContent
+    modalContent.innerHTML = ''
+    //create table in modalContent
+    var table = document.createElement('table')
+    modalContent.appendChild(table)
+    table.classList.add('table')
+    table.classList.add('is-striped')
+    table.classList.add('is-hoverable')
+    table.classList.add('is-fullwidth')
+    table.classList.add('is-narrow')
+    table.classList.add('is-size-7')
+    //create table head
+    var thead = table.createTHead()
+    var row = thead.insertRow()
+    var th = document.createElement('th')
+    th.innerHTML = 'Name'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Type'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Path'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Documentation'
+    row.appendChild(th)
+    var th = document.createElement('th')
+    th.innerHTML = 'Order Number'
+    row.appendChild(th)
+    //create table body
+    var tbody = table.createTBody()
+    thisMandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      //color
+      td.style.color = 'red'
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
+    thisNonMandatoryFields.forEach((item) => {
+      var tr = document.createElement('tr')
+      var td = document.createElement('td')
+      td.innerHTML = item.name
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.type
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.path
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.documentation
+      tr.appendChild(td)
+      var td = document.createElement('td')
+      td.innerHTML = item.orderNumber
+      tr.appendChild(td)
+      tbody.appendChild(tr)
+    })
   }
 }
 
