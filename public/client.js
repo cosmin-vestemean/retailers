@@ -2634,7 +2634,7 @@ function mandatoryFields() {
   reader.onload = function (e) {
     var xsd = e.target.result
     var parser = new DOMParser()
-    var xsdDom = parser.parseFromString(xsd, 'text/xml')
+    xsdDom = parser.parseFromString(xsd, 'text/xml')
     //find and remove element name='DXInvoice' from xsdDom
     var dxInvoice = xsdDom.getElementsByTagName('xs:element')[0]
     dxInvoice.parentNode.removeChild(dxInvoice)
