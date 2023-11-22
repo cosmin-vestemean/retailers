@@ -64,11 +64,17 @@ var url = '',
   fingerprint = ''
 
 function getRetailerConfData() {
+  var localStorageRetailer
+  try {
+    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    console.log(err)
+  }
   client
     .service('CCCSFTP')
     .find({
       query: {
-        TRDR_RETAILER: localStorage.getItem('trdr_retailer')
+        TRDR_RETAILER: localStorageRetailer
       }
     })
     .then((res) => {
@@ -93,7 +99,7 @@ function getRetailerConfData() {
 
 function setRetailerId(trdr) {
   localStorage.setItem('trdr_retailer', trdr)
-  console.log('Retailer id set to ', localStorage.getItem('trdr_retailer'))
+  console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
 }
 
 function updateRetailerConfData() {
@@ -793,11 +799,18 @@ function validateMappings() {
 
 function loadListaDocumente() {
   //get all documents from database table CCCDOCUMENTES1MAPPINGS
+  var localStorageRetailer
+  try {
+    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    console.log(err)
+    return
+  }
   client
     .service('CCCDOCUMENTES1MAPPINGS')
     .find({
       query: {
-        TRDR_RETAILER: localStorage.getItem('trdr_retailer')
+        TRDR_RETAILER: localStorageRetailer
       }
     })
     .then((res) => {
@@ -1286,7 +1299,8 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   //add series and trdr to SALDOC
   jsonOrder['DATA']['SALDOC'][0]['SERIES'] = series
   //TRDR_RETAILER
-  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = localStorage.getItem('trdr_retailer')
+  localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = localStorageRetailer
 
   console.log('jsonOrder', jsonOrder)
 
@@ -1512,7 +1526,14 @@ function copyFromAnotherDocument(id) {
 }
 
 async function fetchDocsFromS1WS(sosource, fprms, series) {
-  var trdr = localStorage.getItem('trdr_retailer')
+  var trdr
+  try {
+    trdr = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    alert('Please select a retailer')
+    console.log('Please select a retailer')
+    return
+  }
   console.log('trdr', trdr)
   //Open tab facturi
   document.getElementById('facturi_link').click()
@@ -1726,6 +1747,15 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
 async function sendInvoice(findoc) {
   var response = { success: false, xml: '' }
   const domObj = await cheatGetXmlFromS1(findoc)
+  var localStorageRetailer
+  try {
+    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    alert('Please select a retailer')
+    return
+  }
+
+  console.log('localStorageRetailer', localStorageRetailer)
 
   if (domObj.trimis == false) {
     //uploadXml service
@@ -1735,7 +1765,7 @@ async function sendInvoice(findoc) {
       .service('sftp')
       .uploadXml(
         { findoc: findoc, xml: xml, filename: filename },
-        { query: { retailer: localStorage.getItem('trdr_retailer') } }
+        { query: { retailer: locaStorageRetailer } }
       )
       .then((res) => {
         console.log('sftp uploadXml', res)
