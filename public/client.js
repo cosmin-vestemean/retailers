@@ -3152,15 +3152,17 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
           }
         })
         thisNonMandatoryFields.forEach((item) => {
-          var response = recursiveSearchForTypes(
-            item.type,
-            item.orderNumber,
-            mandatoryFields,
-            nonMandatoryFields,
-            item.path
-          )
-          thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
-          thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+          if (listOfPrimitiveTypes.indexOf(item.type) == -1) {
+            var response = recursiveSearchForTypes(
+              item.type,
+              item.orderNumber,
+              mandatoryFields,
+              nonMandatoryFields,
+              item.path
+            )
+            thisMandatoryFields = thisMandatoryFields.concat(response.thisMandatoryFields)
+            thisNonMandatoryFields = thisNonMandatoryFields.concat(response.thisNonMandatoryFields)
+          }
         })
       }
     })
