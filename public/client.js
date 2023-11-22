@@ -2923,8 +2923,8 @@ function mandatoryFields() {
       })
 
       nonMandatoryFields.every((item) => {
-        //if (item.path == path) {
-        if (path.includes(item.path)) {
+        if (item.path == path) {
+        //if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
           return false
