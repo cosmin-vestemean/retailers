@@ -3032,3 +3032,12 @@ function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, 
     })
   }
 }
+
+//create function to close bulma modal on escape key
+//from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
+document.addEventListener('keydown', function (event) {
+  var modal = document.getElementById('commonsDigging')
+  if (event.key == 'Escape') {
+    modal.classList.remove('is-active')
+  }
+})
