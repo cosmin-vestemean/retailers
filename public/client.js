@@ -3058,8 +3058,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
   var myComplexType = [...xsdDom.getElementsByTagName('xs:complexType')]
   console.log('myComplexType', myComplexType)
   if (myComplexType.length > 0) {
-    var arrMyComplexType = Array.from(myComplexType)
-    mySearchedComplexType = arrMyComplexType.find((item) => {
+    mySearchedComplexType = myComplexType.find((item) => {
       return item.getAttribute('name') == searchFor
     })
     console.log('searchFor', searchFor, 'mySearchedComplexType', mySearchedComplexType)
