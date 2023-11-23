@@ -1,5 +1,3 @@
-import { query } from 'mssql'
-
 console.log('Client.js loaded')
 
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
