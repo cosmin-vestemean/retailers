@@ -1,3 +1,5 @@
+import { query } from 'mssql'
+
 console.log('Client.js loaded')
 
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
@@ -1100,32 +1102,40 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   //use await instead of promises
   //get a token for s1 connection
   var res = await client.service('CCCRETAILERSCLIENTS').find({
-    TRDR_CLIENT: 1
+    query: {
+      TRDR_CLIENT: 1
+    }
   })
   console.log('date logare', res)
   var url = res.data[0].WSURL
   var username = res.data[0].WSUSER
   var password = res.data[0].WSPASS
   var res = await client.service('connectToS1').find({
-    url: url,
-    username: username,
-    password: password
+    query: {
+      url: url,
+      username: username,
+      password: password
+    }
   })
   console.log('connectToS1', res)
   var token = res.token
   //get CCCDOCUMENTES1MAPPINGS for sourcCCCDOCUMENTES1MAPPINGSe, fprms, series
   var res = await client.service('CCCDOCUMENTES1MAPPINGS').find({
-    SOSOURCE: sosource,
-    FPRMS: fprms,
-    SERIES: series,
-    TRDR_RETAILER: retailer
+    query: {
+      SOSOURCE: sosource,
+      FPRMS: fprms,
+      SERIES: series,
+      TRDR_RETAILER: retailer
+    }
   })
   console.log('CCCDOCUMENTES1MAPPINGS', res)
 
   var CCCDOCUMENTES1MAPPINGS = res.data[0].CCCDOCUMENTES1MAPPINGS
   //get CCCXMLS1MAPPINGS for CCCDOCUMENTES1MAPPINGS
   var res = await client.service('CCCXMLS1MAPPINGS').find({
-    CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS
+    query: {
+      CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS
+    }
   })
   console.log('CCCXMLS1MAPPINGS', res)
   var CCCXMLS1MAPPINGS = res.data
@@ -3160,7 +3170,8 @@ document.addEventListener('keydown', function (event) {
 window.onload = function () {
   var params = {}
   params['query'] = {}
-  params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
+  params['query']['sqlQuery'] =
+    'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
   client
     .service('getDataset')
     .find(params)
