@@ -2924,7 +2924,7 @@ function mandatoryFields() {
 
       nonMandatoryFields.every((item) => {
         if (item.path == path) {
-        //if (path.includes(item.path)) {
+          //if (path.includes(item.path)) {
           cell = row.getElementsByClassName('xmlOrder')[0]
           cell.innerHTML = item.orderNumber
           return false
@@ -3157,11 +3157,17 @@ document.addEventListener('keydown', function (event) {
 
 //if user refreshes page, then message alert localStorageRetailer
 window.onbeforeunload = function () {
-  //getDataset with query 'select name from trdr where trdr=localStorageRetailer'
-  client.service('getDataset').find({ query: { sqlQuery: 'select name from trdr where trdr=' + localStorage.getItem(trdr_retailer) } })
-    .then((result) => {
-      var retailerName = result.data
-      alert(retailerName)
-      console.log('retailerName', retailerName)
+  var params = {}
+  params['query'] = {}
+  params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('tdr_retailer')
+  console.log('params', params)
+  client
+    .service('getDataset')
+    .find(params)
+    .then((res) => {
+      console.log('getDataset', res)
+      if (res.data) {
+        alert(res.data)
+      }
     })
 }
