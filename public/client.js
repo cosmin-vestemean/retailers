@@ -3162,5 +3162,6 @@ window.onbeforeunload = function () {
     .then((result) => {
       var retailerName = result.data
       alert(retailerName)
+      console.log('retailerName', retailerName)
     })
 }
