@@ -1113,11 +1113,12 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   })
   console.log('connectToS1', res)
   var token = res.token
-  //get CCCDOCUMENTES1MAPPINGS for source, fprms, series
-  var res = await client.service('CCCDOCUMENTES1MAPPINGS').find({
+  //get CCCDOCUMENTES1MAPPINGS for sourcCCCDOCUMENTES1MAPPINGSe, fprms, series
+  var res = await client.service('').find({
     SOSOURCE: sosource,
     FPRMS: fprms,
-    SERIES: series
+    SERIES: series,
+    TRDR_RETAILER: retailer
   })
   console.log('CCCDOCUMENTES1MAPPINGS', res)
 
@@ -3160,12 +3161,10 @@ window.onload = function () {
   var params = {}
   params['query'] = {}
   params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
-  console.log('params', params)
   client
     .service('getDataset')
     .find(params)
     .then((res) => {
-      console.log('getDataset', res)
       if (res.data) {
         alert(res.data)
       }
