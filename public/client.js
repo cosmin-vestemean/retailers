@@ -1114,7 +1114,7 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   console.log('connectToS1', res)
   var token = res.token
   //get CCCDOCUMENTES1MAPPINGS for sourcCCCDOCUMENTES1MAPPINGSe, fprms, series
-  var res = await client.service('').find({
+  var res = await client.service('CCCDOCUMENTES1MAPPINGS').find({
     SOSOURCE: sosource,
     FPRMS: fprms,
     SERIES: series,
