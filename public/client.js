@@ -3154,3 +3154,13 @@ document.addEventListener('keydown', function (event) {
     modal.classList.remove('is-active')
   }
 })
+
+//if user refreshes page, then message alert localStorageRetailer
+window.onbeforeunload = function () {
+  //getDataset with query 'select name from trdr where trdr=localStorageRetailer'
+  client.service('getDataset').find({ query: { sqlQuery: 'select name from trdr where trdr=' + localStorageRetailer } })
+    .then((result) => {
+      var retailerName = result.data
+      alert(retailerName)
+    })
+}
