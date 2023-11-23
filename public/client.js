@@ -3156,7 +3156,7 @@ document.addEventListener('keydown', function (event) {
 })
 
 //if user refreshes page, then message alert localStorageRetailer
-window.onbeforeunload = function () {
+window.onload = function () {
   var params = {}
   params['query'] = {}
   params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
