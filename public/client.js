@@ -3159,7 +3159,7 @@ document.addEventListener('keydown', function (event) {
 window.onbeforeunload = function () {
   var params = {}
   params['query'] = {}
-  params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('tdr_retailer')
+  params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
   console.log('params', params)
   client
     .service('getDataset')
