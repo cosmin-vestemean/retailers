@@ -3158,7 +3158,7 @@ document.addEventListener('keydown', function (event) {
 //if user refreshes page, then message alert localStorageRetailer
 window.onbeforeunload = function () {
   //getDataset with query 'select name from trdr where trdr=localStorageRetailer'
-  client.service('getDataset').find({ query: { sqlQuery: 'select name from trdr where trdr=' + localStorageRetailer } })
+  client.service('getDataset').find({ query: { sqlQuery: 'select name from trdr where trdr=' + localStorage.getItem(trdr_retailer) } })
     .then((result) => {
       var retailerName = result.data
       alert(retailerName)
