@@ -1414,14 +1414,14 @@ async function fetchXMLFromRemoteServer() {
   }
   var myBtn = document.getElementById('preluareComenziBtn')
   myBtn.innerHTML = 'Downloading xml files...'
-  var downloadResponse = await client
+  /* var downloadResponse = await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: localStorageRetailer } })
   //wait for download to finish by checking the response not null
   while (!downloadResponse) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
   }
-  console.log('sftp download', downloadResponse)
+  console.log('sftp download', downloadResponse) */
   myBtn.innerHTML = 'Storing in database...'
   var storeResponse = await client
     .service('sftp')
