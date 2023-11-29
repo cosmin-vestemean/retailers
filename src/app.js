@@ -116,7 +116,7 @@ class SftpServiceClass {
         console.log('Found on server: ' + item.name)
       })
 
-      var limit = 2
+      var limit = 20000000
       var count = 0
       for (const item of files) {
         if (count < limit) {
