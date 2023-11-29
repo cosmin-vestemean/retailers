@@ -86,16 +86,16 @@ class SftpServiceClass {
   */
   async downloadXml(data, params) {
     try {
-      const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params);
-      const initialDir = sftpDataObj.INITIALDIRIN;
-      const returnedData = [];
+      const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
+      const initialDir = sftpDataObj.INITIALDIRIN
+      const returnedData = []
 
-      await sftp.connect(config);
-      console.log('Connected');
+      await sftp.connect(config)
+      console.log('Connected')
 
-      const olderThan = new Date();
-      const n = 7; // Number of days
-      olderThan.setDate(olderThan.getDate() - n);
+      const olderThan = new Date()
+      const n = 7 // Number of days
+      olderThan.setDate(olderThan.getDate() - n)
 
       const files = await sftp.list(initialDir, (item) => {
         return (
@@ -103,58 +103,64 @@ class SftpServiceClass {
           item.name.endsWith('.xml') &&
           item.modifyTime > olderThan &&
           item.name.startsWith('ORD')
-        );
-      });
+        )
+      })
 
       if (files.length === 0) {
-        console.log('No files on server');
-        sftp.end();
-        returnedData.push({ filename: '', success: false, error: 'No files on server' });
+        console.log('No files on server')
+        sftp.end()
+        returnedData.push({ filename: '', success: false, error: 'No files on server' })
       }
 
       files.forEach((item) => {
-        console.log('Found on server: ' + item.name);
-      });
+        console.log('Found on server: ' + item.name)
+      })
 
+      var limit = 2
+      var count = 0
       for (const item of files) {
-        const filename = item.name;
-        const localPath = orderXmlPath + '/' + filename;
+        if (count < limit) {
+          const filename = item.name
+          const localPath = orderXmlPath + '/' + filename
 
-        if (!fs.existsSync(orderXmlPath)) {
-          fs.mkdirSync(orderXmlPath);
+          if (!fs.existsSync(orderXmlPath)) {
+            fs.mkdirSync(orderXmlPath)
+          }
+
+          const dst = fs.createWriteStream(localPath)
+          await sftp.get(initialDir + '/' + filename, dst)
+          console.log(`File ${filename} downloaded successfully as ${dst.path}`)
+          returnedData.push({ filename: filename, success: true })
+          dst.end()
+
+          if (filename === files[files.length - 1].name) {
+            sftp.end()
+          }
         }
 
-        const dst = fs.createWriteStream(localPath);
-        await sftp.get(initialDir + '/' + filename, dst);
-        console.log(`File ${filename} downloaded successfully as ${dst.path}`);
-        returnedData.push({ filename: filename, success: true });
-        dst.end();
-
-        if (filename === files[files.length - 1].name) {
-          sftp.end();
-        }
+        count++
       }
 
-      return returnedData;
+      return returnedData
     } catch (err) {
-      console.error('Error:', err);
-      throw err;
+      console.error('Error:', err)
+      throw err
     }
   }
 
   async prepareConnection(data, params) {
-    const retailer = params.query.retailer;
-    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } });
-    const sftpDataObj = sftpData.data[0];
-    const privateKey = sftpDataObj.PRIVATEKEY;
-    const privateKeyPath = 'privateKey.txt';
+    const retailer = params.query.retailer
+    const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
+    const sftpDataObj = sftpData.data[0]
+    const privateKey = sftpDataObj.PRIVATEKEY
+    const privateKeyPath = 'privateKey.txt'
 
     return new Promise((resolve, reject) => {
       fs.writeFile(privateKeyPath, privateKey, (err) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          const sftp = new Client();
+          const sftp = new Client()
           const config = {
             host: sftpDataObj.URL,
             port: sftpDataObj.PORT,
@@ -164,71 +170,71 @@ class SftpServiceClass {
             cipher: 'aes256-cbc',
             algorithm: 'ssh-rsa',
             readyTimeout: 99999
-          };
-          resolve({ sftp, config, sftpDataObj });
+          }
+          resolve({ sftp, config, sftpDataObj })
         }
-      });
-    });
+      })
+    })
   }
 
   async storeXmlInDB(data, params) {
-    const retailer = params.query.retailer;
-    console.log('storing xml in S1 DB for retailer', retailer);
-    const folderPath = orderXmlPath;
-    const files = fs.readdirSync(folderPath);
-    const returnedData = [];
+    const retailer = params.query.retailer
+    console.log('storing xml in S1 DB for retailer', retailer)
+    const folderPath = orderXmlPath
+    const files = fs.readdirSync(folderPath)
+    const returnedData = []
 
     for (const file of files) {
-      const filename = file;
-      console.log('storing filename in S1 DB', filename);
+      const filename = file
+      console.log('storing filename in S1 DB', filename)
       if (filename.endsWith('.xml')) {
-        const localPath = folderPath + '/' + filename;
-        console.log('localPath', localPath);
-        const xml = fs.readFileSync(localPath, 'utf8');
+        const localPath = folderPath + '/' + filename
+        console.log('localPath', localPath)
+        const xml = fs.readFileSync(localPath, 'utf8')
         //remove xml declaration
-        let xmlClean = xml.replace(/<\?xml.*\?>/g, '');
+        let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
-        xmlClean = xmlClean.replace(/[\n\r\t]/g, '');
+        xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
         //parse xml to json
-        const json = parseStringPromise(xmlClean);
+        const json = parseStringPromise(xmlClean)
         const d = {
           filename: filename,
           xml: xmlClean,
           json: JSON.stringify(json)
-        };
-        console.log('data', d);
+        }
+        console.log('data', d)
         try {
-          const result = await app.service('storeXml').create(d, { query: { retailer: retailer } });
-          console.log('storeXml result', result);
+          const result = await app.service('storeXml').create(d, { query: { retailer: retailer } })
+          console.log('storeXml result', result)
           if (result.success) {
-            returnedData.push({ filename: filename, success: true, response: result });
+            returnedData.push({ filename: filename, success: true, response: result })
             //move file to processed folder
-            const processedPath = orderProcessedPath;
+            const processedPath = orderProcessedPath
             if (!fs.existsSync(processedPath)) {
-              fs.mkdirSync(processedPath);
+              fs.mkdirSync(processedPath)
             }
-            fs.renameSync(localPath, processedPath + '/' + filename);
+            fs.renameSync(localPath, processedPath + '/' + filename)
           } else {
-            returnedData.push({ filename: filename, success: false, response: result });
+            returnedData.push({ filename: filename, success: false, response: result })
             //move file to error folder
-            const errorPath = orderErrorPath;
+            const errorPath = orderErrorPath
             if (!fs.existsSync(errorPath)) {
-              fs.mkdirSync(errorPath);
+              fs.mkdirSync(errorPath)
             }
-            fs.renameSync(localPath, errorPath + '/' + filename);
+            fs.renameSync(localPath, errorPath + '/' + filename)
           }
         } catch (err) {
-          console.error(err);
-          returnedData.push({ filename: filename, success: false, error: err });
+          console.error(err)
+          returnedData.push({ filename: filename, success: false, error: err })
         }
       } else {
-        console.log('not an xml file');
-        returnedData.push({ filename: filename, success: false, error: 'not an xml file' });
+        console.log('not an xml file')
+        returnedData.push({ filename: filename, success: false, error: 'not an xml file' })
       }
     }
 
-    console.log('List of inserted files', returnedData);
-    return returnedData;
+    console.log('List of inserted files', returnedData)
+    return returnedData
   }
 
   async uploadXml(data, params) {
@@ -282,65 +288,69 @@ app.use('sftp', new SftpServiceClass(), {
 class storeXmlServiceClass {
   async create(data, params) {
     return new Promise((resolve, reject) => {
-      const retailer = params.query.retailer;
-      const filename = data.filename;
-      const xml = data.xml;
-      const json = data.json;
-      const xmlDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      const xmlStatus = 'NEW';
-      const xmlError = '';
-  
-      app.service('CCCSFTPXML').find({ query: { XMLFILENAME: filename } })
-        .then(xmlExists => {
+      const retailer = params.query.retailer
+      const filename = data.filename
+      const xml = data.xml
+      const json = data.json
+      const xmlDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+      const xmlStatus = 'NEW'
+      const xmlError = ''
+
+      app
+        .service('CCCSFTPXML')
+        .find({ query: { XMLFILENAME: filename } })
+        .then((xmlExists) => {
           if (xmlExists.total > 0) {
-            console.log('XML file already exists in database');
+            console.log('XML file already exists in database')
             resolve({
               xmlInsert: xmlExists.data[0],
               filename: filename,
               success: false,
               message: 'XML file already exists in database'
-            });
-          } else {
-            console.log('XML file does not exist in database');
-            app.service('CCCSFTPXML').create({
-              TRDR_CLIENT: 1,
-              TRDR_RETAILER: retailer,
-              XMLDATA: xml,
-              JSONDATA: json,
-              XMLDATE: xmlDate,
-              XMLSTATUS: xmlStatus,
-              XMLERROR: xmlError,
-              XMLFILENAME: filename
             })
-              .then(xmlInsert => {
+          } else {
+            console.log('XML file does not exist in database')
+            app
+              .service('CCCSFTPXML')
+              .create({
+                TRDR_CLIENT: 1,
+                TRDR_RETAILER: retailer,
+                XMLDATA: xml,
+                JSONDATA: json,
+                XMLDATE: xmlDate,
+                XMLSTATUS: xmlStatus,
+                XMLERROR: xmlError,
+                XMLFILENAME: filename
+              })
+              .then((xmlInsert) => {
                 resolve({
                   xmlInsert: xmlInsert,
                   filename: filename,
                   success: true,
                   message: 'XML file inserted in database'
-                });
+                })
               })
-              .catch(err => {
-                console.error(err);
+              .catch((err) => {
+                console.error(err)
                 reject({
                   filename: filename,
                   success: false,
                   message: 'XML file not inserted in database',
                   error: err
-                });
-              });
+                })
+              })
           }
         })
-        .catch(err => {
-          console.error(err);
+        .catch((err) => {
+          console.error(err)
           reject({
             filename: filename,
             success: false,
             message: 'Error checking if XML file exists in database',
             error: err
-          });
-        });
-    });
+          })
+        })
+    })
   }
 }
 
