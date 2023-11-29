@@ -1405,39 +1405,43 @@ function getValFromXML(xml, node) {
 }
 
 async function fetchXMLFromRemoteServer() {
-  //use sftp service find method with query retailer: localStorage.getItem('trdr_retailer') to get xml from remote server to database
-  //then displayXmlDataForRetailer(localStorage.getItem('trdr_retailer')) from database
-  //change caption of id="preluareComenziBtn"
+  //1. localStorage.getItem('trdr_retailer')
+  //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  //4. displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))"
+  //5. change document.getElementById('preluareComenziBtn') text according to stage of process
+  var retailer
   try {
-    var localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+    retailer = parseInt(localStorage.getItem('trdr_retailer'))
   } catch (err) {
-    alert('Please select a retailer')
-    return
-  }
-  console.log('localStorageRetailer', localStorageRetailer)
-  if (!localStorageRetailer) {
     alert('Please select a retailer')
     console.log('Please select a retailer')
     return
   }
-  var myBtn = document.getElementById('preluareComenziBtn')
-  myBtn.innerHTML = 'Downloading xml files...'
-  /* var downloadResponse = await client
+  //change button text
+  document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
+  //1. localStorage.getItem('trdr_retailer')
+  //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: localStorageRetailer } })
-  //wait for download to finish by checking the response not null
-  while (!downloadResponse) {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-  }
-  console.log('sftp download', downloadResponse) */
-  myBtn.innerHTML = 'Storing in database...'
-  var storeResponse = await client
+    .downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .then((res) => {
+      console.log('downloadXml', res)
+    })
+
+  //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+  await client
     .service('sftp')
-    .storeXmlInDB({}, { query: { retailer: localStorageRetailer } })
-  console.log('sftp store', storeResponse)
-  myBtn.innerHTML = 'Displaying xml files...'
-  await displayXmlDataForRetailer(localStorageRetailer)
-  myBtn.innerHTML = 'Preluare comenzi'
+    .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .then((res) => {
+      console.log('storeXmlInDB', res)
+    })
+
+  //4. displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))"
+  await displayXmlDataForRetailer(retailer)
+  //5. change document.getElementById('preluareComenziBtn') text according to stage of process
+  document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
+
 }
 
 async function displayXmlDataForRetailer(retailer) {
