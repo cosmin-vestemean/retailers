@@ -201,7 +201,7 @@ class SftpServiceClass {
           const result = await app.service('storeXml').create(d, { query: { retailer: retailer } });
           console.log('storeXml result', result);
           if (result.success) {
-            returnedData.push({ filename: filename, success: true });
+            returnedData.push({ filename: filename, success: true, response: result });
             //move file to processed folder
             const processedPath = orderProcessedPath;
             if (!fs.existsSync(processedPath)) {
@@ -209,7 +209,7 @@ class SftpServiceClass {
             }
             fs.renameSync(localPath, processedPath + '/' + filename);
           } else {
-            returnedData.push({ filename: filename, success: false });
+            returnedData.push({ filename: filename, success: false, response: result });
             //move file to error folder
             const errorPath = orderErrorPath;
             if (!fs.existsSync(errorPath)) {

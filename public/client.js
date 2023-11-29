@@ -1424,7 +1424,7 @@ async function fetchXMLFromRemoteServer() {
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .downloadXml({}, { query: { retailer: retailer } })
     .then((res) => {
       console.log('downloadXml', res)
     })
@@ -1432,7 +1432,7 @@ async function fetchXMLFromRemoteServer() {
   //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
+    .storeXmlInDB({}, { query: { retailer: retailer } })
     .then((res) => {
       console.log('storeXmlInDB', res)
     })
