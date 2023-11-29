@@ -126,7 +126,7 @@ class SftpServiceClass {
 
         const dst = fs.createWriteStream(localPath);
         await sftp.get(initialDir + '/' + filename, dst);
-        console.log(`File ${filename} downloaded successfully!`);
+        console.log(`File ${filename} downloaded successfully as ${dst.path}`);
         returnedData.push({ filename: filename, success: true });
         dst.end();
 
