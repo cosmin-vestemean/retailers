@@ -97,7 +97,8 @@ function createSomeInvoice(dsIte) {
     var companyData = X.GETSQLDATASET('select coalesce(afm, null) as PartyIdentification, coalesce(name, null) as PartyName, coalesce(city, null) as CityName, ' +
             'coalesce(zip, null) as PostalZone, coalesce(district, null) as sector, ' +
             'coalesce(BGBULSTAT, null) as CompanyID, coalesce(IDENTITYNUM, null) as CorporateStockAmount, coalesce(NAME3, null) as PayerFinancialAccountID, ' +
-            ' coalesce(NAME2, null) as PayerFinancialAccountName ' +
+            ' coalesce(NAME2, null) as PayerFinancialAccountName, ' +
+            "CCCNUMESTREDIDX as StreetName, 118 as BuildingNumber " +
             'from company where isactive = 1 and company=' + X.SYS.COMPANY, null);
     if (!companyData.RECORDCOUNT) {
         X.WARNING('Nu gasesc datele companiei PET FACTORY)...');
@@ -105,8 +106,8 @@ function createSomeInvoice(dsIte) {
     }
 
     if (SALDOC.TRDR) {
-        var danteData = X.GETSQLDATASET("select concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, 'DANTE INTERNATIONAL SA' as PartyName, 'BUCURESTI, SECTOR 6' as CityName, " +
-                'coalesce(zip, null) as PostalZone, coalesce(address, null) as address, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks ' +
+        var danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, name as PartyName, CITY as CityName, " +
+                'coalesce(zip, null) as PostalZone, coalesce(CCCNUMESTREDIDX, null) as StreetName, coalesce(CCCNREDIDX, null) as BuildingNumber, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks ' +
                 'from trdr where isactive=1 and company=' + X.SYS.COMPANY + ' and trdr=' + SALDOC.TRDR, null);
         if (!danteData.RECORDCOUNT) {
             X.WARNING('Nu gasesc datele companiei EMAG (DANTE)...');
@@ -189,11 +190,11 @@ function createSomeInvoice(dsIte) {
                 x: 'Party.PartyName'
             }, {
                 UIRef: 'StreetName',
-                UIVal: 'Sos. Giurgiului',
+                UIVal: companyData.StreetName,
                 x: 'Party.PostalAddress.StreetName'
             }, {
                 UIRef: 'BuildingNumber',
-                UIVal: '118',
+                UIVal: companyData.BuildingNumber,
                 x: 'Party.PostalAddress.BuildingNumber'
             }, {
                 UIRef: 'COMPANY.CITY, COMPANY.DISTRICT',
@@ -216,11 +217,6 @@ function createSomeInvoice(dsIte) {
 
     //[PartyIdentification, PartyName, StreetName, BuildingNumber, CityName, PostalZone, CompanyID, CorporateStockAmount, CustomerAssignedAccountID]
     //COnventie adresa: "Sos. Virtutii 148, Spatiul E47, Bucuresti Sect 6"
-    var address = danteData.address,
-    splt = address.split(','),
-    StreetName = splt[0].trim(),
-    BuildingNumber = splt[1].trim(),
-    CityName = splt[2].trim();
     inv.set_AccountingCustomerParty([{
                 UIRef: 'COMPANY.AFM',
                 UIVal: danteData.PartyIdentification,
@@ -231,11 +227,11 @@ function createSomeInvoice(dsIte) {
                 x: 'Party.PartyName'
             }, {
                 UIRef: 'StreetName',
-                UIVal: StreetName,
+                UIVal: danteData.StreetName,
                 x: 'Party.PostalAddress.StreetName'
             }, {
                 UIRef: 'BuildingNumber',
-                UIVal: BuildingNumber,
+                UIVal: danteData.BuildingNumber,
                 x: 'Party.PostalAddress.BuildingNumber'
             }, {
                 UIRef: 'COMPANY.CITY, COMPANY.DISTRICT',
@@ -298,11 +294,11 @@ function createSomeInvoice(dsIte) {
                 x: 'PayerFinancialAccount.FinancialInstitutionBranch.FinancialInstitution.Name'
             }, {
                 UIRef: 'IBAN Dante Intl.',
-                UIVal: 'RO60RNCB0082B00132506875',
+                UIVal: checkNull(danteData, 'iban', danteData.iban),
                 x: 'PayeeFinancialAccount.ID'
             }, {
                 UIRef: 'Banca Dante',
-                UIVal: 'BANCA COMERCIALA ROMANA',
+                UIVal: checkNull(danteData, 'bank', danteData.bank),
                 x: 'PayeeFinancialAccount.FinancialInstitutionBranch.FinancialInstitution.Name'
             }
 
@@ -372,6 +368,10 @@ function createSomeInvoice(dsIte) {
             UIRef: nrLinie + ': dsIte.LNETLINEVAL',
             UIVal: dsIte.LNETLINEVAL,
             x: 'LineExtensionAmount'
+        }, {
+            UIRef: nrLinie + ': dsIte.LNETLINEVAL + dsItet.VATAMNT',
+            UIVal: parseFloat(dsIte.LNETLINEVAL) + parseFloat(dsIte.VATAMNT),
+            x: 'TaxInclusiveAmount'
         });
 
         //[ChargeIndicator, AllowanceChargeReason, MultiplierFactorNumeric, Amount, PerUnitAmount]
@@ -857,6 +857,40 @@ function createInvoice() {
                     }
 
                     return '<LineExtensionAmount>' + emptyFunction(amnt, 2) + '</LineExtensionAmount>';
+                } else
+                    return '';
+            }
+        },
+        TaxInclusiveAmount: {
+            UI: null,
+            requiredInXMLSchema: true,
+            type: 'R2',
+            length: 0,
+            format: '120.00',
+            XML: function () {
+                //debugger;
+                var amnt = 0;
+                if (!_Invoice.InvoiceTypeCode) {
+                    _errBindErrors += 'Nu a fost transmisa seria, nu stiu daca este tur sau retur.\n';
+                }
+
+                if (this.UI) {
+                    switch (_Invoice.InvoiceTypeCode.UI) {
+                    case 380:
+                        //tur
+                        amnt = this.UI;
+                        break;
+                    case 381:
+                        //retur
+                        amnt = -1 * this.UI;
+                        break;
+                    default:
+                        amnt = this.UI;
+                        _errBindErrors += 'Valoare linie implicit pozitiva, seria nici tur, nici retur.\n';
+                        break;
+                    }
+
+                    return '<TaxInclusiveAmount>' + emptyFunction(amnt, 2) + '</TaxInclusiveAmount>';
                 } else
                     return '';
             }
@@ -1437,7 +1471,7 @@ function createInvoice() {
         set_LegalMonetaryTotal: function (arr) {
             _set_NamespaceBind(_Invoice, 'LegalMonetaryTotal', LegalMonetaryTotal, arr);
         },
-        set_CurrentInvoiceLine: function (ID, qtyMtrunit, lnetlineval) {
+        set_CurrentInvoiceLine: function (ID, qtyMtrunit, lnetlineval, taxInclusiveAmount) {
             //ID, InvoicedQuantity@unitCode, LineExtensionAmount
             _InvoiceLines.push(copy(_lineTemplate));
             _CurrentInvoiceLine = _InvoiceLines[_InvoiceLines.length - 1];
@@ -1447,6 +1481,8 @@ function createInvoice() {
             _CurrentInvoiceLine.InvoicedQuantity = _CurrentInvoiceLine.calcInvoicedQuantity(qtyMtrunit.QTY1, qtyMtrunit.MTRUNIT);
             //debugger;
             if (bindUI(lnetlineval.UIRef, lnetlineval.UIVal, _CurrentInvoiceLine.LineExtensionAmount))
+                _CurrentInvoiceLine.Count++;
+            if (bindUI(taxInclusiveAmount.UIRef, taxInclusiveAmount.UIVal, _CurrentInvoiceLine.TaxInclusiveAmount))
                 _CurrentInvoiceLine.Count++;
         },
         //[ChargeIndicator, AllowanceChargeReason, MultiplierFactorNumeric, Amount, PerUnitAmount]
