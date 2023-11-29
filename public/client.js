@@ -1386,6 +1386,7 @@ function getValFromXML(xml, node) {
   var doc = dom.documentElement
   //node value by xpath
   var iterator = document.evaluate(node, doc, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
+  //var iterator = doc.evaluate(node, doc, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
   //console.log('node', node)
   //console.log('matchingNodes', iterator)
   var matchingNodes = []
