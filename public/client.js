@@ -1631,7 +1631,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button2.className = 'button is-small is-info ml-2'
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
-      var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
+      /* var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
       //wait for domObj
       while (domObj == undefined) {
         await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -1641,8 +1641,10 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
-      }
-      if (domObj.trimis == false) {
+      }*/
+      const domObj = await cheatGetXmlFromS1(row.findoc)
+      /*
+      if (domObj.trimis == false) { */
         //add cell and textarea
         var textarea = document.createElement('textarea')
         textarea.className = 'textarea is-small'
@@ -1654,7 +1656,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         //add cell
         var td = tr.insertCell()
         td.appendChild(textarea)
-      }
+      //}
     }
     actions.appendChild(button2)
     //save xml button
