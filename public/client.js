@@ -1510,9 +1510,14 @@ async function displayXmlDataForRetailer(retailer) {
       sendOrderButton.innerHTML = 'Send Order'
       sendOrderButton.className = 'button is-small is-success ml-2'
       sendOrderButton.onclick = async function () {
+        //daca am findoc nu mai trimit
+        if (xml.FINDOC) {
         sendOrderButton.innerHTML = 'Sending...'
         await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
-        sendOrderButton.innerHTML = 'Sent Order'
+        sendOrderButton.innerHTML = 'Order sent'
+        } else {
+          alert('Already sent')
+        }
       }
       //append the buttons to the actions cell
       actionsCell.appendChild(saveButton)
