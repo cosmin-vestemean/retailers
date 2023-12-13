@@ -1511,7 +1511,7 @@ async function displayXmlDataForRetailer(retailer) {
       sendOrderButton.className = 'button is-small is-success ml-2'
       sendOrderButton.onclick = async function () {
         //daca am findoc nu mai trimit
-        if (xml.FINDOC) {
+        if (!xml.FINDOC) {
         sendOrderButton.innerHTML = 'Sending...'
         await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
         sendOrderButton.innerHTML = 'Order sent'
