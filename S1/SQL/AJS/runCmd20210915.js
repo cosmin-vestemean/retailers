@@ -108,7 +108,7 @@ function createSomeInvoice(dsIte) {
     if (SALDOC.TRDR) {
         var danteData
         if (SALDOC.TRDR == 11639) {
-            danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, 'DANTE INTERNATIONAL SA' as PartyName, 'BUCURESTI, SECTOR 6' as CityName, " +
+            danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, 'DANTE INTERNATIONAL SA' as PartyName, CITY as CityName, " +
             'coalesce(zip, null) as PostalZone, coalesce(CCCNUMESTREDIDX, null) as StreetName, coalesce(CCCNREDIDX, null) as BuildingNumber, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks ' +
             'from trdr where isactive=1 and company=' + X.SYS.COMPANY + ' and trdr=' + SALDOC.TRDR, null);
         }   else
