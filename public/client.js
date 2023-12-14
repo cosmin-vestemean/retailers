@@ -1506,7 +1506,7 @@ async function displayXmlDataForRetailer(retailer) {
       }
       //send order
       var sendOrderButton = document.createElement('button')
-      sendOrderButton.innerHTML = 'Send Order'
+      sendOrderButton.innerHTML = xml.FINDOC ? 'Sent' : 'Send order'
       sendOrderButton.className = 'button is-small is-success ml-2'
       sendOrderButton.onclick = async function () {
         //daca am findoc nu mai trimit

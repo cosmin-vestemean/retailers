@@ -102,7 +102,7 @@ class SftpServiceClass {
           item.type === '-' &&
           item.name.endsWith('.xml') &&
           item.modifyTime > olderThan &&
-          item.name.startsWith('ORD')
+          item.name.startsWith('ORDERS_')
         )
       })
 
