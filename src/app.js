@@ -221,7 +221,7 @@ class SftpServiceClass {
               })
           : null;
         console.log('trdr', trdr)
-        if (trdr) {
+        if (trdr.data) {
           retailer = trdr.data
         }
         console.log('retailer', retailer)
