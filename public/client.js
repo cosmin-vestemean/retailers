@@ -1537,7 +1537,7 @@ async function displayXmlDataForRetailer(retailer) {
         var parser = new DOMParser()
         var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
         var xpath = `//*[contains(text(), 'Order/ID')]`
-        var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
+        var nodes = parser.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
         var node = nodes.iterateNext()
         var orderId = node.parentNode.getElementsByTagName('ID')[0].innerHTML
         ////Uncaught (in promise) TypeError: Cannot read properties of null (reading 'textContent')
