@@ -1547,6 +1547,17 @@ async function displayXmlDataForRetailer(retailer) {
         if (res.data) {
           findoc.innerHTML =
             '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
+            //update CCCSFTPXML with order internal number as findoc
+            client
+              .service('CCCSFTPXML')
+              .patch(
+                null,
+                { FINDOC: parseInt(res.data) },
+                { query: { XMLFILENAME: xml.XMLFILENAME, XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } }
+              )
+              .then((res) => {
+                console.log('CCCSFTPXML patch', res)
+              })
         } else {
           findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
         }
