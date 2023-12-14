@@ -1533,20 +1533,20 @@ async function displayXmlDataForRetailer(retailer) {
         findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
         //verify if order was sent but not confirmed
-        //get Invoice/ID vakue from XMLDATA and search in SALDOC table by processSqlAsDataset
+        //get Order/ID vakue from XMLDATA and search in SALDOC table by processSqlAsDataset
         var parser = new DOMParser()
         var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
-        var xpath = `//*[contains(text(), 'Invoice/ID')]`
+        var xpath = `//*[contains(text(), 'Order/ID')]`
         var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
         var node = nodes.iterateNext()
-        var invoiceId = node.textContent
-        console.log('invoiceId', invoiceId)
+        var orderId = node.textContent
+        console.log('orderId', orderId)
         //get order from SALDOC
         var params = {}
         params['query'] = {}
         params['query'][
           'sqlQuery'
-        ] = `select findoc from findoc where sosource=1351 and trdr=${retailer} and num04='${invoiceId}'`
+        ] = `select findoc from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
         var res = await client.service('getDataset').find(params)
         console.log('getDataset', JSON.stringify(res))
         if (res.data && res.data.length > 0) {
