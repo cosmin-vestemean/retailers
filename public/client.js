@@ -815,7 +815,7 @@ function loadListaDocumente() {
     })
     .then((res) => {
       console.log(res)
-      var table = document.getElementById('documenteBody')
+      var table = document.getElementById('xmlTable')
       res.data.forEach((item) => {
         var row = table.insertRow()
         var cell1 = row.insertCell()
