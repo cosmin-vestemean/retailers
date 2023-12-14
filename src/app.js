@@ -219,8 +219,8 @@ class SftpServiceClass {
                 console.log('getDataset result', result)
                 return result
               })
-          : null
-          console.log('trdr', trdr)
+          : null;
+        console.log('trdr', trdr)
         //json will ne stored in DB as string
         const d = {
           filename: filename,
