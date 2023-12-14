@@ -1384,7 +1384,7 @@ function getValFromXML(xml, node) {
   //Xpath
   var dom = new DOMParser().parseFromString(xml, 'text/xml')
   var doc = dom.documentElement
-  console.log('getValFromXML', doc)
+  //console.log('getValFromXML', doc)
   //node value by xpath
   var iterator = dom.evaluate(node, doc, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
   console.log('getValFromXML', iterator)
@@ -1544,9 +1544,9 @@ async function displayXmlDataForRetailer(retailer) {
         ] = `select findoc from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
         var res = await client.service('getDataset').find(params)
         console.log('getDataset', JSON.stringify(res))
-        if (res.data && res.data.length > 0) {
+        if (res.data) {
           findoc.innerHTML =
-            '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data[0].findoc
+            '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
         } else {
           findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
         }
