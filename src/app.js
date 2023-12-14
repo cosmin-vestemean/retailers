@@ -14,9 +14,6 @@ import { channels } from './channels.js'
 //ssh2-sftp-client
 import Client from 'ssh2-sftp-client'
 
-//xml2js
-import { parseStringPromise } from 'xml2js'
-
 //fs
 import * as fs from 'fs'
 
@@ -191,12 +188,40 @@ class SftpServiceClass {
         const localPath = folderPath + '/' + filename
         console.log('localPath', localPath)
         const xml = fs.readFileSync(localPath, 'utf8')
+
+        //parse xml for /Order/DeliveryParty/EndpointID
+        //check trdr with getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
+        //retailer = trdr
+
         //remove xml declaration
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
         //parse xml to json
-        const json = parseStringPromise(xmlClean)
+        var parseString = require('xml2js').parseString
+        var json = null
+        parseString(xmlClean, function (err, result) {
+          json = result
+          console.log('json', json)
+        })
+        var endpointID = json.Order.DeliveryParty[0].EndpointID[0]
+        console.log('endpointID', endpointID)
+        //getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
+        var trdr = endpointID
+          ? await app
+              .service('getDataset')
+              .find({
+                query: {
+                  sqlQuery: "SELECT trdr FROM trdbranch WHERE CCCS1DXGLN = '" + endpointID + "'"
+                }
+              })
+              .then((result) => {
+                console.log('getDataset result', result)
+                return result
+              })
+          : null
+          console.log('trdr', trdr)
+        //json will ne stored in DB as string
         const d = {
           filename: filename,
           xml: xmlClean,
