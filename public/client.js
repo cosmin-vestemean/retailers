@@ -1533,8 +1533,8 @@ async function displayXmlDataForRetailer(retailer) {
         findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
         //verify if order was sent but not confirmed
-        //get Order/ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
-        var orderId = getValFromXML(xml.XMLDATA, 'Order/ID')[0]
+        //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
+        var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
         console.log('orderId', orderId)
         //get order from SALDOC
         var params = {}
