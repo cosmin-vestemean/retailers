@@ -224,6 +224,7 @@ class SftpServiceClass {
         if (trdr) {
           retailer = trdr.data
         }
+        console.log('retailer', retailer)
         //json will ne stored in DB as string
         const d = {
           filename: filename,
