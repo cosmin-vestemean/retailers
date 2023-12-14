@@ -1384,10 +1384,10 @@ function getValFromXML(xml, node) {
   //Xpath
   var dom = new DOMParser().parseFromString(xml, 'text/xml')
   var doc = dom.documentElement
+  console.log('getValFromXML', doc)
   //node value by xpath
   var iterator = dom.evaluate(node, doc, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
-  //console.log('node', node)
-  //console.log('matchingNodes', iterator)
+  console.log('getValFromXML', iterator)
   var matchingNodes = []
   try {
     let thisNode = iterator.iterateNext()
@@ -1533,7 +1533,7 @@ async function displayXmlDataForRetailer(retailer) {
         findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
         //verify if order was sent but not confirmed
-        //get Order/ID vakue from XMLDATA and search in SALDOC table by processSqlAsDataset
+        //get Order/ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
         var orderId = getValFromXML(xml.XMLDATA, 'Order/ID')[0]
         console.log('orderId', orderId)
         //get order from SALDOC
