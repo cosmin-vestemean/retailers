@@ -1534,13 +1534,7 @@ async function displayXmlDataForRetailer(retailer) {
       } else {
         //verify if order was sent but not confirmed
         //get Order/ID vakue from XMLDATA and search in SALDOC table by processSqlAsDataset
-        var parser = new DOMParser()
-        var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
-        var xpath = `//*[contains(text(), 'Order/ID')]`
-        var nodes = parser.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
-        var node = nodes.iterateNext()
-        var orderId = node.parentNode.getElementsByTagName('ID')[0].innerHTML
-        ////Uncaught (in promise) TypeError: Cannot read properties of null (reading 'textContent')
+        var orderId = getValFromXML(xml.XMLDATA, 'Order/ID')[0]
         console.log('orderId', orderId)
         //get order from SALDOC
         var params = {}
