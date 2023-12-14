@@ -1506,7 +1506,7 @@ async function displayXmlDataForRetailer(retailer) {
       }
       //send order
       var sendOrderButton = document.createElement('button')
-      sendOrderButton.innerHTML = xml.FINDOC ? 'Sent' : 'Send order'
+      sendOrderButton.innerHTML = xml.FINDOC ? 'Order sent' : 'Send order'
       sendOrderButton.className = 'button is-small is-success ml-2'
       sendOrderButton.onclick = async function () {
         //daca am findoc nu mai trimit
@@ -1558,6 +1558,8 @@ async function displayXmlDataForRetailer(retailer) {
               .then((res) => {
                 console.log('CCCSFTPXML patch', res)
               })
+            //button text
+            sendOrderButton.innerHTML = 'Order sent'
         } else {
           findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
         }
