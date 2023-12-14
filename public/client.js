@@ -1539,7 +1539,8 @@ async function displayXmlDataForRetailer(retailer) {
         var xpath = `//*[contains(text(), 'Order/ID')]`
         var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
         var node = nodes.iterateNext()
-        var orderId = node.textContent
+        var orderId = node.parentNode.getElementsByTagName('ID')[0].innerHTML
+        ////Uncaught (in promise) TypeError: Cannot read properties of null (reading 'textContent')
         console.log('orderId', orderId)
         //get order from SALDOC
         var params = {}
