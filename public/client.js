@@ -1441,7 +1441,6 @@ async function fetchXMLFromRemoteServer() {
   await displayXmlDataForRetailer(retailer)
   //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
-
 }
 
 async function displayXmlDataForRetailer(retailer) {
@@ -1453,7 +1452,7 @@ async function displayXmlDataForRetailer(retailer) {
     //empty the table body
     xmlTableBody.innerHTML = ''
     //loop through the data
-    data.data.forEach((xml) => {
+    data.data.forEach(async (xml) => {
       //create a new row
       var row = xmlTableBody.insertRow()
       //insert the cells
@@ -1512,9 +1511,9 @@ async function displayXmlDataForRetailer(retailer) {
       sendOrderButton.onclick = async function () {
         //daca am findoc nu mai trimit
         if (!xml.FINDOC) {
-        sendOrderButton.innerHTML = 'Sending...'
-        await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
-        sendOrderButton.innerHTML = 'Order sent'
+          sendOrderButton.innerHTML = 'Sending...'
+          await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
+          sendOrderButton.innerHTML = 'Order sent'
         } else {
           alert('Already sent')
         }
@@ -1533,7 +1532,29 @@ async function displayXmlDataForRetailer(retailer) {
       if (xml.FINDOC) {
         findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
       } else {
-        findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        //verify if order was sent but not confirmed
+        //get Invoice/ID vakue from XMLDATA and search in SALDOC table by processSqlAsDataset
+        var parser = new DOMParser()
+        var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
+        var xpath = `//*[contains(text(), 'Invoice/ID')]`
+        var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
+        var node = nodes.iterateNext()
+        var invoiceId = node.textContent
+        console.log('invoiceId', invoiceId)
+        //get order from SALDOC
+        var params = {}
+        params['query'] = {}
+        params['query'][
+          'sqlQuery'
+        ] = `select findoc from findoc where sosource=1351 and trdr=${retailer} and num04='${invoiceId}'`
+        var res = await client.service('getDataset').find(params)
+        console.log('getDataset', JSON.stringify(res))
+        if (res.data && res.data.length > 0) {
+          findoc.innerHTML =
+            '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data[0].findoc
+        } else {
+          findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        }
       }
     })
   })
@@ -1650,17 +1671,17 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       const domObj = await cheatGetXmlFromS1(row.findoc)
       /*
       if (domObj.trimis == false) { */
-        //add cell and textarea
-        var textarea = document.createElement('textarea')
-        textarea.className = 'textarea is-small'
-        textarea.rows = 10
-        textarea.cols = 50
-        textarea.innerHTML = domObj.dom
-        //no spellcheck
-        textarea.spellcheck = false
-        //add cell
-        var td = tr.insertCell()
-        td.appendChild(textarea)
+      //add cell and textarea
+      var textarea = document.createElement('textarea')
+      textarea.className = 'textarea is-small'
+      textarea.rows = 10
+      textarea.cols = 50
+      textarea.innerHTML = domObj.dom
+      //no spellcheck
+      textarea.spellcheck = false
+      //add cell
+      var td = tr.insertCell()
+      td.appendChild(textarea)
       //}
     }
     actions.appendChild(button2)
