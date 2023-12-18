@@ -97,8 +97,9 @@ function getRetailerConfData() {
     })
 }
 
-function setRetailerId(trdr) {
+function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
+  localStorage.setItem('logo_retailer', urlLogo)
   console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
 }
 
