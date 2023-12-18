@@ -832,7 +832,7 @@ function loadListaDocumente() {
         //button for loading xml mappings for current document
         cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="loadMapping(${item.CCCDOCUMENTES1MAPPINGS})">Load</button>`
         //add button for loading from another document from table documente
-        cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Copy from another document</button>`
+        cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Clone</button>`
         //cell6 hidden CCCDOCUMENTES1MAPPINGS, no input
         cell6.innerHTML = item.CCCDOCUMENTES1MAPPINGS
         //hide cell6
