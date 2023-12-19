@@ -8,6 +8,12 @@ findoc_exception = 0,
 denumireDocProcess = '',
 folderPath = 'C:\\S1Print\\FTP\\Online\\';
 
+//CustomerAssignedAccountID default => 3446, trdr=13249 => 3103211
+const defaultCustomerAssignedAccountID = 3446;
+//array for particular cases
+const customerAssignedAccountID = [
+    {trdr: 13249, CustomerAssignedAccountID: 3103211}];
+
 //teste------------------IN PRODUCTIE TOATE PE FALSE---------------------------------------------------------
 //false = no test
 test_mode.trimiteInv2DanteFromDocProc = false;
@@ -1241,7 +1247,13 @@ function createInvoice() {
         };
 
         if (player == 'AccountingSupplierParty') {
-            retObj.CustomerAssignedAccountID = getPrimitiveObj('3446', true, 'string', 20, '3446', 'CustomerAssignedAccountID');
+            retObj.CustomerAssignedAccountID = getPrimitiveObj(defaultCustomerAssignedAccountID.toString(), true, 'string', 20, '3446', 'CustomerAssignedAccountID');
+            customerAssignedAccountID.every(function (el) {
+                if (el.trdr == SALDOC.TRDR) {
+                    retObj.CustomerAssignedAccountID = getPrimitiveObj(el.CustomerAssignedAccountID, true, 'string', 20, 'default: 3446', 'CustomerAssignedAccountID');
+                    return false;
+                } else return true;
+            });
         }
 
         return retObj;
