@@ -12,7 +12,11 @@ folderPath = 'C:\\S1Print\\FTP\\Online\\';
 const defaultCustomerAssignedAccountID = 3446;
 //array for particular cases
 const customerAssignedAccountID = [
-    {trdr: 13249, CustomerAssignedAccountID: 3103211}];
+    {trdr: 13249, CustomerAssignedAccountID: 3103211},
+    {trdr: 78631, CustomerAssignedAccountID: 15121},
+    {trdr: 11322, CustomerAssignedAccountID: 15121},
+    {trdr: 11639, CustomerAssignedAccountID: 3446}
+];
 
 //teste------------------IN PRODUCTIE TOATE PE FALSE---------------------------------------------------------
 //false = no test

@@ -19,6 +19,9 @@ import * as fs from 'fs'
 
 import fetch from 'node-fetch'
 
+//xml2js
+import { parseString } from 'xml2js'
+
 const app = koa(feathers())
 
 // Load our app configuration (see config/ folder)
@@ -197,8 +200,7 @@ class SftpServiceClass {
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-        //parse xml to json
-        var parseString = require('xml2js').parseString
+        //parse xml to json        
         var json = null
         parseString(xmlClean, function (err, result) {
           json = result
