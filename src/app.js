@@ -223,9 +223,9 @@ class SftpServiceClass {
           : null;
         console.log('trdr', trdr)
         if (trdr.data) {
-          retailer = trdr.data
+          retailer = parseInt(trdr.data)
         }
-        console.log('retailer', retailer)
+        console.log('new retailer value', retailer)
         //json will ne stored in DB as string
         const d = {
           filename: filename,
