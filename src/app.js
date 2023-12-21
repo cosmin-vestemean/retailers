@@ -182,7 +182,7 @@ class SftpServiceClass {
     console.log('storing xml in S1 DB for retailer', retailer)
     const folderPath = orderXmlPath
     const files = fs.readdirSync(folderPath)
-    const returnedData = []
+    var returnedData = []
 
     for (const file of files) {
       const filename = file
