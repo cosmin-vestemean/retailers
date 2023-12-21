@@ -204,7 +204,6 @@ class SftpServiceClass {
         var json = null
         parseString(xmlClean, function (err, result) {
           json = result
-          console.log('json', json)
         })
         var endpointID = json.Order.DeliveryParty[0].EndpointID[0]
         console.log('endpointID', endpointID)
