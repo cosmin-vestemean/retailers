@@ -178,7 +178,7 @@ class SftpServiceClass {
   }
 
   async storeXmlInDB(data, params) {
-    const retailer = params.query.retailer
+    var retailer = params.query.retailer
     console.log('storing xml in S1 DB for retailer', retailer)
     const folderPath = orderXmlPath
     const files = fs.readdirSync(folderPath)
