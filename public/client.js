@@ -1459,7 +1459,9 @@ async function displayXmlDataForRetailer(retailer) {
       //insert the cells
       var humanDate = new Date(xml.XMLDATE).toLocaleString()
       row.insertCell().innerHTML = humanDate
-      row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
+      //row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
+      var filenameCell = row.insertCell()
+      filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
       row.insertCell().innerHTML =
         '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.XMLDATA + '</textarea>'
       //spellcheck="false"
@@ -1469,6 +1471,12 @@ async function displayXmlDataForRetailer(retailer) {
       var parser = new DOMParser()
       var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
       var partyName = xmlDoc.getElementsByTagName('PartyName')[0]
+      //get /Order/ID value
+      var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+      //if exists append to cell xmlfilename
+      if (orderId) {
+        filenameCell.innerHTML += '<br>' + orderId
+      }
       row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
       //create the actions cell
       var actionsCell = row.insertCell()
