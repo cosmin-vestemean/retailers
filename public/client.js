@@ -1524,13 +1524,6 @@ async function displayXmlDataForRetailer(retailer) {
       actionsCell.appendChild(copyButton)
       actionsCell.appendChild(deleteButton)
       actionsCell.appendChild(sendOrderButton)
-      //add a checkbox to actions cell
-      var input = document.createElement('input')
-      input.type = 'checkbox'
-      input.name = xml.XMLFILENAME
-      input.id = xml.XMLFILENAME
-      input.className = 'checkbox is-small'
-      actionsCell.appendChild(input)      
 
       //add cell for findoc
       var findoc = row.insertCell()
@@ -1553,23 +1546,29 @@ async function displayXmlDataForRetailer(retailer) {
         var res = await client.service('getDataset').find(params)
         console.log('getDataset', JSON.stringify(res))
         if (res.data) {
-          findoc.innerHTML =
-            '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
-            //update CCCSFTPXML with order internal number as findoc
-            client
-              .service('CCCSFTPXML')
-              .patch(
-                null,
-                { FINDOC: parseInt(res.data) },
-                { query: { XMLFILENAME: xml.XMLFILENAME, XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } }
-              )
-              .then((res) => {
-                console.log('CCCSFTPXML patch', res)
-              })
-            //button text
-            sendOrderButton.innerHTML = 'Order sent'
+          findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
+          //update CCCSFTPXML with order internal number as findoc
+          client
+            .service('CCCSFTPXML')
+            .patch(
+              null,
+              { FINDOC: parseInt(res.data) },
+              { query: { XMLFILENAME: xml.XMLFILENAME, XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } }
+            )
+            .then((res) => {
+              console.log('CCCSFTPXML patch', res)
+            })
+          //button text
+          sendOrderButton.innerHTML = 'Order sent'
         } else {
           findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+          //add a checkbox to actions cell
+          var input = document.createElement('input')
+          input.type = 'checkbox'
+          input.name = xml.XMLFILENAME
+          input.id = xml.XMLFILENAME
+          input.className = 'checkbox is-small ml-2'
+          actionsCell.appendChild(input)
         }
       }
     })
