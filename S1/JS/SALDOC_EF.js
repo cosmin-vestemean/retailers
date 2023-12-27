@@ -1572,6 +1572,10 @@ function initABC() {
 }
 
 function ON_SALDOC_TRDR() {
+  var reprVanzari = X.SQL('select salesman from trdr where trdr=' + SALDOC.TRDR, null)
+  if (reprVanzari) {
+    SALDOC.SALESMAN = reprVanzari
+  }
   initABC()
 }
 
@@ -1837,7 +1841,7 @@ function ON_RESTORE_EVENTS() {
       if (dataset.RECORDCOUNT) {
         dataset.FIRST
         if (dataset.FPRMS == 711) {
-            //factura provenita din aviz livrare
+          //factura provenita din aviz livrare
           MTRDOC.CCCDispatcheDate = dataset.TRNDATE
           MTRDOC.CCCDispatcheDoc = dataset.FINCODE
         }

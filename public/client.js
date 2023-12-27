@@ -1524,6 +1524,13 @@ async function displayXmlDataForRetailer(retailer) {
       actionsCell.appendChild(copyButton)
       actionsCell.appendChild(deleteButton)
       actionsCell.appendChild(sendOrderButton)
+      //add a checkbox to actions cell
+      var input = document.createElement('input')
+      input.type = 'checkbox'
+      input.name = xml.XMLFILENAME
+      input.id = xml.XMLFILENAME
+      input.className = 'checkbox is-small'
+      actionsCell.appendChild(input)      
 
       //add cell for findoc
       var findoc = row.insertCell()
