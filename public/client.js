@@ -1475,7 +1475,7 @@ async function displayXmlDataForRetailer(retailer) {
       var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
       //if exists append to cell xmlfilename
       if (orderId) {
-        filenameCell.innerHTML += '<br>' + orderId
+        filenameCell.innerHTML += '<br><span class="tag is-info is-light">' + orderId + '</span>'
       }
       row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
       //create the actions cell
