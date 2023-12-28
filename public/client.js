@@ -1673,7 +1673,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
     //add row.fincode and a empty text input all inlined; input text has unique id
-    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small">'
+    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small" style="width: 50px;">'
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
