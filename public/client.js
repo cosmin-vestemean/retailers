@@ -1655,8 +1655,11 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     var tr = tbody.insertRow()
     var td = tr.insertCell()
     td.innerHTML = 'No data'
-    td.colSpan = 3
+    td.colSpan = 6
     td.style.textAlign = 'center'
+    td.style.color = 'red'
+    td.style.fontWeight = 'bold'
+    td.style.fontSize = '20px'
     return
   }
 
