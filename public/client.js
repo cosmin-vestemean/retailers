@@ -1673,7 +1673,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
     //add row.fincode and a empty text input all inlined; input text has unique id
-    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small" style="width: 50px;">'
+    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small ml-2" style="width: 100px;">'
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
@@ -1746,7 +1746,11 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       //update btn caption to sending
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
-      await sendInvoice(row.findoc).then(async (response) => {
+      var postfix = document.getElementById(row.fincode + '_postfix').value
+      //alter domObj filename with postfix
+      if (postfix)
+        domObj.filename = domObj.filename + '_' + postfix
+      await sendInvoice(row.findoc, domObj).then(async (response) => {
         //update btn caption to sent
         button.innerHTML = 'Sent'
         console.log('response', response)
@@ -1812,9 +1816,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendInvoice(findoc) {
+async function sendInvoice(findoc, domObj) {
   var response = { success: false, xml: '' }
-  const domObj = await cheatGetXmlFromS1(findoc)
   var localStorageRetailer
   try {
     localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
@@ -2706,8 +2709,6 @@ async function cheatGetXmlFromS1(findoc) {
       findoc: findoc
     }
   })
-
-
 
   console.log('dom', dom)
   return dom
