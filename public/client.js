@@ -1669,7 +1669,15 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     var trndate = tr.insertCell()
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
+    //add fincode.innerHTML = row.fincode and a empty text input 
     fincode.innerHTML = row.fincode
+    var input = document.createElement('input')
+    input.type = 'text'
+    input.name = row.findoc
+    input.id = row.findoc
+    input.className = 'input is-small'
+    input.placeholder = 'Fincode'
+    fincode.appendChild(input)
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
@@ -2702,6 +2710,9 @@ async function cheatGetXmlFromS1(findoc) {
       findoc: findoc
     }
   })
+
+
+
   console.log('dom', dom)
   return dom
 }
