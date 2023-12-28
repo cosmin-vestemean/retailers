@@ -1664,15 +1664,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   }
 
   result.rows.forEach((row) => {
-    var postfixElem = document.getElementById(row.fincode + '_postfix')
-    var postfix = '';
-    //if it has value, use it
-    try {
-      postfix = postfixElem.value
-    } catch (err) {
-      console.log('no postfix')
-    }
-
     var tr = tbody.insertRow()
     var findoc = tr.insertCell()
     findoc.innerHTML = row.findoc
@@ -1682,7 +1673,11 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
     //add row.fincode and a empty text input all inlined; input text has unique id
-    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small ml-2" style="width: 100px;">'
+    fincode.innerHTML =
+      row.fincode +
+      '<input type="text" id="' +
+      row.fincode +
+      '_postfix" class="input is-small ml-2" style="width: 100px;">'
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
@@ -1733,13 +1728,21 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         return
       } else {
         const xml = domObj.dom
+        var postfixElem = document.getElementById(row.fincode + '_postfix')
+        var postfix = ''
+        //if it has value, use it
+        try {
+          postfix = postfixElem.value
+          console.log('postfix', postfix)
+        } catch (err) {
+          console.log('no postfix')
+        }
         //save the xml to file
         var xmlBlob = new Blob([xml], { type: 'text/xml' })
         var xmlURL = window.URL.createObjectURL(xmlBlob)
         var tempLink = document.createElement('a')
         tempLink.href = xmlURL
-        if (postfix)
-          domObj.filename = domObj.filename + '_' + postfix
+        if (postfix) domObj.filename = domObj.filename + '_' + postfix
         tempLink.setAttribute('download', domObj.filename + '.xml')
         tempLink.click()
       }
@@ -1758,8 +1761,15 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
       //alter domObj filename with postfix
-      if (postfix)
-        domObj.filename = domObj.filename + '_' + postfix
+      var postfixElem = document.getElementById(row.fincode + '_postfix')
+        var postfix = ''
+        //if it has value, use it
+        try {
+          postfix = postfixElem.value
+          console.log('postfix', postfix)
+        } catch (err) {
+          console.log('no postfix')
+        }
       await sendInvoice(row.findoc, domObj).then(async (response) => {
         //update btn caption to sent
         button.innerHTML = 'Sent'
