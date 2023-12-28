@@ -1672,15 +1672,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     var trndate = tr.insertCell()
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
-    //add fincode.innerHTML = row.fincode and a empty text input 
-    fincode.innerHTML = '<span>'+row.fincode+'</span>'
-    var input = document.createElement('input')
-    input.type = 'text'
-    input.name = row.findoc
-    input.id = row.findoc
-    input.className = 'input is-small is-inline-block'
-    input.placeholder = 'Postfix'
-    fincode.appendChild(input)
+    //add row.fincode and a empty text input all inlined; input text has unique id
+    fincode.innerHTML = row.fincode + '<input type="text" id="' + row.fincode + '_postfix" class="input is-small">'
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
     //create actions cell
