@@ -1664,7 +1664,15 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   }
 
   result.rows.forEach((row) => {
-    var postfix = document.getElementById(row.fincode + '_postfix').value
+    var postfixElem = document.getElementById(row.fincode + '_postfix')
+    var postfix = '';
+    //if it has value, use it
+    try {
+      postfix = postfixElem.value
+    } catch (err) {
+      console.log('no postfix')
+    }
+
     var tr = tbody.insertRow()
     var findoc = tr.insertCell()
     findoc.innerHTML = row.findoc
