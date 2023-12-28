@@ -1875,7 +1875,7 @@ function getNewFilenamePostfix(filename, row) {
   //filename like INVOIC_17713_VAT_RO25190857.xml; split before_vat then add postfix then add _vat...
   var split = filename.split('_') 
   //get INVOIC_17713 then add _postfix then add _VAT...
-  var newFilename = posfixVal ? split[0] + '_' + split[1] + '_' + posfixVal  + '_' + split[2] + '_' + split[3] : filename
+  var newFilename = posfixVal ? split[0] + '_' + split[1] + posfixVal  + '_' + split[2] + '_' + split[3] : filename
 
   return newFilename
 }
