@@ -1664,6 +1664,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   }
 
   result.rows.forEach((row) => {
+    var postfix = document.getElementById(row.fincode + '_postfix').value
     var tr = tbody.insertRow()
     var findoc = tr.insertCell()
     findoc.innerHTML = row.findoc
@@ -1729,7 +1730,9 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         var xmlURL = window.URL.createObjectURL(xmlBlob)
         var tempLink = document.createElement('a')
         tempLink.href = xmlURL
-        tempLink.setAttribute('download', row.findoc + '.xml')
+        if (postfix)
+          domObj.filename = domObj.filename + '_' + postfix
+        tempLink.setAttribute('download', domObj.filename + '.xml')
         tempLink.click()
       }
     }
@@ -1746,7 +1749,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       //update btn caption to sending
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
-      var postfix = document.getElementById(row.fincode + '_postfix').value
       //alter domObj filename with postfix
       if (postfix)
         domObj.filename = domObj.filename + '_' + postfix
