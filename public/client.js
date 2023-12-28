@@ -1728,21 +1728,12 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         return
       } else {
         const xml = domObj.dom
-        var postfixElem = document.getElementById(row.fincode + '_postfix')
-        var postfix = ''
-        //if it has value, use it
-        try {
-          postfix = postfixElem.value
-          console.log('postfix', postfix)
-        } catch (err) {
-          console.log('no postfix')
-        }
+        domObj.filename = getNewFilenamePostfix(domObj.filename, row)
         //save the xml to file
         var xmlBlob = new Blob([xml], { type: 'text/xml' })
         var xmlURL = window.URL.createObjectURL(xmlBlob)
         var tempLink = document.createElement('a')
         tempLink.href = xmlURL
-        if (postfix) domObj.filename = domObj.filename + '_' + postfix
         tempLink.setAttribute('download', domObj.filename + '.xml')
         tempLink.click()
       }
@@ -1761,15 +1752,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       //font awesome spinner
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
       //alter domObj filename with postfix
-      var postfixElem = document.getElementById(row.fincode + '_postfix')
-        var postfix = ''
-        //if it has value, use it
-        try {
-          postfix = postfixElem.value
-          console.log('postfix', postfix)
-        } catch (err) {
-          console.log('no postfix')
-        }
+      domObj.filename = getNewFilenamePostfix(domObj.filename, row)
       await sendInvoice(row.findoc, domObj).then(async (response) => {
         //update btn caption to sent
         button.innerHTML = 'Sent'
@@ -1878,6 +1861,23 @@ async function sendInvoice(findoc, domObj) {
     response = { success: false, xml: xml }
   }
   return response
+}
+
+function getNewFilenamePostfix(filename, row) {
+  var postfixElem = document.getElementById(row.fincode + '_postfix')
+  var posfixVal = ''
+  try {
+    posfixVal = postfixElem.value
+    console.log('posfix', posfixVal)
+  } catch (err) {
+    console.log('no postfix')
+  }
+  //filename like INVOIC_17713_VAT_RO25190857.xml; split before_vat then add postfix then add _vat...
+  var split = filename.split('_') 
+  //get INVOIC_17713 then add _postfix then add _VAT...
+  var newFilename = posfixVal ? split[0] + '_' + split[1] + '_' + posfixVal  + '_' + split[2] + '_' + split[3] : filename
+
+  return newFilename
 }
 
 async function createLOCATEINFO(trdr, sosource, fprms, series) {
