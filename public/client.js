@@ -1678,7 +1678,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     input.type = 'text'
     input.name = row.findoc
     input.id = row.findoc
-    input.className = 'input is-small'
+    input.className = 'input is-small is-inline-block'
     input.placeholder = 'Postfix'
     fincode.appendChild(input)
     var sumamnt = tr.insertCell()
