@@ -1679,7 +1679,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     input.name = row.findoc
     input.id = row.findoc
     input.className = 'input is-small'
-    input.placeholder = 'Append characters to fincode'
+    input.placeholder = 'Postfix'
     fincode.appendChild(input)
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
