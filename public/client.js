@@ -1670,13 +1670,13 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trndate.innerHTML = row.trndate
     var fincode = tr.insertCell()
     //add fincode.innerHTML = row.fincode and a empty text input 
-    fincode.innerHTML = row.fincode
+    fincode.innerHTML = '<span>'+row.fincode+'</span>'
     var input = document.createElement('input')
     input.type = 'text'
     input.name = row.findoc
     input.id = row.findoc
     input.className = 'input is-small'
-    input.placeholder = 'Fincode'
+    input.placeholder = 'Append characters to fincode'
     fincode.appendChild(input)
     var sumamnt = tr.insertCell()
     sumamnt.innerHTML = row.sumamnt
