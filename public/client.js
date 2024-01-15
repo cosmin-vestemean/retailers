@@ -1467,10 +1467,12 @@ async function displayXmlDataForRetailer(retailer) {
       //spellcheck="false"
       row.cells[2].spellcheck = false
       //row.insertCell().innerHTML = xml.JSONDATA
-      //parse xml to dom and find first <PartyName> node
       var parser = new DOMParser()
       var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
-      var partyName = xmlDoc.getElementsByTagName('PartyName')[0]
+      //parse xml to dom and find <BuyerCustomerParty> something <PartyName> node
+      var partyName = xmlDoc.getElementsByTagName('BuyerCustomerParty')[0]
+        ? xmlDoc.getElementsByTagName('BuyerCustomerParty')[0].getElementsByTagName('PartyName')[0]
+        : null
       //get /Order/ID value
       var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
       //if exists append to cell xmlfilename
