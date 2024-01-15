@@ -386,7 +386,7 @@ function createSomeInvoice(dsIte) {
             x: 'LineExtensionAmount'
         }, {
             UIRef: nrLinie + ': dsIte.LNETLINEVAL + dsItet.VATAMNT',
-            UIVal: parseFloat(dsIte.LNETLINEVAL) + parseFloat(dsIte.VATAMNT),
+            UIVal: precise_round(parseFloat(dsIte.LNETLINEVAL) + parseFloat(dsIte.VATAMNT), 2),
             x: 'TaxInclusiveAmount'
         });
 

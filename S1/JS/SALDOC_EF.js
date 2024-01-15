@@ -289,6 +289,7 @@ function ON_AFTERPOST() {
 }
 
 function ON_POST() {
+  preiaDateAviz();
   if (SALDOC.SERIES == 7022) {
     if (SALDOC.NUM04) {
       //verifica daca exista numarul de comanda online in tabelul findoc pt seria 7022, comanda online nu poate fi duplicata
@@ -1830,7 +1831,11 @@ function markItAsSentDate() {
   X.RUNSQL('update mtrdoc set CCCXMLSendDate=GETDATE() where findoc=' + SALDOC.FINDOC, null)
 }
 
-function ON_RESTORE_EVENTS() {
+function ON_RESTOREEVENTS() {
+  preiaDateAviz();
+}
+
+function preiaDateAviz() {
   if (SALDOC.FPRMS == 712) {
     ITELINES.FIRST
     if (ITELINES.FINDOCS) {
@@ -1838,7 +1843,7 @@ function ON_RESTORE_EVENTS() {
         'SELECT FINDOC, FPRMS, TRNDATE, FINCODE FROM FINDOC WHERE FINDOC=' + ITELINES.FINDOCS,
         null
       )
-      if (dataset.RECORDCOUNT) {
+      if (dataset.RECORDCOUNT > 0) {
         dataset.FIRST
         if (dataset.FPRMS == 711) {
           //factura provenita din aviz livrare
