@@ -411,15 +411,15 @@ function createSomeInvoice(dsIte) {
                     x: 'Description'
                 }, {
                     UIRef: nrLinie + ': dsIte.MTRL_ITEM_CODE1',
-                    UIVal: dsIte.MTRL_ITEM_CODE1,
+                    UIVal: X.SQL('select CODE1 from mtrl where mtrl=' + dsIte.MTRL, null),
                     x: 'StandardItemIdentification.ID'
                 }, {
                     UIRef: nrLinie + ': CCCS1DXTRDRMTRL (Cod client)',
                     UIVal: X.SQL('select code from CCCS1DXTRDRMTRL where mtrl=' + dsIte.MTRL + ' and trdr=' + SALDOC.TRDR + 'and msodtype=51 and tsodtype=13', null),
                     x: 'BuyersItemIdentification.ID'
                 }, {
-                    UIRef: nrLinie + ': dsIte.MTRL_ITEM_CODE1 (Cod vanzator)',
-                    UIVal: dsIte.MTRL_ITEM_CODE,
+                    UIRef: nrLinie + ': dsIte.MTRL_ITEM_CODE (Cod vanzator)',
+                    UIVal: X.SQL('select CODE from mtrl where mtrl=' + dsIte.MTRL, null),
                     x: 'SellersItemIdentification.ID'
                 }
             ]);
