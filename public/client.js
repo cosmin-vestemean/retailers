@@ -1469,9 +1469,9 @@ async function displayXmlDataForRetailer(retailer) {
       //row.insertCell().innerHTML = xml.JSONDATA
       var parser = new DOMParser()
       var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
-      //parse xml to dom and find <BuyerCustomerParty> something <PartyName> node
-      var partyName = xmlDoc.getElementsByTagName('BuyerCustomerParty')[0]
-        ? xmlDoc.getElementsByTagName('BuyerCustomerParty')[0].getElementsByTagName('PartyName')[0]
+      //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
+      var partyName = xmlDoc.getElementsByTagName('AccountingCustomerParty')[0]
+        ? xmlDoc.getElementsByTagName('AccountingCustomerParty')[0].getElementsByTagName('PartyName')[0]
         : null
       //get /Order/ID value
       var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
