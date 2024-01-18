@@ -1823,11 +1823,12 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-function resendInvoice(findoc) {
-  alert('to be implemented')
+async function resendInvoice(findoc) {
+  var domObj = await cheatGetXmlFromS1(row.findoc)
+  sendInvoice(findoc, domObj, true)
 }
 
-async function sendInvoice(findoc, domObj) {
+async function sendInvoice(findoc, domObj, overrideTrimis = false) {
   var response = { success: false, xml: '' }
   var localStorageRetailer
   try {
@@ -1839,7 +1840,7 @@ async function sendInvoice(findoc, domObj) {
 
   console.log('localStorageRetailer', localStorageRetailer)
 
-  if (domObj.trimis == false) {
+  if (domObj.trimis == false || overrideTrimis == true) {
     //uploadXml service
     var xml = domObj.dom
     var filename = domObj.filename

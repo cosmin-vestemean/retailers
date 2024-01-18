@@ -305,7 +305,7 @@ function createSomeInvoice(dsIte) {
             //country
             {
                 UIRef: 'RO',
-                UIVal: 'RO',
+                UIVal: SALDOC.TRDR == 12349 ? 'RO' : null,
                 x: 'DeliveryLocation.LocationAddress.CountryCode'
             }
         ]);
@@ -832,27 +832,10 @@ function createInvoice() {
                 //debugger;
                 var unitCode = '';
                 if (qty1 && mtrunit) {
-                    switch (parseInt(mtrunit)) {
-                    case 1:
-                        unitCode = 'PC';
-                        break;
-                    case 10:
-                        unitCode = 'BC';
-                        break;
-                    case 7:
-                        unitCode = 'KG';
-                        break;
-                    case 6:
-                        unitCode = 'L';
-                        break;
-                    case 3:
-                        unitCode = 'M';
-                        break;
-                    default:
-                        unitCode = 'PC';
-                        _errBindErrors += 'MTRUNIT=' + mtrunit + ' a fost convertit implicit in bucati (PC)\n';
-                        break;
-                    }
+                    var ERPUnitCode = X.SQL('select shortcut from mtrunit where mtrunit=' + mtrunit, null);
+                    //var codeLaClient = X.SQL('select shortcut from CCCALTTRDRMTRUNIT where mtrunit=' + mtrunit + ' and trdr_retailer=' + SALDOC.TRDR, null);
+                    //unitCode = codeLaClient ? codeLaClient : ERPUnitCode;
+                    unitCode = 'PC'
                     return '<InvoicedQuantity unitCode="' + unitCode + '">' + qty1 + '</InvoicedQuantity>';
                 } else
                     return '';

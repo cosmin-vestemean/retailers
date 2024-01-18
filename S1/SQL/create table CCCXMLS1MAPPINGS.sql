@@ -126,3 +126,15 @@ select f.trndate, f.fincode, f.sumamnt
 from findoc f
 where f.trdr = {trdr} and f.series = {series} and f.sosource = {sosource} and f.fprms = {fprms}
 and cast(f.trndate as date) between dateadd(day, -{daysOlder}, getdate()) and cast(getdate() as date)
+
+create table CCCALTTRDRMTRUNIT (
+    CCCALTTRDRMTRUNIT INT NOT NULL IDENTITY(1, 1),
+    TRDR_RETAILER INT NOT NULL,
+    TRDR_CLIENT INT NOT NULL,
+    MTRUNIT INT NOT NULL,
+    SHORTCUT VARCHAR(10),
+    CONSTRAINT PK_CCCALTTRDRMTRUNIT PRIMARY KEY (CCCALTTRDRMTRUNIT)
+)
+
+INSERT INTO CCCALTTRDRMTRUNIT (TRDR_RETAILER, TRDR_CLIENT, MTRUNIT, SHORTCUT)
+VALUES (13249, 1, 1, 'PC'), (78631, 1, 1, 'PC'), (11322, 1, 1, 'PC'), (11639, 1, 1, 'PC'), (12349, 1, 1, 'PCE')
