@@ -1814,7 +1814,11 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trimis.className = 'trimis'
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
+      //add button "resend"
+      '<br><button class="button is-small is-info ml-2" onclick="resendInvoice(' +
+      row.findoc +
+      ')">Resend</button>'
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
