@@ -101,8 +101,8 @@ function createSomeInvoice(dsIte) {
         X.WARNING('Xml file already sent in ' + data_trimitere);
     }
 
-    if (trimis)
-        return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Xml file already sent in ' + data_trimitere};
+    // if (trimis)
+    //     return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Xml file already sent in ' + data_trimitere};
 
     //dependente:
     var companyData = X.GETSQLDATASET('select coalesce(afm, null) as PartyIdentification, coalesce(name, null) as PartyName, coalesce(city, null) as CityName, ' +
