@@ -1824,7 +1824,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
 }
 
 async function resendInvoice(findoc) {
-  var domObj = await cheatGetXmlFromS1(row.findoc)
+  var domObj = await cheatGetXmlFromS1(findoc)
   sendInvoice(findoc, domObj, true)
 }
 
