@@ -1745,7 +1745,67 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-success ml-2'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      sendAndMarkInvoice(row.findoc, button)
+      var domObj = await cheatGetXmlFromS1(row.findoc)
+      if (domObj.trimis == true) {
+        alert('Factura a fost deja trimisa')
+        return
+      }
+      //update btn caption to sending
+      //font awesome spinner
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
+      //alter domObj filename with postfix
+      domObj.filename = getNewFilenamePostfix(domObj.filename, row)
+      await sendInvoice(row.findoc, domObj).then(async (response) => {
+        //update btn caption to sent
+        button.innerHTML = 'Sent'
+        console.log('response', response)
+        var xml = response.xml
+        var success = response.success
+        if (success == true) {
+          //add cell and textarea
+          var textarea = document.createElement('textarea')
+          textarea.className = 'textarea is-small'
+          textarea.rows = 10
+          textarea.cols = 50
+          textarea.innerHTML = xml
+          //no spellcheck
+          textarea.spellcheck = false
+          //add cell
+          var td = tr.insertCell()
+          td.appendChild(textarea)
+        }
+        var body = {}
+        body['service'] = 'setData'
+        body['clientID'] = await client
+          .service('connectToS1')
+          .find()
+          .then((result) => {
+            return result.token
+          })
+        body['appId'] = '1001'
+        body['OBJECT'] = 'SALDOC'
+        body['FORM'] = 'EFIntegrareRetailers'
+        body['KEY'] = row.findoc
+        body['DATA'] = {}
+        body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+        console.log('body', body)
+        await client
+          .service('setDocument')
+          .create(body)
+          .then((res) => {
+            console.log(res)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      })
+      //update btn caption to sent
+      button.innerHTML = 'Sent Invoice'
+      //find cell class="trimis" in current row and add date now and green check
+      var trimis = tr.getElementsByClassName('trimis')[0]
+      trimis.innerHTML =
+        '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
+        new Date().toISOString().slice(0, 19).replace('T', ' ')
     }
     actions.appendChild(button)
     //add cell trimis
@@ -1763,72 +1823,9 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendAndMarkInvoice(findoc, button, overrideTrimis = false) {
+async function resendInvoice(findoc) {
   var domObj = await cheatGetXmlFromS1(findoc)
-  if (domObj.trimis == true && overrideTrimis == false) {
-    alert('Factura a fost deja trimisa')
-    return
-  }
-  //update btn caption to sending
-  //font awesome spinner
-  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
-  //alter domObj filename with postfix
-  domObj.filename = getNewFilenamePostfix(domObj.filename, row)
-  await sendInvoice(findoc, domObj).then(async (response) => {
-    //update btn caption to sent
-    button.innerHTML = 'Sent'
-    console.log('response', response)
-    var xml = response.xml
-    var success = response.success
-    if (success == true) {
-      //add cell and textarea
-      var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small'
-      textarea.rows = 10
-      textarea.cols = 50
-      textarea.innerHTML = xml
-      //no spellcheck
-      textarea.spellcheck = false
-      //add cell
-      var td = tr.insertCell()
-      td.appendChild(textarea)
-    }
-    var body = {}
-    body['service'] = 'setData'
-    body['clientID'] = await client
-      .service('connectToS1')
-      .find()
-      .then((result) => {
-        return result.token
-      })
-    body['appId'] = '1001'
-    body['OBJECT'] = 'SALDOC'
-    body['FORM'] = 'EFIntegrareRetailers'
-    body['KEY'] = row.findoc
-    body['DATA'] = {}
-    body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
-    console.log('body', body)
-    await client
-      .service('setDocument')
-      .create(body)
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  })
-  //update btn caption to sent
-  button.innerHTML = 'Sent Invoice'
-  //find cell class="trimis" in current row and add date now and green check
-  var trimis = tr.getElementsByClassName('trimis')[0]
-  trimis.innerHTML =
-    '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
-    new Date().toISOString().slice(0, 19).replace('T', ' ')
-}
-
-async function resendInvoice(findoc, button) {
-  sendAndMarkInvoice(findoc, button, true)
+  sendInvoice(findoc, domObj, true)
 }
 
 async function sendInvoice(findoc, domObj, overrideTrimis = false) {
