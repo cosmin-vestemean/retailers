@@ -1745,7 +1745,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.className = 'button is-small is-success ml-2'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      sendAndMarkInvoice(row.findoc)
+      sendAndMarkInvoice(row.findoc, button)
     }
     actions.appendChild(button)
     //add cell trimis
@@ -1763,7 +1763,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendAndMarkInvoice(findoc, overrideTrimis = false) {
+async function sendAndMarkInvoice(findoc, button, overrideTrimis = false) {
   var domObj = await cheatGetXmlFromS1(findoc)
   if (domObj.trimis == true && overrideTrimis == false) {
     alert('Factura a fost deja trimisa')
@@ -1827,8 +1827,8 @@ async function sendAndMarkInvoice(findoc, overrideTrimis = false) {
     new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
 
-async function resendInvoice(findoc) {
-  sendAndMarkInvoice(findoc, true)
+async function resendInvoice(findoc, button) {
+  sendAndMarkInvoice(findoc, button, true)
 }
 
 async function sendInvoice(findoc, domObj, overrideTrimis = false) {
