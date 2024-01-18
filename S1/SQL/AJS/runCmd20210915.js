@@ -15,7 +15,8 @@ const customerAssignedAccountID = [
     {trdr: 13249, CustomerAssignedAccountID: 3103211},
     {trdr: 78631, CustomerAssignedAccountID: 15121},
     {trdr: 11322, CustomerAssignedAccountID: 15121},
-    {trdr: 11639, CustomerAssignedAccountID: 3446}
+    {trdr: 11639, CustomerAssignedAccountID: 3446},
+    {trdr: 12349, CustomerAssignedAccountID: 10011546},
 ];
 
 //teste------------------IN PRODUCTIE TOATE PE FALSE---------------------------------------------------------
@@ -109,21 +110,16 @@ function createSomeInvoice(dsIte) {
             'coalesce(BGBULSTAT, null) as CompanyID, coalesce(IDENTITYNUM, null) as CorporateStockAmount, coalesce(NAME3, null) as PayerFinancialAccountID, ' +
             ' coalesce(NAME2, null) as PayerFinancialAccountName, ' +
             "CCCNUMESTREDIDX as StreetName, 118 as BuildingNumber " +
-            'from company where isactive = 1 and company=' + X.SYS.COMPANY, null);
+            ' from company where isactive = 1 and company=' + X.SYS.COMPANY, null);
     if (!companyData.RECORDCOUNT) {
         X.WARNING('Nu gasesc datele companiei PET FACTORY)...');
         return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc datele companiei PET FACTORY)'};
     }
 
     if (SALDOC.TRDR) {
-        var danteData
-        if (SALDOC.TRDR == 11639) {
-            danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, 'DANTE INTERNATIONAL SA' as PartyName, CITY as CityName, " +
-            'coalesce(zip, null) as PostalZone, coalesce(CCCNUMESTREDIDX, null) as StreetName, coalesce(CCCNREDIDX, null) as BuildingNumber, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks ' +
-            'from trdr where isactive=1 and company=' + X.SYS.COMPANY + ' and trdr=' + SALDOC.TRDR, null);
-        }   else
-        danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, name as PartyName, CITY as CityName, " +
-                'coalesce(zip, null) as PostalZone, coalesce(CCCNUMESTREDIDX, null) as StreetName, coalesce(CCCNREDIDX, null) as BuildingNumber, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks ' +
+        var danteData = X.GETSQLDATASET("SELECT (select b.name from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") bank, (select a.iban from TRDBANKACC a inner join bank b on (a.bank=b.bank) where a.trdr="+SALDOC.TRDR+") as iban, concat(coalesce(bgbulstat, null), coalesce(afm, null)) as PartyIdentification, name as PartyName, CCCDOCPROCCITY as CityName, " +
+                'coalesce(zip, null) as PostalZone, coalesce(CCCNUMESTREDIDX, null) as StreetName, coalesce(CCCNREDIDX, null) as BuildingNumber, coalesce(JOBTYPETRD, null) as CompanyID, coalesce(remarks, null) remarks, ' +
+                'coalesce(CCCS1DXGLN, null) as CustomerLocationCoordinate, coalesce(CCCGLNFORCUSTOMER, null) SupplierLocationCoordinate ' +
                 'from trdr where isactive=1 and company=' + X.SYS.COMPANY + ' and trdr=' + SALDOC.TRDR, null);
         if (!danteData.RECORDCOUNT) {
             X.WARNING('Nu gasesc datele companiei EMAG (DANTE)...');
@@ -135,7 +131,7 @@ function createSomeInvoice(dsIte) {
 
     if (SALDOC.TRDBRANCH) {
         var depozitLivrare = X.GETSQLDATASET('select coalesce(CCCS1DXGLN, null) as ID, coalesce(name, null) as Description, coalesce(address, null) as StreetName, ' +
-                'coalesce(city, null) as CityName from trdbranch where isactive=1 and trdbranch=' + SALDOC.TRDBRANCH, null);
+                'coalesce(city, null) as CityName, coalesce(CCCBUILDINGNUMBER, null) BuildingNumber, coalesce(ZIP, null) PostalZone from trdbranch where isactive=1 and trdbranch=' + SALDOC.TRDBRANCH, null);
         if (!depozitLivrare) {
             X.WARNING('Nu gasesc date depozit livrare.');
             return {dom: null, trimis: trimis, filename: null, computername: null, message: 'Nu gasesc date depozit livrare'};
@@ -197,6 +193,10 @@ function createSomeInvoice(dsIte) {
 
     //[PartyIdentification, PartyName, StreetName, BuildingNumber, CityName, PostalZone, CompanyID, CorporateStockAmount]
     inv.set_AccountingSupplierParty([{
+                UIRef: 'CUSTOMER.CCCGLNFORCUSTOMER',
+                UIVal: danteData.SupplierLocationCoordinate,
+                x: 'Party.PostalAddress.LocationCoordinate'
+            },{
                 UIRef: 'COMPANY.AFM',
                 UIVal: companyData.PartyIdentification,
                 x: 'Party.PartyIdentification'
@@ -234,6 +234,10 @@ function createSomeInvoice(dsIte) {
     //[PartyIdentification, PartyName, StreetName, BuildingNumber, CityName, PostalZone, CompanyID, CorporateStockAmount, CustomerAssignedAccountID]
     //COnventie adresa: "Sos. Virtutii 148, Spatiul E47, Bucuresti Sect 6"
     inv.set_AccountingCustomerParty([{
+                UIRef: 'CUSTOMER.CCCS1DXGLN',
+                UIVal: danteData.CustomerLocationCoordinate,
+                x: 'Party.PostalAddress.LocationCoordinate'
+            },{
                 UIRef: 'COMPANY.AFM',
                 UIVal: danteData.PartyIdentification,
                 x: 'Party.PartyIdentification'
@@ -285,13 +289,24 @@ function createSomeInvoice(dsIte) {
                 UIVal: checkNull(depozitLivrare, 'StreetName', depozitLivrare.StreetName),
                 x: 'DeliveryLocation.LocationAddress.StreetName'
             }, {
-                UIRef: 'BuildingNumber',
-                UIVal: null,
+                UIRef: 'CUSBRANCH.CCCBUILDINGNUMBER',
+                UIVal: checkNull(depozitLivrare, 'BuildingNumber', depozitLivrare.BuildingNumber),
                 x: 'DeliveryLocation.LocationAddress.BuildingNumber'
             }, {
                 UIRef: 'CUSBRANCH.CITY',
                 UIVal: checkNull(depozitLivrare, 'CityName', depozitLivrare.CityName),
                 x: 'DeliveryLocation.LocationAddress.CityName'
+            }, //post code
+            {
+                UIRef: 'CUSBRANCH.ZIP',
+                UIVal: checkNull(depozitLivrare, 'PostalZone', depozitLivrare.PostalZone),
+                x: 'DeliveryLocation.LocationAddress.PostalZone'
+            },
+            //country
+            {
+                UIRef: 'RO',
+                UIVal: 'RO',
+                x: 'DeliveryLocation.LocationAddress.CountryCode'
             }
         ]);
     //[PaymentMeansCode/42, PaymentDueDate/FINPAYTERMS.FINALDATE]
@@ -627,6 +642,8 @@ function createInvoice() {
                 StreetName: getPrimitiveObj(null, false, 'string', 100, 'Str. Italia, Parcul Logistic EuroPolis (Cefin)', 'StreetName'),
                 BuildingNumber: getPrimitiveObj(null, false, 'string', 10, '', 'BuildingNumber'),
                 CityName: getPrimitiveObj(null, false, 'string', 100, 'Chiajna, IF', 'CityName'),
+                PostalZone: getPrimitiveObj(null, false, 'string', 35, '700805', 'PostalZone'),
+                CountryCode: getPrimitiveObj('RO', false, 'string', 35, 'RO', 'CountryCode'),
                 Country: {
                     Count: 1,
                     Start: {
@@ -1198,6 +1215,7 @@ function createInvoice() {
                             return '<PostalAddress>';
                         }
                     },
+                    LocationCoordinate: getPrimitiveObj(null, false, 'string', 13, '5940475754006/4049728610005', 'LocationCoordinate'),
                     StreetName: getPrimitiveObj(null, true, 'string', 100, 'Trotus', 'StreetName'),
                     BuildingNumber: getPrimitiveObj(null, true, 'string', 10, 'Nr. 10', 'BuildingNumber'),
                     CityName: getPrimitiveObj(null, true, 'string', 100, 'Bucuresti, Sector 2', 'CityName'),
