@@ -1825,6 +1825,10 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
+function resendInvoice(findoc) {
+  alert('to be implemented')
+}
+
 async function sendInvoice(findoc, domObj) {
   var response = { success: false, xml: '' }
   var localStorageRetailer
