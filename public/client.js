@@ -1816,7 +1816,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
       //add link "resend"
-      '<br><a href="#" onclick="resendInvoice(' + row.findoc + ')">ResendInvoice</a>'
+      '<br><a href="#" onclick="resendInvoice(' + row.findoc + ')">Resend Invoice</a>'
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
