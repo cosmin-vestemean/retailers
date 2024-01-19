@@ -1757,8 +1757,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
-      //add button "resend" with sendAndMark with overrideTrimis = true   
-      `<button class="button is-small is-danger ml-2" onclick="sendAndMark(${row}, ${tr}, ${button.id}, true)">Resend</button>`
+      `<button id="${row.findoc}_sendInvoice" class="button is-small is-success ml-2" onclick="sendAndMark(row, tr, '${row.findoc}_sendInvoice', true)">Override</button>`
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
