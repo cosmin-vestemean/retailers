@@ -1757,8 +1757,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
-      //add link "resend"
-      '<br><a id="' + row.findoc + '_resend" class="has-text-danger" onclick="resendInvoice(' + row + ', ' + tr + ', "' + row.findoc + '_resend' + '")">Resend</a>'
+      //add link "resend" with it's own id and onclick function sendAndMark with overrideTrimis = true
+      '<br><a id="' + row.findoc + '_resend" class="has-text-info" onclick="sendAndMark(row, tr, this.id, true)">Resend</a>'     
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
@@ -1829,10 +1829,6 @@ async function sendAndMark(row, tr, elemId, overrideTrimis = false) {
       trimis.innerHTML =
         '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
         new Date().toISOString().slice(0, 19).replace('T', ' ')
-}
-
-async function resendInvoice(row, tr, elemId) {
-  sendAndMark(row, tr, elemId, true)
 }
 
 async function sendInvoice(findoc, domObj, overrideTrimis = false) {
