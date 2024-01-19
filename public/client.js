@@ -1747,7 +1747,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.id = row.findoc + '_sendInvoice'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      sendAndMark(row, button.id)
+      sendAndMark(row, tr, button.id)
     }
     actions.appendChild(button)
     //add cell trimis
@@ -1765,7 +1765,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendAndMark(row, elemId) {
+async function sendAndMark(row, tr, elemId) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
