@@ -3292,7 +3292,7 @@ function sendAllFacturi() {
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
 //netrimise means <td class="trimis"> contains <i class="fas fa-xl fa-times-circle has-text-danger">
 
-function toggleFacturiTrimise() {
+function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody tbody')
   if (facturiTrimise.checked) {
