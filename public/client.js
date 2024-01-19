@@ -1758,14 +1758,14 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
       //add link "resend"
-      '<br><a href="#" onclick="resendInvoice(' + row.findoc + ')">Resend Invoice</a>'
+      '<br><a id="' + row.findoc + '_resend" class="has-text-danger" onclick="resendInvoice(' + row, tr, row.findoc + '_resend' + ')">Resend</a>'
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
   })
 }
 
-async function sendAndMark(row, tr, elemId) {
+async function sendAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
@@ -1778,7 +1778,7 @@ async function sendAndMark(row, tr, elemId) {
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
       //alter domObj filename with postfix
       domObj.filename = getNewFilenamePostfix(domObj.filename, row)
-      await sendInvoice(row.findoc, domObj).then(async (response) => {
+      await sendInvoice(row.findoc, domObj, overrideTrimis).then(async (response) => {
         //update btn caption to sent
         button.innerHTML = 'Sent'
         console.log('response', response)
@@ -1831,9 +1831,8 @@ async function sendAndMark(row, tr, elemId) {
         new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
 
-async function resendInvoice(findoc) {
-  var domObj = await cheatGetXmlFromS1(findoc)
-  sendInvoice(findoc, domObj, true)
+async function resendInvoice(row, tr, elemId) {
+  sendAndMark(row, tr, elemId, true)
 }
 
 async function sendInvoice(findoc, domObj, overrideTrimis = false) {
