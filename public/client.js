@@ -1775,7 +1775,7 @@ async function sendAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.trimis == true) {
+      if (domObj.trimis == true && overrideTrimis == false) {
         alert('Factura a fost deja trimisa')
         return
       }
