@@ -1758,7 +1758,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
       //add link "resend"
-      '<br><a id="' + row.findoc + '_resend" class="has-text-danger" onclick="resendInvoice(' + row, tr, row.findoc + '_resend' + ')">Resend</a>'
+      '<br><a id="' + row.findoc + '_resend" class="has-text-danger" onclick="resendInvoice(' + row + ', ' + tr + ', ' + row.findoc + '_resend' + ')">Resend</a>'
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
