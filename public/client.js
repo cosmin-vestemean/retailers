@@ -1756,8 +1756,15 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     trimis.className = 'trimis'
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
-      `<button id="${row.findoc}_sendInvoice" class="button is-small is-success ml-2" onclick="sendAndMark(${row}, ${tr}, '${row.findoc}_sendInvoice', true)">Override</button>`
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
+      //add link to trimis cell for resending invoice with overrideTrimis = true
+      var resend = document.createElement('a')
+      resend.innerHTML = 'Resend'
+      resend.className = 'button is-small is-danger ml-2'
+      resend.onclick = async function () {
+        sendAndMark(row, tr, button.id, true)
+      }
+      trimis.appendChild(resend)
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
