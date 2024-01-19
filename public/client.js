@@ -3286,18 +3286,7 @@ window.onload = function () {
 }
 
 function sendAllFacturi() {
-  //pentru toate facturile netrimise, trimite-le cu sendAndMark
-  var table = document.getElementById('facturiTableBody')
-  var rows = table.getElementsByTagName('tr')
-  for (var i = 0; i < rows.length; i++) {
-    var row = rows[i]
-    var cell = row.getElementsByClassName('trimis')[0]
-    if (cell.innerHTML.includes('fa-times-circle')) {
-      var findoc = row.getElementsByClassName('findoc')[0].innerHTML
-      alert('simulate sending ' + findoc)
-    
-    }
-  }
+ 
 }
 
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
