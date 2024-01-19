@@ -3301,7 +3301,8 @@ function toggleFacturiNetrimise() {
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
       var cell = row.getElementsByClassName('trimis')[0]
-      if (cell.innerHTML != '') {
+      //contains <i class="fas fa-xl fa-times-circle has-text-danger">
+      if (cell.innerHTML.includes('fa-times-circle')) {
         row.style.display = 'none'
       }
     }
