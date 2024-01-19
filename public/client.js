@@ -1762,7 +1762,11 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       resend.innerHTML = 'Resend'
       resend.className = 'button is-small is-danger ml-2'
       resend.onclick = async function () {
-        sendAndMark(row, tr, button.id, true)
+        //ask if sure
+        var r = confirm('Resend invoice?')
+        if (r == true) {
+          sendAndMark(row, tr, button.id, true)
+        } 
       }
       trimis.appendChild(resend)
     } else {
