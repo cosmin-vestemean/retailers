@@ -3284,3 +3284,32 @@ window.onload = function () {
       }
     })
 }
+
+function sendAllFacturi() {
+  alert('To be implemented')
+}
+
+//onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
+//netrimise means <td class="trimis"> contains <i class="fas fa-xl fa-times-circle has-text-danger">
+
+function toggleFacturiTrimise() {
+  var facturiTrimise = document.getElementById('facturiTrimise')
+  var table = document.getElementById('facturiTableBody tbody')
+  if (facturiTrimise.checked) {
+    //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      var cell = row.getElementsByClassName('trimis')[0]
+      if (cell.innerHTML != '') {
+        row.style.display = 'none'
+      }
+    }
+  } else {
+    var rows = table.getElementsByTagName('tr')
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i]
+      row.style.display = ''
+    }
+  }
+}
