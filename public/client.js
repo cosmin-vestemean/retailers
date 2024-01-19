@@ -1743,9 +1743,32 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     actions.appendChild(button3)
     var button = document.createElement('button')
     button.className = 'button is-small is-success ml-2'
+    //set id
+    button.id = row.findoc + '_sendInvoice'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      var domObj = await cheatGetXmlFromS1(row.findoc)
+      sendAndMark(row.findoc, button.id)
+    }
+    actions.appendChild(button)
+    //add cell trimis
+    var trimis = tr.insertCell()
+    //add class for trimis
+    trimis.className = 'trimis'
+    //trimis.innerHTML = row.CCCXMLSendDate
+    if (row.CCCXMLSendDate) {
+      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
+      //add link "resend"
+      '<br><a href="#" onclick="resendInvoice(' + row.findoc + ')">Resend Invoice</a>'
+    } else {
+      trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+    }
+  })
+}
+
+async function sendAndMark(findoc, elemId) {
+  //send invoice
+  var button = document.getElementById(elemId)
+  var domObj = await cheatGetXmlFromS1(row.findoc)
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
@@ -1806,21 +1829,6 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
       trimis.innerHTML =
         '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
         new Date().toISOString().slice(0, 19).replace('T', ' ')
-    }
-    actions.appendChild(button)
-    //add cell trimis
-    var trimis = tr.insertCell()
-    //add class for trimis
-    trimis.className = 'trimis'
-    //trimis.innerHTML = row.CCCXMLSendDate
-    if (row.CCCXMLSendDate) {
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
-      //add link "resend"
-      '<br><a href="#" onclick="resendInvoice(' + row.findoc + ')">Resend Invoice</a>'
-    } else {
-      trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
-    }
-  })
 }
 
 async function resendInvoice(findoc) {

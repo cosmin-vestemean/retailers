@@ -643,7 +643,7 @@ function createInvoice() {
                 BuildingNumber: getPrimitiveObj(null, false, 'string', 10, '', 'BuildingNumber'),
                 CityName: getPrimitiveObj(null, false, 'string', 100, 'Chiajna, IF', 'CityName'),
                 PostalZone: getPrimitiveObj(null, false, 'string', 35, '700805', 'PostalZone'),
-                CountryCode: getPrimitiveObj('RO', false, 'string', 35, 'RO', 'CountryCode'),
+                CountryCode: getPrimitiveObj(null, false, 'string', 35, 'RO', 'CountryCode'),
                 Country: {
                     Count: 1,
                     Start: {
