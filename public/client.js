@@ -3286,7 +3286,7 @@ window.onload = function () {
 }
 
 function sendAllFacturi() {
- 
+  alert('To be implemented')
 }
 
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
