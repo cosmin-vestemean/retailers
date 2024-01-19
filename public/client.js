@@ -3303,14 +3303,14 @@ function toggleFacturiNetrimise() {
       var cell = row.getElementsByClassName('trimis')[0]
       //contains <i class="fas fa-xl fa-times-circle has-text-danger">
       if (cell.innerHTML.includes('fa-times-circle')) {
-        row.style.display = 'none'
+        row.style.display = ''
       }
     }
   } else {
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
-      row.style.display = ''
+      row.style.display = 'none'
     }
   }
 }
