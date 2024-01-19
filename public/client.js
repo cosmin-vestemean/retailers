@@ -1757,8 +1757,8 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
       trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate +
-      //add link "resend" with it's own id and onclick function sendAndMark with overrideTrimis = true
-      '<br><a id="' + row.findoc + '_resend" class="has-text-info" onclick="sendAndMark(' + row + ', ' + tr + ', '+this.id+', true)">Resend</a>'    
+      //add link "resend" with sendAndMark with overrideTrimis = true   
+      '<br><a href="#" onclick="sendAndMark(row, tr, button.id, true)">Resend</a>'
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
