@@ -3294,7 +3294,7 @@ function sendAllFacturi() {
 
 function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
-  var table = document.getElementById('facturiTableBody tbody')
+  var table = document.getElementById('facturiTable tbody')
   if (facturiTrimise.checked) {
     //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
     var rows = table.getElementsByTagName('tr')
