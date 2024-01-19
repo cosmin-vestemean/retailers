@@ -3301,16 +3301,16 @@ function toggleFacturiNetrimise() {
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
       var cell = row.getElementsByClassName('trimis')[0]
-      //contains <i class="fas fa-xl fa-times-circle has-text-danger">
-      if (cell.innerHTML.includes('fa-times-circle')) {
-        row.style.display = ''
+      //contains <i class="fas fa-xl fa-check-circle has-text-danger">
+      if (cell.innerHTML.includes('fa-check-circle')) {
+        row.style.display = 'none'
       }
     }
   } else {
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i]
-      row.style.display = 'none'
+      row.style.display = ''
     }
   }
 }
