@@ -1768,7 +1768,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
 async function sendAndMark(findoc, elemId) {
   //send invoice
   var button = document.getElementById(elemId)
-  var domObj = await cheatGetXmlFromS1(row.findoc)
+  var domObj = await cheatGetXmlFromS1(findoc)
       if (domObj.trimis == true) {
         alert('Factura a fost deja trimisa')
         return
