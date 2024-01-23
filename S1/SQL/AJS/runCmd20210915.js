@@ -848,9 +848,8 @@ function createInvoice() {
                 var unitCode = '';
                 if (qty1 && mtrunit) {
                     var ERPUnitCode = X.SQL('select shortcut from mtrunit where mtrunit=' + mtrunit, null);
-                    //var codeLaClient = X.SQL('select shortcut from CCCALTTRDRMTRUNIT where mtrunit=' + mtrunit + ' and trdr_retailer=' + SALDOC.TRDR, null);
-                    //unitCode = codeLaClient ? codeLaClient : ERPUnitCode;
-                    unitCode = 'PC'
+                    var codeLaClient = X.SQL('select shortcut from CCCALTTRDRMTRUNIT where mtrunit=' + mtrunit + ' and trdr_retailer=' + SALDOC.TRDR, null);
+                    unitCode = codeLaClient ? codeLaClient : 'PCE';
                     return '<InvoicedQuantity unitCode="' + unitCode + '">' + qty1 + '</InvoicedQuantity>';
                 } else
                     return '';
