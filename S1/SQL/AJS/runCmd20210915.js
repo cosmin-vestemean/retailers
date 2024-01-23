@@ -301,13 +301,13 @@ function createSomeInvoice(dsIte) {
                 UIRef: 'CUSBRANCH.ZIP',
                 UIVal: checkNull(depozitLivrare, 'PostalZone', depozitLivrare.PostalZone),
                 x: 'DeliveryLocation.LocationAddress.PostalZone'
-            },
+            }/* ,
             //country
             {
                 UIRef: 'RO',
                 UIVal: SALDOC.TRDR == 12349 ? 'RO' : null,
                 x: 'DeliveryLocation.LocationAddress.CountryCode'
-            }
+            } */
         ]);
     //[PaymentMeansCode/42, PaymentDueDate/FINPAYTERMS.FINALDATE]
     //debugger;
@@ -395,12 +395,6 @@ function createSomeInvoice(dsIte) {
         }, {
             QTY1: dsIte.QTY1,
             MTRUNIT: dsIte.MTRUNIT
-        }, 
-        {
-          //AdditionalInformation
-            UIRef: 'AdditionalInformation',
-            UIVal: SALDOC.TRDR == 12349 ? 'ReturnableMaterialIndicator:false ' : null,
-            x: 'AdditionalInformation'  
         }, {
             UIRef: nrLinie + ': dsIte.LNETLINEVAL',
             UIVal: dsIte.LNETLINEVAL,
@@ -431,6 +425,11 @@ function createSomeInvoice(dsIte) {
                     UIVal: X.SQL('select name from mtrl where mtrl=' + dsIte.MTRL, null),
                     x: 'Description'
                 }, {
+                    //AdditionalInformation
+                      UIRef: 'AdditionalInformation',
+                      UIVal: SALDOC.TRDR == 12349 ? 'ReturnableMaterialIndicator:false ' : null,
+                      x: 'AdditionalInformation'  
+                },{
                     UIRef: nrLinie + ': dsIte.MTRL_ITEM_CODE1',
                     UIVal: X.SQL('select CODE1 from mtrl where mtrl=' + dsIte.MTRL, null),
                     x: 'StandardItemIdentification.ID'
@@ -706,6 +705,16 @@ function createInvoice() {
         Start: {
             XML: function () {
                 return '<PaymentTerms>';
+
+
+
+
+
+
+
+
+
+
             }
         },
         SettlementPeriod: {
@@ -849,7 +858,6 @@ function createInvoice() {
 
             return iq;
         },
-        AdditionalInformation: getPrimitiveObj(null, false, 'string', 35, '', 'AdditionalInformation'),
         LineExtensionAmount: {
             UI: null,
             requiredInXMLSchema: true,
@@ -936,6 +944,8 @@ function createInvoice() {
             }
         },
         Description: getPrimitiveObj(null, true, 'string', 255, 'Produs test 1', 'Description'),
+        //additional information
+        AdditionalInformation: getPrimitiveObj(null, false, 'string', 255, 'ReturnableMaterialIndicator:false', 'AdditionalInformation'),
         BuyersItemIdentification: {
             Count: 0,
             Start: {
@@ -1205,7 +1215,6 @@ function createInvoice() {
                             return '<PostalAddress>';
                         }
                     },
-                    LocationCoordinate: getPrimitiveObj(null, false, 'string', 13, '5940475754006/4049728610005', 'LocationCoordinate'),
                     StreetName: getPrimitiveObj(null, true, 'string', 100, 'Trotus', 'StreetName'),
                     BuildingNumber: getPrimitiveObj(null, true, 'string', 10, 'Nr. 10', 'BuildingNumber'),
                     CityName: getPrimitiveObj(null, true, 'string', 100, 'Bucuresti, Sector 2', 'CityName'),
@@ -1224,6 +1233,7 @@ function createInvoice() {
                             }
                         }
                     },
+                    LocationCoordinate: getPrimitiveObj(null, false, 'string', 13, '5940475754006/4049728610005', 'LocationCoordinate'),
                     Stop: {
                         XML: function () {
                             return '</PostalAddress>';
@@ -1501,7 +1511,7 @@ function createInvoice() {
         set_LegalMonetaryTotal: function (arr) {
             _set_NamespaceBind(_Invoice, 'LegalMonetaryTotal', LegalMonetaryTotal, arr);
         },
-        set_CurrentInvoiceLine: function (ID, qtyMtrunit, returnable, lnetlineval, taxInclusiveAmount) {
+        set_CurrentInvoiceLine: function (ID, qtyMtrunit, lnetlineval, taxInclusiveAmount) {
             //ID, InvoicedQuantity@unitCode, LineExtensionAmount
             _InvoiceLines.push(copy(_lineTemplate));
             _CurrentInvoiceLine = _InvoiceLines[_InvoiceLines.length - 1];
@@ -1509,9 +1519,6 @@ function createInvoice() {
                 _CurrentInvoiceLine.Count++;
             //debugger;
             _CurrentInvoiceLine.InvoicedQuantity = _CurrentInvoiceLine.calcInvoicedQuantity(qtyMtrunit.QTY1, qtyMtrunit.MTRUNIT);
-            //AdditionalInformation
-            if (bindUI(returnable.UIRef, returnable.UIVal, _CurrentInvoiceLine.AdditionalInformation))
-                _CurrentInvoiceLine.Count++;
             if (bindUI(lnetlineval.UIRef, lnetlineval.UIVal, _CurrentInvoiceLine.LineExtensionAmount))
                 _CurrentInvoiceLine.Count++;
             if (bindUI(taxInclusiveAmount.UIRef, taxInclusiveAmount.UIVal, _CurrentInvoiceLine.TaxInclusiveAmount))
