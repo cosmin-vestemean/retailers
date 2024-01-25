@@ -5,7 +5,7 @@
     <meta name="description" content="integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />-->
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/sandstone/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/sandstone/bulmaswatch.min.css" />
     <!--load feathers-->
     <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
     <!--load socket.io-->
@@ -14,213 +14,261 @@
     <script src="client.js"></script>
   </head>
   <body class="p-2">
-    <nav class="navbar top mt-2 mb-2" role="navigation" aria-label="main navigation">
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item" href="./"> Retailers list </a>
-
-          <a class="navbar-item"> Documentation </a>
-
-          <div class="navbar-item has-dropdown is-hoverable has-text-black">
-            <a class="navbar-link"> More </a>
-
-            <div class="navbar-dropdown">
-              <a class="navbar-item"> About </a>
-              <a class="navbar-item"> Contact </a>
-              <hr class="navbar-divider" />
-              <a class="navbar-item"> Report an issue </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Make app title like Retailers integration but catchy -->
+    <div class="container">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <!-- simple title -->
-          <span class="navbar-item">Retailers integration</span>
+          <h2 class="navbar-item">Retailers integration</h2>
+      
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
         </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              <a class="button is-light"> Log in </a>
+      
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="./">
+              Home
+            </a>
+      
+            <a class="navbar-item">
+              Documentation
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                More
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a class="navbar-item">
+                  About
+                </a>
+                <a class="navbar-item">
+                  Contact
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">
+                  Report an issue
+                </a>
+              </div>
+            </div>
+          </div>
+      
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a class="button is-primary">
+                  Log in
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </nav>
-
-    <!-- begin list of cards -->
-    <section class="p-2 m-2">
-      <div class="columns">
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+      </nav>
+      <!-- begin list of cards -->
+      <section class="p-2">
+        <div class="columns">
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
               </div>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                <a
+                  href="monitor_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')"
+                  >File manager</a
+                >
+                <a
+                  href="config_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')"
+                  >Configureaza</a
+                >
+              </footer>
             </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')"
-                >File manager</a
-              >
-              <a href="config_retailer.html" class="card-footer-item" onclick="setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')"
-                >Configureaza</a
-              >
-            </footer>
+          </div>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fcb900"
+                    src="https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                <a
+                  href="monitor_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
+                  >File manager</a
+                >
+                <a
+                  href="config_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
+                  >Configureaza</a
+                >
+              </footer>
+            </div>
+          </div>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png"
+                    alt="Placeholder image"
+                  />
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                <a
+                  href="monitor_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
+                  >File manager</a
+                >
+                <a
+                  href="config_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
+                  >Configureaza</a
+                >
+              </footer>
+            </div>
+          </div>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                <a
+                  href="monitor_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
+                  >File manager</a
+                >
+                <a
+                  href="config_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
+                  >Configureaza</a
+                >
+              </footer>
+            </div>
           </div>
         </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fcb900"
-                  src="https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+      </section>
+      <!-- next 3 cards -->
+      <section class="p-2">
+        <div class="columns">
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
               </div>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                <a
+                  href="monitor_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
+                  >File manager</a
+                >
+                <a
+                  href="config_retailer.html"
+                  class="card-footer-item"
+                  onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
+                  >Configureaza</a
+                >
+              </footer>
             </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
-                >File manager</a
-              >
-              <a href="config_retailer.html" class="card-footer-item" onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
-                >Configureaza</a
-              >
-            </footer>
           </div>
-        </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Penny-Logo.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
               </div>
-            </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
-                >File manager</a
-              >
-              <a href="config_retailer.html" class="card-footer-item" onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
-                >Configureaza</a
-              >
-            </footer>
-          </div>
-        </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
               </div>
-            </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
-                >File manager</a
-              >
-              <a href="config_retailer.html" class="card-footer-item" onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
-                >Configureaza</a
-              >
-            </footer>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- next 3 cards -->
-    <section class="p-2">
-      <div class="columns">
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-              </div>
-            </div>
-            <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
-                >File manager</a
-              >
-              <a href="config_retailer.html" class="card-footer-item" onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
-                >Configureaza</a
-              >
-            </footer>
-          </div>
-        </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Penny-Logo.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-              </div>
-            </div>
-            <!-- <footer class="card-footer">
+              <!-- <footer class="card-footer">
               <a href="#" class="card-footer-item">Statistici</a>
               <a href="monitor_retailer.html" class="card-footer-item" onclick="setRetailerId(78991)"
                 >File manager</a
@@ -229,59 +277,60 @@
                 >Configureaza</a
               >
             </footer> -->
+            </div>
           </div>
-        </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #e70000"
-                  src="https://www.profi.ro/wp-content/uploads/2022/06/profi-logo-nou.png"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #e70000"
+                    src="https://www.profi.ro/wp-content/uploads/2022/06/profi-logo-nou.png"
+                    alt="Placeholder image"
+                  />
+                </figure>
               </div>
-            </div>
-            <!-- <footer class="card-footer">
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <!-- <footer class="card-footer">
               <a href="#" class="card-footer-item">Statistici</a>
               <a href="#" class="card-footer-item">File manager</a>
               <a href="#" class="card-footer-item">Configureaza</a>
             </footer> -->
+            </div>
           </div>
-        </div>
-        <div class="column coumn-is-third">
-          <div class="card">
-            <div class="card-image">
-              <figure class="image is-128x128">
-                <img
-                  style="background-color: #fff"
-                  src="https://auchan.vtexassets.com/assets/vtex/assets-builder/auchan.store-theme/1.0.16/header/logo___b12269ef7e65e8c49c7c5dac38dd7b92.svg"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div class="card-content">
-              <div class="content">
-                44 comenzii procesate<br />
-                43 facturi emise<br />
-                Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+          <div class="column coumn-is-third">
+            <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    style="background-color: #fff"
+                    src="https://auchan.vtexassets.com/assets/vtex/assets-builder/auchan.store-theme/1.0.16/header/logo___b12269ef7e65e8c49c7c5dac38dd7b92.svg"
+                    alt="Placeholder image"
+                  />
+                </figure>
               </div>
-            </div>
-            <!-- <footer class="card-footer">
+              <div class="card-content">
+                <div class="content">
+                  44 comenzii procesate<br />
+                  43 facturi emise<br />
+                  Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
+                </div>
+              </div>
+              <!-- <footer class="card-footer">
               <a href="#" class="card-footer-item">Statistici</a>
               <a href="#" class="card-footer-item">File manager</a>
               <a href="#" class="card-footer-item">Configureaza</a>
             </footer> -->
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </body>
 </html>
