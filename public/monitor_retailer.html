@@ -5,7 +5,7 @@
     <meta name="description" content="integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />-->
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css" />
     <!--load font awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <!--load feathers-->
@@ -19,30 +19,40 @@
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="./"><i class="fa fa-arrow-left" aria-hidden="true"></i>Retailers list </a>
+          <a class="navbar-item" href="./"
+            ><i class="fa fa-arrow-left" aria-hidden="true"></i>Retailers list
+          </a>
           <!-- retailer's logo: src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg">-->
           <a class="navbar-item is-rounded is-transparent" href="#">
-            <img
-              alt="emag"
-              width="112"
-              height="28"
-              id="retailerLogo"
-            />
+            <img alt="emag" width="112" height="28" id="retailerLogo" />
           </a>
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
-            <button id="preluareComenziBtn" class="button ml-2 is-small is-info" onclick="fetchXMLFromRemoteServer()">Preluare comenzi</button>
-            <button class="button ml-2 is-small is-success" onclick="fetchDocsFromS1WS(1351, 712, 7121)">Preluare Facturi</button>
+            <button
+              id="preluareComenziBtn"
+              class="button ml-2 is-small is-info"
+              onclick="fetchXMLFromRemoteServer()"
+            >
+              Preluare comenzi
+            </button>
+            <button class="button ml-2 is-small is-success" onclick="fetchDocsFromS1WS(1351, 712, 7121)">
+              Preluare Facturi
+            </button>
             <!--add spinner text input with default value 7-->
-            <input id="daysOlder" class="input is-small is-info ml-2" type="number" value="7" min="1" max="30" />
+            <input
+              id="daysOlder"
+              class="input is-small is-info ml-2"
+              type="number"
+              value="7"
+              min="1"
+              max="30"
+            />
             <span class="is-success">zile</span>
-              <div id="retailerName" class="navbar-item title"></div>
-              <div class="navbar-end">
+            <div id="retailerName" class="navbar-item title"></div>
+            <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
-                  <a class="button is-danger" href="./">
-                    <strong>Logout</strong>
-                  </a>
+                  <a class="button is-danger" href="./"> Logout </a>
                 </div>
               </div>
             </div>
@@ -62,7 +72,10 @@
     </div>
     <div id="comenzi" class="content-tab">
       <div class="table-container">
-        <table id="xmlTable" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+        <table
+          id="xmlTable"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
+        >
           <thead>
             <tr>
               <th>XMLDATE</th>
@@ -84,7 +97,10 @@
     </div>
     <div id="facturi" class="content-tab">
       <div class="table-container">
-        <table id="facturiTable" class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+        <table
+          id="facturiTable"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
+        >
           <thead>
             <tr>
               <th>Data</th>
@@ -105,11 +121,12 @@
           <tbody id="facturiTableBody" class="is-size-7"></tbody>
         </table>
       </div>
+    </div>
     <script type="text/javascript">
       //set img src to logo_retailer from localStorage
-      document.getElementById("retailerLogo").src = localStorage.getItem("logo_retailer");
-      displayXmlDataForRetailer(localStorage.getItem("trdr_retailer"));
-      fetchDocsFromS1WS(1351, 712, 7121);
+      document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
+      displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
+      fetchDocsFromS1WS(1351, 712, 7121)
     </script>
   </body>
 </html>
