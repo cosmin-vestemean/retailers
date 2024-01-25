@@ -1672,7 +1672,13 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     //hide findoc
     findoc.style.display = 'none'
     var trndate = tr.insertCell()
-    trndate.innerHTML = row.trndate
+    //trndate.innerHTML = row.trndate
+    //check for ' 00:00:00'
+    if (row.trndate.indexOf(' 00:00:00') > -1) {
+      trndate.innerHTML = row.trndate.replace(' 00:00:00', '')
+    } else {
+      trndate.innerHTML = row.trndate
+    }
     var fincode = tr.insertCell()
     //add row.fincode and a empty text input all inlined; input text has unique id
     fincode.innerHTML =
