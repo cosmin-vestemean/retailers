@@ -3280,7 +3280,10 @@ window.onload = function () {
     .find(params)
     .then((res) => {
       if (res.data) {
-        alert(res.data)
+        //alert(res.data)
+        //get id of div id="retailerName"
+        var retailerName = document.getElementById('retailerName')
+        retailerName.innerHTML = res.data
       }
     })
 }
