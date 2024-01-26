@@ -1534,7 +1534,9 @@ async function displayXmlDataForRetailer(retailer) {
           sendOrderButton.innerHTML = 'Sending...'
           var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
           if (response.success == false) {
+            //show no of errors
             var errorMsg = ''
+            errorMsg += 'Errors: ' + response.errors.length + '\n\n'
             for (var i = 0; i < response.errors.length; i++) {
               var error = response.errors[i]
               //{ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes }
