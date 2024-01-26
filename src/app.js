@@ -167,6 +167,8 @@ class SftpServiceClass {
             username: sftpDataObj.USERNAME,
             passphrase: sftpDataObj.PASSPHRASE,
             privateKey: fs.readFileSync(privateKeyPath),
+            cipher: 'aes256-cbc',
+            algorithm: 'ssh-rsa',
             readyTimeout: 99999
           }
           resolve({ sftp, config, sftpDataObj })
