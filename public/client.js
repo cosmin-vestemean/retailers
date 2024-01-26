@@ -1538,7 +1538,7 @@ async function displayXmlDataForRetailer(retailer) {
             for (var i = 0; i < response.errors.length; i++) {
               var error = response.errors[i]
               //{ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes }
-              errorMsg += `Error in converting ${errors.key} code ${error.value} to S1 value.\nSQL: ${error.sql},\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+              errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql},\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
               sendOrderButton.innerHTML = 'See errors'
               //add text area with errors beneath the buttons
               var textarea = document.createElement('textarea')
