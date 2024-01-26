@@ -1543,7 +1543,7 @@ async function displayXmlDataForRetailer(retailer) {
                 error.title = 'Sucursala'
               }
               //display title
-              errorMsg += error.title + '\n'
+              errorMsg += i+1 + '.' + error.title + '\n'
               //count title characters and add dashes under it
               for (var j = 0; j < error.title.length; j++) {
                 errorMsg += '-'
