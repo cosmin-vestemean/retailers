@@ -1094,7 +1094,7 @@ function searchTable(tableId, searchBoxId) {
 }
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  await createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+  return await createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
 
 async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
@@ -1198,7 +1198,8 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
     })
   }
   console.log('objects', objects)
-  var errors = []
+  var errors = [],
+    errors2 = []
   //if object has an object with a key SQL, replace it with the returned getDataset value from the object
   for (var i = 0; i < objects.length; i++) {
     var item = objects[i]
@@ -1220,12 +1221,6 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
           if (res.data) {
             item[key] = res.data
           } else {
-            //log some context
-            console.log('item', item)
-            console.log('key', key)
-            console.log('item[key]', item[key])
-            console.log('item[key].SQL', item[key].SQL)
-            console.log('item[key].value', item[key].value)
             //1. xml > dom
             var parser = new DOMParser()
             var xmlDoc = parser.parseFromString(xml, 'text/xml')
@@ -1234,17 +1229,25 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
             */
             //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
             var xpath = `//*[contains(text(), '${item[key].value}')]`
+            console.log('xpath', xpath, 'key', key, 'value', item[key].value, 'sql', item[key].SQL)
             var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
-            var node = nodes.iterateNext()
-            //2.3. get sibling "Description"
-            var description = node.parentNode.getElementsByTagName('Description')[0].innerHTML
-            //2.4. get sibling "BuyersItemIdentification"
-            var BuyersItemIdentification =
-              node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
-            //make error message fiendly
-            errors.push(
-              `Error in converting code ${item[key].value} to S1 value.\nDescription: ${description},\nBuyersItemIdentification: ${BuyersItemIdentification}`
-            )
+            console.log('nodes', nodes)
+            errors2.push({ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes })
+            try {
+              var node = nodes.iterateNext()
+              //2.3. get sibling "Description"
+              var description = node.parentNode.getElementsByTagName('Description')[0].innerHTML
+              //2.4. get sibling "BuyersItemIdentification"
+              var BuyersItemIdentification =
+                node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
+              //make error message fiendly
+              errors.push(
+                `Error in converting code ${item[key].value} to S1 value.\nDescription: ${description},\nBuyersItemIdentification: ${BuyersItemIdentification}`
+              )
+            } catch (err) {
+              console.log(err)
+              errors.push(`Error in converting code ${item[key].value} to S1 value.`)
+            }
           }
         }
       }
@@ -1253,7 +1256,11 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
 
   if (errors.length > 0) {
     alert(errors.join('\n\n'))
-    return
+  }
+
+  if (errors2.length > 0) {
+    console.log('errors2', errors2)
+    return { success: false, errors: errors2 }
   }
 
   //match mtrl with price and qty1 in an object in itelines array
@@ -1316,6 +1323,8 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
 
   //send order to server
   await sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
+
+  return { success: true }
 }
 
 async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
@@ -1523,8 +1532,29 @@ async function displayXmlDataForRetailer(retailer) {
         //daca am findoc nu mai trimit
         if (!xml.FINDOC) {
           sendOrderButton.innerHTML = 'Sending...'
-          await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
-          sendOrderButton.innerHTML = 'Order sent'
+          var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
+          if (response.success == false) {
+            var errorMsg = ''
+            for (var i = 0; i < response.errors.length; i++) {
+              var error = response.errors[i]
+              //{ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes }
+              errorMsg += `Error in converting code ${error.value} to S1 value.\nSQL: ${error.sql},\nXpath: ${error.xpath},\nNodes: ${error.nodes}\n\n`
+              sendOrderButton.innerHTML = 'See errors'
+              //add text area with errors beneath the buttons
+              var textarea = document.createElement('textarea')
+              textarea.rows = 10
+              textarea.cols = 50
+              textarea.innerHTML = errorMsg
+              actionsCell.appendChild(textarea)
+              //no spellcheck
+              textarea.spellcheck = false
+              //class
+              textarea.className = 'textarea is-small is-danger'
+            }
+            return
+          } else {
+            sendOrderButton.innerHTML = 'Order sent'
+          }
         } else {
           alert('Already sent')
         }
@@ -1772,7 +1802,7 @@ function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         var r = confirm('Resend invoice?')
         if (r == true) {
           sendAndMark(row, tr, button.id, true)
-        } 
+        }
       }
       trimis.appendChild(resend)
     } else {
@@ -1785,66 +1815,66 @@ async function sendAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
-      if (domObj.trimis == true && overrideTrimis == false) {
-        alert('Factura a fost deja trimisa')
-        return
-      }
-      //update btn caption to sending
-      //font awesome spinner
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
-      //alter domObj filename with postfix
-      domObj.filename = getNewFilenamePostfix(domObj.filename, row)
-      await sendInvoice(row.findoc, domObj, overrideTrimis).then(async (response) => {
-        //update btn caption to sent
-        button.innerHTML = 'Sent'
-        console.log('response', response)
-        var xml = response.xml
-        var success = response.success
-        if (success == true) {
-          //add cell and textarea
-          var textarea = document.createElement('textarea')
-          textarea.className = 'textarea is-small'
-          textarea.rows = 10
-          textarea.cols = 50
-          textarea.innerHTML = xml
-          //no spellcheck
-          textarea.spellcheck = false
-          //add cell
-          var td = tr.insertCell()
-          td.appendChild(textarea)
-        }
-        var body = {}
-        body['service'] = 'setData'
-        body['clientID'] = await client
-          .service('connectToS1')
-          .find()
-          .then((result) => {
-            return result.token
-          })
-        body['appId'] = '1001'
-        body['OBJECT'] = 'SALDOC'
-        body['FORM'] = 'EFIntegrareRetailers'
-        body['KEY'] = row.findoc
-        body['DATA'] = {}
-        body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
-        console.log('body', body)
-        await client
-          .service('setDocument')
-          .create(body)
-          .then((res) => {
-            console.log(res)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+  if (domObj.trimis == true && overrideTrimis == false) {
+    alert('Factura a fost deja trimisa')
+    return
+  }
+  //update btn caption to sending
+  //font awesome spinner
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
+  //alter domObj filename with postfix
+  domObj.filename = getNewFilenamePostfix(domObj.filename, row)
+  await sendInvoice(row.findoc, domObj, overrideTrimis).then(async (response) => {
+    //update btn caption to sent
+    button.innerHTML = 'Sent'
+    console.log('response', response)
+    var xml = response.xml
+    var success = response.success
+    if (success == true) {
+      //add cell and textarea
+      var textarea = document.createElement('textarea')
+      textarea.className = 'textarea is-small'
+      textarea.rows = 10
+      textarea.cols = 50
+      textarea.innerHTML = xml
+      //no spellcheck
+      textarea.spellcheck = false
+      //add cell
+      var td = tr.insertCell()
+      td.appendChild(textarea)
+    }
+    var body = {}
+    body['service'] = 'setData'
+    body['clientID'] = await client
+      .service('connectToS1')
+      .find()
+      .then((result) => {
+        return result.token
       })
-      //update btn caption to sent
-      button.innerHTML = 'Sent Invoice'
-      //find cell class="trimis" in current row and add date now and green check
-      var trimis = tr.getElementsByClassName('trimis')[0]
-      trimis.innerHTML =
-        '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
-        new Date().toISOString().slice(0, 19).replace('T', ' ')
+    body['appId'] = '1001'
+    body['OBJECT'] = 'SALDOC'
+    body['FORM'] = 'EFIntegrareRetailers'
+    body['KEY'] = row.findoc
+    body['DATA'] = {}
+    body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+    console.log('body', body)
+    await client
+      .service('setDocument')
+      .create(body)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  })
+  //update btn caption to sent
+  button.innerHTML = 'Sent Invoice'
+  //find cell class="trimis" in current row and add date now and green check
+  var trimis = tr.getElementsByClassName('trimis')[0]
+  trimis.innerHTML =
+    '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' +
+    new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
 
 async function sendInvoice(findoc, domObj, overrideTrimis = false) {
@@ -1901,9 +1931,11 @@ function getNewFilenamePostfix(filename, row) {
     console.log('no postfix')
   }
   //filename like INVOIC_17713_VAT_RO25190857.xml; split before_vat then add postfix then add _vat...
-  var split = filename.split('_') 
+  var split = filename.split('_')
   //get INVOIC_17713 then add _postfix then add _VAT...
-  var newFilename = posfixVal ? split[0] + '_' + split[1] + posfixVal  + '_' + split[2] + '_' + split[3] : filename
+  var newFilename = posfixVal
+    ? split[0] + '_' + split[1] + posfixVal + '_' + split[2] + '_' + split[3]
+    : filename
 
   return newFilename
 }
