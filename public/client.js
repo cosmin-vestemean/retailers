@@ -1542,8 +1542,13 @@ async function displayXmlDataForRetailer(retailer) {
               if (error.sql.indexOf('from trdbranch') > -1) {
                 error.title = 'Sucursala'
               }
-              //display title in red bold
-              errorMsg += `<b style="color:red">${error.title}</b><br>`
+              //display title
+              errorMsg += error.title + '\n'
+              //count title characters and add dashes under it
+              for (var j = 0; j < error.title.length; j++) {
+                errorMsg += '-'
+              }
+              errorMsg += '\n'
               errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql},\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
               sendOrderButton.innerHTML = 'See errors'
               //add text area with errors beneath the buttons
