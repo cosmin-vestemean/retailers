@@ -1538,6 +1538,12 @@ async function displayXmlDataForRetailer(retailer) {
             for (var i = 0; i < response.errors.length; i++) {
               var error = response.errors[i]
               //{ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes }
+              //if error.sql contains "from trdbranch" then the title of error is Sucursala
+              if (error.sql.indexOf('from trdbranch') > -1) {
+                error.title = 'Sucursala'
+              }
+              //display title in red bold
+              errorMsg += `<b style="color:red">${error.title}</b><br>`
               errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql},\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
               sendOrderButton.innerHTML = 'See errors'
               //add text area with errors beneath the buttons
