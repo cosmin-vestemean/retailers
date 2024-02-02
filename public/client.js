@@ -151,7 +151,7 @@ async function getRetailerXMLData(retailer) {
       .find({
         query: {
           TRDR_RETAILER: retailer,
-          $limit: 20,
+          $limit: 200,
           $sort: {
             XMLDATE: -1
           }
