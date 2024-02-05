@@ -268,19 +268,12 @@ function ON_AFTERPOST() {
     X.WARNING('Eroare la marcare document pentru afterjobs:\n' + err.message)
   }
 
-  sSQL = X.GETSQLDATASET(
+  sSQL = X.SQL(
     'select unitpack AS UP from CCCS1DXTRDRMTRL where mtrl=' + ITELINES.MTRL + ' and trdr=' + SALDOC.TRDR,
     null
   )
   X.RUNSQL(
-    'UPDATE MTRLINES SET CCCUNITPACK=' +
-      String.fromCharCode(39) +
-      sSQL.UP +
-      String.fromCharCode(39) +
-      'WHERE MTRL=' +
-      ITELINES.MTRL +
-      'AND FINDOC=' +
-      vID,
+    'UPDATE MTRLINES SET CCCUNITPACK=' + sSQL.UP + 'WHERE MTRL=' + ITELINES.MTRL + 'AND FINDOC=' + vID,
     null
   )
 
@@ -289,7 +282,7 @@ function ON_AFTERPOST() {
 }
 
 function ON_POST() {
-  preiaDateAviz();
+  preiaDateAviz()
   if (SALDOC.SERIES == 7022) {
     if (SALDOC.NUM04) {
       //verifica daca exista numarul de comanda online in tabelul findoc pt seria 7022, comanda online nu poate fi duplicata
@@ -835,18 +828,23 @@ function ON_ITELINES_CCCREDUCERE() {
 }
 
 function ON_ITELINES_QTY1() {
-  if ((SALDOC.TRDR == 12349 && SALDOC.SERIES == 7111) || SALDOC.SERIES == 7121) {
-    sBax =
+  if (!ITELINES.QTY1) return
+  //Kaufland si comanda
+  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+    var q =
       'select isnull(UnitPack,0) buc from CCCS1DXTRDRMTRL where trdr=' +
       SALDOC.TRDR +
       ' and mtrl=' +
       ITELINES.MTRL
-    dsBax = X.GETSQLDATASET(sBax, null)
+    var nrUnitPerCutie = X.SQL(q, null)
+    if (nrUnitPerCutie) {
+    ITELINES.CCCUNITPACK = nrUnitPerCutie
+    }
 
-    if (dsBax.buc == 0 || dsBax.buc == '' || dsBax.buc == null) {
+    if (!nrUnitPerCutie) {
       ITELINES.CCCCUTII = 0.0
     } else {
-      ITELINES.CCCCUTII = ITELINES.QTY1 / dsBax.buc
+      ITELINES.CCCCUTII = ITELINES.QTY1 / nrUnitPerCutie
     }
   }
 
@@ -867,6 +865,24 @@ function ON_ITELINES_QTY1() {
       ITELINES.CCCREDUCERE != null
     ) {
       ITELINES.PRICE = roundNumber(ITELINES.CCCPRETCATALOG * (1 - ITELINES.CCCREDUCERE / 100), 2)
+    }
+  }
+}
+
+function ON_ITELINES_CCCCUTII() {
+  if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) { 
+    var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
+    if (qty1 != ITELINES.QTY1) {
+      ITELINES.QTY1 = qty1
+    }
+  }
+}
+
+function ON_ITELINES_CCCUNITPACK() {
+  if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
+    var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
+    if (qty1 != ITELINES.QTY1) {
+      ITELINES.QTY1 = qty1
     }
   }
 }
@@ -1832,7 +1848,7 @@ function markItAsSentDate() {
 }
 
 function ON_RESTOREEVENTS() {
-  preiaDateAviz();
+  preiaDateAviz()
 }
 
 function preiaDateAviz() {
