@@ -1,0 +1,18 @@
+1. -aperak facturi (db) => status factura in platforma cu mesaje din aperak
+2. -status comenzi in dashboard
+2.1. comenzi netrimise
+3. -comparare lista initiala comenzi inainte de acces si lista comenzi dwldate => xml de cerut (Status comenxi "pierdute")
+7. -scanare la perioada automata preluare comenzi
+
+8. salvare locala xml (orders, aperak, etc)
+
+Mutare buton Preluare comenzi =>
+2.
+
+4. trimitere toate comenzile indif de retailer
+
+1. nr comenzi docprocess
+2. nr comenzi in platforma retailers
+3. trimite toate comezile
+4. comenzi netrimise cu mesaj inregistrat (in caz de eroare)
+5. scanare periodica comenzi => 3.
