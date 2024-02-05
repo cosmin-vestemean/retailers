@@ -838,7 +838,7 @@ function ON_ITELINES_QTY1() {
       ITELINES.MTRL
     var nrUnitPerCutie = X.SQL(q, null)
     if (nrUnitPerCutie) {
-    ITELINES.CCCUNITPACK = nrUnitPerCutie
+      ITELINES.CCCUNITPACK = nrUnitPerCutie
     }
 
     if (!nrUnitPerCutie) {
@@ -870,19 +870,23 @@ function ON_ITELINES_QTY1() {
 }
 
 function ON_ITELINES_CCCCUTII() {
-  if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) { 
-    var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
-    if (qty1 != ITELINES.QTY1) {
-      ITELINES.QTY1 = qty1
+  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+    if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
+      var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
+      if (qty1 != ITELINES.QTY1) {
+        ITELINES.QTY1 = qty1
+      }
     }
   }
 }
 
 function ON_ITELINES_CCCUNITPACK() {
-  if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
-    var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
-    if (qty1 != ITELINES.QTY1) {
-      ITELINES.QTY1 = qty1
+  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+    if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
+      var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
+      if (qty1 != ITELINES.QTY1) {
+        ITELINES.QTY1 = qty1
+      }
     }
   }
 }
