@@ -5,7 +5,7 @@
     <meta name="description" content="integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />-->
-    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@cityssm/bulma-sticky-table@2.1.0/bulma-with-sticky-table.css"
@@ -24,12 +24,7 @@
           <a class="navbar-item" href="./"> Retailers list </a>
           <!-- retailer's logo: src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg">-->
           <a class="navbar-item">
-            <img
-              alt="emag"
-              width="112"
-              height="28"
-              id="retailerLogo"
-            />
+            <img alt="emag" width="112" height="28" id="retailerLogo" />
           </a>
         </div>
       </div>
@@ -168,16 +163,13 @@
               <input id="WSURL" class="input" type="text" placeholder="URL" />
             </div>
             <p class="help">ERP web service's URL</p>
-          </div>
-          <!--Test connection-->
-          <div class="field column">
-            <!--checkbox Dev test connection-->
-            <label class="label">Test connection</label>
+            <!--test connection checkbox-->
             <div class="control">
               <label class="checkbox">
-                <input id="TESTCONNECTION" type="checkbox" />
-                Dev
+                <input id="testConnection" type="checkbox" />
+                Dev - Test connection
               </label>
+            </div>
           </div>
           <!--Login company-->
           <div class="field column">
@@ -225,90 +217,91 @@
           </div>
         </div>
       </div>
-      <div id="comanda" class="content-tab">
-        <!--create a section with three textarea
+    </div>
+    <div id="comanda" class="content-tab">
+      <!--create a section with three textarea
     1. Retailer (trdr)
     2. Tip
     3. Serie-->
-        <!--table with columns Initial directory, Tip, Serie-->
-        <div class="columns">
-          <!--add header Lista documente-->
-          <div class="column">
-            <label class="label is-info">Lista documente</label>
-          </div>
-          <div class="column">
-            <div class="field">
-              <div class="control">
-                <button class="button is-link" onclick="addRow()">Add</button>
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <div class="field">
-              <div class="control">
-                <button class="button is-link is-danger" onclick="deleteRow()">Delete</button>
-              </div>
+      <!--table with columns Initial directory, Tip, Serie-->
+      <div class="columns">
+        <!--add header Lista documente-->
+        <div class="column">
+          <label class="label is-info">Lista documente</label>
+        </div>
+        <div class="column">
+          <div class="field">
+            <div class="control">
+              <button class="button is-link" onclick="addRow()">Add</button>
             </div>
           </div>
         </div>
-        <div class="table-container">
-          <table id="documente" class="table is-bordered is-striped is-narrow is-fullwidth mb-2">
-            <thead>
-              <tr>
-                <th>Tip</th>
-                <th>Serie</th>
-                <th>Initial directory input</th>
-                <th>Initial directory output</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="documenteBody"></tbody>
-          </table>
+        <div class="column">
+          <div class="field">
+            <div class="control">
+              <button class="button is-link is-danger" onclick="deleteRow()">Delete</button>
+            </div>
+          </div>
         </div>
-        <!--bulma form with:
+      </div>
+      <div class="table-container">
+        <table id="documente" class="table is-bordered is-striped is-narrow is-fullwidth mb-2">
+          <thead>
+            <tr>
+              <th>Tip</th>
+              <th>Serie</th>
+              <th>Initial directory input</th>
+              <th>Initial directory output</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="documenteBody"></tbody>
+        </table>
+      </div>
+      <!--bulma form with:
         1. input file: load xml file
         2. "Save" button-->
-        <!--add text input "Delimitare linie document" and "Acknowledge" button-->
-        <div class="columns mt-6">
-          <div class="column is-half">
-            <div class="field">
-              <label class="label">XML Root</label>
-              <div class="control">
-                <!--select with two options: Order and Invoice, id is xmlRoot-->
-                <div class="select">
-                  <select id="xmlRoot">
-                    <option>Order</option>
-                    <option selected>DXInvoice</option>
-                  </select>
-                </div>
-                <p class="help">Xml root node</p>
+      <!--add text input "Delimitare linie document" and "Acknowledge" button-->
+      <div class="columns mt-6">
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">XML Root</label>
+            <div class="control">
+              <!--select with two options: Order and Invoice, id is xmlRoot-->
+              <div class="select">
+                <select id="xmlRoot">
+                  <option>Order</option>
+                  <option selected>DXInvoice</option>
+                </select>
               </div>
-            </div>
-          </div>
-          <div class="column is-half">
-            <div class="field">
-              <label class="label">Delimitare linii in XML</label>
-              <div class="control">
-                <!--select with two options: OrderLine and InvoiceLine, id is delimitareLinieDocument-->
-                <div class="select">
-                  <select id="delimitareLinieDocument">
-                    <option>OrderLine</option>
-                    <option selected>InvoiceLine</option>
-                  </select>
-                </div>
-                <p class="help">Indicator linii xml</p>
-              </div>
+              <p class="help">Xml root node</p>
             </div>
           </div>
         </div>
-        <div class="columns">
-          <div class="column">
-        <div class="field">
-          <label class="label">Incarca fisier XML</label>
-          <div class="control">
-            <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">Delimitare linii in XML</label>
+            <div class="control">
+              <!--select with two options: OrderLine and InvoiceLine, id is delimitareLinieDocument-->
+              <div class="select">
+                <select id="delimitareLinieDocument">
+                  <option>OrderLine</option>
+                  <option selected>InvoiceLine</option>
+                </select>
+              </div>
+              <p class="help">Indicator linii xml</p>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XML</label>
+            <div class="control">
+              <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
+            </div>
+          </div>
         </div>
         <div class="column">
           <div class="field">
@@ -338,30 +331,30 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="field">
+        <label class="label">XML</label>
+        <div class="control">
+          <textarea
+            class="textarea input is-primary is-small"
+            spellcheck="false"
+            id="xmlTextArea"
+            placeholder="XML"
+            rows="10"
+          ></textarea>
         </div>
-        <div class="field">
-          <label class="label">XML</label>
-          <div class="control">
-            <textarea
-              class="textarea input is-primary is-small"
-              spellcheck="false"
-              id="xmlTextArea"
-              placeholder="XML"
-              rows="10"
-            ></textarea>
-          </div>
+      </div>
+      <div class="field">
+        <label id="mandatoryFieldsLabel" class="label">Obligatorii</label>
+        <div class="table">
+          <table
+            id="mandatoryFieldsTable"
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
+          ></table>
         </div>
-        <div class="field">
-          <label id="mandatoryFieldsLabel" class="label">Obligatorii</label>
-          <div class="table">
-            <table
-              id="mandatoryFieldsTable"
-              class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
-            ></table>
-          </div>
-        </div>
-        <div class="field">
-          <label id="nonMandatoryFieldsLabel" class="label">Facultative</label>
+      </div>
+      <div class="field">
+        <label id="nonMandatoryFieldsLabel" class="label">Facultative</label>
         <div class="table">
           <table
             id="nonMandatoryFieldsTable"
