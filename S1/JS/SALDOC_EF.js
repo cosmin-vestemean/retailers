@@ -827,10 +827,16 @@ function ON_ITELINES_CCCREDUCERE() {
   }
 }
 
+//create a semaphor to avoid collision between on_itelines_qty1 and on_itelines_cccunitpack and on_itelines_ccccutii
+var everybodyWantsQty1 = false;
+
 function ON_ITELINES_QTY1() {
-  if (!ITELINES.QTY1) return
   //Kaufland si comanda
-  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701 && ITELINES.MTRL != 0 && ITELINES.QTY1 != 0) {
+    if (everybodyWantsQty1) {
+      everybodyWantsQty1 = false
+      return
+    }
     var q =
       'select isnull(UnitPack,0) buc from CCCS1DXTRDRMTRL where trdr=' +
       SALDOC.TRDR +
@@ -870,23 +876,19 @@ function ON_ITELINES_QTY1() {
 }
 
 function ON_ITELINES_CCCCUTII() {
-  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
-    if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
-      var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
-      if (qty1 != ITELINES.QTY1) {
-        ITELINES.QTY1 = qty1
-      }
-    }
-  }
+  boxToQty1()
 }
 
 function ON_ITELINES_CCCUNITPACK() {
+  boxToQty1()
+}
+
+function boxToQty1() {
   if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
-    if (ITELINES.CCCUNITPACK && ITELINES.CCCCUTII) {
-      var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
-      if (qty1 != ITELINES.QTY1) {
-        ITELINES.QTY1 = qty1
-      }
+    var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK
+    if (qty1 && qty1 != ITELINES.QTY1) {
+      everybodyWantsQty1 = true
+      ITELINES.QTY1 = qty1
     }
   }
 }

@@ -1144,6 +1144,7 @@ async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilena
   jsonOrder['clientID'] = token
   jsonOrder['appId'] = 1001
   jsonOrder['OBJECT'] = 'SALDOC'
+  jsonOrder['FORM'] = 'EFIntegrareRetailers'
 
   //find distinct S1TABLE1, for grouping data
   var distinctS1TABLE1 = []
