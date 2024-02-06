@@ -2810,7 +2810,7 @@ async function cheatGetXmlFromS1(findoc) {
 
 function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
-  var table = document.getElementById('xmlTableBody tbody')
+  var table = document.getElementById('xmlTableBody')
   if (comenziTrimise.checked) {
     //show only rows with cell class="findoc" innerHTML empty if checkbox is checked, else show all rows
     var rows = table.getElementsByTagName('tr')
