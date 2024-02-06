@@ -268,14 +268,19 @@ function ON_AFTERPOST() {
     X.WARNING('Eroare la marcare document pentru afterjobs:\n' + err.message)
   }
 
-  sSQL = X.SQL(
-    'select unitpack AS UP from CCCS1DXTRDRMTRL where mtrl=' + ITELINES.MTRL + ' and trdr=' + SALDOC.TRDR,
+  var up = X.SQL(
+    'select coalesce(unitpack, 0) from CCCS1DXTRDRMTRL where mtrl=' +
+      ITELINES.MTRL +
+      ' and trdr=' +
+      SALDOC.TRDR,
     null
   )
-  X.RUNSQL(
-    'UPDATE MTRLINES SET CCCUNITPACK=' + sSQL.UP + 'WHERE MTRL=' + ITELINES.MTRL + 'AND FINDOC=' + vID,
-    null
-  )
+  if (up) {
+    X.RUNSQL(
+      'UPDATE MTRLINES SET CCCUNITPACK=' + up + 'WHERE MTRL=' + ITELINES.MTRL + 'AND FINDOC=' + vID,
+      null
+    )
+  }
 
   saveABC()
   aDoua = true
@@ -828,7 +833,7 @@ function ON_ITELINES_CCCREDUCERE() {
 }
 
 //create a semaphor to avoid collision between on_itelines_qty1 and on_itelines_cccunitpack and on_itelines_ccccutii
-var everybodyWantsQty1 = false;
+var everybodyWantsQty1 = false
 
 function ON_ITELINES_QTY1() {
   //Kaufland si comanda

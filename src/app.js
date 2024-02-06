@@ -213,7 +213,7 @@ class SftpServiceClass {
               .service('getDataset')
               .find({
                 query: {
-                  sqlQuery: "SELECT trdr FROM trdbranch WHERE CCCS1DXGLN = '" + endpointID + "'"
+                  sqlQuery: "SELECT trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and CCCS1DXGLN = '" + endpointID + "'"
                 }
               })
               .then((result) => {
