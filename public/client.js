@@ -1546,13 +1546,15 @@ async function displayXmlDataForRetailer(retailer) {
                 error.title = 'Sucursala'
               }
               //display title
-              errorMsg += i+1 + '.' + error.title + '\n'
+              errorMsg += i + 1 + '.' + error.title + '\n'
               //count title characters and add dashes under it
               for (var j = 0; j < error.title.length; j++) {
                 errorMsg += '-'
               }
               errorMsg += '\n'
-              errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql},\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+              errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
+                error.sql
+              },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
               sendOrderButton.innerHTML = 'See errors'
               //add text area with errors beneath the buttons
               var textarea = document.createElement('textarea')
@@ -2812,20 +2814,18 @@ function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
   var table = document.getElementById('xmlTableBody')
   if (comenziTrimise.checked) {
-    //show only rows with cell class="findoc" innerHTML empty if checkbox is checked, else show all rows
+    //hide rows with <i class="fas fa-xl fa-check-circle has-text-success"></i> or all
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      var cell = row.getElementsByClassName('findoc')[0]
-      if (cell.innerHTML == '') {
-        row.style.display = 'none'
+      if (rows[i].innerHTML.indexOf('fa-check-circle') > -1) {
+        rows[i].style.display = 'none'
       }
     }
   } else {
+    //show all rows
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      row.style.display = ''
+      rows[i].style.display = ''
     }
   }
 }
