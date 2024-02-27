@@ -3379,7 +3379,6 @@ export {
   toggleFacturiNetrimise,
   sendAllFacturi,
   displayXmlDataForRetailer,
-  fetchDocsFromS1WS,
   getRetailerConfData,
   getClientConfData,
   addRow,
