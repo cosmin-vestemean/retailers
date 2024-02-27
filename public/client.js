@@ -1,8 +1,11 @@
-import { client, socketClient } from './modules/feathersjs-client.js'
-
 console.log('Client.js loaded')
 
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
+const socket = io('www.retailers.acct.ro')
+const client = feathers()
+const socketClient = feathers.socketio(socket)
+
+client.configure(socketClient)
 
 client.use('sftp', socketClient.service('sftp'), {
   methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
@@ -3366,28 +3369,3 @@ function toggleFacturiNetrimise() {
     }
   }
 }
-
-//export all functions as module functions
-export {
-  //index.html
-  setRetailerId,
-  //monitor_retailer.html
-  fetchXMLFromRemoteServer,
-  fetchDocsFromS1WS,
-  openTab,
-  toggleComenziNetrimise,
-  toggleFacturiNetrimise,
-  sendAllFacturi,
-  displayXmlDataForRetailer,
-  //config_retailer
-  getRetailerConfData,
-  getClientConfData,
-  addRow,
-  deleteRow,
-  loadFile,
-  mandatoryFields,
-  loadCommonXSD,
-  searchTable,
-  loadMapping
-}
-

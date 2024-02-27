@@ -13,6 +13,7 @@
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
     <!--import client.js-->
+    <script src="client.js"></script>
   </head>
   <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
@@ -27,8 +28,16 @@
           </a>
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
-            <button id="preluareComenziBtn" class="button ml-2 is-small is-info">Preluare comenzi</button>
-            <button id="preluareFacturiBtn" class="button ml-2 is-small is-success">Preluare Facturi</button>
+            <button
+              id="preluareComenziBtn"
+              class="button ml-2 is-small is-info"
+              onclick="fetchXMLFromRemoteServer()"
+            >
+              Preluare comenzi
+            </button>
+            <button class="button ml-2 is-small is-success" onclick="fetchDocsFromS1WS(1351, 712, 7121)">
+              Preluare Facturi
+            </button>
             <!--add spinner text input with default value 7-->
             <input
               id="daysOlder"
@@ -53,10 +62,10 @@
     </nav>
     <div class="tabs is-boxed p-2">
       <ul>
-        <li id="defaultOpen" class="tab is-active">
+        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'comenzi')">
           <a>Comenzi</a>
         </li>
-        <li id="facturi_link" class="tab">
+        <li id="facturi_link" class="tab" onclick="openTab(event, 'facturi')">
           <a>Facturi</a>
         </li>
       </ul>
@@ -76,7 +85,7 @@
               <th>Actions</th>
               <th>
                 <label class="checkbox is-info">
-                  <input id="comenziTrimise" type="checkbox" />
+                  <input id="comenziTrimise" type="checkbox" onclick="toggleComenziNetrimise()" />
                   Netrimise
                 </label>
               </th>
@@ -100,11 +109,11 @@
               <th>Actions</th>
               <th>
                 <label class="checkbox is-info">
-                  <input id="facturiTrimise" type="checkbox" />
+                  <input id="facturiTrimise" type="checkbox" onclick="toggleFacturiNetrimise()" />
                   Netrimise
                 </label>
                 <!--add button send all-->
-                <button id="sendAllFacturi" class="button is-success is-small">Trimite toate</button>
+                <button class="button is-success is-small" onclick="sendAllFacturi()">Trimite toate</button>
               </th>
               <th>XML</th>
             </tr>
@@ -113,28 +122,9 @@
         </table>
       </div>
     </div>
-    <script type="module">
-      import { openTab, fetchXMLFromRemoteServer, fetchDocsFromS1WS, displayXmlDataForRetailer, toggleComenziNetrimise, toggleFacturiNetrimise, sendAllFacturi } from './client.js'
+    <script type="text/javascript">
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
-      //add event listener to sendAllFacturi button
-      document.getElementById('sendAllFacturi').addEventListener('click', sendAllFacturi)
-      //add click facturiTrimise
-      document.getElementById('facturiTrimise').addEventListener('click', toggleFacturiNetrimise)
-      //comenziTrimise
-      document.getElementById('comenziTrimise').addEventListener('click', toggleComenziNetrimise)
-      //preluareComenziBtn
-      document.getElementById('preluareComenziBtn').addEventListener('click', fetchXMLFromRemoteServer)
-      //preluareFacturiBtn
-      document.getElementById('preluareFacturiBtn').addEventListener('click', fetchDocsFromS1WS(1351, 712, 7121))
-      //defaultOpen
-      document.getElementById('defaultOpen').addEventListener('click', function () {
-        openTab(event, 'comenzi')
-      })
-      //facturi_link: openTab(event, 'facturi')
-      document.getElementById('facturi_link').addEventListener('click', function () {
-        openTab(event, 'facturi')
-      })
       displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
       fetchDocsFromS1WS(1351, 712, 7121)
     </script>

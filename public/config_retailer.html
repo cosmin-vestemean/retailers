@@ -15,8 +15,9 @@
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
     <!--import client.js-->
+    <script src="client.js"></script>
   </head>
-  <body>
+  <body onload="getRetailerConfData(); getClientConfData()">
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
@@ -35,10 +36,10 @@
     3. Factura -->
     <div class="tabs is-boxed p-2">
       <ul>
-        <li id="defaultOpen" class="tab is-active">
+        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'conexiune')">
           <a>Conexiune</a>
         </li>
-        <li id="documenteTab" class="tab">
+        <li class="tab" onclick="openTab(event, 'comanda')">
           <a>Documente asociate</a>
         </li>
       </ul>
@@ -231,14 +232,14 @@
         <div class="column">
           <div class="field">
             <div class="control">
-              <button id="addRow" class="button is-link">Add</button>
+              <button class="button is-link" onclick="addRow()">Add</button>
             </div>
           </div>
         </div>
         <div class="column">
           <div class="field">
             <div class="control">
-              <button id="deleteRow" class="button is-link is-danger">Delete</button>
+              <button class="button is-link is-danger" onclick="deleteRow()">Delete</button>
             </div>
           </div>
         </div>
@@ -298,7 +299,7 @@
           <div class="field">
             <label class="label">Incarca fisier XML</label>
             <div class="control">
-              <input id="loadFile" class="input" type="file" placeholder="Incarca fisier XML" />
+              <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
             </div>
           </div>
         </div>
@@ -311,6 +312,7 @@
                 class="input"
                 type="file"
                 placeholder="Incarca XSD"
+                onchange="mandatoryFields()"
               />
             </div>
           </div>
@@ -324,6 +326,7 @@
                 class="input"
                 type="file"
                 placeholder="Incarca XSD"
+                onchange="loadCommonXSD()"
               />
             </div>
           </div>
@@ -366,6 +369,7 @@
               type="text"
               placeholder="Search xml node in table"
               id="searchInput"
+              onkeyup="searchTable('xmlAsTable', 'searchInput')"
             />
           </div>
         </div>
@@ -384,42 +388,11 @@
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <script type="module">
-      import { getRetailerConfData, getClientConfData, openTab, addRow, deleteRow, loadFile, searchTable, loadCommonXSD, mandatoryFields, loadMapping } from './client.js'
-      //add event listener to defaultOpen
-      document.getElementById('defaultOpen').addEventListener('click', function () {
-        openTab(event, 'conexiune')
-      })
-      //same to documenteTab
-      document.getElementById('documenteTab').addEventListener('click', function () {
-        openTab(event, 'comanda')
-      })
-      //add event listener to addRow
-      document.getElementById('addRow').addEventListener('click', addRow)
-      //add event listener to deleteRow
-      document.getElementById('deleteRow').addEventListener('click', deleteRow)
-      //loadFile: onchange="loadFile(event)"
-      document.getElementById('loadFile').addEventListener('change', function (event) {
-        loadFile(event)
-      })
-      //searchInput: onkeyup="searchTable('xmlAsTable', 'searchInput')"
-      document.getElementById('searchInput').addEventListener('keyup', function () {
-        searchTable('xmlAsTable', 'searchInput')
-      })
-      //xsdCommonsFile
-      document.getElementById('xsdCommonsFile').addEventListener('change', function (event) {
-        loadCommonXSD(event)
-      })
-      //id="xsdFile" onchange="mandatoryFields()"
-      document.getElementById('xsdFile').addEventListener('change', function (event) {
-        mandatoryFields(event)
-      })
+    <script type="text/javascript">
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
-      getRetailerConfData()
-      getClientConfData()
     </script>
   </body>
 </html>
