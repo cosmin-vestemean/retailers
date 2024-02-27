@@ -1,3 +1,5 @@
+import client from '.modules/feathersjs-client.js'
+
 console.log('Client.js loaded')
 
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
@@ -3369,3 +3371,5 @@ function toggleFacturiNetrimise() {
     }
   }
 }
+
+export { getRetailerConfData, getClientConfData, setRetailerId }
