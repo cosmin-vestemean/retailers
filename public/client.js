@@ -7,7 +7,6 @@ const socketClient = feathers.socketio(socket)
 
 client.configure(socketClient) */
 
-import { feathers } from '@feathersjs/feathers'
 import { socketio } from '@feathersjs/socketio-client'
 import { io } from 'socket.io-client'
 import {createClient} from '../client.js'
