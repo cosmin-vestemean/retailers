@@ -30,14 +30,12 @@
             <button
               id="preluareComenziBtn"
               class="button ml-2 is-small is-info"
-              onclick="fetchXMLFromRemoteServer()"
             >
               Preluare comenzi
             </button>
             <button
               id="preluareFacturiBtn"
               class="button ml-2 is-small is-success"
-              onclick="fetchDocsFromS1WS(1351, 712, 7121)"
             >
               Preluare Facturi
             </button>
@@ -135,6 +133,10 @@
       document.getElementById('facturiTrimise').addEventListener('click', toggleFacturiNetrimise)
       //comenziTrimise
       document.getElementById('comenziTrimise').addEventListener('click', toggleComenziNetrimise)
+      //preluareComenziBtn
+      document.getElementById('preluareComenziBtn').addEventListener('click', fetchXMLFromRemoteServer)
+      //preluareFacturiBtn
+      document.getElementById('preluareFacturiBtn').addEventListener('click', fetchDocsFromS1WS(1351, 712, 7121))
       //defaultOpen
       document.getElementById('defaultOpen').addEventListener('click', openTab(event, 'comenzi'))
       //facturi_link
