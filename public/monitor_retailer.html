@@ -13,9 +13,6 @@
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
     <!--import client.js-->
-    <script type="module" src="./client.js">
-      import { openTab, fetchXMLFromRemoteServer, fetchDocsFromS1WS, displayXmlDataForRetailer, toggleComenziNetrimise, toggleFacturiNetrimise, sendAllFacturi } from './client.js'
-    </script>
   </head>
   <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
@@ -68,10 +65,10 @@
     </nav>
     <div class="tabs is-boxed p-2">
       <ul>
-        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'comenzi')">
+        <li id="defaultOpen" class="tab is-active">
           <a>Comenzi</a>
         </li>
-        <li id="facturi_link" class="tab" onclick="openTab(event, 'facturi')">
+        <li id="facturi_link" class="tab">
           <a>Facturi</a>
         </li>
       </ul>
@@ -91,7 +88,7 @@
               <th>Actions</th>
               <th>
                 <label class="checkbox is-info">
-                  <input id="comenziTrimise" type="checkbox" onclick="toggleComenziNetrimise()" />
+                  <input id="comenziTrimise" type="checkbox" />
                   Netrimise
                 </label>
               </th>
@@ -115,11 +112,11 @@
               <th>Actions</th>
               <th>
                 <label class="checkbox is-info">
-                  <input id="facturiTrimise" type="checkbox" onclick="toggleFacturiNetrimise()" />
+                  <input id="facturiTrimise" type="checkbox" />
                   Netrimise
                 </label>
                 <!--add button send all-->
-                <button class="button is-success is-small" onclick="sendAllFacturi()">Trimite toate</button>
+                <button id="sendAllFacturi" class="button is-success is-small">Trimite toate</button>
               </th>
               <th>XML</th>
             </tr>
@@ -128,9 +125,20 @@
         </table>
       </div>
     </div>
-    <script type="text/javascript">
+    <script type="module" src="./client.js">
+      import { openTab, fetchXMLFromRemoteServer, fetchDocsFromS1WS, displayXmlDataForRetailer, toggleComenziNetrimise, toggleFacturiNetrimise, sendAllFacturi } from './client.js'
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
+      //add event listener to sendAllFacturi button
+      document.getElementById('sendAllFacturi').addEventListener('click', sendAllFacturi)
+      //add click facturiTrimise
+      document.getElementById('facturiTrimise').addEventListener('click', toggleFacturiNetrimise)
+      //comenziTrimise
+      document.getElementById('comenziTrimise').addEventListener('click', toggleComenziNetrimise)
+      //defaultOpen
+      document.getElementById('defaultOpen').addEventListener('click', openTab(event, 'comenzi'))
+      //facturi_link
+      document.getElementById('facturi_link').addEventListener('click', openTab(event, 'facturi'))
       displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
       fetchDocsFromS1WS(1351, 712, 7121)
     </script>
