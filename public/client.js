@@ -3368,7 +3368,7 @@ function toggleFacturiNetrimise() {
 }
 
 //export all functions as module functions
-module.exports = {
+export {
   //index.html
   setRetailerId,
   //monitor_retailer.html
