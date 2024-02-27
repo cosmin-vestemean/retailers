@@ -3379,6 +3379,7 @@ export {
   toggleFacturiNetrimise,
   sendAllFacturi,
   displayXmlDataForRetailer,
+  //config_retailer
   getRetailerConfData,
   getClientConfData,
   addRow,
