@@ -3386,6 +3386,7 @@ export {
   loadFile,
   mandatoryFields,
   loadCommonXSD,
-  searchTable
+  searchTable,
+  openTab
 }
 
