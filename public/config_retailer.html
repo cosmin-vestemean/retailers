@@ -15,7 +15,6 @@
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
     <!--import client.js-->
-    <script type="module" import { getRetailerConfData, getClientConfData, openTab } from './client.js'></script>
   </head>
   <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
@@ -388,10 +387,11 @@
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <script type="text/javascript">
+    <script type="module">
+      import { getRetailerConfData, getClientConfData, openTab } from './client.js'
       //add event listener to defaultOpen
       document.getElementById('defaultOpen').addEventListener('click', function () {
-        openTab(event, 'conexiune');
+        openTab(event, 'conexiune')
       })
       //same to documenteTab
       document.getElementById('documenteTab').addEventListener('click', function () {
@@ -401,7 +401,7 @@
       document.getElementById('defaultOpen').click()
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
-      getRetailerConfData(); 
+      getRetailerConfData()
       getClientConfData()
     </script>
   </body>
