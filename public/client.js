@@ -1,4 +1,4 @@
-import {client, socketClient} from './modules/feathersjs-client.js'
+import { client, socketClient } from './modules/feathersjs-client.js'
 
 console.log('Client.js loaded')
 
@@ -3366,3 +3366,27 @@ function toggleFacturiNetrimise() {
     }
   }
 }
+
+//export all functions as module functions
+module.exports = {
+  //index.html
+  setRetailerId,
+  //monitor_retailer.html
+  fetchXMLFromRemoteServer,
+  fetchDocsFromS1WS,
+  openTab,
+  toggleComenziNetrimise,
+  toggleFacturiNetrimise,
+  sendAllFacturi,
+  displayXmlDataForRetailer,
+  fetchDocsFromS1WS,
+  getRetailerConfData,
+  getClientConfData,
+  addRow,
+  deleteRow,
+  loadFile,
+  mandatoryFields,
+  loadCommonXSD,
+  searchTable
+}
+
