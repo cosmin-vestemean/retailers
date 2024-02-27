@@ -1,4 +1,4 @@
-import client from '/modules/feathersjs-client.js'
+import client from 'feathersjs-client.js'
 
 console.log('Client.js loaded')
 
