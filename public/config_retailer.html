@@ -389,9 +389,10 @@
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
     <script type="text/javascript">
+      import { getRetailerConfData, getClientConfData, openTab } from './client.js'
       //add event listener to defaultOpen
       document.getElementById('defaultOpen').addEventListener('click', function () {
-        openTab(event, 'conexiune')
+        openTab(event, 'conexiune');
       })
       //same to documenteTab
       document.getElementById('documenteTab').addEventListener('click', function () {
