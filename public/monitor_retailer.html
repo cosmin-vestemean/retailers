@@ -128,9 +128,13 @@
       //preluareFacturiBtn
       document.getElementById('preluareFacturiBtn').addEventListener('click', fetchDocsFromS1WS(1351, 712, 7121))
       //defaultOpen
-      document.getElementById('defaultOpen').addEventListener('click', openTab(event, 'comenzi'))
-      //facturi_link
-      document.getElementById('facturi_link').addEventListener('click', openTab(event, 'facturi'))
+      document.getElementById('defaultOpen').addEventListener('click', function () {
+        openTab(event, 'comenzi')
+      })
+      //facturi_link: openTab(event, 'facturi')
+      document.getElementById('facturi_link').addEventListener('click', function () {
+        openTab(event, 'facturi')
+      })
       displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
       fetchDocsFromS1WS(1351, 712, 7121)
     </script>
