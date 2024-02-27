@@ -1,11 +1,15 @@
 console.log('Client.js loaded')
 
-//const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
+/* //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
 const socket = io('www.retailers.acct.ro')
 const client = feathers()
 const socketClient = feathers.socketio(socket)
 
-client.configure(socketClient)
+client.configure(socketClient) */
+
+//use exported function createClient feathers client: public/src > .. > src/client.js
+import { createClient } from '../src/client.js'
+const client = createClient()
 
 client.use('sftp', socketClient.service('sftp'), {
   methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
