@@ -16,3 +16,19 @@ Mutare buton Preluare comenzi =>
 3. trimite toate comezile
 4. comenzi netrimise cu mesaj inregistrat (in caz de eroare)
 5. scanare periodica comenzi => 3.
+6. Daca nu identifica trdr din endpoint xml, salveaza xml si eroarea
+
+
+
+-----------------------------------------------------------------------------
+
+1. status factura in platforma cu mesaje din aperak scanate periodic
+
+dashboard (fiecare retailer):
+----------------------------
+2. situatie facturi
+
+3. situatie comenzi
+3.1.
+3.2. la interogare lista comenzi xml salvare diferenta cu comenzile download-ate = "comenzi pierdute"
+3.3. comenzi netrimise in softone
