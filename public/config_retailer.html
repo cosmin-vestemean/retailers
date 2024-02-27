@@ -1,1 +1,398 @@
-<!DOCTYPE html><html lang="en"><head><title>config retailer</title><meta name="description" content="integrating Pet Factory S1 with various retailers"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@cityssm/bulma-sticky-table@2.1.0/bulma-with-sticky-table.css"><script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script><script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script><script src="/index.a86d2c38.js"></script></head><body onload="getRetailerConfData(); getClientConfData()"> <nav class="navbar top" role="navigation" aria-label="main navigation"> <div id="navbarBasicExample" class="navbar-menu"> <div class="navbar-start"> <a class="navbar-item" href="./"> Retailers list </a>  <a class="navbar-item"> <img alt="emag" width="112" height="28" id="retailerLogo"> </a> </div> </div> </nav>   <div class="is-boxed p-2 tabs"> <ul> <li id="defaultOpen" class="is-active tab" onclick="openTab(event, 'conexiune')"> <a>Conexiune</a> </li> <li class="tab" onclick="openTab(event, 'comanda')"> <a>Documente asociate</a> </li> </ul> </div>  <div class="section"> <div id="conexiune" class="content-tab">  <div class="columns"> <div class="column field is-one-quarter"> <label class="label">Retailer</label> <div class="control"> <input id="TRDR_RETAILER" class="input" type="text" placeholder="TRDR" readonly> </div> </div> <div class="column field is-one-quarter"> <label class="label">Integrator intermediar</label> <div class="control"> <div class="select"> <select> <option>DocProcess</option> <option>Infinite Edinet</option> </select> </div> </div> </div> <div class="column field is-one-quarter"> <label class="label">Tip conexiune</label> <div class="control"> <div class="select"> <select> <option>SFTP</option> <option>FTP</option> <option>Web service</option> </select> </div> </div> </div> </div> <div class="columns"> <div class="column field"> <label class="label">URL</label> <div class="control"> <input id="URL" class="input" type="text" placeholder="URL"> </div> </div> <div class="column field"> <label class="label">Port</label> <div class="control"> <input id="PORT" class="input" type="text" placeholder="Port"> </div> </div> <div class="column field"> <label class="label">Username</label> <div class="control"> <input id="USERNAME" class="input" type="text" placeholder="Username"> </div> <p class="help">Username for the connection</p> </div> <div class="column field"> <label class="label">Password</label> <div class="control"> <input class="input" type="password" placeholder="Password"> </div> <p class="help">Password for the connection</p> </div> </div> <div class="columns"> <div class="column field"> <label class="label">Passphrase</label> <div class="control"> <input id="PASSPHRASE" class="input" type="password" placeholder="Passphrase"> </div> <p class="help">Passphrase for the connection</p> </div> <div class="column field"> <label class="label">Private key</label> <div class="control"> <input class="input" type="file" placeholder="Private key"> </div> <p class="help">Private key for the connection <strong>(OpenSSH)</strong></p> </div> <div class="column field"> <label class="label">Fingerprint</label> <div class="control"> <input id="FINGERPRINT" class="input" type="text" placeholder="Fingerprint"> </div> <p class="help">Fingerprint for checking the right server</p> </div> </div> <div class="columns">  <div class="column field"> <label class="label">Initial directory input</label> <div class="control"> <input id="INITIALDIRIN" class="input" type="text" placeholder="Initial directory IN"> </div> <p class="help">Initial directory input for the connection</p> </div>  <div class="column field"> <label class="label">Initial directory output</label> <div class="control"> <input id="INITIALDIROUT" class="input" type="text" placeholder="Initial directory OUT"> </div> <p class="help">Initial directory output for the connection</p> </div> </div> <div class="columns has-background-info-light mt-6"> <div class="column field is-half"> <label class="label">ERP WS URL</label> <div class="control"> <input id="WSURL" class="input" type="text" placeholder="URL"> </div> <p class="help">ERP web service's URL</p>  <div class="control"> <label class="checkbox"> <input id="testConnection" type="checkbox"> Dev - Test connection </label> </div> </div>  <div class="column field"> <label class="label">Login company</label> <div class="control"> <input id="LOGINCOMPANY" class="input" type="text" placeholder="Login company"> </div> <p class="help">Login company for the S1 connection</p> </div> <div class="column field">  <label class="label">Login branch</label> <div class="control"> <input id="LOGINBRANCH" class="input" type="text" placeholder="Login branch"> </div> <p class="help">Login branch for the S1 connection</p> </div> </div> <div class="columns has-background-info-light"> <div class="column field"> <label class="label">Login user</label> <div class="control"> <input id="LOGINUSER" class="input" type="text" placeholder="Login user"> </div> <p class="help">Login user for the S1 connection</p> </div> <div class="column field"> <label class="label">Login password</label> <div class="control"> <input id="LOGINPASSWORD" class="input" type="password" placeholder="Login password"> </div> <p class="help">Login password for the S1 connection</p> </div> <div class="column field"> <label class="label">appId</label> <div class="control"> <input id="appId" class="input" placeholder="appId" value="1001"> </div> <p class="help">appId for S1 conection</p> </div> </div> <div class="field is-grouped"> <div class="control"> <button class="button is-link">Save</button> </div> </div> </div> </div> <div id="comanda" class="content-tab">   <div class="columns">  <div class="column"> <label class="is-info label">Lista documente</label> </div> <div class="column"> <div class="field"> <div class="control"> <button class="button is-link" onclick="addRow()">Add</button> </div> </div> </div> <div class="column"> <div class="field"> <div class="control"> <button class="button is-danger is-link" onclick="deleteRow()">Delete</button> </div> </div> </div> </div> <div class="table-container"> <table id="documente" class="is-bordered is-fullwidth is-narrow is-striped mb-2 table"> <thead> <tr> <th>Tip</th> <th>Serie</th> <th>Initial directory input</th> <th>Initial directory output</th> <th>Actions</th> </tr> </thead> <tbody id="documenteBody"></tbody> </table> </div>   <div class="columns mt-6"> <div class="column is-half"> <div class="field"> <label class="label">XML Root</label> <div class="control">  <div class="select"> <select id="xmlRoot"> <option>Order</option> <option selected>DXInvoice</option> </select> </div> <p class="help">Xml root node</p> </div> </div> </div> <div class="column is-half"> <div class="field"> <label class="label">Delimitare linii in XML</label> <div class="control">  <div class="select"> <select id="delimitareLinieDocument"> <option>OrderLine</option> <option selected>InvoiceLine</option> </select> </div> <p class="help">Indicator linii xml</p> </div> </div> </div> </div> <div class="columns"> <div class="column"> <div class="field"> <label class="label">Incarca fisier XML</label> <div class="control"> <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label">Incarca fisier XSD schema</label> <div class="control"> <input id="xsdFile" class="input" type="file" placeholder="Incarca XSD" onchange="mandatoryFields()"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label">Incarca fisier XSD custom types</label> <div class="control"> <input id="xsdCommonsFile" class="input" type="file" placeholder="Incarca XSD" onchange="loadCommonXSD()"> </div> </div> </div> </div> <div class="field"> <label class="label">XML</label> <div class="control"> <textarea class="input is-primary is-small textarea" spellcheck="false" id="xmlTextArea" placeholder="XML" rows="10"></textarea> </div> </div> <div class="field"> <label id="mandatoryFieldsLabel" class="label">Obligatorii</label> <div class="table"> <table id="mandatoryFieldsTable" class="has-sticky-header is-bordered is-fullwidth is-hoverable is-narrow is-size-7 is-striped table"></table> </div> </div> <div class="field"> <label id="nonMandatoryFieldsLabel" class="label">Facultative</label> <div class="table"> <table id="nonMandatoryFieldsTable" class="has-sticky-header is-bordered is-fullwidth is-hoverable is-narrow is-size-7 is-striped table"></table> </div>  <div class="is-fixed-bottom navbar"> <div class="control"> <input class="input is-primary" type="text" placeholder="Search xml node in table" id="searchInput" onkeyup="searchTable('xmlAsTable', 'searchInput')"> </div> </div> <div class="table"> <table id="xmlAsTable" class="has-sticky-header is-bordered is-fullwidth is-hoverable is-narrow is-size-7 is-striped table"></table> </div> </div> </div> <div id="commonsDigging" class="modal"> <div class="modal-background"></div> <div class="modal-content">  </div> <button class="is-large modal-close" aria-label="close"></button> </div> <script type="text/javascript">document.getElementById("defaultOpen").click(),document.getElementById("retailerLogo").src=localStorage.getItem("logo_retailer");</script> </body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>config retailer</title>
+    <meta name="description" content="integrating Pet Factory S1 with various retailers" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />-->
+    <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/flatly/bulmaswatch.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@cityssm/bulma-sticky-table@2.1.0/bulma-with-sticky-table.css"
+    />
+    <!--load feathers-->
+    <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
+    <!--load socket.io-->
+    <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
+    <!--import client.js-->
+    <script src="client.js"></script>
+  </head>
+  <body onload="getRetailerConfData(); getClientConfData()">
+    <nav class="navbar top" role="navigation" aria-label="main navigation">
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="./"> Retailers list </a>
+          <!-- retailer's logo: src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg">-->
+          <a class="navbar-item">
+            <img alt="emag" width="112" height="28" id="retailerLogo" />
+          </a>
+        </div>
+      </div>
+    </nav>
+    <!-- use bulma to create (no php): -->
+    <!-- 3 Bulma tabs, with onclick event to show the div content associated with the tab
+    1. Conexiune
+    2. Comanda
+    3. Factura -->
+    <div class="tabs is-boxed p-2">
+      <ul>
+        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'conexiune')">
+          <a>Conexiune</a>
+        </li>
+        <li class="tab" onclick="openTab(event, 'comanda')">
+          <a>Documente asociate</a>
+        </li>
+      </ul>
+    </div>
+    <!-- 3 divs with content, one for each tab -->
+    <div class="section">
+      <div id="conexiune" class="content-tab">
+        <!-- bulma form contains:
+        0. list with options: 1. SFTP 2. FTP 3. Web service
+        1. url textbox
+        2. port
+        3. username
+        4. password
+        5.passphrase
+        7. private key load file
+        8. "Save" button-->
+        <div class="columns">
+          <div class="field column is-one-quarter">
+            <label class="label">Retailer</label>
+            <div class="control">
+              <input id="TRDR_RETAILER" class="input" type="text" placeholder="TRDR" readonly />
+            </div>
+          </div>
+          <div class="field column is-one-quarter">
+            <label class="label">Integrator intermediar</label>
+            <div class="control">
+              <div class="select">
+                <select>
+                  <option>DocProcess</option>
+                  <option>Infinite Edinet</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field column is-one-quarter">
+            <label class="label">Tip conexiune</label>
+            <div class="control">
+              <div class="select">
+                <select>
+                  <option>SFTP</option>
+                  <option>FTP</option>
+                  <option>Web service</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="field column">
+            <label class="label">URL</label>
+            <div class="control">
+              <input id="URL" class="input" type="text" placeholder="URL" />
+            </div>
+          </div>
+          <div class="field column">
+            <label class="label">Port</label>
+            <div class="control">
+              <input id="PORT" class="input" type="text" placeholder="Port" />
+            </div>
+          </div>
+          <div class="field column">
+            <label class="label">Username</label>
+            <div class="control">
+              <input id="USERNAME" class="input" type="text" placeholder="Username" />
+            </div>
+            <p class="help">Username for the connection</p>
+          </div>
+          <div class="field column">
+            <label class="label">Password</label>
+            <div class="control">
+              <input class="input" type="password" placeholder="Password" />
+            </div>
+            <p class="help">Password for the connection</p>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="field column">
+            <label class="label">Passphrase</label>
+            <div class="control">
+              <input id="PASSPHRASE" class="input" type="password" placeholder="Passphrase" />
+            </div>
+            <p class="help">Passphrase for the connection</p>
+          </div>
+          <div class="field column">
+            <label class="label">Private key</label>
+            <div class="control">
+              <input class="input" type="file" placeholder="Private key" />
+            </div>
+            <p class="help">Private key for the connection <strong>(OpenSSH)</strong></p>
+          </div>
+          <div class="field column">
+            <label class="label">Fingerprint</label>
+            <div class="control">
+              <input id="FINGERPRINT" class="input" type="text" placeholder="Fingerprint" />
+            </div>
+            <p class="help">Fingerprint for checking the right server</p>
+          </div>
+        </div>
+        <div class="columns">
+          <!--Initial directory input-->
+          <div class="field column">
+            <label class="label">Initial directory input</label>
+            <div class="control">
+              <input id="INITIALDIRIN" class="input" type="text" placeholder="Initial directory IN" />
+            </div>
+            <p class="help">Initial directory input for the connection</p>
+          </div>
+          <!--Initial directory output-->
+          <div class="field column">
+            <label class="label">Initial directory output</label>
+            <div class="control">
+              <input id="INITIALDIROUT" class="input" type="text" placeholder="Initial directory OUT" />
+            </div>
+            <p class="help">Initial directory output for the connection</p>
+          </div>
+        </div>
+        <div class="columns mt-6 has-background-info-light">
+          <div class="field column is-half">
+            <label class="label">ERP WS URL</label>
+            <div class="control">
+              <input id="WSURL" class="input" type="text" placeholder="URL" />
+            </div>
+            <p class="help">ERP web service's URL</p>
+            <!--test connection checkbox-->
+            <div class="control">
+              <label class="checkbox">
+                <input id="testConnection" type="checkbox" />
+                Dev - Test connection
+              </label>
+            </div>
+          </div>
+          <!--Login company-->
+          <div class="field column">
+            <label class="label">Login company</label>
+            <div class="control">
+              <input id="LOGINCOMPANY" class="input" type="text" placeholder="Login company" />
+            </div>
+            <p class="help">Login company for the S1 connection</p>
+          </div>
+          <div class="field column">
+            <!--Login branch-->
+            <label class="label">Login branch</label>
+            <div class="control">
+              <input id="LOGINBRANCH" class="input" type="text" placeholder="Login branch" />
+            </div>
+            <p class="help">Login branch for the S1 connection</p>
+          </div>
+        </div>
+        <div class="columns has-background-info-light">
+          <div class="field column">
+            <label class="label">Login user</label>
+            <div class="control">
+              <input id="LOGINUSER" class="input" type="text" placeholder="Login user" />
+            </div>
+            <p class="help">Login user for the S1 connection</p>
+          </div>
+          <div class="field column">
+            <label class="label">Login password</label>
+            <div class="control">
+              <input id="LOGINPASSWORD" class="input" type="password" placeholder="Login password" />
+            </div>
+            <p class="help">Login password for the S1 connection</p>
+          </div>
+          <div class="field column">
+            <label class="label">appId</label>
+            <div class="control">
+              <input id="appId" class="input" placeholder="appId" value="1001" />
+            </div>
+            <p class="help">appId for S1 conection</p>
+          </div>
+        </div>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="comanda" class="content-tab">
+      <!--create a section with three textarea
+    1. Retailer (trdr)
+    2. Tip
+    3. Serie-->
+      <!--table with columns Initial directory, Tip, Serie-->
+      <div class="columns">
+        <!--add header Lista documente-->
+        <div class="column">
+          <label class="label is-info">Lista documente</label>
+        </div>
+        <div class="column">
+          <div class="field">
+            <div class="control">
+              <button class="button is-link" onclick="addRow()">Add</button>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <div class="control">
+              <button class="button is-link is-danger" onclick="deleteRow()">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table id="documente" class="table is-bordered is-striped is-narrow is-fullwidth mb-2">
+          <thead>
+            <tr>
+              <th>Tip</th>
+              <th>Serie</th>
+              <th>Initial directory input</th>
+              <th>Initial directory output</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="documenteBody"></tbody>
+        </table>
+      </div>
+      <!--bulma form with:
+        1. input file: load xml file
+        2. "Save" button-->
+      <!--add text input "Delimitare linie document" and "Acknowledge" button-->
+      <div class="columns mt-6">
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">XML Root</label>
+            <div class="control">
+              <!--select with two options: Order and Invoice, id is xmlRoot-->
+              <div class="select">
+                <select id="xmlRoot">
+                  <option>Order</option>
+                  <option selected>DXInvoice</option>
+                </select>
+              </div>
+              <p class="help">Xml root node</p>
+            </div>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="field">
+            <label class="label">Delimitare linii in XML</label>
+            <div class="control">
+              <!--select with two options: OrderLine and InvoiceLine, id is delimitareLinieDocument-->
+              <div class="select">
+                <select id="delimitareLinieDocument">
+                  <option>OrderLine</option>
+                  <option selected>InvoiceLine</option>
+                </select>
+              </div>
+              <p class="help">Indicator linii xml</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XML</label>
+            <div class="control">
+              <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XSD schema</label>
+            <div class="control">
+              <input
+                id="xsdFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+                onchange="mandatoryFields()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="field">
+            <label class="label">Incarca fisier XSD custom types</label>
+            <div class="control">
+              <input
+                id="xsdCommonsFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+                onchange="loadCommonXSD()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">XML</label>
+        <div class="control">
+          <textarea
+            class="textarea input is-primary is-small"
+            spellcheck="false"
+            id="xmlTextArea"
+            placeholder="XML"
+            rows="10"
+          ></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <label id="mandatoryFieldsLabel" class="label">Obligatorii</label>
+        <div class="table">
+          <table
+            id="mandatoryFieldsTable"
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
+          ></table>
+        </div>
+      </div>
+      <div class="field">
+        <label id="nonMandatoryFieldsLabel" class="label">Facultative</label>
+        <div class="table">
+          <table
+            id="nonMandatoryFieldsTable"
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
+          ></table>
+        </div>
+        <!--add search box for table-->
+        <div class="navbar is-fixed-bottom">
+          <div class="control">
+            <input
+              class="input is-primary"
+              type="text"
+              placeholder="Search xml node in table"
+              id="searchInput"
+              onkeyup="searchTable('xmlAsTable', 'searchInput')"
+            />
+          </div>
+        </div>
+        <div class="table">
+          <table
+            id="xmlAsTable"
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-size-7 has-sticky-header"
+          ></table>
+        </div>
+      </div>
+    </div>
+    <div id="commonsDigging" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+    <script type="text/javascript">
+      //mimic the click on the first tab
+      document.getElementById('defaultOpen').click()
+      //set img src to logo_retailer from localStorage
+      document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
+    </script>
+  </body>
+</html>
