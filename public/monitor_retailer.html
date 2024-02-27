@@ -27,18 +27,8 @@
           </a>
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
-            <button
-              id="preluareComenziBtn"
-              class="button ml-2 is-small is-info"
-            >
-              Preluare comenzi
-            </button>
-            <button
-              id="preluareFacturiBtn"
-              class="button ml-2 is-small is-success"
-            >
-              Preluare Facturi
-            </button>
+            <button id="preluareComenziBtn" class="button ml-2 is-small is-info">Preluare comenzi</button>
+            <button id="preluareFacturiBtn" class="button ml-2 is-small is-success">Preluare Facturi</button>
             <!--add spinner text input with default value 7-->
             <input
               id="daysOlder"
@@ -123,7 +113,7 @@
         </table>
       </div>
     </div>
-    <script type="module" src="./client.js">
+    <script type="module">
       import { openTab, fetchXMLFromRemoteServer, fetchDocsFromS1WS, displayXmlDataForRetailer, toggleComenziNetrimise, toggleFacturiNetrimise, sendAllFacturi } from './client.js'
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
