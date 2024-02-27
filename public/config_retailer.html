@@ -16,11 +16,8 @@
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
     <!--import client.js-->
     <script type="module" src="client.js"></script>
-    <script type="javascript/text">
-      import { getRetailerConfData, getClientConfData, openTab, addRow, deleteRow, loadFile, mandatoryFields, loadCommonXSD, searchTable } from './client.js'
-    </script>
   </head>
-  <body onload="getRetailerConfData(); getClientConfData()">
+  <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
@@ -39,10 +36,10 @@
     3. Factura -->
     <div class="tabs is-boxed p-2">
       <ul>
-        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'conexiune')">
+        <li id="defaultOpen" class="tab is-active">
           <a>Conexiune</a>
         </li>
-        <li class="tab" onclick="openTab(event, 'comanda')">
+        <li id="documenteTab" class="tab">
           <a>Documente asociate</a>
         </li>
       </ul>
@@ -392,10 +389,20 @@
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
     <script type="text/javascript">
+      //add event listener to defaultOpen
+      document.getElementById('defaultOpen').addEventListener('click', function () {
+        openTab(event, 'conexiune')
+      })
+      //same to documenteTab
+      document.getElementById('documenteTab').addEventListener('click', function () {
+        openTab(event, 'comanda')
+      })
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
+      getRetailerConfData(); 
+      getClientConfData()
     </script>
   </body>
 </html>
