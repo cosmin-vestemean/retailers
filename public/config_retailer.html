@@ -34,10 +34,10 @@
     3. Factura -->
     <div class="tabs is-boxed p-2">
       <ul>
-        <li id="defaultOpen" class="tab is-active" onclick="openTab(event, 'conexiune')">
+        <li id="defaultOpen" class="tab is-active">
           <a>Conexiune</a>
         </li>
-        <li class="tab" onclick="openTab(event, 'comanda')">
+        <li id="documenteS1" class="tab">
           <a>Documente asociate</a>
         </li>
       </ul>
@@ -389,6 +389,14 @@
     <!--import client.js-->
     <script type="module">
       import { openTab, getRetailerConfData, getClientConfData } from './client.js'
+      //add event to id "defaultOpen" to open the first tab
+      document.getElementById('defaultOpen').addEventListener('click', function () {
+        openTab(event, 'conexiune')
+      })
+      //documenteS1 id
+      document.getElementById('documenteS1').addEventListener('click', function () {
+        openTab(event, 'comanda')
+      })
       getRetailerConfData()
       getClientConfData()
       //mimic the click on the first tab
