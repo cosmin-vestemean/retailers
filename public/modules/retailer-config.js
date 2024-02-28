@@ -2164,7 +2164,7 @@ export async function loadListaDocumente() {
         cell2.innerHTML = `<input id = "SERIES${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="SERIES" value="${item.SERIES}" />`
         cell3.innerHTML = `<input id = "INITIALDIRIN${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIRIN" value="${item.INITIALDIRIN}" />`
         cell4.innerHTML = `<input id = "INITIALDIROUT${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIROUT" value="${item.INITIALDIROUT}" />`
-        cell5.innerHTML = `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-danger is-small deleteMapping" onclick="deleteMapping(${item.CCCDOCUMENTES1MAPPINGS})">Delete</button>`
+        cell5.innerHTML = `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-danger is-small deleteMapping">Delete</button>`
         //button for loading xml mappings for current document
         cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 loadMapping")">Load</button>`
         //add button for loading from another document from table documente
@@ -2336,4 +2336,8 @@ function hideUnselectedRows() {
       }
     }
   }
+}
+
+function copyFromAnotherDocument(id) {
+  alert('to be implemented')
 }
