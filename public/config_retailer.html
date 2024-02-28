@@ -230,14 +230,14 @@
         <div class="column">
           <div class="field">
             <div class="control">
-              <button class="button is-link" onclick="addRow()">Add</button>
+              <button id="addRowInDocs" class="button is-link">Add</button>
             </div>
           </div>
         </div>
         <div class="column">
           <div class="field">
             <div class="control">
-              <button class="button is-link is-danger" onclick="deleteRow()">Delete</button>
+              <button id="deleteRowsFromDocs" class="button is-link is-danger">Delete</button>
             </div>
           </div>
         </div>
@@ -297,7 +297,7 @@
           <div class="field">
             <label class="label">Incarca fisier XML</label>
             <div class="control">
-              <input class="input" type="file" placeholder="Incarca fisier XML" onchange="loadFile(event)" />
+              <input id="loadFile" class="input" type="file" placeholder="Incarca fisier XML"" />
             </div>
           </div>
         </div>
@@ -310,7 +310,6 @@
                 class="input"
                 type="file"
                 placeholder="Incarca XSD"
-                onchange="mandatoryFields()"
               />
             </div>
           </div>
@@ -324,7 +323,6 @@
                 class="input"
                 type="file"
                 placeholder="Incarca XSD"
-                onchange="loadCommonXSD()"
               />
             </div>
           </div>
@@ -363,11 +361,10 @@
         <div class="navbar is-fixed-bottom">
           <div class="control">
             <input
+              id="searchInput"
               class="input is-primary"
               type="text"
               placeholder="Search xml node in table"
-              id="searchInput"
-              onkeyup="searchTable('xmlAsTable', 'searchInput')"
             />
           </div>
         </div>
@@ -389,7 +386,7 @@
     <!--import client.js-->
     <script type="module">
       import { openTab, getClientConfData } from './client.js'
-      import { getRetailerConfData } from './modules/retailer.js'
+      import { getRetailerConfData, loadFile, mandatoryFields, searchTable, loadCommonXSD, addRow, deleteRow } from './modules/retailer.js'
       //add event to id "defaultOpen" to open the first tab
       document.getElementById('defaultOpen').addEventListener('click', function () {
         openTab(event, 'conexiune')
@@ -397,6 +394,30 @@
       //documenteS1 id
       document.getElementById('documenteS1').addEventListener('click', function () {
         openTab(event, 'comanda')
+      })
+      //loadFile id
+      document.getElementById('loadFile').addEventListener('change', function (event) {
+        loadFile(event)
+      })
+      //xsdFile id
+      document.getElementById('xsdFile').addEventListener('change', function (event) {
+        mandatoryFields()
+      })
+      //searchInput id
+      document.getElementById('searchInput').addEventListener('keyup', function () {
+        searchTable('xmlAsTable', 'searchInput')
+      })
+      //xsdCommonsFile id
+      document.getElementById('xsdCommonsFile').addEventListener('change', function (event) {
+        loadCommonXSD(event)
+      })
+      //addRowInDocs id
+      document.getElementById('addRowInDocs').addEventListener('click', function () {
+        addRow()
+      })
+      //deleteRowsFromDocs id
+      document.getElementById('deleteRowsFromDocs').addEventListener('click', function () {
+        deleteRow()
       })
       getRetailerConfData()
       getClientConfData()
