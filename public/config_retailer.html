@@ -16,6 +16,9 @@
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
   </head>
   <body>
+    <script type="module">
+      import { loadMapping } from './modules/retailer-config.js'
+    </script>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
@@ -305,7 +308,12 @@
           <div class="field">
             <label class="label">Incarca fisier XSD schema</label>
             <div class="control">
-              <input id="xsdFile" class="input" type="file" placeholder="Incarca XSD" />
+              <input
+                id="xsdFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+              />
             </div>
           </div>
         </div>
@@ -313,7 +321,12 @@
           <div class="field">
             <label class="label">Incarca fisier XSD custom types</label>
             <div class="control">
-              <input id="xsdCommonsFile" class="input" type="file" placeholder="Incarca XSD" />
+              <input
+                id="xsdCommonsFile"
+                class="input"
+                type="file"
+                placeholder="Incarca XSD"
+              />
             </div>
           </div>
         </div>
@@ -376,18 +389,7 @@
     <!--import client.js-->
     <script type="module">
       import { openTab } from './client.js'
-      import {
-        getRetailerConfData,
-        loadFile,
-        mandatoryFields,
-        searchTable,
-        loadCommonXSD,
-        addRow,
-        deleteRow,
-        getClientConfData,
-        loadListaDocumente,
-        loadMapping
-      } from './modules/retailer-config.js'
+      import { getRetailerConfData, loadFile, mandatoryFields, searchTable, loadCommonXSD, addRow, deleteRow, getClientConfData, loadListaDocumente } from './modules/retailer-config.js'
       //add event to id "defaultOpen" to open the first tab
       document.getElementById('defaultOpen').addEventListener('click', function () {
         openTab(event, 'conexiune')
@@ -422,15 +424,6 @@
       })
       getRetailerConfData()
       getClientConfData()
-      var elements = document.getElementsByClassName('loadMapping')
-      console.log(elements)
-      for (var i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('click', function () {
-          var id = this.id
-          console.log(id)
-          loadMapping(id)
-        })
-      }
       loadListaDocumente()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
