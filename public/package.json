@@ -8,6 +8,7 @@
     "start": "parcel",
     "build": "parcel build"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
