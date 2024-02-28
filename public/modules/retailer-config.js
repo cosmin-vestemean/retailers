@@ -2174,9 +2174,9 @@ export function loadListaDocumente() {
         btnLoadMapping.classList.add('is-info')
         btnLoadMapping.classList.add('is-small')
         btnLoadMapping.classList.add('ml-2')
-        btnLoadMapping.onclick = function () {
+        btnLoadMapping.addEventListener('click', function () {
           loadMapping(item.CCCDOCUMENTES1MAPPINGS)
-        }
+        })
         cell5.appendChild(btnLoadMapping)
         //add button for loading from another document from table documente
         cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Clone</button>`
