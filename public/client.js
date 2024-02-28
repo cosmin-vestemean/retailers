@@ -1,64 +1,6 @@
-import { client, socketClient } from './modules/feathersjs-client.js'
+import { client } from './modules/feathersjs-client.js'
 
 console.log('Client.js loaded')
-
-//const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
-//const socket = io('www.retailers.acct.ro')
-/* const socket = io('https://retailers-modular-975638ebe522.herokuapp.com')
-const client = feathers()
-const socketClient = feathers.socketio(socket)
-
-client.configure(socketClient) */
-
-client.use('sftp', socketClient.service('sftp'), {
-  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
-  events: ['uploadResult']
-})
-
-client.use('storeXml', socketClient.service('storeXml'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('CCCDOCUMENTES1MAPPINGS', socketClient.service('CCCDOCUMENTES1MAPPINGS'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('CCCXMLS1MAPPINGS', socketClient.service('CCCXMLS1MAPPINGS'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('CCCRETAILERSCLIENTS', socketClient.service('CCCRETAILERSCLIENTS'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('connectToS1', socketClient.service('connectToS1'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('setDocument', socketClient.service('setDocument'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('getDataset', socketClient.service('getDataset'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('getS1ObjData', socketClient.service('getS1ObjData'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.use('getS1SqlData', socketClient.service('getS1SqlData'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-//getInvoiceDom
-client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
-  methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-})
-
-client.service('sftp').on('uploadResult', (data) => {
-  console.log('uploadResult', data)
-})
 
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
@@ -115,10 +57,10 @@ async function openTab(evt, tabName) {
 
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  return await createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+  return await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
 
-async function createOrderJSONRefactored(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
+async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
   //use await instead of promises
   //get a token for s1 connection
   var res = await client.service('CCCRETAILERSCLIENTS').find({

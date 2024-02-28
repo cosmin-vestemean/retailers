@@ -6,4 +6,54 @@ const socketClient = feathers.socketio(socket)
 
 client.configure(socketClient)
 
-export { client, socketClient}
+client.use('sftp', socketClient.service('sftp'), {
+    methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
+    events: ['uploadResult']
+  })
+  
+  client.use('storeXml', socketClient.service('storeXml'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('CCCDOCUMENTES1MAPPINGS', socketClient.service('CCCDOCUMENTES1MAPPINGS'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('CCCXMLS1MAPPINGS', socketClient.service('CCCXMLS1MAPPINGS'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('CCCRETAILERSCLIENTS', socketClient.service('CCCRETAILERSCLIENTS'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('connectToS1', socketClient.service('connectToS1'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('setDocument', socketClient.service('setDocument'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('getDataset', socketClient.service('getDataset'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('getS1ObjData', socketClient.service('getS1ObjData'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.use('getS1SqlData', socketClient.service('getS1SqlData'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  //getInvoiceDom
+  client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
+  
+  client.service('sftp').on('uploadResult', (data) => {
+    console.log('uploadResult', data)
+  })
+
+export { client }
