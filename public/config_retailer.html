@@ -14,9 +14,6 @@
     <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
-    <script type="javascript/text">
-      var loadMappingWindow
-    </script>
   </head>
   <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
@@ -424,7 +421,7 @@
       })
       getRetailerConfData()
       getClientConfData()
-      loadMappingWindow = loadMapping
+      loadMapping(35)
       loadListaDocumente()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
