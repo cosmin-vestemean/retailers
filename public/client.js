@@ -1,4 +1,4 @@
-import {client, socketClient} from './modules/feathers-client.js'
+import {client, socketClient} from './modules/feathersjs-client.js'
 
 console.log('Client.js loaded')
 
