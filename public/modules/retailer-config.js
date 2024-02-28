@@ -2176,6 +2176,7 @@ export function loadListaDocumente() {
         btnLoadMapping.classList.add('is-small')
         btnLoadMapping.classList.add('ml-2')
         btnLoadMapping.onclick = function () {
+          console.log('clicked', item.CCCDOCUMENTES1MAPPINGS)
           loadMapping(item.CCCDOCUMENTES1MAPPINGS)
         }
         cell5.appendChild(btnLoadMapping)
