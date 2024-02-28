@@ -2836,7 +2836,6 @@ export {
   setRetailerId,
   getClientConfData,
   openTab,
-  loadFile,
   addRow,
   deleteRow,
   searchTable,
@@ -2848,7 +2847,6 @@ export {
   loadCommonXSD,
   sendAllFacturi,
   toggleFacturiNetrimise,
-  loadMapping,
   saveMapping,
   deleteMapping,
   copyFromAnotherDocument
