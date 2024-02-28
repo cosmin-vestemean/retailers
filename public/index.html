@@ -86,15 +86,13 @@
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
             <a
-              id="eMag-monitor"
               href="monitor_retailer.html"
-              class="card-footer-item"
+              class="card-footer-item eMag"
               >File manager</a
             >
             <a
-              id="eMag-config"
               href="config_retailer.html"
-              class="card-footer-item"
+              class="card-footer-item eMag"
               >Configureaza</a
             >
           </footer>
@@ -122,14 +120,12 @@
             <a href="#" class="card-footer-item">Statistici</a>
             <a
               href="monitor_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
+              class="card-footer-item supeco"
               >File manager</a
             >
             <a
               href="config_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')"
+              class="card-footer-item supeco"
               >Configureaza</a
             >
           </footer>
@@ -325,13 +321,20 @@
     </div>
     <script type="module">
       import { setRetailerId } from './client.js'
-      //add to eMag-monitor and eMag-config onclick event
-      document.getElementById('eMag-monitor').onclick = function () {
-        setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
-      }
-      document.getElementById('eMag-config').onclick = function () {
-        setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
-      }
+      //add to class eMag onclick event = setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
+      document.querySelectorAll('.eMag').forEach((el) => {
+        el.onclick = (e) => {
+          e.preventDefault()
+          setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
+        }
+      })
+      //supeco setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
+      document.querySelectorAll('.supeco').forEach((el) => {
+        el.onclick = (e) => {
+          e.preventDefault()
+          setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
+        }
+      })
     </script>
   </body>
 </html>
