@@ -11,9 +11,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "parcel": "^2.11.0"
-  },
   "dependencies": {
     "@feathersjs/feathers": "^5.0.23",
     "@feathersjs/socketio-client": "^5.0.23",
