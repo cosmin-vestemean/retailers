@@ -1673,6 +1673,9 @@ async function fetchDocsFromS1WS(sosource, fprms, series) {
       //check id comenziTrimise
       document.getElementById('comenziTrimise').checked = true
       toggleComenziNetrimise()
+      //facturiTrimise
+      document.getElementById('facturiTrimise').checked = true
+      toggleFacturiNetrimise()
     })
 }
 
