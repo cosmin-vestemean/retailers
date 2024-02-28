@@ -14,6 +14,9 @@
     <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
     <!--load socket.io-->
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
+    <script type="javascript/text">
+      var loadMappingWindow
+    </script>
   </head>
   <body>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
@@ -421,7 +424,8 @@
       })
       getRetailerConfData()
       getClientConfData()
-      loadListaDocumente(loadMapping)
+      loadMappingWindow = loadMapping
+      loadListaDocumente()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
       //set img src to logo_retailer from localStorage
