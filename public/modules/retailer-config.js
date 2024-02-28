@@ -2164,11 +2164,11 @@ export async function loadListaDocumente() {
         cell2.innerHTML = `<input id = "SERIES${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="SERIES" value="${item.SERIES}" />`
         cell3.innerHTML = `<input id = "INITIALDIRIN${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIRIN" value="${item.INITIALDIRIN}" />`
         cell4.innerHTML = `<input id = "INITIALDIROUT${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIROUT" value="${item.INITIALDIROUT}" />`
-        cell5.innerHTML = `<button class="button is-danger is-small" onclick="deleteMapping(${item.CCCDOCUMENTES1MAPPINGS})">Delete</button>`
+        cell5.innerHTML = `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-danger is-small deleteMapping" onclick="deleteMapping(${item.CCCDOCUMENTES1MAPPINGS})">Delete</button>`
         //button for loading xml mappings for current document
         cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 loadMapping")">Load</button>`
         //add button for loading from another document from table documente
-        cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Clone</button>`
+        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 copyFromAnotherDocument")">Clone</button>`
         //cell6 hidden CCCDOCUMENTES1MAPPINGS, no input
         cell6.innerHTML = item.CCCDOCUMENTES1MAPPINGS
         //hide cell6
@@ -2178,11 +2178,23 @@ export async function loadListaDocumente() {
       })
       //add loadMapping(button id) to all buttons class="loadMapping"
       const loadMappingElements = document.querySelectorAll('.loadMapping')
-      console.log('loadMappingElements', loadMappingElements)
       loadMappingElements.forEach((button) => {
-        console.log('button.id', button.id)
         button.addEventListener('click', function () {
           loadMapping(button.id)
+        })
+      })
+      //same for copyFromAnotherDocument
+      const copyFromAnotherDocumentElements = document.querySelectorAll('.copyFromAnotherDocument')
+      copyFromAnotherDocumentElements.forEach((button) => {
+        button.addEventListener('click', function () {
+          copyFromAnotherDocument(button.id)
+        })
+      })
+      //same for deleteMapping
+      const deleteMappingElements = document.querySelectorAll('.deleteMapping')
+      deleteMappingElements.forEach((button) => {
+        button.addEventListener('click', function () {
+          deleteMapping(button.id)
         })
       })
     })
