@@ -8,6 +8,8 @@ var privateKey = '',
 
 export { privateKey, url, username, passphrase, fingerprint }
 
+var xsdCommonsDom = null
+
 export async function getRetailerConfData() {
   var localStorageRetailer
   try {

@@ -2068,8 +2068,6 @@ async function toggleComenziNetrimise() {
   }
 }
 
-var xsdCommonsDom = null
-
 //create function to close bulma modal on escape key
 //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
 document.addEventListener('keydown', function (event) {
