@@ -422,6 +422,13 @@
       getRetailerConfData()
       getClientConfData()
       loadMapping(34)
+      //add loadMapping(button id) to all buttons class="loadMapping"
+      document.querySelectorAll('.loadMapping').forEach((button) => {
+        console.log('button.id', button.id)
+        button.addEventListener('click', function () {
+          loadMapping(button.id)
+        })
+      })
       loadListaDocumente()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
