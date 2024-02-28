@@ -231,27 +231,6 @@ function hideUnselectedRows() {
 
 loadListaDocumente()
 
-async function searchTable(tableId, searchBoxId) {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue
-  input = document.getElementById(searchBoxId)
-  filter = input.value.toUpperCase()
-  table = document.getElementById(tableId)
-  //search third column
-  tr = table.getElementsByTagName('tr')
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName('td')[2]
-    if (td) {
-      txtValue = td.textContent || td.innerText
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = ''
-      } else {
-        tr[i].style.display = 'none'
-      }
-    }
-  }
-}
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   return await createOrderJSONRefactored(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)

@@ -385,8 +385,8 @@
     </div>
     <!--import client.js-->
     <script type="module">
-      import { openTab, searchTable } from './client.js'
-      import { getRetailerConfData, loadFile, mandatoryFields, loadCommonXSD, addRow, deleteRow, getClientConfData } from './modules/retailer-config.js'
+      import { openTab } from './client.js'
+      import { getRetailerConfData, loadFile, mandatoryFields, searchTable, loadCommonXSD, addRow, deleteRow, getClientConfData } from './modules/retailer-config.js'
       //add event to id "defaultOpen" to open the first tab
       document.getElementById('defaultOpen').addEventListener('click', function () {
         openTab(event, 'conexiune')
