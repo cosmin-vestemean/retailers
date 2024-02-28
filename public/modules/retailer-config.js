@@ -1,6 +1,5 @@
 import { client } from './feathersjs-client.js'
 
-
 //////TODO:finish implementing this approach----------------------------------------------
 function createXMLDOM(CCCXMLS1MAPPINGS) {
   //create xml dom
@@ -2318,8 +2317,9 @@ function hideUnselectedRows() {
   }
 }
 
-$(document).ready(function () {
-//get all classes with name "loadMapping" and add event listener loadMapping(id)
+//add document ready event listener
+document.addEventListener('DOMContentLoaded', function () {
+  //get all classes with name "loadMapping" and add event listener loadMapping(id)
   var elements = document.getElementsByClassName('loadMapping')
   for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('click', function () {
