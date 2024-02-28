@@ -1670,6 +1670,8 @@ async function fetchDocsFromS1WS(sosource, fprms, series) {
     .then(async (result) => {
       console.debug(JSON.stringify(result, null, 2))
       await displayDocsForRetailers(result, trdr, sosource, fprms, series)
+      //check id comenziTrimise
+      document.getElementById('comenziTrimise').checked = true
       toggleComenziNetrimise()
     })
 }
