@@ -3405,5 +3405,9 @@ export {
   mandatoryFields,
   loadCommonXSD,
   sendAllFacturi,
-  toggleFacturiNetrimise
+  toggleFacturiNetrimise,
+  loadMapping,
+  saveMapping,
+  deleteMapping,
+  copyFromAnotherDocument
 }

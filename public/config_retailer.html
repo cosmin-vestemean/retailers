@@ -388,7 +388,7 @@
     </div>
     <!--import client.js-->
     <script type="module">
-      import { openTab, getRetailerConfData, getClientConfData } from './client.js'
+      import { openTab, getRetailerConfData, getClientConfData, addRow, deleteRow, loadMapping, saveMapping, deleteMapping, loadFile, mandatoryFields, loadCommonXSD, searchTable } from './client.js'
       //add event to id "defaultOpen" to open the first tab
       document.getElementById('defaultOpen').addEventListener('click', function () {
         openTab(event, 'conexiune')
