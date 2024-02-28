@@ -85,25 +85,6 @@ async function getRetailerXMLData(retailer) {
   })
 }
 
-async function getClientConfData() {
-  //CCCRETAILERSCLIENTS
-  client
-    .service('CCCRETAILERSCLIENTS')
-    .find({ query: { TRDR_CLIENT: 1 } })
-    .then((res) => {
-      //WSURL
-      document.getElementById('WSURL').value = res.data[0].WSURL
-      //LOGINCOMPANY
-      document.getElementById('LOGINCOMPANY').value = res.data[0].COMPANY
-      //BRANCH
-      document.getElementById('LOGINBRANCH').value = res.data[0].BRANCH
-      //LOGINUSER
-      document.getElementById('LOGINUSER').value = res.data[0].WSUSER
-      //LOGINPASS
-      document.getElementById('LOGINPASSWORD').value = res.data[0].WSPASS
-    })
-}
-
 //config_retailer section
 async function openTab(evt, tabName) {
   var i, x, tablinks
@@ -286,80 +267,6 @@ function hideUnselectedRows() {
   }
 }
 
-function saveMapping() {
-  //SET CAPTION TO "SHOW ALL ROWS"
-  document.getElementById('hideUnselectedRows').innerHTML = 'Show all rows'
-  hideUnselectedRows()
-  if (!validateMappings()) {
-    return
-  }
-  //get current row from table documente and add class is-selected
-  var currentDoc = getDocument()
-  //verify if currentDoc already exists in database table CCCDOCUMENTES1MAPPINGS
-  client
-    .service('CCCDOCUMENTES1MAPPINGS')
-    .find({
-      query: {
-        FPRMS: currentDoc.FPRMS,
-        SERIES: currentDoc.SERIES
-      }
-    })
-    .then((res) => {
-      console.log(res)
-      if (res.data.length > 0) {
-        //ask user if he wants to overwrite the existing mapping
-        var answer = confirm('Mapping already exists. Do you want to overwrite it?')
-        if (answer) {
-          //check if it has children in table CCCXMLS1MAPPINGS
-          client
-            .service('CCCXMLS1MAPPINGS')
-            .find({
-              query: {
-                CCCDOCUMENTES1MAPPINGS: res.data[0].CCCDOCUMENTES1MAPPINGS
-              }
-            })
-            .then(async (res) => {
-              console.log('for delete', res)
-              try {
-                await deleteMapping(res.data[0].CCCDOCUMENTES1MAPPINGS)
-              } catch (err) {
-                console.log(err)
-              }
-              insertNewMapping(currentDoc)
-            })
-        } else {
-          return
-        }
-      } else {
-        insertNewMapping(currentDoc)
-      }
-    })
-}
-
-function insertNewMapping(currentDoc) {
-  //insert currentDoc in database table CCCDOCUMENTES1MAPPINGS
-  client
-    .service('CCCDOCUMENTES1MAPPINGS')
-    .create(currentDoc)
-    .then((res) => {
-      console.log(res)
-      var mappings = getSelectedMappingData()
-      var cccdocumentes1Mappings = res.CCCDOCUMENTES1MAPPINGS
-      mappings.forEach((item) => {
-        item['CCCDOCUMENTES1MAPPINGS'] = cccdocumentes1Mappings
-      })
-      console.log('mappings', mappings)
-      for (var i = 0; i < mappings.length; i++) {
-        client
-          .service('CCCXMLS1MAPPINGS')
-          .create(mappings[i])
-          .then((res) => {
-            //console.log('response', res)
-          })
-      }
-    })
-}
-
 function getDocument() {
   var table = document.getElementById('documente')
   var rowCount = table.rows.length
@@ -384,77 +291,6 @@ function getDocument() {
   currentDoc['TRDR_CLIENT'] = 1
   console.log(currentDoc)
   return currentDoc
-}
-
-function getSelectedMappingData() {
-  if (!validateMappings()) {
-    return
-  }
-  var table = document.getElementById('xmlAsTable')
-  var rowCount = table.rows.length
-  var mapping = []
-  for (var i = 1; i < rowCount; i++) {
-    var row = table.rows[i]
-    var input = row.cells[1].childNodes[0]
-    if (input.checked) {
-      var obj = {}
-      /* obj['XMLNODE'] =
-        row.className.toLowerCase().indexOf('line') > -1
-          ? row.className + '/' + row.cells[2].innerHTML
-          : row.cells[2].innerHTML */
-      obj['XMLNODE'] = row.cells[3].innerHTML
-      //cells 3, 4, 5, 6 have an input type text field inside, get the value from input instead of innerHTML
-      obj['S1TABLE1'] = document.getElementById(row.cells[4].childNodes[0].id).value
-      obj['S1FIELD1'] = document.getElementById(row.cells[5].childNodes[0].id).value
-      if (document.getElementById(row.cells[6].childNodes[0].id).value)
-        obj['S1TABLE2'] = document.getElementById(row.cells[6].childNodes[0].id).value
-      if (document.getElementById(row.cells[7].childNodes[0].id).value)
-        obj['S1FIELD2'] = document.getElementById(row.cells[7].childNodes[0].id).value
-      obj['MANDATORY'] = row.cells[2].childNodes[0].checked ? 1 : 0
-      //sql
-      obj['SQL'] = document.getElementById(row.cells[8].childNodes[0].id).value
-      //Observatii
-      obj['OBSERVATII'] = document.getElementById(row.cells[10].childNodes[0].id).value
-      //add XMLORDER
-      obj['XMLORDER'] = parseFloat(row.cells[0].innerHTML)
-      mapping.push(obj)
-    }
-  }
-  return mapping
-}
-
-function validateMappings() {
-  /* var docTable = document.getElementById('documenteBody')
-  //get selected row from table documente
-  //find cell with input starting with initialdirin
-  var cell = docTable.rows[docTable.rows.length - 1].querySelector('input[id^="INITIALDIRIN"]')
-  var hasInitialDirIn = cell.value ? true : false
-  console.log('hasInitialDirIn', hasInitialDirIn)
-  var table = document.getElementById('xmlAsTable')
-  //get tbody
-  var tbody = table.tBodies[0]
-  var rowCount = tbody.rows.length
-  var countSelectedRows = 0
-  for (var i = 1; i < rowCount; i++) {
-    var row = tbody.rows[i]
-    var input = row.cells[0].childNodes[0]
-    if (input.checked) {
-      countSelectedRows++
-      if (hasInitialDirIn && !document.getElementById(row.cells[3].childNodes[0].id).value) {
-        alert('Please fill in first S1 table field')
-        return false
-      }
-      if (hasInitialDirIn && !document.getElementById(row.cells[4].childNodes[0].id).value) {
-        alert('Please fill in first S1 field field')
-        return false
-      }
-    }
-  }
-  if (countSelectedRows == 0) {
-    alert('Please select at least one row')
-    return false
-  } */
-  return true
 }
 
 function loadListaDocumente() {
@@ -500,28 +336,6 @@ function loadListaDocumente() {
         //name cell6
         cell6.className = 'CCCDOCUMENTES1MAPPINGS'
       })
-    })
-}
-
-async function deleteMapping(id) {
-  //ask user if he wants to delete the mapping
-  var answer = confirm('Are you sure you want to delete this mapping?')
-  if (!answer) {
-    return
-  }
-  //delete from table CCCXMLS1MAPPINGS then CCCDOCUMENTES1MAPPINGS; wait for each transaction to complete
-  await client
-    .service('CCCXMLS1MAPPINGS')
-    .remove(null, { query: { CCCDOCUMENTES1MAPPINGS: id } })
-    .then((res) => {
-      console.log(res)
-    })
-
-  await client
-    .service('CCCDOCUMENTES1MAPPINGS')
-    .remove(id)
-    .then((res) => {
-      console.log(res)
     })
 }
 
@@ -2834,7 +2648,6 @@ async function toggleFacturiNetrimise() {
 
 export {
   setRetailerId,
-  getClientConfData,
   openTab,
   addRow,
   deleteRow,
@@ -2847,7 +2660,5 @@ export {
   loadCommonXSD,
   sendAllFacturi,
   toggleFacturiNetrimise,
-  saveMapping,
-  deleteMapping,
   copyFromAnotherDocument
 }
