@@ -1,3 +1,5 @@
+
+import { client } from './feathers-client.js'
 export async function getRetailerConfData() {
     var localStorageRetailer
     try {
