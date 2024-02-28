@@ -2167,7 +2167,7 @@ export function loadListaDocumente() {
         cell4.innerHTML = `<input id = "INITIALDIROUT${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIROUT" value="${item.INITIALDIROUT}" />`
         cell5.innerHTML = `<button class="button is-danger is-small" onclick="deleteMapping(${item.CCCDOCUMENTES1MAPPINGS})">Delete</button>`
         //button for loading xml mappings for current document
-        cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="loadMapping(${item.CCCDOCUMENTES1MAPPINGS})">Load</button>`
+        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 loadMapping">Load</button>`
         //add button for loading from another document from table documente
         cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Clone</button>`
         //cell6 hidden CCCDOCUMENTES1MAPPINGS, no input
@@ -2317,3 +2317,14 @@ function hideUnselectedRows() {
     }
   }
 }
+
+$(document).ready(function () {
+//get all classes with name "loadMapping" and add event listener loadMapping(id)
+  var elements = document.getElementsByClassName('loadMapping')
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener('click', function () {
+      var id = this.id
+      loadMapping(id)
+    })
+  }
+})
