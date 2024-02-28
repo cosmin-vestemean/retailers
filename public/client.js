@@ -198,45 +198,6 @@ function xml2json(node) {
   return result
 }
 
-async function addRow() {
-  var table = document.getElementById('documente')
-  var row = table.insertRow()
-  var cell1 = row.insertCell()
-  var cell2 = row.insertCell()
-  var cell3 = row.insertCell()
-  var cell4 = row.insertCell()
-  cell1.innerHTML = `<input id = "FPRMS${table.rows.length}" class="input" type="text" placeholder="FPRMS" />`
-  cell2.innerHTML = `<input id = "SERIES${table.rows.length}" class="input" type="text" placeholder="SERIES" />`
-  cell3.innerHTML = `<input id = "INITIALDIRIN${table.rows.length}" class="input" type="text" placeholder="INITIALDIRIN" />`
-  cell4.innerHTML = `<input id = "INITIALDIROUT${table.rows.length}" class="input" type="text" placeholder="INITIALDIROUT" />`
-  var cell5 = row.insertCell()
-  cell5.className = 'CCCDOCUMENTES1MAPPINGS'
-  cell5.innerHTML = table.rows.length
-  //hide it
-  cell5.style.display = 'none'
-  //add actions column
-  var cell6 = row.insertCell()
-  cell6.innerHTML += `<button class="button is-small is-danger m-2" onclick="deleteRow()">Delete</button>`
-  cell6.innerHTML += `<button class="button is-small is-info m-2" onclick="loadMapping()">Load</button>`
-  //add class is-selected to current row
-  row.className = 'is-selected'
-  //add onclick event to row
-  row.onclick = function () {
-    var table = document.getElementById('documente')
-    var rowCount = table.rows.length
-    for (var i = 1; i < rowCount; i++) {
-      table.rows[i].className = ''
-    }
-    this.className = 'is-selected'
-  }
-}
-
-async function deleteRow() {
-  var table = document.getElementById('documente')
-  var rowCount = table.rows.length
-  table.deleteRow(rowCount - 1)
-}
-
 function hideUnselectedRows() {
   //if caption is "Hide unselected rows" change it to "Show all rows" and viceversa
   var caption = document.getElementById('hideUnselectedRows').innerHTML
@@ -2649,8 +2610,6 @@ async function toggleFacturiNetrimise() {
 export {
   setRetailerId,
   openTab,
-  addRow,
-  deleteRow,
   searchTable,
   fetchXMLFromRemoteServer,
   displayXmlDataForRetailer,
