@@ -923,7 +923,7 @@ export function updateRetailerConfData() {
     })
 }
 
-function loadMapping(id) {
+export async function loadMapping(id) {
   //add mappings from db into xmlAsTable table id
   //get all mappings from table CCCXMLS1MAPPINGS
   client
@@ -2316,15 +2316,3 @@ function hideUnselectedRows() {
     }
   }
 }
-
-//add document ready event listener
-document.addEventListener('DOMContentLoaded', function () {
-  //get all classes with name "loadMapping" and add event listener loadMapping(id)
-  var elements = document.getElementsByClassName('loadMapping')
-  for (var i = 0; i < elements.length; i++) {
-    elements[i].addEventListener('click', function () {
-      var id = this.id
-      loadMapping(id)
-    })
-  }
-})
