@@ -924,7 +924,7 @@ export function updateRetailerConfData() {
     })
 }
 
-function loadMapping(id) {
+export async function loadMapping(id) {
   //add mappings from db into xmlAsTable table id
   //get all mappings from table CCCXMLS1MAPPINGS
   client
