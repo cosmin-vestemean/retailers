@@ -450,7 +450,7 @@ app.use('setDocument', new setDocumentServiceClass())
 //create a service called getDataset that gets a dataset from S1 in return to a token and a string containing a sql query
 class getDatasetServiceClass {
   async find(params) {
-    const url = mainURL + '/JS/WS/processSqlAsDataset'
+    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset'
     const method = 'POST'
     const sqlQuery = params.query.sqlQuery
     console.log('sqlQuery', sqlQuery)
