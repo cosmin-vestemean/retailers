@@ -2317,3 +2317,7 @@ function hideUnselectedRows() {
     }
   }
 }
+
+function copyFromAnotherDocument(id) {
+  alert('to be implemented')
+}

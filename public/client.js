@@ -652,10 +652,6 @@ async function displayXmlDataForRetailer(retailer) {
   })
 }
 
-function copyFromAnotherDocument(id) {
-  alert('to be implemented')
-}
-
 async function fetchDocsFromS1WS(sosource, fprms, series) {
   var trdr
   try {
@@ -1088,5 +1084,4 @@ export {
   toggleComenziNetrimise,
   sendAllFacturi,
   toggleFacturiNetrimise,
-  copyFromAnotherDocument
 }
