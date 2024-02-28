@@ -924,7 +924,7 @@ export function updateRetailerConfData() {
     })
 }
 
-export function loadMapping(id) {
+function loadMapping(id) {
   //add mappings from db into xmlAsTable table id
   //get all mappings from table CCCXMLS1MAPPINGS
   client
@@ -1607,7 +1607,7 @@ export async function addRow() {
   //add actions column
   var cell6 = row.insertCell()
   cell6.innerHTML += `<button class="button is-small is-danger m-2" onclick="deleteRow()">Delete</button>`
-  cell6.innerHTML += `<button class="button is-small is-info m-2" onclick="loadMapping()">Load</button>`
+  cell6.innerHTML += `<button class="button is-small is-info m-2" onclick="()">Load</button>`
   //add class is-selected to current row
   row.className = 'is-selected'
   //add onclick event to row
