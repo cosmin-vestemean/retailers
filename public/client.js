@@ -64,7 +64,7 @@ var url = '',
   privateKey = '',
   fingerprint = ''
 
-export async function getRetailerConfData() {
+async function getRetailerConfData() {
   var localStorageRetailer
   try {
     localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
@@ -98,7 +98,7 @@ export async function getRetailerConfData() {
     })
 }
 
-export async function setRetailerId(trdr, urlLogo) {
+async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
   localStorage.setItem('logo_retailer', urlLogo)
   console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
@@ -164,7 +164,7 @@ async function getRetailerXMLData(retailer) {
   })
 }
 
-export async function getClientConfData() {
+async function getClientConfData() {
   //CCCRETAILERSCLIENTS
   client
     .service('CCCRETAILERSCLIENTS')
@@ -184,7 +184,7 @@ export async function getClientConfData() {
 }
 
 //config_retailer section
-export async function openTab(evt, tabName) {
+async function openTab(evt, tabName) {
   var i, x, tablinks
   x = document.getElementsByClassName('content-tab')
   for (i = 0; i < x.length; i++) {
@@ -201,7 +201,6 @@ export async function openTab(evt, tabName) {
     //check id comenziTrimise
     document.getElementById('comenziTrimise').checked = true
     toggleComenziNetrimise()
-
   }
 
   if (tabName == 'facturi') {
@@ -211,7 +210,7 @@ export async function openTab(evt, tabName) {
   }
 }
 
-export async function loadFile(event) {
+async function loadFile(event) {
   var xml = event.target.files[0]
   var reader = new FileReader()
   reader.onload = function (e) {
@@ -572,7 +571,7 @@ function xml2json(node) {
   return result
 }
 
-export async function addRow() {
+async function addRow() {
   var table = document.getElementById('documente')
   var row = table.insertRow()
   var cell1 = row.insertCell()
@@ -605,7 +604,7 @@ export async function addRow() {
   }
 }
 
-export async function deleteRow() {
+async function deleteRow() {
   var table = document.getElementById('documente')
   var rowCount = table.rows.length
   table.deleteRow(rowCount - 1)
@@ -1085,7 +1084,7 @@ function addXmlDomToTextArea(data) {
 
 loadListaDocumente()
 
-export async function searchTable(tableId, searchBoxId) {
+async function searchTable(tableId, searchBoxId) {
   // Declare variables
   var input, filter, table, tr, td, i, txtValue
   input = document.getElementById(searchBoxId)
@@ -1429,7 +1428,7 @@ function getValFromXML(xml, node) {
   return matchingNodes
 }
 
-export async function fetchXMLFromRemoteServer() {
+async function fetchXMLFromRemoteServer() {
   //1. localStorage.getItem('trdr_retailer')
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
@@ -1468,7 +1467,7 @@ export async function fetchXMLFromRemoteServer() {
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
 }
 
-export async function displayXmlDataForRetailer(retailer) {
+async function displayXmlDataForRetailer(retailer) {
   //localStorage.getItem('trdr_retailer')
   await getRetailerXMLData(retailer).then((data) => {
     console.log('getRetailerXMLData', data)
@@ -1649,7 +1648,7 @@ function copyFromAnotherDocument(id) {
   alert('to be implemented')
 }
 
-export async function fetchDocsFromS1WS(sosource, fprms, series) {
+async function fetchDocsFromS1WS(sosource, fprms, series) {
   var trdr
   try {
     trdr = parseInt(localStorage.getItem('trdr_retailer'))
@@ -2830,7 +2829,7 @@ async function cheatGetXmlFromS1(findoc) {
   return dom
 }
 
-export async function toggleComenziNetrimise() {
+async function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
   var table = document.getElementById('xmlTableBody')
   if (comenziTrimise.checked) {
@@ -2850,7 +2849,7 @@ export async function toggleComenziNetrimise() {
   }
 }
 
-export async function mandatoryFields() {
+async function mandatoryFields() {
   //get file from input id="xsdFile"
   var xsdFile = document.getElementById('xsdFile').files[0]
   console.log('xsdFile', xsdFile)
@@ -3121,7 +3120,7 @@ export async function mandatoryFields() {
   }
 }
 
-export async function loadCommonXSD() {
+async function loadCommonXSD() {
   //1.get file from input id="xsdCommonsFile"
   //2. create dom from file
   var xsdFile = document.getElementById('xsdCommonsFile').files[0]
@@ -3360,14 +3359,14 @@ window.onload = function () {
     })
 }
 
-export async function sendAllFacturi() {
+async function sendAllFacturi() {
   alert('To be implemented')
 }
 
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
 //netrimise means <td class="trimis"> contains <i class="fas fa-xl fa-times-circle has-text-danger">
 
-export async function toggleFacturiNetrimise() {
+async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
   if (facturiTrimise.checked) {
@@ -3388,4 +3387,23 @@ export async function toggleFacturiNetrimise() {
       row.style.display = ''
     }
   }
+}
+
+export {
+  getRetailerConfData,
+  setRetailerId,
+  getClientConfData,
+  openTab,
+  loadFile,
+  addRow,
+  deleteRow,
+  searchTable,
+  fetchXMLFromRemoteServer,
+  displayXmlDataForRetailer,
+  fetchDocsFromS1WS,
+  toggleComenziNetrimise,
+  mandatoryFields,
+  loadCommonXSD,
+  sendAllFacturi,
+  toggleFacturiNetrimise
 }
