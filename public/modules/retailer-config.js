@@ -924,7 +924,7 @@ export function updateRetailerConfData() {
     })
 }
 
-export async function loadMapping(id) {
+function loadMapping(id) {
   //add mappings from db into xmlAsTable table id
   //get all mappings from table CCCXMLS1MAPPINGS
   client
@@ -2167,7 +2167,17 @@ export function loadListaDocumente() {
         cell4.innerHTML = `<input id = "INITIALDIROUT${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIROUT" value="${item.INITIALDIROUT}" />`
         cell5.innerHTML = `<button class="button is-danger is-small" onclick="deleteMapping(${item.CCCDOCUMENTES1MAPPINGS})">Delete</button>`
         //button for loading xml mappings for current document
-        cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="loadMapping(${item.CCCDOCUMENTES1MAPPINGS})">Load</button>`
+        //cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="loadMapping(${item.CCCDOCUMENTES1MAPPINGS})">Load</button>`
+        var btnLoadMapping = document.createElement('button')
+        btnLoadMapping.innerHTML = 'Load'
+        btnLoadMapping.classList.add('button')
+        btnLoadMapping.classList.add('is-info')
+        btnLoadMapping.classList.add('is-small')
+        btnLoadMapping.classList.add('ml-2')
+        btnLoadMapping.onclick = function () {
+          loadMapping(item.CCCDOCUMENTES1MAPPINGS)
+        }
+        cell5.appendChild(btnLoadMapping)
         //add button for loading from another document from table documente
         cell5.innerHTML += `<button class="button is-info is-small ml-2" onclick="copyFromAnotherDocument(${item.CCCDOCUMENTES1MAPPINGS})">Clone</button>`
         //cell6 hidden CCCDOCUMENTES1MAPPINGS, no input
