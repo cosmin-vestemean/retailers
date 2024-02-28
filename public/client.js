@@ -1669,7 +1669,10 @@ async function fetchDocsFromS1WS(sosource, fprms, series) {
     })
     .then(async (result) => {
       console.debug(JSON.stringify(result, null, 2))
-      displayDocsForRetailers(result, trdr, sosource, fprms, series)
+      displayDocsForRetailers(result, trdr, sosource, fprms, series).then((res) => {
+        //mimic click on id comenziTrimise id
+        document.getElementById('comenziTrimise').click()
+      })
     })
 }
 
