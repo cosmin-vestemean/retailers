@@ -1,6 +1,5 @@
 import { client } from './feathersjs-client.js'
 
-
 //////TODO:finish implementing this approach----------------------------------------------
 function createXMLDOM(CCCXMLS1MAPPINGS) {
   //create xml dom
@@ -924,7 +923,7 @@ export function updateRetailerConfData() {
     })
 }
 
-export async function loadMapping(id) {
+async function loadMapping(id) {
   //add mappings from db into xmlAsTable table id
   //get all mappings from table CCCXMLS1MAPPINGS
   client
@@ -2176,6 +2175,15 @@ export async function loadListaDocumente() {
         cell6.style.display = 'none'
         //name cell6
         cell6.className = 'CCCDOCUMENTES1MAPPINGS'
+      })
+      //add loadMapping(button id) to all buttons class="loadMapping"
+      const loadMappingElements = document.querySelectorAll('.loadMapping')
+      console.log('loadMappingElements', loadMappingElements)
+      loadMappingElements.forEach((button) => {
+        console.log('button.id', button.id)
+        button.addEventListener('click', function () {
+          loadMapping(button.id)
+        })
       })
     })
 }
