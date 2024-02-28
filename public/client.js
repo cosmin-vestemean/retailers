@@ -3389,7 +3389,7 @@ async function toggleFacturiNetrimise() {
   }
 }
 
-export {
+export default {
   getRetailerConfData,
   setRetailerId,
   getClientConfData,
