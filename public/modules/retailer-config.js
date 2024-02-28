@@ -2134,7 +2134,7 @@ function getDocument() {
   return currentDoc
 }
 
-export function loadListaDocumente() {
+export function loadListaDocumente(loadMapping) {
   //get all documents from database table CCCDOCUMENTES1MAPPINGS
   var localStorageRetailer
   try {
