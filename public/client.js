@@ -1669,14 +1669,12 @@ async function fetchDocsFromS1WS(sosource, fprms, series) {
     })
     .then(async (result) => {
       console.debug(JSON.stringify(result, null, 2))
-      displayDocsForRetailers(result, trdr, sosource, fprms, series).then((res) => {
-        //mimic click on id comenziTrimise id
-        document.getElementById('comenziTrimise').click()
-      })
+      await displayDocsForRetailers(result, trdr, sosource, fprms, series)
+      document.getElementById('comenziTrimise').click()
     })
 }
 
-function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
+async function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   /*
       response like {
   "success": true,
