@@ -422,6 +422,7 @@
       getRetailerConfData()
       getClientConfData()
       loadMapping(34)
+      await loadListaDocumente()
       //add loadMapping(button id) to all buttons class="loadMapping"
       const loadMappingElements = document.querySelectorAll('.loadMapping')
       console.log('loadMappingElements', loadMappingElements)
@@ -431,7 +432,6 @@
           loadMapping(button.id)
         })
       })
-      loadListaDocumente()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
       //set img src to logo_retailer from localStorage
