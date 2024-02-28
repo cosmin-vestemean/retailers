@@ -128,11 +128,9 @@
       displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
       fetchDocsFromS1WS(1351, 712, 7121)
       //check id facturiTrimise
-      if (localStorage.getItem('facturiTrimise') === 'true') {
-        document.getElementById('facturiTrimise').checked = true
-        //comenziTrimise
-        document.getElementById('comenziTrimise').checked = true
-      }
+      document.getElementById('facturiTrimise').checked = true
+      //comenziTrimise
+      document.getElementById('comenziTrimise').checked = true
     </script>
   </body>
 </html>
