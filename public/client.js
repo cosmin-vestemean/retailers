@@ -1200,7 +1200,6 @@ async function toggleFacturiNetrimise() {
 export {
   setRetailerId,
   openTab,
-  searchTable,
   fetchXMLFromRemoteServer,
   displayXmlDataForRetailer,
   fetchDocsFromS1WS,
