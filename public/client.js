@@ -57,15 +57,13 @@ client.service('sftp').on('uploadResult', (data) => {
   console.log('uploadResult', data)
 })
 
-import { getRetailerConfData } from './modules/configRetailer.js'
-
 var url = '',
   username = '',
   passphrase = '',
   privateKey = '',
   fingerprint = ''
 
-/* function getRetailerConfData() {
+function getRetailerConfData() {
   var localStorageRetailer
   try {
     localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
@@ -97,7 +95,7 @@ var url = '',
       //INITIALDIROUT
       document.getElementById('INITIALDIROUT').value = res.data[0].INITIALDIROUT
     })
-} */
+}
 
 function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
