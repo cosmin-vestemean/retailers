@@ -60,57 +60,10 @@ client.service('sftp').on('uploadResult', (data) => {
   console.log('uploadResult', data)
 })
 
-var url = '',
-  username = '',
-  passphrase = '',
-  privateKey = '',
-  fingerprint = ''
-
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
   localStorage.setItem('logo_retailer', urlLogo)
   console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
-}
-
-function updateRetailerConfData() {
-  //URL
-  url = document.getElementById('URL').value
-  //PORT
-  port = document.getElementById('PORT').value
-  //USERNAME
-  username = document.getElementById('USERNAME').value
-  //PASSPHRASE
-  passphrase = document.getElementById('PASSPHRASE').value
-  //FINGERPRINT
-  fingerprint = document.getElementById('FINGERPRINT').value
-  //TRDR_RETAILER
-  trdr_retailer = document.getElementById('TRDR_RETAILER').value
-  //INITIALDIRIN
-  initialdirin = document.getElementById('INITIALDIRIN').value
-  //INITIALDIROUT
-  initialdirout = document.getElementById('INITIALDIROUT').value
-
-  client
-    .service('CCCSFTP')
-    .update(
-      {
-        query: {
-          TRDR_RETAILER: trdr_retailer
-        }
-      },
-      (data = {
-        URL: url,
-        PORT: port,
-        USERNAME: username,
-        PASSPHRASE: passphrase,
-        FINGERPRINT: fingerprint,
-        INITIALDIRIN: initialdirin,
-        INITIALDIROUT: initialdirout
-      })
-    )
-    .then((res) => {
-      console.log(res)
-    })
 }
 
 async function getRetailerXMLData(retailer) {
