@@ -1,4 +1,4 @@
-import { client } from './feathersjs-client.js'
+import client from './feathersjs-client.js'
 
 //////TODO:finish implementing this approach----------------------------------------------
 function createXMLDOM(CCCXMLS1MAPPINGS) {
