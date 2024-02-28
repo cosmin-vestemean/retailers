@@ -16,10 +16,6 @@
     <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
   </head>
   <body>
-    <!--import client.js-->
-    <script type="module">
-      import { openTab, getRetailerConfData, getClientConfData } from './client.js'
-    </script>
     <nav class="navbar top" role="navigation" aria-label="main navigation">
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
@@ -390,8 +386,10 @@
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <script type="text/javascript">
-      getRetailerConfData(); 
+    <!--import client.js-->
+    <script type="module">
+      import { openTab, getRetailerConfData, getClientConfData } from './client.js'
+      getRetailerConfData()
       getClientConfData()
       //mimic the click on the first tab
       document.getElementById('defaultOpen').click()
