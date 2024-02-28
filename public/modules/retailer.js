@@ -785,3 +785,23 @@ export async function deleteRow() {
   var rowCount = table.rows.length
   table.deleteRow(rowCount - 1)
 }
+
+export async function loadCommonXSD() {
+  //1.get file from input id="xsdCommonsFile"
+  //2. create dom from file
+  var xsdFile = document.getElementById('xsdCommonsFile').files[0]
+  if (!xsdFile) {
+    alert('Select XSD Commons file')
+    return
+  }
+  console.log('xsdFile', xsdFile)
+
+  //find elements without minOccurs="0"
+  var reader = new FileReader()
+  reader.readAsText(xsdFile)
+  reader.onload = function (e) {
+    var xsd = e.target.result
+    var parser = new DOMParser()
+    xsdCommonsDom = parser.parseFromString(xsd, 'text/xml')
+  }
+}

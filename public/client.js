@@ -2339,26 +2339,6 @@ async function mandatoryFields() {
   }
 }
 
-async function loadCommonXSD() {
-  //1.get file from input id="xsdCommonsFile"
-  //2. create dom from file
-  var xsdFile = document.getElementById('xsdCommonsFile').files[0]
-  if (!xsdFile) {
-    alert('Select XSD Commons file')
-    return
-  }
-  console.log('xsdFile', xsdFile)
-
-  //find elements without minOccurs="0"
-  var reader = new FileReader()
-  reader.readAsText(xsdFile)
-  reader.onload = function (e) {
-    var xsd = e.target.result
-    var parser = new DOMParser()
-    xsdCommonsDom = parser.parseFromString(xsd, 'text/xml')
-  }
-}
-
 var xsdCommonsDom = null
 function showCommonType(type, orderNumber, mandatoryFields, nonMandatoryFields, path) {
   //commons:PartyType => search for PartyType and get mandatory fields and non mandatory fields
@@ -2617,7 +2597,6 @@ export {
   fetchDocsFromS1WS,
   toggleComenziNetrimise,
   mandatoryFields,
-  loadCommonXSD,
   sendAllFacturi,
   toggleFacturiNetrimise,
   copyFromAnotherDocument
