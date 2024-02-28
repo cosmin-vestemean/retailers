@@ -195,6 +195,19 @@ function openTab(evt, tabName) {
   }
   document.getElementById(tabName).style.display = 'block'
   evt.currentTarget.className += ' is-active'
+
+  if (tabName == 'comenzi') {
+    //check id comenziTrimise
+    document.getElementById('comenziTrimise').checked = true
+    toggleComenziNetrimise()
+
+  }
+
+  if (tabName == 'facturi') {
+    //facturiTrimise
+    document.getElementById('facturiTrimise').checked = true
+    toggleFacturiNetrimise()
+  }
 }
 
 function loadFile(event) {
