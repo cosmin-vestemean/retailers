@@ -1,6 +1,6 @@
 import client from './feathersjs-client.js'
 
-export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId) {
+export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody) {
   /*
         response like {
     "success": true,
@@ -293,7 +293,7 @@ async function cheatGetXmlFromS1(findoc) {
   return dom
 }
 
-function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
+function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody) {
   if (!tableBodyId) {
     console.error('tableBodyId is required')
     return
