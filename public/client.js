@@ -28,33 +28,6 @@ async function getRetailerXMLData(retailer) {
   })
 }
 
-//retailer_config section
-async function openTab(evt, tabName) {
-  var i, x, tablinks
-  x = document.getElementsByClassName('content-tab')
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = 'none'
-  }
-  tablinks = document.getElementsByClassName('tab')
-  for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(' is-active', '')
-  }
-  document.getElementById(tabName).style.display = 'block'
-  evt.currentTarget.className += ' is-active'
-
-  if (tabName == 'comenzi') {
-    //check id comenziTrimise
-    document.getElementById('comenziTrimise').checked = true
-    toggleComenziNetrimise()
-  }
-
-  if (tabName == 'facturi') {
-    //facturiTrimise
-    document.getElementById('facturiTrimise').checked = true
-    toggleFacturiNetrimise()
-  }
-}
-
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   return await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
@@ -438,15 +411,16 @@ async function getNDisplayOrders(retailer) {
       //row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
       var filenameCell = row.insertCell()
       filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
-      row.insertCell().innerHTML =
-        '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.XMLDATA + '</textarea>'
+      var xmlDataCell = row.insertCell()
+      xmlDataCell.innerHTML = '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.XMLDATA + '</textarea>'
       //spellcheck="false"
-      row.cells[2].spellcheck = false
-      //row.insertCell().innerHTML = xml.JSONDATA
+      xmlDataCell.spellcheck = false
       //add jdondata no spellcheck
       var jsondataCell = row.insertCell()
       jsondataCell.innerHTML = '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.JSONDATA + '</textarea>'
       jsondataCell.spellcheck = false
+      jsondataCell.style.display = 'none'
+      jsondataCell.classList.add('jsonDataCol')
       var parser = new DOMParser()
       var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
       //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
@@ -771,7 +745,7 @@ async function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
     button.id = row.findoc + '_sendInvoice'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      sendAndMark(row, tr, button.id)
+      sendInvoiceAndMark(row, tr, button.id)
     }
     actions.appendChild(button)
     //add cell trimis
@@ -789,7 +763,7 @@ async function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
         //ask if sure
         var r = confirm('Resend invoice?')
         if (r == true) {
-          sendAndMark(row, tr, button.id, true)
+          sendInvoiceAndMark(row, tr, button.id, true)
         }
       }
       trimis.appendChild(resend)
@@ -799,7 +773,7 @@ async function displayDocsForRetailers(result, trdr, sosource, fprms, series) {
   })
 }
 
-async function sendAndMark(row, tr, elemId, overrideTrimis = false) {
+async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
@@ -946,6 +920,64 @@ async function cheatGetXmlFromS1(findoc) {
   return dom
 }
 
+async function sendAllFacturi() {
+  alert('To be implemented')
+}
+
+//create function to close bulma modal on escape key
+//from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
+document.addEventListener('keydown', function (event) {
+  var modal = document.getElementById('commonsDigging')
+  if (event.key == 'Escape') {
+    modal.classList.remove('is-active')
+  }
+})
+
+//if user refreshes page, then message alert localStorageRetailer
+window.onload = function () {
+  var params = {}
+  params['query'] = {}
+  params['query']['sqlQuery'] =
+    'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
+  client
+    .service('getDataset')
+    .find(params)
+    .then((res) => {
+      if (res.data) {
+        //alert(res.data)
+        //get id of div id="retailerName"
+        var retailerName = document.getElementById('retailerName')
+        retailerName.innerHTML = res.data
+      }
+    })
+}
+
+async function openTab(evt, tabName) {
+  var i, x, tablinks
+  x = document.getElementsByClassName('content-tab')
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = 'none'
+  }
+  tablinks = document.getElementsByClassName('tab')
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(' is-active', '')
+  }
+  document.getElementById(tabName).style.display = 'block'
+  evt.currentTarget.className += ' is-active'
+
+  if (tabName == 'comenzi') {
+    //check id comenziTrimise
+    document.getElementById('comenziTrimise').checked = true
+    toggleComenziNetrimise()
+  }
+
+  if (tabName == 'facturi') {
+    //facturiTrimise
+    document.getElementById('facturiTrimise').checked = true
+    toggleFacturiNetrimise()
+  }
+}
+
 async function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
   var table = document.getElementById('xmlTableBody')
@@ -987,41 +1019,8 @@ async function toggleComenziNetrimise() {
   }
 }
 
-//create function to close bulma modal on escape key
-//from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
-document.addEventListener('keydown', function (event) {
-  var modal = document.getElementById('commonsDigging')
-  if (event.key == 'Escape') {
-    modal.classList.remove('is-active')
-  }
-})
-
-//if user refreshes page, then message alert localStorageRetailer
-window.onload = function () {
-  var params = {}
-  params['query'] = {}
-  params['query']['sqlQuery'] =
-    'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
-  client
-    .service('getDataset')
-    .find(params)
-    .then((res) => {
-      if (res.data) {
-        //alert(res.data)
-        //get id of div id="retailerName"
-        var retailerName = document.getElementById('retailerName')
-        retailerName.innerHTML = res.data
-      }
-    })
-}
-
-async function sendAllFacturi() {
-  alert('To be implemented')
-}
-
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
 //netrimise means <td class="trimis"> contains <i class="fas fa-xl fa-times-circle has-text-danger">
-
 async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
@@ -1065,6 +1064,24 @@ async function toggleFacturiNetrimise() {
     }
   }
 }
+
+//input type="checkbox" id="jsonData" show/hide jsonDataCol class
+function showJsonData() {
+  var jsonData = document.getElementById('jsonData')
+  var jsonDataCol = document.getElementsByClassName('jsonDataCol')
+  if (jsonData.checked) {
+    for (var i = 0; i < jsonDataCol.length; i++) {
+      jsonDataCol[i].style.display = ''
+    }
+  } else {
+    for (var i = 0; i < jsonDataCol.length; i++) {
+      jsonDataCol[i].style.display = 'none'
+    }
+  }
+}
+
+var jsonDataChk = document.getElementById('jsonData')
+jsonDataChk.addEventListener('change', showJsonData)
 
 export {
   setRetailerId,
