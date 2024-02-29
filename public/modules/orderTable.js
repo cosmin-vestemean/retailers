@@ -177,7 +177,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
   })
 }
 
-export async function getValFromXML(xml, node) {
+export function getValFromXML(xml, node) {
     //Xpath
     var dom = new DOMParser().parseFromString(xml, 'text/xml')
     var doc = dom.documentElement
