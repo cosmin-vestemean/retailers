@@ -942,12 +942,15 @@ async function cheatGetXmlFromS1(findoc) {
 async function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
   var table = document.getElementById('xmlTableBody')
+  var nrTrimise = 0
+  var totalCOmenzi = table.getElementsByTagName('tr').length
   if (comenziTrimise.checked) {
     //hide rows with <i class="fas fa-xl fa-check-circle has-text-success"></i> or all
     var rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < rows.length; i++) {
+    for (var i = 0; i < totalCOmenzi; i++) {
       if (rows[i].innerHTML.indexOf('fa-check-circle') > -1) {
         rows[i].style.display = 'none'
+        nrTrimise++
       }
     }
   } else {
@@ -956,6 +959,18 @@ async function toggleComenziNetrimise() {
     for (var i = 0; i < rows.length; i++) {
       rows[i].style.display = ''
     }
+  }
+  if (totalCOmenzi > 0 && nrTrimise == totalCOmenzi) {
+    //alert('Toate comenzile au fost trimise')
+    //xmlTableBody if table has rows, even if they are hidden
+    var tr = table.insertRow()
+    var td = tr.insertCell()
+    td.innerHTML = 'Toate comenzile au fost trimise'
+    td.colSpan = 6
+    td.style.textAlign = 'center'
+    td.style.color = 'green'
+    td.style.fontWeight = 'bold'
+    td.style.fontSize = '20px'
   }
 }
 
@@ -997,6 +1012,8 @@ async function sendAllFacturi() {
 async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
+  const nrFacturi = table.getElementsByTagName('tr').length
+  const nrTrimise = 0
   if (facturiTrimise.checked) {
     //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
     var rows = table.getElementsByTagName('tr')
@@ -1006,6 +1023,7 @@ async function toggleFacturiNetrimise() {
       //contains <i class="fas fa-xl fa-check-circle has-text-danger">
       if (cell.innerHTML.includes('fa-check-circle')) {
         row.style.display = 'none'
+        nrTrimise++
       }
     }
   } else {
@@ -1014,6 +1032,19 @@ async function toggleFacturiNetrimise() {
       var row = rows[i]
       row.style.display = ''
     }
+  }
+
+  if (nrFacturi > 0 && nrTrimise == nrFacturi) {
+    //alert('Toate facturile au fost trimise')
+    //write on the facturiTableBody if table has rows, even if they are hidden
+    var tr = table.insertRow()
+    var td = tr.insertCell()
+    td.innerHTML = 'Toate facturile au fost trimise'
+    td.colSpan = 6
+    td.style.textAlign = 'center'
+    td.style.color = 'green'
+    td.style.fontWeight = 'bold'
+    td.style.fontSize = '20px'
   }
 }
 
