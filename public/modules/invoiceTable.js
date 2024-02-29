@@ -18,7 +18,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
 
   const tbody = document.getElementById(tableBodyId)
   //validate params
-  validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody)
+  validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId)
 
   tbody.innerHTML = ''
 
@@ -293,7 +293,8 @@ async function cheatGetXmlFromS1(findoc) {
   return dom
 }
 
-function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody) {
+function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
+  const tbody = document.getElementById(tableBodyId)
   if (!tableBodyId) {
     console.error('tableBodyId is required')
     return
