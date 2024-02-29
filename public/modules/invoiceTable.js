@@ -324,7 +324,9 @@ function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
     var tr = tbody.insertRow()
     var td = tr.insertCell()
     td.innerHTML = 'No data'
-    td.className = 'has-text-danger has-text-centered has-text-weight-bold has-text-xl'
+    td.className = 'has-text-danger has-text-centered has-text-weight-bold'
+    //font 20px
+    td.style.fontSize = '20px'
     td.colSpan = 6
     return
   }
