@@ -122,7 +122,7 @@
     <script type="module">
       import {
         openTab,
-        fetchXMLFromRemoteServer,
+        getRemoteXmlListToErp,
         getNDisplayS1Docs,
         getNDisplayOrders,
         toggleComenziNetrimise,
@@ -131,7 +131,7 @@
       } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
-        fetchXMLFromRemoteServer()
+        getRemoteXmlListToErp()
       })
       //preluareFacturiBtn
       document.getElementById('preluareFacturiBtn').addEventListener('click', function () {

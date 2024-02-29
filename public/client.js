@@ -11,7 +11,7 @@ async function setRetailerId(trdr, urlLogo) {
   console.log('Logo url set to ', localStorage.getItem('logo_retailer'))
 }
 
-async function getRetailerXMLList(retailer) {
+async function getXmlListFromErp(retailer) {
   return new Promise((resolve, reject) => {
     client
       .service('CCCSFTPXML')
@@ -30,7 +30,7 @@ async function getRetailerXMLList(retailer) {
   })
 }
 
-async function fetchXMLFromRemoteServer() {
+async function getRemoteXmlListToErp() {
   //1. localStorage.getItem('trdr_retailer')
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
@@ -71,8 +71,8 @@ async function fetchXMLFromRemoteServer() {
 
 async function getNDisplayOrders(retailer) {
   //localStorage.getItem('trdr_retailer')
-  await getRetailerXMLList(retailer).then((data) => {
-    console.log('getRetailerXMLList', data)
+  await getXmlListFromErp(retailer).then((data) => {
+    console.log('getXmlListFromErp', data)
     displayOrdersForRetailers(data, retailer, 'xmlTableBody')
   })
 }
@@ -269,7 +269,7 @@ async function toggleFacturiNetrimise() {
 export {
   setRetailerId,
   openTab,
-  fetchXMLFromRemoteServer,
+  getRemoteXmlListToErp,
   getNDisplayOrders,
   getNDisplayS1Docs,
   toggleComenziNetrimise,
