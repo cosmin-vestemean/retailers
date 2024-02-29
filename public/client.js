@@ -1013,7 +1013,7 @@ async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
   const nrFacturi = table.getElementsByTagName('tr').length
-  const nrTrimise = 0
+  var nrTrimise = 0
   if (facturiTrimise.checked) {
     //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
     var rows = table.getElementsByTagName('tr')
