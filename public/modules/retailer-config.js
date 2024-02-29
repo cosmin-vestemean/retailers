@@ -1,840 +1,840 @@
 import client from './feathersjs-client.js'
 
 //////TODO:finish implementing this approach----------------------------------------------
-function createXMLDOM(CCCXMLS1MAPPINGS) {
-  //create xml dom
-  var xmlDom = document.implementation.createDocument('', '', null)
-  //root node <= first node from xml mappings split by '/'
-  var root = xmlDom.createElement(CCCXMLS1MAPPINGS[0].XMLNODE.split('/')[0])
-  xmlDom.appendChild(root)
-  //add xml elements to xml dom
-  CCCXMLS1MAPPINGS.forEach((item) => {
-    var xmlNodes = item.XMLNODE.split('/')
-    //add xml elements to xml dom
-    var root = xmlDom.documentElement //Order or...
-    for (var i = 1; i < xmlNodes.length; i++) {
-      var node
-      //verify if node already exists
-      if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
-        node = root.getElementsByTagName(xmlNodes[i])[0]
-        root.appendChild(node)
-        root = node
-      } else {
-        try {
-          node = xmlDom.createElement(xmlNodes[i])
-          //give it a dummy value in order to be able to append it; but just for the last node
-          if (i == xmlNodes.length - 1) node.textContent = 'dummy'
-          root.appendChild(node)
-          root = node
-        } catch (err) {
-          console.log(err)
-        }
-      }
-    }
-  })
-
-  return xmlDom
-}
-
-async function populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData) {
-  //scenariul 2
-  //match xml nodes with S1 Table 1 and S1 Field 1
-  const mainNode = 'DXInvoice'
-  var x = xmlDom.getElementsByTagName(mainNode)
-  var obj = xml2json(x[0])
-  console.log('xml2json', obj)
-  //get node name for lines; select id "delimitareLinieDocument"
-  const linesNode = 'InvoiceLine'
-  //cut obj in two parts: header and lines; lines are in an array (obj.OrderLine)
-  var header = {}
-  var lines = {}
-  for (var i in obj) {
-    if (i == linesNode) {
-      lines[i] = obj[i]
-    } else {
-      header[i] = obj[i]
-    }
-  }
-  console.log('header', header)
-  console.log('lines', lines)
-  var headerArrayOfObjects = []
-  var linesArrayOfObjects = []
-  recurse(header, [], mainNode, null, null, headerArrayOfObjects)
-  recurse(lines, [], mainNode, null, null, linesArrayOfObjects)
-
-  await mapS1ObjDataToArrayOfObjects(xmlDom, S1ObjData, CCCXMLS1MAPPINGS, headerArrayOfObjects)
-
-  const S1Table1 = 'ITELINES'
-  const S1ObjDataLines = S1ObjData[S1Table1]
-  //map S1ObjDataLines to linesArrayOfObjects through CCCXMLS1MAPPINGS
-  S1ObjDataLines.forEach(async (line) => {
-    //create a new xml node for each line by cloning the first line node
-    //for the first line select the first lineNode
-    //for the next lines clone and append the first lineNode
-    if (S1ObjDataLines.indexOf(line) == 0) {
-      var node = xmlDom.getElementsByTagName(linesNode)[0]
-    } else {
-      var node = xmlDom.getElementsByTagName(linesNode)[0].cloneNode(true)
-      //add node to xmlDom
-      xmlDom.getElementsByTagName(mainNode)[0].appendChild(node)
-    }
-    //map line to linesArrayOfObjects
-    await mapS1ObjDataToArrayOfObjects(xmlDom, { ITELINES: [line] }, CCCXMLS1MAPPINGS, linesArrayOfObjects)
-  })
-
-  //alert(xmlDom.getElementsByTagName(mainNode)[0].innerHTML)
-}
-
-async function mapS1ObjDataToArrayOfObjects(xmlDom, S1ObjData, CCCXMLS1MAPPINGS, arrayOfObjects) {
-  console.log({ S1ObjData, CCCXMLS1MAPPINGS, arrayOfObjects })
-  var arrays = []
-  arrayOfObjects.forEach(async (item) => {
-    //flatten item xmlPath so as to compare it with CCCXMLS1MAPPINGS
-    var xmlPath =
-      item.parent && item.parent.length > 0
-        ? item.root + '/' + item.parent.join('/') + '/' + item.i
-        : item.root + '/' + item.i
-    console.log('xmlPath', xmlPath)
-    CCCXMLS1MAPPINGS.forEach(async (item2) => {
-      if (item2.XMLNODE == xmlPath) {
-        console.log('pair found', item2)
-        console.log('S1ObjData[item2.S1TABLE1]', S1ObjData[item2.S1TABLE1])
-        //set node value
-        if (S1ObjData[item2.S1TABLE1]) {
-          if (S1ObjData[item2.S1TABLE1].length > 1) {
-            arrays.push({
-              mapping: item2,
-              iterations: S1ObjData[item2.S1TABLE1].length,
-              S1Data: S1ObjData[item2.S1TABLE1]
-            })
-          } else {
-            var node = findNodeInXMLDOM(xmlDom, item2.XMLNODE)
-            //if found, set node value else create node and set value
-            if (node) {
-              var value = S1ObjData[item2.S1TABLE1][0][item2.S1FIELD1]
-              console.log('node', node)
-              console.log('S1ObjData[item2.S1TABLE1]', S1ObjData[item2.S1TABLE1])
-              //check for 123|RON and get RON
-              if (value && value.indexOf('|') > -1) {
-                value = value.split('|')[1]
-              }
-              //check for 2023-09-20 00:00:00 and get 2023-09-20
-              //only for strings resambling dates
-              if (value && value.indexOf('-') > -1 && value.indexOf(':') > -1) {
-                value = value.split(' ')[0]
-              }
-              node.textContent = value
-            } else {
-              //create node and set value
-              console.log('create node and set value')
-              var node = xmlDom.createElement(item2.XMLNODE.split('/')[item2.XMLNODE.split('/').length - 1])
-              node.textContent = S1ObjData[item2.S1TABLE1][0][item2.S1FIELD1]
-              findNodeInXMLDOM(xmlDom, item2.XMLNODE).parentNode.appendChild(node)
-            }
-          }
-        } else {
-          if (item2.SQL) {
-            console.log('has SQL', item2.SQL)
-            //set node value
-            //if sql SELECT PERCNT FROM VAT WHERE VAT={S1Table1.S1Field1} or SELECT PERCNT FROM VAT WHERE VAT={S1Table1.S1Field1} and VAT2={S1Table1.S1Field2}
-            //then replace {S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1]
-            //and {S1Table1.S1Field2} with S1ObjData[S1Table1][0][S1Field2]
-            //then execute the query and set node value
-            //else execute the query and set node value
-            //set params' query
-            var params = {}
-            params['query'] = {}
-            //replace {S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1]
-            //and {S1Table1.S1Field2} with S1ObjData[S1Table1][0][S1Field2]
-            //parse and replace {s1table1.s1field1} with S1ObjData[item.S1TABLE1][0][item.S1FIELD1] or {s1table1.s1field2} with S1ObjData[item.S1TABLE2][0][item.S1FIELD2]
-            var sqlQuery = item2.SQL
-            var regex = /{([^}]+)}/g
-            var matches = sqlQuery.match(regex)
-            console.log('matches', matches)
-            if (matches) {
-              matches.forEach((match) => {
-                try {
-                  var s1table = match.split('.')[0].replace('{', '')
-                  var s1field = match.split('.')[1].replace('}', '')
-                  //upper case
-                  s1table = s1table.toUpperCase()
-                  s1field = s1field.toUpperCase()
-                  console.log('s1table', s1table)
-                  console.log('s1field', s1field)
-                  console.log('match', match)
-                  console.log('S1ObjData[s1table]', S1ObjData[item2[s1table]])
-                  console.log('S1ObjData[s1table][0]', S1ObjData[item2[s1table]][0])
-                  console.log('S1ObjData[s1table][0][s1field]', S1ObjData[item2[s1table]][0][item2[s1field]])
-                  sqlQuery = sqlQuery.replace(match, S1ObjData[item2[s1table]][0][item2[s1field]])
-                } catch (err) {
-                  console.log(sqlQuery, err)
-                }
-              })
-            }
-            console.log('sqlQuery', sqlQuery)
-            params['query']['sqlQuery'] = sqlQuery
-
-            var node = findNodeInXMLDOM(xmlDom, item2.XMLNODE)
-            //if found, set node value else create node and set value
-            if (node) {
-              var res = await client.service('getDataset').find(params)
-              console.log('getDataset for ' + item2.XMLNODE, res)
-              if (res.data) {
-                node.textContent = res.data
-              }
-            } else {
-              //create node and set value
-              console.log('create node and set value')
-              var node = xmlDom.createElement(item2.XMLNODE.split('/')[item2.XMLNODE.split('/').length - 1])
-              var res = await client.service('getDataset').find(params)
-              console.log('getDataset for ' + item2.XMLNODE, res.data)
-              if (res.data) {
-                node.textContent = res.data
-              }
-              findNodeInXMLDOM(xmlDom, item2.XMLNODE).parentNode.appendChild(node)
-            }
-          }
-        }
-      }
-    })
-  })
-
-  if (arrays.length > 0) {
-    console.log('arrays', arrays)
-
-    //zoom out from array to whole sequence
-    var sequences = []
-    var lastPath = ''
-    arrays.forEach((obj) => {
-      //find in CCCXMLS1MAPPINGS the all nodes sharing the shortest path
-      var xmlNodes = obj.mapping.XMLNODE.split('/')
-      path = xmlNodes.slice(0, xmlNodes.length - 1).join('/')
-      if (path != lastPath) {
-        console.log('path', path)
-
-        var alike = []
-        CCCXMLS1MAPPINGS.forEach((mapping) => {
-          if (mapping.XMLNODE.includes(path)) {
-            alike.push(mapping)
-          }
-        })
-        sequences.push({ path: path, mappings: alike, iterations: obj.iterations, S1Data: obj.S1Data })
-        lastPath = path
-      }
-    })
-
-    console.log('sequences', sequences)
-
-    //map sequences to S1ObjData through CCCXMLS1MAPPINGS
-    //map sequences to xmlDom
-    //for each sequences[i].path, loop sequences[i].iterations times and find in S1ObjData the corresponding values
-    //then add them to xmlDom
-    sequences.forEach((sequence) => {
-      var seqPath = sequence.path
-      var seqMappings = sequence.mappings
-      var seqIterations = sequence.iterations
-      var seqData = sequence.S1Data
-      var refNode = findNodeInXMLDOM(xmlDom, seqPath)
-      console.log('refNode', refNode)
-      var newChild = refNode.cloneNode(true)
-      var sequenceNewNodes = []
-      seqData.forEach((item) => {
-        seqMappings.forEach((mapping) => {
-          console.log('mapping', mapping)
-          console.log('item', item)
-          console.log('seqPath', seqPath)
-          //substract seqPath from mapping.XMLNODE
-          var partialPath = mapping.XMLNODE.replace(seqPath + '/', '')
-          console.log('partialPath', partialPath)
-          splited = partialPath.split('/')
-          console.log('splited', splited)
-          console.log('splited root', partialPath.split('/')[0])
-          var rootExists = findRootInSequence([...sequenceNewNodes], partialPath.split('/')[0])
-          console.log('rootExists', rootExists)
-
-          if (!rootExists) {
-            //create new node
-            var newNode = xmlDom.createElement(partialPath.split('/')[0])
-            //add node to sequenceNewNodes
-            sequenceNewNodes.push(newNode)
-          } else {
-            //find node in sequenceNewNodes
-            var found = false
-            sequenceNewNodes.every((item2) => {
-              if (item2.nodeName == partialPath.split('/')[0]) {
-                found = true
-                console.log('found', item2.nodeName)
-                //adauga restul nodurilor
-                var node = item2
-                for (var i = 1; i < splited.length; i++) {
-                  //daca nu exista nodul, creeaza-l
-                  if (node.getElementsByTagName(splited[i]).length == 0) {
-                    var newNode = xmlDom.createElement(splited[i])
-                    node.appendChild(newNode)
-                    node = newNode
-                  }
-                }
-                console.log('nod ierarhic', node)
-                return false
-              }
-              return true
-            })
-          }
-        })
-        console.log('sequenceNewNodes', sequenceNewNodes)
-        sequenceNewNodes.forEach((item) => {
-          console.log('itemToBeAppended', item)
-          newChild.appendChild(item)
-        })
-        console.log('newChild', newChild)
-        refNode.parentNode.insertBefore(newChild, refNode.nextSibling)
-        newChild = null
-        newChild = refNode.cloneNode(true)
-        sequenceNewNodes = []
-        sequenceNewNodes.push(newChild)
-        console.log('sequenceNewNodes', sequenceNewNodes)
-      })
-    })
-  }
-}
-
-function findRootInSequence(seqArr, nodeName) {
-  console.log('seqArr', seqArr)
-  console.log('nodeName', nodeName)
-  var found = false
-  seqArr.every((item) => {
-    if (item.nodeName == nodeName) {
-      found = true
-      return false
-    }
-    return true
-  })
-  return found
-}
-
-function findNodeInXMLDOM(xmlDom, xmlNode) {
-  var xmlNodes = xmlNode.split('/')
-  var root = xmlDom.documentElement
-  //find node in xmlDom, but do not change ierachy of nodes
-  for (var i = 0; i < xmlNodes.length; i++) {
-    var node
-    if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
-      //first found node
-      //node = root.getElementsByTagName(xmlNodes[i])[0]
-      //last found node
-      node = root.getElementsByTagName(xmlNodes[i])[root.getElementsByTagName(xmlNodes[i]).length - 1]
-      root.appendChild(node)
-      root = node
-    }
-  }
-
-  return node
-}
-
-async function populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS) {
-  //scenariul 1
-  CCCXMLS1MAPPINGS.forEach(async (item) => {
-    if (item.SQL && !item.SQL.includes('{')) {
-      //set node value
-      var node = findNodeInXMLDOM(xmlDom, item.XMLNODE)
-      var res = await client.service('getDataset').find({ query: { sqlQuery: item.SQL } })
-      console.log('getDataset', res)
-      if (res.data) {
-        node.textContent = res.data
-      }
-    }
-  })
-}
-
-async function populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData) {
-  //scenariul 3
-  CCCXMLS1MAPPINGS.forEach(async (item) => {
-    if (item.SQL && item.SQL.includes('{')) {
-      //set node value
-      var node = findNodeInXMLDOM(xmlDom, item.XMLNODE)
-      //parse and replace {s1table1.s1field1} with S1ObjData[item.S1TABLE1][0][item.S1FIELD1] or {s1table1.s1field2} with S1ObjData[item.S1TABLE2][0][item.S1FIELD2]
-      var sqlQuery = item.SQL
-      var regex = /{([^}]+)}/g
-      var matches = sqlQuery.match(regex)
-      console.log('matches', matches)
-      matches.forEach(async (match) => {
-        var s1table = match.split('.')[0].replace('{', '')
-        var s1field = match.split('.')[1].replace('}', '')
-        //upper case
-        s1table = s1table.toUpperCase()
-        s1field = s1field.toUpperCase()
-        console.log('s1table', s1table)
-        console.log('s1field', s1field)
-        console.log('match', match)
-        try {
-          console.log('item[s1table]]', item[s1table])
-          console.log('item[s1field]]', item[s1field])
-          try {
-            var val = S1ObjData[item[s1table]][0][item[s1field]]
-            //val could be 1|Buc
-            //if val is 1|Buc, then val = 1
-            if (val && val.indexOf('|') > -1) {
-              val = val.split('|')[0]
-            }
-            sqlQuery = sqlQuery.replace(match, val)
-            console.log('actual value', val)
-          } catch (err) {
-            console.log(err)
-            console.log(S1ObjData[item[s1table]])
-          }
-          console.log('sqlQuery', sqlQuery)
-          var res = await client.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
-          console.log('getDataset', res)
-          if (res.data) {
-            node.textContent = res.data
-          }
-        } catch (err) {
-          console.log(err)
-        }
-      })
-    }
-  })
-}
-
-async function createXML(findoc, trdr, sosource, fprms, series) {
-  async function createLOCATEINFO(trdr, sosource, fprms, series) {
-    //scenariul 2
-    //get distinct S1TABLE1, for grouping data
-    //get xml mappings for trdr, sosource, fprms, series from cccdocumentes1mappings
-    //get CCCDOCUMENTES1MAPPINGS for trdr_retailer, source, fprms, series
-    var res = await client
-      .service('CCCDOCUMENTES1MAPPINGS')
-      .find({ query: { TRDR_RETAILER: trdr, SOSOURCE: sosource, FPRMS: fprms, SERIES: series } })
-    var CCCDOCUMENTES1MAPPINGS = res.data[0].CCCDOCUMENTES1MAPPINGS
-    //get CCCXMLS1MAPPINGS for CCCDOCUMENTES1MAPPINGS
-    var res = await client
-      .service('CCCXMLS1MAPPINGS')
-      .find({ query: { CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS } })
-    console.log('CCCXMLS1MAPPINGS', res)
-    var CCCXMLS1MAPPINGS = res.data
-    var distinctS1TABLE1 = []
-    CCCXMLS1MAPPINGS.forEach((item) => {
-      if (item.S1TABLE1 && distinctS1TABLE1.indexOf(item.S1TABLE1) == -1) {
-        distinctS1TABLE1.push(item.S1TABLE1)
-      }
-    })
-
-    var distinctS1TABLE2 = []
-    CCCXMLS1MAPPINGS.forEach((item) => {
-      if (item.S1TABLE2 && distinctS1TABLE2.indexOf(item.S1TABLE2) == -1) {
-        distinctS1TABLE2.push(item.S1TABLE2)
-      }
-    })
-
-    //create LOCATEINFO
-    var LOCATEINFO = ''
-    distinctS1TABLE1.forEach((item) => {
-      var S1TABLE1 = item
-      var S1FIELD1 = ''
-      CCCXMLS1MAPPINGS.forEach((item) => {
-        if (item.S1TABLE1 && item.S1FIELD1 && item.S1TABLE1 == S1TABLE1) {
-          //if item.S1FIELD1 is not already in S1FIELD1
-          const split = S1FIELD1.split(',')
-          var wordExists = false
-          split.every((item2) => {
-            if (item2 == item.S1FIELD1) {
-              wordExists = true
-              return false
-            }
-            return true
-          })
-          if (!wordExists) {
-            S1FIELD1 += item.S1FIELD1 + ','
-          }
-        }
-      })
-
-      S1FIELD1 = S1FIELD1.slice(0, -1)
-      LOCATEINFO += S1TABLE1 + ':' + S1FIELD1 + ';'
-    })
-
-    distinctS1TABLE2.forEach((item) => {
-      var S1TABLE2 = item
-      var S1FIELD2 = ''
-      CCCXMLS1MAPPINGS.forEach((item) => {
-        if (item.S1TABLE2 && item.S1FIELD2 && item.S1TABLE2 == S1TABLE2) {
-          //if item.S1FIELD2 is not already in S1FIELD2
-          const split = S1FIELD2.split(',')
-          var wordExists = false
-          split.every((item2) => {
-            if (item2 == item.S1FIELD2) {
-              wordExists = true
-              return false
-            }
-            return true
-          })
-          if (!wordExists) {
-            S1FIELD2 += item.S1FIELD2 + ','
-          }
-        }
-      })
-
-      S1FIELD2 = S1FIELD2.slice(0, -1)
-      //check if locateinfo contains S1TABLE2 already
-      var split = LOCATEINFO.split(';')
-      var tableExists = false
-      split.every((item) => {
-        if (item.split(':')[0] == S1TABLE2) {
-          tableExists = true
-          return false
-        }
-        return true
-      })
-      if (!tableExists) {
-        LOCATEINFO += S1TABLE2 + ':' + S1FIELD2 + ';'
-      } else {
-        //add S1FIELD2 to LOCATEINFO
-        split.every((item, index) => {
-          if (item.split(':')[0] == S1TABLE2) {
-            split[index] = item + ',' + S1FIELD2
-            return false
-          }
-          return true
-        })
-        LOCATEINFO = split.join(';')
-      }
-    })
-
-    LOCATEINFO = LOCATEINFO.slice(0, -1)
-
-    return { LOCATEINFO: LOCATEINFO, CCCXMLS1MAPPINGS: CCCXMLS1MAPPINGS }
-  }
-  var ret = await createLOCATEINFO(trdr, sosource, fprms, series)
-  var LOCATEINFO = ret.LOCATEINFO
-  var CCCXMLS1MAPPINGS = ret.CCCXMLS1MAPPINGS
-  //sort CCCXMLS1MAPPINGS by XMLORDER
-  CCCXMLS1MAPPINGS.sort((a, b) => {
-    return a.XMLORDER - b.XMLORDER
-  })
-
-  console.log('LOCATEINFO', LOCATEINFO)
-  console.log('CCCXMLS1MAPPINGS', CCCXMLS1MAPPINGS)
-
-  //get data from S1; LOCATEINFO  results from reading data from xml mappings
-  var S1Obj = await client.service('getS1ObjData').find({
-    query: {
-      KEY: findoc,
-      clientID: await client
-        .service('connectToS1')
-        .find()
-        .then((result) => {
-          return result.token
-        }),
-      appID: '1001',
-      OBJECT: 'SALDOC',
-      FORM: 'EFIntegrareRetailers',
-      LOCATEINFO: LOCATEINFO
-    }
-  })
-
-  console.log('S1ObjData(LocateInfo)', S1Obj)
-  const S1ObjData = S1Obj.data
-
-  var header = 'DXInvoice/Invoice/'
-  var lines = 'DXInvoice/InvoiceLine/'
-
-  var CCCXMLS1MAPPINGS_HEADER = []
-  var CCCXMLS1MAPPINGS_LINES = []
-  CCCXMLS1MAPPINGS.forEach((item) => {
-    if (item.XMLNODE.includes(header)) {
-      CCCXMLS1MAPPINGS_HEADER.push(item)
-    }
-    if (item.XMLNODE.includes(lines)) {
-      CCCXMLS1MAPPINGS_LINES.push(item)
-    }
-  })
-
-  console.log('CCCXMLS1MAPPINGS_HEADER', CCCXMLS1MAPPINGS_HEADER)
-  console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
-
-  //header
-  var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData)
-
-  //create xml dom
-  var xmlDomHeader = document.implementation.createDocument('', '', null)
-  var root = 'DXInvoice'
-  var root = xmlDomHeader.createElement(root)
-  xmlDomHeader.appendChild(root)
-
-  xmlDomHeader = createDomPart(_HEADER, xmlDomHeader)
-  console.log('xmlDomHeader', xmlDomHeader)
-
-  //lines
-  //S1ObjData but without ITELINES
-  var S1ObjDataNoITELINES = {}
-  Object.keys(S1ObjData).forEach((key) => {
-    if (key != 'ITELINES') {
-      S1ObjDataNoITELINES[key] = S1ObjData[key]
-    }
-  })
-  var S1ITELINES = S1ObjData['ITELINES']
-  var xmlDomLines = []
-  S1ITELINES.forEach(async (line) => {
-    var currLine = { ITELINES: [line] }
-    //add currLine to S1ObjDataNoITELINES
-    var S1ObjDataNoITELINES_currLine = Object.assign({}, S1ObjDataNoITELINES, currLine)
-    console.log('currLine', currLine)
-    joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine).then((part) => {
-      console.log('part', part)
-      var xmlDomLine = document.implementation.createDocument('', '', null)
-      var root = 'DXInvoice'
-      var root = xmlDomLine.createElement(root)
-      xmlDomLine.appendChild(root)
-      xmlDomLine = createDomPart(part, xmlDomLine)
-      xmlDomLines.push(xmlDomLine)
-    })
-  })
-
-  //wait until xmlDomLines is populated, meaning xmlDomLines.length == S1ITELINES.length
-  while (xmlDomLines.length < S1ITELINES.length) {
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-
-  console.log('xmlDomLines', xmlDomLines)
-
-  //take xmlDomHeader and xmlDomLines and merge them into one xmlDom
-  var xmlDom = xmlDomHeader
-  xmlDomLines.forEach((item) => {
-    var xmlNodes = item.documentElement.childNodes
-    for (var i = 0; i < xmlNodes.length; i++) {
-      xmlDom.documentElement.appendChild(xmlNodes[i])
-    }
-  })
-
-  console.log('xmlDom', xmlDom)
-
-  //return DXInvoice from document
-  var xml = xmlDom.getElementsByTagName('DXInvoice')[0].outerHTML
-
-  return { dom: xml, trimis: false }
-
-  async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
-    var _PART = []
-    CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
-      item.SQL = item.SQL.trim()
-      var o = {}
-      o.xmlNode = item.XMLNODE
-      o.table1 = item.S1TABLE1 || null
-      o.field1 = item.S1FIELD1 || null
-      if (item.S1TABLE1 && item.S1FIELD1) {
-        possibleArray = S1ObjData[item.S1TABLE1]
-        if (possibleArray && possibleArray.length == 1) {
-          o.value1 = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || 'n/a'
-        } else if (possibleArray && possibleArray.length > 1) {
-          o.value1 = []
-          possibleArray.forEach((item2) => {
-            o.value1.push(item2[item.S1FIELD1])
-          })
-        } else {
-          o.value1 = 'n/a'
-        }
-        if (o.value1 && o.value1.indexOf('|') > -1) {
-          o.value1 = o.value1.split('|')[0]
-        }
-        //if o.value1 is an arrat then check every item for | and split it
-        if (Array.isArray(o.value1)) {
-          o.value1.forEach((item2, index) => {
-            if (item2.indexOf('|') > -1) {
-              o.value1[index] = item2.split('|')[0]
-            }
-          })
-        }
-        o.value = o.value1
-      } else {
-        o.value1 = 'n/a'
-        o.value = 'n/a'
-      }
-      if (item.SQL == '') {
-        //...
-      } else {
-        item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
-        o.table2 = item.S1TABLE2 || null
-        o.field2 = item.S1FIELD2 || null
-        o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
-        o.sql = item.SQL
-        var sqlQuery = item.SQL
-        if (o.value2 && o.value2.indexOf('|') > -1) {
-          o.value2 = o.value2.split('|')[0]
-        }
-        if (item.SQL.includes('{S1Table1.S1Field1}')) {
-          sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', o.value1)
-        }
-
-        if (item.SQL.includes('{S1Table2.S1Field2}')) {
-          sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', o.value2)
-        }
-
-        o.sqlQuery = sqlQuery
-        //value = await client.service('getDataset').find(params)
-        var params = {}
-        params['query'] = {}
-        params['query']['sqlQuery'] = sqlQuery
-        var res = await client.service('getDataset').find(params)
-        console.log('sqlQuery', sqlQuery, 'queryResponse', res)
-        if (res.data) {
-          //for xml path ('') [1,2,3]
-          if (res.data.indexOf('[') > -1) {
-            o.value = JSON.parse(res.data)
-          } else {
-            o.value = res.data
-          }
-        }
-      }
-      _PART.push(o)
-    })
-
-    //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
-    while (_PART.length < CCCXMLS1MAPPINGS_PART.length) {
-      await new Promise((resolve) => setTimeout(resolve, 100))
-    }
-
-    //sort _HEADER by xmlNode alphabetically
-    /* _PART.sort((a, b) => {
-      var txtA = a.xmlNode.toUpperCase()
-      var txtB = b.xmlNode.toUpperCase()
-      return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
-    }) */
-
-    return _PART
-  }
-
-  function createDomPart(_PART, xmlDom) {
-    _PART.forEach((item) => {
-      console.log({ xml: item.xmlNode, value: item.value })
-      var xmlNodes = item.xmlNode.split('/')
-      //add xml elements to xml dom
-      var root = xmlDom.documentElement
-      for (var i = 1; i < xmlNodes.length; i++) {
-        var node
-        var existingElements = root.getElementsByTagName(xmlNodes[i])
-        //verify if node already exists
-        if (existingElements.length > 0) {
-          node = existingElements[existingElements.length - 1]
-          root.appendChild(node)
-          root = node
-        } else {
-          try {
-            node = xmlDom.createElement(xmlNodes[i])
-            //give it a dummy value in order to be able to append it; but just for the last node
-            if (i == xmlNodes.length - 1) node.textContent = item.value
-            root.appendChild(node)
-            root = node
-          } catch (err) {
-            console.log(err)
-          }
-        }
-      }
-    })
-
-    //find in _HEADER item.value as array
-    var whatToReplace = []
-    _PART.forEach((item) => {
-      if (Array.isArray(item.value)) {
-        var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
-        //copy parent node with all its children item.value times with different values
-        whatToReplace.push({
-          parent: xmlDom.getElementsByTagName(parentName)[0],
-          childToChange: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
-          value: item.value
-        })
-      }
-    })
-
-    console.log('whatToReplace', whatToReplace)
-
-    //regroup children of whatToReplace by parent; eg: whatToReplace.parent <> array of childToChange/value with said parent
-    var distinctParents = []
-    whatToReplace.forEach((item) => {
-      if (distinctParents.indexOf(item.parent) == -1) {
-        distinctParents.push(item.parent)
-      }
-    })
-
-    var groupedByParent = []
-    distinctParents.forEach((parent) => {
-      whatToReplace.forEach((item) => {
-        if (item.parent == parent) {
-          //find in groupedByParent if parent exists
-          var found = false
-          groupedByParent.every((item2) => {
-            if (item2.parent == parent) {
-              found = true
-              item2.children.push({ childToChange: item.childToChange, value: item.value })
-              return false
-            }
-            return true
-          })
-          if (!found) {
-            groupedByParent.push({
-              parent: parent,
-              children: [{ childToChange: item.childToChange, value: item.value }]
-            })
-          }
-        }
-      })
-    })
-
-    console.log('groupedByParent', groupedByParent)
-
-    //for each distinct parent, clone it by the first childToChange/value
-    //then change the values of the childToChange nodes
-    groupedByParent.forEach((item) => {
-      var parent = item.parent
-      var times = item.children[0].value.length
-      console.log('times', times)
-      //clone parent times times but keep the original parent, so I don't have to delete it later
-      for (var i = 1; i < times; i++) {
-        var clone = parent.cloneNode(true)
-        parent.parentNode.appendChild(clone)
-      }
-
-      var clones = []
-      //get cloned elements plus the original one
-      clones = xmlDom.getElementsByTagName(parent.nodeName)
-      console.log('clones', clones)
-
-      var arrClones = Array.from(clones)
-
-      arrClones.forEach((clone, index) => {
-        //change childToChange/value
-        item.children.forEach((item2) => {
-          var childToChange = item2.childToChange
-          var value = item2.value[index]
-          console.log('childToChange', childToChange)
-          console.log('value', value)
-          clone.getElementsByTagName(childToChange)[0].textContent = value
-        })
-      })
-    })
-
-    //parse xmlDom thru DOMParser
-    var xmlString = new XMLSerializer().serializeToString(xmlDom)
-    var parser = new DOMParser()
-    var xmlDomm = parser.parseFromString(xmlString, 'text/xml')
-
-    return xmlDomm
-  }
-
-  // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
-
-  // console.log('xmlDom', xmlDom)
-
-  // await populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
-
-  // //await populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS)
-
-  // //await populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
-
-  // console.log('xmlDom', xmlDom)
-
-  // //return xml innerHTML
-  // return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
-}
+// function createXMLDOM(CCCXMLS1MAPPINGS) {
+//   //create xml dom
+//   var xmlDom = document.implementation.createDocument('', '', null)
+//   //root node <= first node from xml mappings split by '/'
+//   var root = xmlDom.createElement(CCCXMLS1MAPPINGS[0].XMLNODE.split('/')[0])
+//   xmlDom.appendChild(root)
+//   //add xml elements to xml dom
+//   CCCXMLS1MAPPINGS.forEach((item) => {
+//     var xmlNodes = item.XMLNODE.split('/')
+//     //add xml elements to xml dom
+//     var root = xmlDom.documentElement //Order or...
+//     for (var i = 1; i < xmlNodes.length; i++) {
+//       var node
+//       //verify if node already exists
+//       if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
+//         node = root.getElementsByTagName(xmlNodes[i])[0]
+//         root.appendChild(node)
+//         root = node
+//       } else {
+//         try {
+//           node = xmlDom.createElement(xmlNodes[i])
+//           //give it a dummy value in order to be able to append it; but just for the last node
+//           if (i == xmlNodes.length - 1) node.textContent = 'dummy'
+//           root.appendChild(node)
+//           root = node
+//         } catch (err) {
+//           console.log(err)
+//         }
+//       }
+//     }
+//   })
+
+//   return xmlDom
+// }
+
+// async function populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData) {
+//   //scenariul 2
+//   //match xml nodes with S1 Table 1 and S1 Field 1
+//   const mainNode = 'DXInvoice'
+//   var x = xmlDom.getElementsByTagName(mainNode)
+//   var obj = xml2json(x[0])
+//   console.log('xml2json', obj)
+//   //get node name for lines; select id "delimitareLinieDocument"
+//   const linesNode = 'InvoiceLine'
+//   //cut obj in two parts: header and lines; lines are in an array (obj.OrderLine)
+//   var header = {}
+//   var lines = {}
+//   for (var i in obj) {
+//     if (i == linesNode) {
+//       lines[i] = obj[i]
+//     } else {
+//       header[i] = obj[i]
+//     }
+//   }
+//   console.log('header', header)
+//   console.log('lines', lines)
+//   var headerArrayOfObjects = []
+//   var linesArrayOfObjects = []
+//   recurse(header, [], mainNode, null, null, headerArrayOfObjects)
+//   recurse(lines, [], mainNode, null, null, linesArrayOfObjects)
+
+//   await mapS1ObjDataToArrayOfObjects(xmlDom, S1ObjData, CCCXMLS1MAPPINGS, headerArrayOfObjects)
+
+//   const S1Table1 = 'ITELINES'
+//   const S1ObjDataLines = S1ObjData[S1Table1]
+//   //map S1ObjDataLines to linesArrayOfObjects through CCCXMLS1MAPPINGS
+//   S1ObjDataLines.forEach(async (line) => {
+//     //create a new xml node for each line by cloning the first line node
+//     //for the first line select the first lineNode
+//     //for the next lines clone and append the first lineNode
+//     if (S1ObjDataLines.indexOf(line) == 0) {
+//       var node = xmlDom.getElementsByTagName(linesNode)[0]
+//     } else {
+//       var node = xmlDom.getElementsByTagName(linesNode)[0].cloneNode(true)
+//       //add node to xmlDom
+//       xmlDom.getElementsByTagName(mainNode)[0].appendChild(node)
+//     }
+//     //map line to linesArrayOfObjects
+//     await mapS1ObjDataToArrayOfObjects(xmlDom, { ITELINES: [line] }, CCCXMLS1MAPPINGS, linesArrayOfObjects)
+//   })
+
+//   //alert(xmlDom.getElementsByTagName(mainNode)[0].innerHTML)
+// }
+
+// async function mapS1ObjDataToArrayOfObjects(xmlDom, S1ObjData, CCCXMLS1MAPPINGS, arrayOfObjects) {
+//   console.log({ S1ObjData, CCCXMLS1MAPPINGS, arrayOfObjects })
+//   var arrays = []
+//   arrayOfObjects.forEach(async (item) => {
+//     //flatten item xmlPath so as to compare it with CCCXMLS1MAPPINGS
+//     var xmlPath =
+//       item.parent && item.parent.length > 0
+//         ? item.root + '/' + item.parent.join('/') + '/' + item.i
+//         : item.root + '/' + item.i
+//     console.log('xmlPath', xmlPath)
+//     CCCXMLS1MAPPINGS.forEach(async (item2) => {
+//       if (item2.XMLNODE == xmlPath) {
+//         console.log('pair found', item2)
+//         console.log('S1ObjData[item2.S1TABLE1]', S1ObjData[item2.S1TABLE1])
+//         //set node value
+//         if (S1ObjData[item2.S1TABLE1]) {
+//           if (S1ObjData[item2.S1TABLE1].length > 1) {
+//             arrays.push({
+//               mapping: item2,
+//               iterations: S1ObjData[item2.S1TABLE1].length,
+//               S1Data: S1ObjData[item2.S1TABLE1]
+//             })
+//           } else {
+//             var node = findNodeInXMLDOM(xmlDom, item2.XMLNODE)
+//             //if found, set node value else create node and set value
+//             if (node) {
+//               var value = S1ObjData[item2.S1TABLE1][0][item2.S1FIELD1]
+//               console.log('node', node)
+//               console.log('S1ObjData[item2.S1TABLE1]', S1ObjData[item2.S1TABLE1])
+//               //check for 123|RON and get RON
+//               if (value && value.indexOf('|') > -1) {
+//                 value = value.split('|')[1]
+//               }
+//               //check for 2023-09-20 00:00:00 and get 2023-09-20
+//               //only for strings resambling dates
+//               if (value && value.indexOf('-') > -1 && value.indexOf(':') > -1) {
+//                 value = value.split(' ')[0]
+//               }
+//               node.textContent = value
+//             } else {
+//               //create node and set value
+//               console.log('create node and set value')
+//               var node = xmlDom.createElement(item2.XMLNODE.split('/')[item2.XMLNODE.split('/').length - 1])
+//               node.textContent = S1ObjData[item2.S1TABLE1][0][item2.S1FIELD1]
+//               findNodeInXMLDOM(xmlDom, item2.XMLNODE).parentNode.appendChild(node)
+//             }
+//           }
+//         } else {
+//           if (item2.SQL) {
+//             console.log('has SQL', item2.SQL)
+//             //set node value
+//             //if sql SELECT PERCNT FROM VAT WHERE VAT={S1Table1.S1Field1} or SELECT PERCNT FROM VAT WHERE VAT={S1Table1.S1Field1} and VAT2={S1Table1.S1Field2}
+//             //then replace {S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1]
+//             //and {S1Table1.S1Field2} with S1ObjData[S1Table1][0][S1Field2]
+//             //then execute the query and set node value
+//             //else execute the query and set node value
+//             //set params' query
+//             var params = {}
+//             params['query'] = {}
+//             //replace {S1Table1.S1Field1} with S1ObjData[S1Table1][0][S1Field1]
+//             //and {S1Table1.S1Field2} with S1ObjData[S1Table1][0][S1Field2]
+//             //parse and replace {s1table1.s1field1} with S1ObjData[item.S1TABLE1][0][item.S1FIELD1] or {s1table1.s1field2} with S1ObjData[item.S1TABLE2][0][item.S1FIELD2]
+//             var sqlQuery = item2.SQL
+//             var regex = /{([^}]+)}/g
+//             var matches = sqlQuery.match(regex)
+//             console.log('matches', matches)
+//             if (matches) {
+//               matches.forEach((match) => {
+//                 try {
+//                   var s1table = match.split('.')[0].replace('{', '')
+//                   var s1field = match.split('.')[1].replace('}', '')
+//                   //upper case
+//                   s1table = s1table.toUpperCase()
+//                   s1field = s1field.toUpperCase()
+//                   console.log('s1table', s1table)
+//                   console.log('s1field', s1field)
+//                   console.log('match', match)
+//                   console.log('S1ObjData[s1table]', S1ObjData[item2[s1table]])
+//                   console.log('S1ObjData[s1table][0]', S1ObjData[item2[s1table]][0])
+//                   console.log('S1ObjData[s1table][0][s1field]', S1ObjData[item2[s1table]][0][item2[s1field]])
+//                   sqlQuery = sqlQuery.replace(match, S1ObjData[item2[s1table]][0][item2[s1field]])
+//                 } catch (err) {
+//                   console.log(sqlQuery, err)
+//                 }
+//               })
+//             }
+//             console.log('sqlQuery', sqlQuery)
+//             params['query']['sqlQuery'] = sqlQuery
+
+//             var node = findNodeInXMLDOM(xmlDom, item2.XMLNODE)
+//             //if found, set node value else create node and set value
+//             if (node) {
+//               var res = await client.service('getDataset').find(params)
+//               console.log('getDataset for ' + item2.XMLNODE, res)
+//               if (res.data) {
+//                 node.textContent = res.data
+//               }
+//             } else {
+//               //create node and set value
+//               console.log('create node and set value')
+//               var node = xmlDom.createElement(item2.XMLNODE.split('/')[item2.XMLNODE.split('/').length - 1])
+//               var res = await client.service('getDataset').find(params)
+//               console.log('getDataset for ' + item2.XMLNODE, res.data)
+//               if (res.data) {
+//                 node.textContent = res.data
+//               }
+//               findNodeInXMLDOM(xmlDom, item2.XMLNODE).parentNode.appendChild(node)
+//             }
+//           }
+//         }
+//       }
+//     })
+//   })
+
+//   if (arrays.length > 0) {
+//     console.log('arrays', arrays)
+
+//     //zoom out from array to whole sequence
+//     var sequences = []
+//     var lastPath = ''
+//     arrays.forEach((obj) => {
+//       //find in CCCXMLS1MAPPINGS the all nodes sharing the shortest path
+//       var xmlNodes = obj.mapping.XMLNODE.split('/')
+//       path = xmlNodes.slice(0, xmlNodes.length - 1).join('/')
+//       if (path != lastPath) {
+//         console.log('path', path)
+
+//         var alike = []
+//         CCCXMLS1MAPPINGS.forEach((mapping) => {
+//           if (mapping.XMLNODE.includes(path)) {
+//             alike.push(mapping)
+//           }
+//         })
+//         sequences.push({ path: path, mappings: alike, iterations: obj.iterations, S1Data: obj.S1Data })
+//         lastPath = path
+//       }
+//     })
+
+//     console.log('sequences', sequences)
+
+//     //map sequences to S1ObjData through CCCXMLS1MAPPINGS
+//     //map sequences to xmlDom
+//     //for each sequences[i].path, loop sequences[i].iterations times and find in S1ObjData the corresponding values
+//     //then add them to xmlDom
+//     sequences.forEach((sequence) => {
+//       var seqPath = sequence.path
+//       var seqMappings = sequence.mappings
+//       var seqIterations = sequence.iterations
+//       var seqData = sequence.S1Data
+//       var refNode = findNodeInXMLDOM(xmlDom, seqPath)
+//       console.log('refNode', refNode)
+//       var newChild = refNode.cloneNode(true)
+//       var sequenceNewNodes = []
+//       seqData.forEach((item) => {
+//         seqMappings.forEach((mapping) => {
+//           console.log('mapping', mapping)
+//           console.log('item', item)
+//           console.log('seqPath', seqPath)
+//           //substract seqPath from mapping.XMLNODE
+//           var partialPath = mapping.XMLNODE.replace(seqPath + '/', '')
+//           console.log('partialPath', partialPath)
+//           splited = partialPath.split('/')
+//           console.log('splited', splited)
+//           console.log('splited root', partialPath.split('/')[0])
+//           var rootExists = findRootInSequence([...sequenceNewNodes], partialPath.split('/')[0])
+//           console.log('rootExists', rootExists)
+
+//           if (!rootExists) {
+//             //create new node
+//             var newNode = xmlDom.createElement(partialPath.split('/')[0])
+//             //add node to sequenceNewNodes
+//             sequenceNewNodes.push(newNode)
+//           } else {
+//             //find node in sequenceNewNodes
+//             var found = false
+//             sequenceNewNodes.every((item2) => {
+//               if (item2.nodeName == partialPath.split('/')[0]) {
+//                 found = true
+//                 console.log('found', item2.nodeName)
+//                 //adauga restul nodurilor
+//                 var node = item2
+//                 for (var i = 1; i < splited.length; i++) {
+//                   //daca nu exista nodul, creeaza-l
+//                   if (node.getElementsByTagName(splited[i]).length == 0) {
+//                     var newNode = xmlDom.createElement(splited[i])
+//                     node.appendChild(newNode)
+//                     node = newNode
+//                   }
+//                 }
+//                 console.log('nod ierarhic', node)
+//                 return false
+//               }
+//               return true
+//             })
+//           }
+//         })
+//         console.log('sequenceNewNodes', sequenceNewNodes)
+//         sequenceNewNodes.forEach((item) => {
+//           console.log('itemToBeAppended', item)
+//           newChild.appendChild(item)
+//         })
+//         console.log('newChild', newChild)
+//         refNode.parentNode.insertBefore(newChild, refNode.nextSibling)
+//         newChild = null
+//         newChild = refNode.cloneNode(true)
+//         sequenceNewNodes = []
+//         sequenceNewNodes.push(newChild)
+//         console.log('sequenceNewNodes', sequenceNewNodes)
+//       })
+//     })
+//   }
+// }
+
+// function findRootInSequence(seqArr, nodeName) {
+//   console.log('seqArr', seqArr)
+//   console.log('nodeName', nodeName)
+//   var found = false
+//   seqArr.every((item) => {
+//     if (item.nodeName == nodeName) {
+//       found = true
+//       return false
+//     }
+//     return true
+//   })
+//   return found
+// }
+
+// function findNodeInXMLDOM(xmlDom, xmlNode) {
+//   var xmlNodes = xmlNode.split('/')
+//   var root = xmlDom.documentElement
+//   //find node in xmlDom, but do not change ierachy of nodes
+//   for (var i = 0; i < xmlNodes.length; i++) {
+//     var node
+//     if (root.getElementsByTagName(xmlNodes[i]).length > 0) {
+//       //first found node
+//       //node = root.getElementsByTagName(xmlNodes[i])[0]
+//       //last found node
+//       node = root.getElementsByTagName(xmlNodes[i])[root.getElementsByTagName(xmlNodes[i]).length - 1]
+//       root.appendChild(node)
+//       root = node
+//     }
+//   }
+
+//   return node
+// }
+
+// async function populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS) {
+//   //scenariul 1
+//   CCCXMLS1MAPPINGS.forEach(async (item) => {
+//     if (item.SQL && !item.SQL.includes('{')) {
+//       //set node value
+//       var node = findNodeInXMLDOM(xmlDom, item.XMLNODE)
+//       var res = await client.service('getDataset').find({ query: { sqlQuery: item.SQL } })
+//       console.log('getDataset', res)
+//       if (res.data) {
+//         node.textContent = res.data
+//       }
+//     }
+//   })
+// }
+
+// async function populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData) {
+//   //scenariul 3
+//   CCCXMLS1MAPPINGS.forEach(async (item) => {
+//     if (item.SQL && item.SQL.includes('{')) {
+//       //set node value
+//       var node = findNodeInXMLDOM(xmlDom, item.XMLNODE)
+//       //parse and replace {s1table1.s1field1} with S1ObjData[item.S1TABLE1][0][item.S1FIELD1] or {s1table1.s1field2} with S1ObjData[item.S1TABLE2][0][item.S1FIELD2]
+//       var sqlQuery = item.SQL
+//       var regex = /{([^}]+)}/g
+//       var matches = sqlQuery.match(regex)
+//       console.log('matches', matches)
+//       matches.forEach(async (match) => {
+//         var s1table = match.split('.')[0].replace('{', '')
+//         var s1field = match.split('.')[1].replace('}', '')
+//         //upper case
+//         s1table = s1table.toUpperCase()
+//         s1field = s1field.toUpperCase()
+//         console.log('s1table', s1table)
+//         console.log('s1field', s1field)
+//         console.log('match', match)
+//         try {
+//           console.log('item[s1table]]', item[s1table])
+//           console.log('item[s1field]]', item[s1field])
+//           try {
+//             var val = S1ObjData[item[s1table]][0][item[s1field]]
+//             //val could be 1|Buc
+//             //if val is 1|Buc, then val = 1
+//             if (val && val.indexOf('|') > -1) {
+//               val = val.split('|')[0]
+//             }
+//             sqlQuery = sqlQuery.replace(match, val)
+//             console.log('actual value', val)
+//           } catch (err) {
+//             console.log(err)
+//             console.log(S1ObjData[item[s1table]])
+//           }
+//           console.log('sqlQuery', sqlQuery)
+//           var res = await client.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
+//           console.log('getDataset', res)
+//           if (res.data) {
+//             node.textContent = res.data
+//           }
+//         } catch (err) {
+//           console.log(err)
+//         }
+//       })
+//     }
+//   })
+// }
+
+// async function createXML(findoc, trdr, sosource, fprms, series) {
+//   async function createLOCATEINFO(trdr, sosource, fprms, series) {
+//     //scenariul 2
+//     //get distinct S1TABLE1, for grouping data
+//     //get xml mappings for trdr, sosource, fprms, series from cccdocumentes1mappings
+//     //get CCCDOCUMENTES1MAPPINGS for trdr_retailer, source, fprms, series
+//     var res = await client
+//       .service('CCCDOCUMENTES1MAPPINGS')
+//       .find({ query: { TRDR_RETAILER: trdr, SOSOURCE: sosource, FPRMS: fprms, SERIES: series } })
+//     var CCCDOCUMENTES1MAPPINGS = res.data[0].CCCDOCUMENTES1MAPPINGS
+//     //get CCCXMLS1MAPPINGS for CCCDOCUMENTES1MAPPINGS
+//     var res = await client
+//       .service('CCCXMLS1MAPPINGS')
+//       .find({ query: { CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS } })
+//     console.log('CCCXMLS1MAPPINGS', res)
+//     var CCCXMLS1MAPPINGS = res.data
+//     var distinctS1TABLE1 = []
+//     CCCXMLS1MAPPINGS.forEach((item) => {
+//       if (item.S1TABLE1 && distinctS1TABLE1.indexOf(item.S1TABLE1) == -1) {
+//         distinctS1TABLE1.push(item.S1TABLE1)
+//       }
+//     })
+
+//     var distinctS1TABLE2 = []
+//     CCCXMLS1MAPPINGS.forEach((item) => {
+//       if (item.S1TABLE2 && distinctS1TABLE2.indexOf(item.S1TABLE2) == -1) {
+//         distinctS1TABLE2.push(item.S1TABLE2)
+//       }
+//     })
+
+//     //create LOCATEINFO
+//     var LOCATEINFO = ''
+//     distinctS1TABLE1.forEach((item) => {
+//       var S1TABLE1 = item
+//       var S1FIELD1 = ''
+//       CCCXMLS1MAPPINGS.forEach((item) => {
+//         if (item.S1TABLE1 && item.S1FIELD1 && item.S1TABLE1 == S1TABLE1) {
+//           //if item.S1FIELD1 is not already in S1FIELD1
+//           const split = S1FIELD1.split(',')
+//           var wordExists = false
+//           split.every((item2) => {
+//             if (item2 == item.S1FIELD1) {
+//               wordExists = true
+//               return false
+//             }
+//             return true
+//           })
+//           if (!wordExists) {
+//             S1FIELD1 += item.S1FIELD1 + ','
+//           }
+//         }
+//       })
+
+//       S1FIELD1 = S1FIELD1.slice(0, -1)
+//       LOCATEINFO += S1TABLE1 + ':' + S1FIELD1 + ';'
+//     })
+
+//     distinctS1TABLE2.forEach((item) => {
+//       var S1TABLE2 = item
+//       var S1FIELD2 = ''
+//       CCCXMLS1MAPPINGS.forEach((item) => {
+//         if (item.S1TABLE2 && item.S1FIELD2 && item.S1TABLE2 == S1TABLE2) {
+//           //if item.S1FIELD2 is not already in S1FIELD2
+//           const split = S1FIELD2.split(',')
+//           var wordExists = false
+//           split.every((item2) => {
+//             if (item2 == item.S1FIELD2) {
+//               wordExists = true
+//               return false
+//             }
+//             return true
+//           })
+//           if (!wordExists) {
+//             S1FIELD2 += item.S1FIELD2 + ','
+//           }
+//         }
+//       })
+
+//       S1FIELD2 = S1FIELD2.slice(0, -1)
+//       //check if locateinfo contains S1TABLE2 already
+//       var split = LOCATEINFO.split(';')
+//       var tableExists = false
+//       split.every((item) => {
+//         if (item.split(':')[0] == S1TABLE2) {
+//           tableExists = true
+//           return false
+//         }
+//         return true
+//       })
+//       if (!tableExists) {
+//         LOCATEINFO += S1TABLE2 + ':' + S1FIELD2 + ';'
+//       } else {
+//         //add S1FIELD2 to LOCATEINFO
+//         split.every((item, index) => {
+//           if (item.split(':')[0] == S1TABLE2) {
+//             split[index] = item + ',' + S1FIELD2
+//             return false
+//           }
+//           return true
+//         })
+//         LOCATEINFO = split.join(';')
+//       }
+//     })
+
+//     LOCATEINFO = LOCATEINFO.slice(0, -1)
+
+//     return { LOCATEINFO: LOCATEINFO, CCCXMLS1MAPPINGS: CCCXMLS1MAPPINGS }
+//   }
+//   var ret = await createLOCATEINFO(trdr, sosource, fprms, series)
+//   var LOCATEINFO = ret.LOCATEINFO
+//   var CCCXMLS1MAPPINGS = ret.CCCXMLS1MAPPINGS
+//   //sort CCCXMLS1MAPPINGS by XMLORDER
+//   CCCXMLS1MAPPINGS.sort((a, b) => {
+//     return a.XMLORDER - b.XMLORDER
+//   })
+
+//   console.log('LOCATEINFO', LOCATEINFO)
+//   console.log('CCCXMLS1MAPPINGS', CCCXMLS1MAPPINGS)
+
+//   //get data from S1; LOCATEINFO  results from reading data from xml mappings
+//   var S1Obj = await client.service('getS1ObjData').find({
+//     query: {
+//       KEY: findoc,
+//       clientID: await client
+//         .service('connectToS1')
+//         .find()
+//         .then((result) => {
+//           return result.token
+//         }),
+//       appID: '1001',
+//       OBJECT: 'SALDOC',
+//       FORM: 'EFIntegrareRetailers',
+//       LOCATEINFO: LOCATEINFO
+//     }
+//   })
+
+//   console.log('S1ObjData(LocateInfo)', S1Obj)
+//   const S1ObjData = S1Obj.data
+
+//   var header = 'DXInvoice/Invoice/'
+//   var lines = 'DXInvoice/InvoiceLine/'
+
+//   var CCCXMLS1MAPPINGS_HEADER = []
+//   var CCCXMLS1MAPPINGS_LINES = []
+//   CCCXMLS1MAPPINGS.forEach((item) => {
+//     if (item.XMLNODE.includes(header)) {
+//       CCCXMLS1MAPPINGS_HEADER.push(item)
+//     }
+//     if (item.XMLNODE.includes(lines)) {
+//       CCCXMLS1MAPPINGS_LINES.push(item)
+//     }
+//   })
+
+//   console.log('CCCXMLS1MAPPINGS_HEADER', CCCXMLS1MAPPINGS_HEADER)
+//   console.log('CCCXMLS1MAPPINGS_LINES', CCCXMLS1MAPPINGS_LINES)
+
+//   //header
+//   var _HEADER = await joinThings(CCCXMLS1MAPPINGS_HEADER, S1ObjData)
+
+//   //create xml dom
+//   var xmlDomHeader = document.implementation.createDocument('', '', null)
+//   var root = 'DXInvoice'
+//   var root = xmlDomHeader.createElement(root)
+//   xmlDomHeader.appendChild(root)
+
+//   xmlDomHeader = createDomPart(_HEADER, xmlDomHeader)
+//   console.log('xmlDomHeader', xmlDomHeader)
+
+//   //lines
+//   //S1ObjData but without ITELINES
+//   var S1ObjDataNoITELINES = {}
+//   Object.keys(S1ObjData).forEach((key) => {
+//     if (key != 'ITELINES') {
+//       S1ObjDataNoITELINES[key] = S1ObjData[key]
+//     }
+//   })
+//   var S1ITELINES = S1ObjData['ITELINES']
+//   var xmlDomLines = []
+//   S1ITELINES.forEach(async (line) => {
+//     var currLine = { ITELINES: [line] }
+//     //add currLine to S1ObjDataNoITELINES
+//     var S1ObjDataNoITELINES_currLine = Object.assign({}, S1ObjDataNoITELINES, currLine)
+//     console.log('currLine', currLine)
+//     joinThings(CCCXMLS1MAPPINGS_LINES, S1ObjDataNoITELINES_currLine).then((part) => {
+//       console.log('part', part)
+//       var xmlDomLine = document.implementation.createDocument('', '', null)
+//       var root = 'DXInvoice'
+//       var root = xmlDomLine.createElement(root)
+//       xmlDomLine.appendChild(root)
+//       xmlDomLine = createDomPart(part, xmlDomLine)
+//       xmlDomLines.push(xmlDomLine)
+//     })
+//   })
+
+//   //wait until xmlDomLines is populated, meaning xmlDomLines.length == S1ITELINES.length
+//   while (xmlDomLines.length < S1ITELINES.length) {
+//     await new Promise((resolve) => setTimeout(resolve, 100))
+//   }
+
+//   console.log('xmlDomLines', xmlDomLines)
+
+//   //take xmlDomHeader and xmlDomLines and merge them into one xmlDom
+//   var xmlDom = xmlDomHeader
+//   xmlDomLines.forEach((item) => {
+//     var xmlNodes = item.documentElement.childNodes
+//     for (var i = 0; i < xmlNodes.length; i++) {
+//       xmlDom.documentElement.appendChild(xmlNodes[i])
+//     }
+//   })
+
+//   console.log('xmlDom', xmlDom)
+
+//   //return DXInvoice from document
+//   var xml = xmlDom.getElementsByTagName('DXInvoice')[0].outerHTML
+
+//   return { dom: xml, trimis: false }
+
+//   async function joinThings(CCCXMLS1MAPPINGS_PART, S1ObjData) {
+//     var _PART = []
+//     CCCXMLS1MAPPINGS_PART.forEach(async (item) => {
+//       item.SQL = item.SQL.trim()
+//       var o = {}
+//       o.xmlNode = item.XMLNODE
+//       o.table1 = item.S1TABLE1 || null
+//       o.field1 = item.S1FIELD1 || null
+//       if (item.S1TABLE1 && item.S1FIELD1) {
+//         possibleArray = S1ObjData[item.S1TABLE1]
+//         if (possibleArray && possibleArray.length == 1) {
+//           o.value1 = S1ObjData[item.S1TABLE1][0][item.S1FIELD1] || 'n/a'
+//         } else if (possibleArray && possibleArray.length > 1) {
+//           o.value1 = []
+//           possibleArray.forEach((item2) => {
+//             o.value1.push(item2[item.S1FIELD1])
+//           })
+//         } else {
+//           o.value1 = 'n/a'
+//         }
+//         if (o.value1 && o.value1.indexOf('|') > -1) {
+//           o.value1 = o.value1.split('|')[0]
+//         }
+//         //if o.value1 is an arrat then check every item for | and split it
+//         if (Array.isArray(o.value1)) {
+//           o.value1.forEach((item2, index) => {
+//             if (item2.indexOf('|') > -1) {
+//               o.value1[index] = item2.split('|')[0]
+//             }
+//           })
+//         }
+//         o.value = o.value1
+//       } else {
+//         o.value1 = 'n/a'
+//         o.value = 'n/a'
+//       }
+//       if (item.SQL == '') {
+//         //...
+//       } else {
+//         item.SQL = item.SQL.replace(/\n/g, ' ').replace(/\r/g, ' ')
+//         o.table2 = item.S1TABLE2 || null
+//         o.field2 = item.S1FIELD2 || null
+//         o.value2 = item.S1TABLE2 && item.S1FIELD2 ? S1ObjData[item.S1TABLE2][0][item.S1FIELD2] : 'n/a'
+//         o.sql = item.SQL
+//         var sqlQuery = item.SQL
+//         if (o.value2 && o.value2.indexOf('|') > -1) {
+//           o.value2 = o.value2.split('|')[0]
+//         }
+//         if (item.SQL.includes('{S1Table1.S1Field1}')) {
+//           sqlQuery = sqlQuery.replace('{S1Table1.S1Field1}', o.value1)
+//         }
+
+//         if (item.SQL.includes('{S1Table2.S1Field2}')) {
+//           sqlQuery = sqlQuery.replace('{S1Table2.S1Field2}', o.value2)
+//         }
+
+//         o.sqlQuery = sqlQuery
+//         //value = await client.service('getDataset').find(params)
+//         var params = {}
+//         params['query'] = {}
+//         params['query']['sqlQuery'] = sqlQuery
+//         var res = await client.service('getDataset').find(params)
+//         console.log('sqlQuery', sqlQuery, 'queryResponse', res)
+//         if (res.data) {
+//           //for xml path ('') [1,2,3]
+//           if (res.data.indexOf('[') > -1) {
+//             o.value = JSON.parse(res.data)
+//           } else {
+//             o.value = res.data
+//           }
+//         }
+//       }
+//       _PART.push(o)
+//     })
+
+//     //wait until _HEADER is populated, meaning _HEADER.length == CCCXMLS1MAPPINGS_HEADER.length
+//     while (_PART.length < CCCXMLS1MAPPINGS_PART.length) {
+//       await new Promise((resolve) => setTimeout(resolve, 100))
+//     }
+
+//     //sort _HEADER by xmlNode alphabetically
+//     /* _PART.sort((a, b) => {
+//       var txtA = a.xmlNode.toUpperCase()
+//       var txtB = b.xmlNode.toUpperCase()
+//       return txtA < txtB ? -1 : txtA > txtB ? 1 : 0
+//     }) */
+
+//     return _PART
+//   }
+
+//   function createDomPart(_PART, xmlDom) {
+//     _PART.forEach((item) => {
+//       console.log({ xml: item.xmlNode, value: item.value })
+//       var xmlNodes = item.xmlNode.split('/')
+//       //add xml elements to xml dom
+//       var root = xmlDom.documentElement
+//       for (var i = 1; i < xmlNodes.length; i++) {
+//         var node
+//         var existingElements = root.getElementsByTagName(xmlNodes[i])
+//         //verify if node already exists
+//         if (existingElements.length > 0) {
+//           node = existingElements[existingElements.length - 1]
+//           root.appendChild(node)
+//           root = node
+//         } else {
+//           try {
+//             node = xmlDom.createElement(xmlNodes[i])
+//             //give it a dummy value in order to be able to append it; but just for the last node
+//             if (i == xmlNodes.length - 1) node.textContent = item.value
+//             root.appendChild(node)
+//             root = node
+//           } catch (err) {
+//             console.log(err)
+//           }
+//         }
+//       }
+//     })
+
+//     //find in _HEADER item.value as array
+//     var whatToReplace = []
+//     _PART.forEach((item) => {
+//       if (Array.isArray(item.value)) {
+//         var parentName = item.xmlNode.split('/')[item.xmlNode.split('/').length - 2]
+//         //copy parent node with all its children item.value times with different values
+//         whatToReplace.push({
+//           parent: xmlDom.getElementsByTagName(parentName)[0],
+//           childToChange: item.xmlNode.split('/')[item.xmlNode.split('/').length - 1],
+//           value: item.value
+//         })
+//       }
+//     })
+
+//     console.log('whatToReplace', whatToReplace)
+
+//     //regroup children of whatToReplace by parent; eg: whatToReplace.parent <> array of childToChange/value with said parent
+//     var distinctParents = []
+//     whatToReplace.forEach((item) => {
+//       if (distinctParents.indexOf(item.parent) == -1) {
+//         distinctParents.push(item.parent)
+//       }
+//     })
+
+//     var groupedByParent = []
+//     distinctParents.forEach((parent) => {
+//       whatToReplace.forEach((item) => {
+//         if (item.parent == parent) {
+//           //find in groupedByParent if parent exists
+//           var found = false
+//           groupedByParent.every((item2) => {
+//             if (item2.parent == parent) {
+//               found = true
+//               item2.children.push({ childToChange: item.childToChange, value: item.value })
+//               return false
+//             }
+//             return true
+//           })
+//           if (!found) {
+//             groupedByParent.push({
+//               parent: parent,
+//               children: [{ childToChange: item.childToChange, value: item.value }]
+//             })
+//           }
+//         }
+//       })
+//     })
+
+//     console.log('groupedByParent', groupedByParent)
+
+//     //for each distinct parent, clone it by the first childToChange/value
+//     //then change the values of the childToChange nodes
+//     groupedByParent.forEach((item) => {
+//       var parent = item.parent
+//       var times = item.children[0].value.length
+//       console.log('times', times)
+//       //clone parent times times but keep the original parent, so I don't have to delete it later
+//       for (var i = 1; i < times; i++) {
+//         var clone = parent.cloneNode(true)
+//         parent.parentNode.appendChild(clone)
+//       }
+
+//       var clones = []
+//       //get cloned elements plus the original one
+//       clones = xmlDom.getElementsByTagName(parent.nodeName)
+//       console.log('clones', clones)
+
+//       var arrClones = Array.from(clones)
+
+//       arrClones.forEach((clone, index) => {
+//         //change childToChange/value
+//         item.children.forEach((item2) => {
+//           var childToChange = item2.childToChange
+//           var value = item2.value[index]
+//           console.log('childToChange', childToChange)
+//           console.log('value', value)
+//           clone.getElementsByTagName(childToChange)[0].textContent = value
+//         })
+//       })
+//     })
+
+//     //parse xmlDom thru DOMParser
+//     var xmlString = new XMLSerializer().serializeToString(xmlDom)
+//     var parser = new DOMParser()
+//     var xmlDomm = parser.parseFromString(xmlString, 'text/xml')
+
+//     return xmlDomm
+//   }
+
+//   // var xmlDom = createXMLDOM(CCCXMLS1MAPPINGS)
+
+//   // console.log('xmlDom', xmlDom)
+
+//   // await populateXMLDOMScenariu2(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
+
+//   // //await populateXMLDOMScenariu1(xmlDom, CCCXMLS1MAPPINGS)
+
+//   // //await populateXMLDOMScenariu3(xmlDom, CCCXMLS1MAPPINGS, S1ObjData)
+
+//   // console.log('xmlDom', xmlDom)
+
+//   // //return xml innerHTML
+//   // return xmlDom.getElementsByTagName('DXInvoice')[0].innerHTML
+// }
 
 ///----------------------------------------------------------------------------------------------------------------
 

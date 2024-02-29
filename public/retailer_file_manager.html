@@ -78,6 +78,7 @@
               <th>XMLDATE</th>
               <th width="20%">XMLFILENAME</th>
               <th>XML</th>
+              <th>JSON</th>  
               <th>Partener</th>
               <th>Actions</th>
               <th class="is-info">
@@ -123,8 +124,8 @@
       import {
         openTab,
         fetchXMLFromRemoteServer,
-        fetchDocsFromS1WS,
-        displayXmlDataForRetailer,
+        getNDisplayS1Docs,
+        getNDisplayOrders,
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
         sendAllFacturi
@@ -135,7 +136,7 @@
       })
       //preluareFacturiBtn
       document.getElementById('preluareFacturiBtn').addEventListener('click', function () {
-        fetchDocsFromS1WS(1351, 712, 7121)
+        getNDisplayS1Docs(1351, 712, 7121)
       })
       //add onclick to defaultOpen
       document.getElementById('defaultOpen').addEventListener('click', function () {
@@ -161,8 +162,8 @@
       document.getElementById('defaultOpen').click()      
       //set img src to logo_retailer from localStorage
       document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
-      displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))
-      fetchDocsFromS1WS(1351, 712, 7121);
+      getNDisplayOrders(localStorage.getItem('trdr_retailer'))
+      getNDisplayS1Docs(1351, 712, 7121);
     </script>
   </body>
 </html>

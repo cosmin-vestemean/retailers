@@ -343,7 +343,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
                     //refresh xml table
-                    displayXmlDataForRetailer(retailer)
+                    getNDisplayOrders(retailer)
                   })
               } else {
                 alert('Error: ' + res.error)
@@ -381,7 +381,7 @@ async function fetchXMLFromRemoteServer() {
   //1. localStorage.getItem('trdr_retailer')
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
-  //4. displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))"
+  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
   //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   var retailer
   try {
@@ -410,13 +410,13 @@ async function fetchXMLFromRemoteServer() {
       console.log('storeXmlInDB', res)
     })
 
-  //4. displayXmlDataForRetailer(localStorage.getItem('trdr_retailer'))"
-  await displayXmlDataForRetailer(retailer)
+  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
+  await getNDisplayOrders(retailer)
   //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
 }
 
-async function displayXmlDataForRetailer(retailer) {
+async function getNDisplayOrders(retailer) {
   //localStorage.getItem('trdr_retailer')
   await getRetailerXMLData(retailer).then((data) => {
     console.log('getRetailerXMLData', data)
@@ -429,6 +429,10 @@ async function displayXmlDataForRetailer(retailer) {
       //create a new row
       var row = xmlTableBody.insertRow()
       //insert the cells
+      //insert hidden xml.CCCSFTPXML
+      var cccsftpxml = row.insertCell()
+      cccsftpxml.innerHTML = xml.CCCSFTPXML
+      cccsftpxml.style.display = 'none'
       var humanDate = new Date(xml.XMLDATE).toLocaleString()
       row.insertCell().innerHTML = humanDate
       //row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
@@ -439,6 +443,10 @@ async function displayXmlDataForRetailer(retailer) {
       //spellcheck="false"
       row.cells[2].spellcheck = false
       //row.insertCell().innerHTML = xml.JSONDATA
+      //add jdondata no spellcheck
+      var jsondataCell = row.insertCell()
+      jsondataCell.innerHTML = '<textarea class="textarea is-small is-info" rows="10" cols="50">' + xml.JSONDATA + '</textarea>'
+      jsondataCell.spellcheck = false
       var parser = new DOMParser()
       var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
       //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
@@ -593,7 +601,7 @@ async function displayXmlDataForRetailer(retailer) {
   })
 }
 
-async function fetchDocsFromS1WS(sosource, fprms, series) {
+async function getNDisplayS1Docs(sosource, fprms, series) {
   var trdr
   try {
     trdr = parseInt(localStorage.getItem('trdr_retailer'))
@@ -1062,8 +1070,8 @@ export {
   setRetailerId,
   openTab,
   fetchXMLFromRemoteServer,
-  displayXmlDataForRetailer,
-  fetchDocsFromS1WS,
+  getNDisplayOrders,
+  getNDisplayS1Docs,
   toggleComenziNetrimise,
   sendAllFacturi,
   toggleFacturiNetrimise
