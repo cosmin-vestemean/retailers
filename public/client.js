@@ -28,7 +28,7 @@ async function getRetailerXMLData(retailer) {
   })
 }
 
-//config_retailer section
+//retailer_config section
 async function openTab(evt, tabName) {
   var i, x, tablinks
   x = document.getElementsByClassName('content-tab')
