@@ -55,7 +55,6 @@ async function openTab(evt, tabName) {
   }
 }
 
-
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   return await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
@@ -942,9 +941,9 @@ async function cheatGetXmlFromS1(findoc) {
 async function toggleComenziNetrimise() {
   var comenziTrimise = document.getElementById('comenziTrimise')
   var table = document.getElementById('xmlTableBody')
-  var nrTrimise = 0
-  var totalCOmenzi = table.getElementsByTagName('tr').length
   if (comenziTrimise.checked) {
+    var nrTrimise = 0
+    var totalCOmenzi = table.getElementsByTagName('tr').length
     //hide rows with <i class="fas fa-xl fa-check-circle has-text-success"></i> or all
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < totalCOmenzi; i++) {
@@ -952,6 +951,19 @@ async function toggleComenziNetrimise() {
         rows[i].style.display = 'none'
         nrTrimise++
       }
+    }
+    if (totalCOmenzi > 0 && nrTrimise == totalCOmenzi) {
+      //alert('Toate comenzile au fost trimise')
+      //xmlTableBody if table has rows, even if they are hidden
+      var tr = table.insertRow()
+      var td = tr.insertCell()
+      td.innerHTML = 'Toate comenzile au fost trimise'
+      td.colSpan = 6
+      td.classList.add('alertMesssage')
+      td.style.textAlign = 'center'
+      td.style.color = 'green'
+      td.style.fontWeight = 'bold'
+      td.style.fontSize = '20px'
     }
   } else {
     //show all rows
@@ -964,19 +976,6 @@ async function toggleComenziNetrimise() {
     if (alertMessage) {
       alertMessage.remove()
     }
-  }
-  if (totalCOmenzi > 0 && nrTrimise == totalCOmenzi) {
-    //alert('Toate comenzile au fost trimise')
-    //xmlTableBody if table has rows, even if they are hidden
-    var tr = table.insertRow()
-    var td = tr.insertCell()
-    td.innerHTML = 'Toate comenzile au fost trimise'
-    td.colSpan = 6
-    td.classList.add('alertMesssage')
-    td.style.textAlign = 'center'
-    td.style.color = 'green'
-    td.style.fontWeight = 'bold'
-    td.style.fontSize = '20px'
   }
 }
 
@@ -1018,9 +1017,9 @@ async function sendAllFacturi() {
 async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
-  const nrFacturi = table.getElementsByTagName('tr').length
-  var nrTrimise = 0
   if (facturiTrimise.checked) {
+    const nrFacturi = table.getElementsByTagName('tr').length
+    var nrTrimise = 0
     //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
@@ -1031,6 +1030,19 @@ async function toggleFacturiNetrimise() {
         row.style.display = 'none'
         nrTrimise++
       }
+    }
+    if (nrFacturi > 0 && nrTrimise == nrFacturi) {
+      //alert('Toate facturile au fost trimise')
+      //write on the facturiTableBody if table has rows, even if they are hidden
+      var tr = table.insertRow()
+      var td = tr.insertCell()
+      td.innerHTML = 'Toate facturile au fost trimise'
+      td.colSpan = 6
+      td.classList.add('alertMesssage')
+      td.style.textAlign = 'center'
+      td.style.color = 'green'
+      td.style.fontWeight = 'bold'
+      td.style.fontSize = '20px'
     }
   } else {
     var rows = table.getElementsByTagName('tr')
@@ -1044,20 +1056,6 @@ async function toggleFacturiNetrimise() {
       alertMessage.remove()
     }
   }
-
-  if (nrFacturi > 0 && nrTrimise == nrFacturi) {
-    //alert('Toate facturile au fost trimise')
-    //write on the facturiTableBody if table has rows, even if they are hidden
-    var tr = table.insertRow()
-    var td = tr.insertCell()
-    td.innerHTML = 'Toate facturile au fost trimise'
-    td.colSpan = 6
-    td.classList.add('alertMesssage')
-    td.style.textAlign = 'center'
-    td.style.color = 'green'
-    td.style.fontWeight = 'bold'
-    td.style.fontSize = '20px'
-  }
 }
 
 export {
@@ -1068,5 +1066,5 @@ export {
   fetchDocsFromS1WS,
   toggleComenziNetrimise,
   sendAllFacturi,
-  toggleFacturiNetrimise,
+  toggleFacturiNetrimise
 }
