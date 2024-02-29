@@ -20,7 +20,7 @@ import * as fs from 'fs'
 import fetch from 'node-fetch'
 
 //xml2js
-import { parseString } from 'xml2js'
+//import { parseString } from 'xml2js'
 
 const app = koa(feathers())
 
@@ -202,9 +202,9 @@ class SftpServiceClass {
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
         //parse xml to json        
         var json = null
-        parseString(xmlClean, function (err, result) {
+ /*        parseString(xmlClean, function (err, result) {
           json = result
-        })
+        }) */
         var endpointID = json.Order.DeliveryParty[0].EndpointID[0]
         console.log('endpointID', endpointID)
         //getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
