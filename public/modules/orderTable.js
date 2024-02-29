@@ -1,5 +1,7 @@
 import client from './feathersjs-client.js'
 
+const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'
+
 export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
   //get the table body
   const xmlTableBody = document.getElementById(tableBodyId)
@@ -452,7 +454,8 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
     .then(async (res) => {
       console.log('date logare', res)
       //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
-      var url = res.data[0].WSURL
+      //var url = res.data[0].WSURL
+      var url = testUrl;
       var username = res.data[0].WSUSER
       var password = res.data[0].WSPASS
       await client
