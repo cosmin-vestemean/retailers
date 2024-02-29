@@ -1,4 +1,4 @@
-import client from './modules/feathersjs-client.js'
+import client from './feathersjs-client.js'
 
 export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId) {
   /*
