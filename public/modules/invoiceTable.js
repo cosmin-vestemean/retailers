@@ -20,8 +20,6 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   //validate params
   validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId)
 
-  tbody.innerHTML = ''
-
   jsonData.rows.forEach((row) => {
     //create row
     var tr = tbody.insertRow()
@@ -311,6 +309,7 @@ function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
 
   //check for success
   if (jsonData.success == false) {
+    tbody.innerHTML = ''
     var tr = tbody.insertRow()
     var td = tr.insertCell()
     td.innerHTML = 'Error: ' + jsonData.error
@@ -321,6 +320,7 @@ function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
 
   //check for totalcount
   if (jsonData.totalcount == 0) {
+    tbody.innerHTML = ''
     var tr = tbody.insertRow()
     var td = tr.insertCell()
     td.innerHTML = 'No data'
