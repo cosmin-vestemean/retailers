@@ -1,6 +1,6 @@
 import client from './feathersjs-client.js'
 
-export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody) {
+export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId) {
   /*
         response like {
     "success": true,
@@ -16,10 +16,10 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     }
         */
 
-  //validate params
-  validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId)
-
   const tbody = document.getElementById(tableBodyId)
+  //validate params
+  validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId, tbody)
+
   tbody.innerHTML = ''
 
   jsonData.rows.forEach((row) => {
