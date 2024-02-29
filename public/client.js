@@ -959,6 +959,11 @@ async function toggleComenziNetrimise() {
     for (var i = 0; i < rows.length; i++) {
       rows[i].style.display = ''
     }
+    //find td class="alertMesssage" and remove it
+    var alertMessage = table.getElementsByClassName('alertMesssage')[0]
+    if (alertMessage) {
+      alertMessage.remove()
+    }
   }
   if (totalCOmenzi > 0 && nrTrimise == totalCOmenzi) {
     //alert('Toate comenzile au fost trimise')
@@ -967,6 +972,7 @@ async function toggleComenziNetrimise() {
     var td = tr.insertCell()
     td.innerHTML = 'Toate comenzile au fost trimise'
     td.colSpan = 6
+    td.classList.add('alertMesssage')
     td.style.textAlign = 'center'
     td.style.color = 'green'
     td.style.fontWeight = 'bold'
@@ -1032,6 +1038,11 @@ async function toggleFacturiNetrimise() {
       var row = rows[i]
       row.style.display = ''
     }
+    //find td class="alertMesssage" and remove it
+    var alertMessage = table.getElementsByClassName('alertMesssage')[0]
+    if (alertMessage) {
+      alertMessage.remove()
+    }
   }
 
   if (nrFacturi > 0 && nrTrimise == nrFacturi) {
@@ -1041,6 +1052,7 @@ async function toggleFacturiNetrimise() {
     var td = tr.insertCell()
     td.innerHTML = 'Toate facturile au fost trimise'
     td.colSpan = 6
+    td.classList.add('alertMesssage')
     td.style.textAlign = 'center'
     td.style.color = 'green'
     td.style.fontWeight = 'bold'
