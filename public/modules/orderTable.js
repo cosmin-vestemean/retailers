@@ -1,3 +1,5 @@
+import client from './feathersjs-client.js'
+
 export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
   //get the table body
   const xmlTableBody = document.getElementById(tableBodyId)
