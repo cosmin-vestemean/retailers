@@ -153,14 +153,12 @@
             <a href="#" class="card-footer-item">Statistici</a>
             <a
               href="monitor_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
+              class="card-footer-item carrefour"
               >File manager</a
             >
             <a
               href="config_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')"
+              class="card-footer-item carrefour"
               >Configureaza</a
             >
           </footer>
@@ -188,14 +186,12 @@
             <a href="#" class="card-footer-item">Statistici</a>
             <a
               href="monitor_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
+              class="card-footer-item cora"
               >File manager</a
             >
             <a
               href="config_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')"
+              class="card-footer-item cora"
               >Configureaza</a
             >
           </footer>
@@ -226,14 +222,12 @@
             <a href="#" class="card-footer-item">Statistici</a>
             <a
               href="monitor_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
+              class="card-footer-item kaufland"
               >File manager</a
             >
             <a
               href="config_retailer.html"
-              class="card-footer-item"
-              onclick="setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')"
+              class="card-footer-item kaufland"
               >Configureaza</a
             >
           </footer>
@@ -331,6 +325,24 @@
       document.querySelectorAll('.supeco').forEach((el) => {
         el.onclick = (e) => {
           setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
+        }
+      })
+      //carrefour setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')
+      document.querySelectorAll('.carrefour').forEach((el) => {
+        el.onclick = (e) => {
+          setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')
+        }
+      })
+      //cora setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
+      document.querySelectorAll('.cora').forEach((el) => {
+        el.onclick = (e) => {
+          setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
+        }
+      })
+      //kaufland setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
+      document.querySelectorAll('.kaufland').forEach((el) => {
+        el.onclick = (e) => {
+          setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
         }
       })
     </script>
