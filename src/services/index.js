@@ -1,5 +1,3 @@
-import { cccaperak } from './CCCAPERAK/CCCAPERAK.js'
-
 import { cccretailersclients } from './CCCRETAILERSCLIENTS/CCCRETAILERSCLIENTS.js'
 
 import { cccxmls1Mappings } from './CCCXMLS1MAPPINGS/CCCXMLS1MAPPINGS.js'
@@ -11,7 +9,6 @@ import { cccsftpxml } from './CCCSFTPXML/CCCSFTPXML.js'
 import { cccsftp } from './CCCSFTP/CCCSFTP.js'
 
 export const services = (app) => {
-  app.configure(cccaperak)
 
   app.configure(cccretailersclients)
 

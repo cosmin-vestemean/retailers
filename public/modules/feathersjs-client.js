@@ -39,9 +39,9 @@ client.use('sftp', socketClient.service('sftp'), {
     methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
   })
 
-/*   client.use('getDataset1', socketClient.service('getDataset1'), {
+  client.use('getDataset1', socketClient.service('getDataset1'), {
     methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
-  }) */
+  })
   
   client.use('getS1ObjData', socketClient.service('getS1ObjData'), {
     methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
