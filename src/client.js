@@ -3,6 +3,8 @@ import { feathers } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import { cccaperakClient } from './services/CCCAPERAK/CCCAPERAK.shared.js'
 
+import { cccaperakClient } from './services/CCCAPERAK/CCCAPERAK.shared.js'
+
 import { cccretailersclientsClient } from './services/CCCRETAILERSCLIENTS/CCCRETAILERSCLIENTS.shared.js'
 
 import { cccxmls1MappingsClient } from './services/CCCXMLS1MAPPINGS/CCCXMLS1MAPPINGS.shared.js'
@@ -37,6 +39,8 @@ export const createClient = (connection, authenticationOptions = {}) => {
   client.configure(cccxmls1MappingsClient)
 
   client.configure(cccretailersclientsClient)
+
+  client.configure(cccaperakClient)
 
   client.configure(cccaperakClient)
 
