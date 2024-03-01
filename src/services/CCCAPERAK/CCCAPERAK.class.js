@@ -7,6 +7,7 @@ export const getOptions = (app) => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('mssqlClient'),
-    name: 'CCCAPERAK'
+    name: 'CCCAPERAK',
+    id: 'CCCAPERAK'
   }
 }

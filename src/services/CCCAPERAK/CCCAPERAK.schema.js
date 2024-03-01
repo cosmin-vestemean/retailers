@@ -6,8 +6,20 @@ import { dataValidator, queryValidator } from '../../validators.js'
 // Main data model schema
 export const cccaperakSchema = Type.Object(
   {
-    id: Type.Number(),
-    text: Type.String()
+    CCCAPERAK: Type.Number(),
+    TRDR_RETAILER: Type.Number(),
+    TRDR_CLIENT: Type.Number(),
+    FINDOC: Type.Number(),
+    XMLFILENAME: Type.String(),
+    XMLSENTDATE: Type.String(),
+    MESSAGEDATE: Type.String(),
+    MESSAGETIME: Type.String(),
+    MESSAGEORIGIN: Type.String(),
+    DOCUMENTREFERENCE: Type.String(),
+    DOCUMENTUID: Type.String(),
+    SUPPLIERRECEIVERCODE: Type.String(),
+    DOCUMENTRESPONSE: Type.String(),
+    DOCUMENTDETAIL: Type.String()
   },
   { $id: 'Cccaperak', additionalProperties: false }
 )
@@ -17,9 +29,27 @@ export const cccaperakResolver = resolve({})
 export const cccaperakExternalResolver = resolve({})
 
 // Schema for creating new entries
-export const cccaperakDataSchema = Type.Pick(cccaperakSchema, ['text'], {
-  $id: 'CccaperakData'
-})
+export const cccaperakDataSchema = Type.Pick(
+  cccaperakSchema,
+  [
+    'TRDR_RETAILER',
+    'TRDR_CLIENT',
+    'FINDOC',
+    'XMLFILENAME',
+    'XMLSENTDATE',
+    'MESSAGEDATE',
+    'MESSAGETIME',
+    'MESSAGEORIGIN',
+    'DOCUMENTREFERENCE',
+    'DOCUMENTUID',
+    'SUPPLIERRECEIVERCODE',
+    'DOCUMENTRESPONSE',
+    'DOCUMENTDETAIL'
+  ],
+  {
+    $id: 'CccaperakData'
+  }
+)
 export const cccaperakDataValidator = getValidator(cccaperakDataSchema, dataValidator)
 export const cccaperakDataResolver = resolve({})
 
