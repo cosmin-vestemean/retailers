@@ -464,7 +464,7 @@ class getDatasetServiceClass {
 //register the service
 app.use('getDataset', new getDatasetServiceClass())
 
-class getDataset1ServiceClass {
+/* class getDataset1ServiceClass {
   async find(params) {
     const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
     const method = 'POST'
@@ -478,7 +478,7 @@ class getDataset1ServiceClass {
 }
 
 //register the service
-app.use('getDataset1', new getDataset1ServiceClass())
+app.use('getDataset1', new getDataset1ServiceClass()) */
 
 class getS1ObjData {
   async find(params) {
