@@ -137,6 +137,11 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
     }
+    //add row.CCCXMLFile
+    var xmlFile = tr.insertCell()
+    if (row.CCCXMLFile) {
+      xmlFile.innerHTML = row.CCCXMLFile
+    }
   })
 }
 
@@ -144,13 +149,14 @@ async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)
+  var filename = domObj.filename
   if (domObj.trimis == true && overrideTrimis == false) {
-    alert('Factura a fost deja trimisa')
+    alert('Factura ' + filename + ' a fost deja trimisa')
     return
   }
   //update btn caption to sending
   //font awesome spinner
-  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending...'
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Sending ' + filename + '...'
   //alter domObj filename with postfix
   domObj.filename = getNewFilenamePostfix(domObj.filename, row)
   await sendInvoice(row.findoc, domObj, overrideTrimis).then(async (response) => {
@@ -171,11 +177,11 @@ async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
       //add cell
       var td = tr.insertCell()
       td.appendChild(textarea)
+      markInvoiceAsSent(row.findoc, domObj.filename)
     }
-    markInvoiceAsSent(row.findoc)
   })
   //update btn caption to sent
-  button.innerHTML = 'Sent Invoice'
+  button.innerHTML = 'Sent Invoice file ' + filename
   //find cell class="trimis" in current row and add date now and green check
   var trimis = tr.getElementsByClassName('trimis')[0]
   trimis.innerHTML =
@@ -183,7 +189,7 @@ async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
     new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
 
-async function markInvoiceAsSent(findoc) {
+async function markInvoiceAsSent(findoc, xmlFilename) {
   var body = {}
   body['service'] = 'setData'
   body['clientID'] = await client
@@ -197,6 +203,7 @@ async function markInvoiceAsSent(findoc) {
   body['FORM'] = 'EFIntegrareRetailers'
   body['KEY'] = findoc
   body['DATA'] = {}
+  body['DATA']['MTRDOC'] = [{ CCCXMLFile: xmlFilename }]
   body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
   console.log('body', body)
   await client

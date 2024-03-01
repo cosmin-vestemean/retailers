@@ -2,7 +2,8 @@ select top 200 f.findoc,
     f.trndate,
     f.fincode,
     f.sumamnt,
-    md.CCCXMLSendDate
+    md.CCCXMLSendDate,
+    md.CCCXMLFile
 from findoc f
     left join mtrdoc md on md.findoc = f.findoc
 where f.trdr = { trdr }
