@@ -464,6 +464,22 @@ class getDatasetServiceClass {
 //register the service
 app.use('getDataset', new getDatasetServiceClass())
 
+class getDataset1ServiceClass {
+  async find(params) {
+    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
+    const method = 'POST'
+    const sqlQuery = params.query.sqlQuery
+    console.log('sqlQuery', sqlQuery)
+    const response = await fetch(url, { method: method, body: JSON.stringify({ sqlQuery: sqlQuery }) })
+    const json = await response.json()
+    console.log(json)
+    return json //success, data, total or success, error
+  }
+}
+
+//register the service
+app.use('getDataset1', new getDataset1ServiceClass())
+
 class getS1ObjData {
   async find(params) {
     const findoc = params.query.KEY

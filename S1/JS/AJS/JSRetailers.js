@@ -17,3 +17,26 @@ function convertDatasetToArray(dataset) {
   }
   return arr
 }
+
+function processSqlAsDataset1(obj) {
+  var ds, err;
+  if (!obj.sqlQuery)
+    return { success: false, error: "No sql query transmited." };
+  try {
+    ds = X.GETSQLDATASET(obj.sqlQuery, null);
+  } catch (e) {
+    err = e.message;
+  }
+  if (ds.RECORDCOUNT > 0) {
+    return {
+      success: true,
+      data: convertDatasetToArray(ds),
+      total: ds.RECORDCOUNT,
+    };
+  } else {
+    return {
+      success: false,
+      error: err,
+    };
+  }
+}

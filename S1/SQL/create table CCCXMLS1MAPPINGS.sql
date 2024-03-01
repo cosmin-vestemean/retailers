@@ -9,10 +9,27 @@ CREATE TABLE CCCSFTP (
     FINGERPRINT VARCHAR(MAX),
     PRIVATEKEY VARCHAR(MAX)
 );
-
-INSERT INTO CCCSFTP (PORT, TRDR_RETAILER, URL, USERNAME, PASSPHRASE, INITIALDIRIN, INITIALDIROUT, FINGERPRINT, PRIVATEKEY)
-VALUES (2222, 13249, 'dx.doc-process.com', 'pet_factory', 'PetFactory2021#', '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/out', '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/in', 'ssh-rsa 2048 BgJCCAEN43vo4+AL1uCvW4MNUioITEQ5+W10ubLAeUs=', 
-N'-----BEGIN RSA PRIVATE KEY-----
+INSERT INTO CCCSFTP (
+        PORT,
+        TRDR_RETAILER,
+        URL,
+        USERNAME,
+        PASSPHRASE,
+        INITIALDIRIN,
+        INITIALDIROUT,
+        FINGERPRINT,
+        PRIVATEKEY
+    )
+VALUES (
+        2222,
+        13249,
+        'dx.doc-process.com',
+        'pet_factory',
+        'PetFactory2021#',
+        '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/out',
+        '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/in',
+        'ssh-rsa 2048 BgJCCAEN43vo4+AL1uCvW4MNUioITEQ5+W10ubLAeUs=',
+        N '-----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: DES-EDE3-CBC,611AD7C2FDCB1C46
 
@@ -41,8 +58,8 @@ eiZB067cFlY2bXa7PJclG3YAJ4PCjH374Bsqsb7AGYKjnoDaBAy9CRJTHWySyfGg
 zYTHygvxDqYTKYsKoNce7smyiNYo8tdzGN0HCSXOZXSVbq+7vS0TEUSFNXJ3TgQj
 HgLHzfJvo1MUT+ChXr5FuJidytUm0xw8182rEYZtiSzMIs/7vdjok119ygWg10oq
 zUuAEns7wlkd2Yu7qicl6GNSXebdJRL5fBWyeGNEacPgFPcKWLENLs/9gl3zuY5I
------END RSA PRIVATE KEY----- ');
-
+-----END RSA PRIVATE KEY----- '
+    );
 create table CCCXMLS1MAPPINGS (
     CCCXMLS1MAPPINGS INT NOT NULL IDENTITY(1, 1),
     XMLNODE VARCHAR(200) NOT NULL,
@@ -59,7 +76,6 @@ create table CCCXMLS1MAPPINGS (
     FORMAT VARCHAR(50),
     CONSTRAINT PK_CCCXMLS1MAPPINGS PRIMARY KEY (CCCXMLS1MAPPINGS)
 );
-
 CREATE TABLE CCCDOCUMENTES1MAPPINGS (
     CCCDOCUMENTES1MAPPINGS INT NOT NULL IDENTITY(1, 1),
     TRDR_RETAILER INT NOT NULL,
@@ -89,52 +105,117 @@ VALUES (
         '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/in',
         '/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/out'
     );
-
-    create table CCCSFTPXML (
-        CCCSFTPXML INT NOT NULL IDENTITY(1, 1),
-        TRDR_RETAILER INT NOT NULL,
-        TRDR_CLIENT INT NOT NULL,
-        XMLFILENAME VARCHAR(MAX),
-        XMLDATA XML,
-        XMLDATE DATETIME,
-        XMLSTATUS VARCHAR(50),
-        XMLERROR VARCHAR(MAX),
-        JSONDATA VARCHAR(MAX),
-        CONSTRAINT PK_CCCSFTPXML PRIMARY KEY (CCCSFTPXML)
-    );
-
-    alter table CCCSFTPXML add FINDOC int, COMANDACLIENT VARCHAR(50), DATACOMANDACLIENT DATE
-
-create table CCCRETAILERSCLIENTS (
-    CCCRETAILERSCLIENTS INT NOT NULL IDENTITY(1, 1),
-    TRDR_CLIENT INT NOT NULL,
-    WSURL VARCHAR(MAX),
-    WSUSER VARCHAR(MAX),
-    WSPASS VARCHAR(MAX),
-    COMPANY INT,
-    BRANCH INT,
-    CONSTRAINT PK_CCCRETAILERSCLIENTS PRIMARY KEY (CCCRETAILERSCLIENTS)
-);
-
-insert into CCCRETAILERSCLIENTS (TRDR_CLIENT, WSURL, WSUSER, WSPASS, COMPANY, BRANCH) VALUES
-(1, 'http://petfactory.oncloud.gr/s1services', 'websitepetfactory', 'petfactory4321', 50, 1000);
-
-ALTER TABLE MTRUNIT ADD CCCDOCPROCESSSHORTCUT VARCHAR(10)
-
---Retailers_Index_Docs SQL script, format f.trndate as date:
-select f.trndate, f.fincode, f.sumamnt
-from findoc f
-where f.trdr = {trdr} and f.series = {series} and f.sosource = {sosource} and f.fprms = {fprms}
-and cast(f.trndate as date) between dateadd(day, -{daysOlder}, getdate()) and cast(getdate() as date)
-
-create table CCCALTTRDRMTRUNIT (
-    CCCALTTRDRMTRUNIT INT NOT NULL IDENTITY(1, 1),
+create table CCCSFTPXML (
+    CCCSFTPXML INT NOT NULL IDENTITY(1, 1),
     TRDR_RETAILER INT NOT NULL,
     TRDR_CLIENT INT NOT NULL,
-    MTRUNIT INT NOT NULL,
-    SHORTCUT VARCHAR(10),
-    CONSTRAINT PK_CCCALTTRDRMTRUNIT PRIMARY KEY (CCCALTTRDRMTRUNIT)
-)
-
+    XMLFILENAME VARCHAR(MAX),
+    XMLDATA XML,
+    XMLDATE DATETIME,
+    XMLSTATUS VARCHAR(50),
+    XMLERROR VARCHAR(MAX),
+    JSONDATA VARCHAR(MAX),
+    CONSTRAINT PK_CCCSFTPXML PRIMARY KEY (CCCSFTPXML)
+);
+alter table CCCSFTPXML
+add FINDOC int,
+    COMANDACLIENT VARCHAR(50),
+    DATACOMANDACLIENT DATE create table CCCRETAILERSCLIENTS (
+        CCCRETAILERSCLIENTS INT NOT NULL IDENTITY(1, 1),
+        TRDR_CLIENT INT NOT NULL,
+        WSURL VARCHAR(MAX),
+        WSUSER VARCHAR(MAX),
+        WSPASS VARCHAR(MAX),
+        COMPANY INT,
+        BRANCH INT,
+        CONSTRAINT PK_CCCRETAILERSCLIENTS PRIMARY KEY (CCCRETAILERSCLIENTS)
+    );
+insert into CCCRETAILERSCLIENTS (
+        TRDR_CLIENT,
+        WSURL,
+        WSUSER,
+        WSPASS,
+        COMPANY,
+        BRANCH
+    )
+VALUES (
+        1,
+        'http://petfactory.oncloud.gr/s1services',
+        'websitepetfactory',
+        'petfactory4321',
+        50,
+        1000
+    );
+ALTER TABLE MTRUNIT
+ADD CCCDOCPROCESSSHORTCUT VARCHAR(10) --Retailers_Index_Docs SQL script, format f.trndate as date:
+select f.trndate,
+    f.fincode,
+    f.sumamnt
+from findoc f
+where f.trdr = { trdr }
+    and f.series = { series }
+    and f.sosource = { sosource }
+    and f.fprms = { fprms }
+    and cast(f.trndate as date) between dateadd(day, - { daysOlder }, getdate())
+    and cast(getdate() as date) create table CCCALTTRDRMTRUNIT (
+        CCCALTTRDRMTRUNIT INT NOT NULL IDENTITY(1, 1),
+        TRDR_RETAILER INT NOT NULL,
+        TRDR_CLIENT INT NOT NULL,
+        MTRUNIT INT NOT NULL,
+        SHORTCUT VARCHAR(10),
+        CONSTRAINT PK_CCCALTTRDRMTRUNIT PRIMARY KEY (CCCALTTRDRMTRUNIT)
+    )
 INSERT INTO CCCALTTRDRMTRUNIT (TRDR_RETAILER, TRDR_CLIENT, MTRUNIT, SHORTCUT)
-VALUES (13249, 1, 1, 'PC'), (78631, 1, 1, 'PC'), (11322, 1, 1, 'PC'), (11639, 1, 1, 'PC'), (12349, 1, 1, 'PCE')
+VALUES (13249, 1, 1, 'PC'),
+    (78631, 1, 1, 'PC'),
+    (11322, 1, 1, 'PC'),
+    (11639, 1, 1, 'PC'),
+    (12349, 1, 1, 'PCE')
+    /*
+     Aperak.xml file to db
+     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+     <DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="file:///C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+     <MessageDate>2023-10-04</MessageDate>
+     <MessageTime>15:18:38</MessageTime>
+     <MessageOrigin>RO17275880</MessageOrigin>
+     <DocumentReference>INVOIC_16850_VAT_RO25190857.xml</DocumentReference>
+     <DocumentUID>DXDqGWNEPEcXJmVRGWbisJHQ</DocumentUID>
+     <SupplierReceiverCode>-</SupplierReceiverCode>
+     <DocumentResponse>RECEPTIONAT</DocumentResponse>
+     <DocumentDetail>- - ID document: DXDqGWNEPEcXJmVRGWbisJHQ Nume fisier:
+     INVOIC_16850_VAT_RO25190857.xml Status: Receptionat de destinatar / Received by recipient
+     Mesaj: Documentul a fost primit de cÄtre destinatar. The document has been received by the
+     recipient.</DocumentDetail>
+     </DXMessage>
+     */
+    create table CCCAPERAK (
+        CCCAPERAK INT NOT NULL IDENTITY(1, 1),
+        TRDR_RETAILER INT NOT NULL,
+        TRDR_CLIENT INT NOT NULL,
+        FINDOC INT NOT NULL,
+        XMLFILENAME VARCHAR(100),
+        XMLSENTDATE DATE,
+        MESSAGEDATE DATE,
+        MESSAGETIME TIME,
+        MESSAGEORIGIN VARCHAR(50),
+        DOCUMENTREFERENCE VARCHAR(100),
+        DOCUMENTUID VARCHAR(50),
+        SUPPLIERRECEIVERCODE VARCHAR(50),
+        DOCUMENTRESPONSE VARCHAR(50),
+        DOCUMENTDETAIL VARCHAR(MAX),
+        CONSTRAINT PK_CCCAPERAK PRIMARY KEY (CCCAPERAK)
+    );
+SELECT A.FINDOC,
+    A.FINCODE,
+    a.SERIESNUM DocumentReference,
+    CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin
+FROM FINDOC A
+    INNER JOIN TRDR B ON A.TRDR = B.TRDR
+WHERE A.SOSOURCE = 1351
+    and A.FINCODE LIKE '%19521%'
+    AND A.TRNDATE = '2024-03-01'
+    and (
+        (CONCAT(B.BGBULSTAT, B.AFM) = 'RO13348610')
+        or (b.afm = 'RO13348610')
+    )
