@@ -61,7 +61,13 @@ export const cccaperakPatchValidator = getValidator(cccaperakPatchSchema, dataVa
 export const cccaperakPatchResolver = resolve({})
 
 // Schema for allowed query properties
-export const cccaperakQueryProperties = Type.Pick(cccaperakSchema, ['id', 'text'])
+export const cccaperakQueryProperties = Type.Pick(cccaperakSchema, [
+  'TRDR_RETAILER',
+  'TRDR_CLIENT',
+  'FINDOC',
+  'XMLFILENAME',
+  'XMLSENTDATE'
+])
 export const cccaperakQuerySchema = Type.Intersect(
   [
     querySyntax(cccaperakQueryProperties),
