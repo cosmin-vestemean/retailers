@@ -8,7 +8,6 @@ export const getOptions = (app) => {
     paginate: app.get('paginate'),
     Model: app.get('mssqlClient'),
     name: 'CCCAPERAK',
-    id: 'CCCAPERAK',
-    multi: true
+    id: 'CCCAPERAK'
   }
 }
