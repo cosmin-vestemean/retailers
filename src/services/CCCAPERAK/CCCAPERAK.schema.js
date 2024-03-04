@@ -66,7 +66,9 @@ export const cccaperakQueryProperties = Type.Pick(cccaperakSchema, [
   'TRDR_CLIENT',
   'FINDOC',
   'XMLFILENAME',
-  'XMLSENTDATE'
+  'XMLSENTDATE',
+  'MESSAGEDATE',
+  'MESSAGETIME'
 ])
 export const cccaperakQuerySchema = Type.Intersect(
   [
