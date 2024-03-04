@@ -304,14 +304,14 @@ class SftpServiceClass {
           }
         });
         console.log('json', json)
-        var MessageDate = json.DXMessage.MessageDate[0]
-        var MessageTime = json.DXMessage.MessageTime[0]
-        var MessageOrigin = json.DXMessage.MessageOrigin[0]
-        var DocumentReference = json.DXMessage.DocumentReference[0]
-        var DocumentUID = json.DXMessage.DocumentUID[0]
-        var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode[0] || ''
-        var DocumentResponse = json.DXMessage.DocumentResponse[0]
-        var DocumentDetail = json.DXMessage.DocumentDetail[0]
+        var MessageDate = json.DXMessage.MessageDate
+        var MessageTime = json.DXMessage.MessageTime
+        var MessageOrigin = json.DXMessage.MessageOrigin
+        var DocumentReference = json.DXMessage.DocumentReference
+        var DocumentUID = json.DXMessage.DocumentUID
+        var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode
+        var DocumentResponse = json.DXMessage.DocumentResponse
+        var DocumentDetail = json.DXMessage.DocumentDetail
         //getDataset1 returns success, data, total or success, error
         await app
           .service('getDataset1')
