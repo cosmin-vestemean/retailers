@@ -310,51 +310,67 @@ class SftpServiceClass {
         var DocumentResponse = json.DXMessage.DocumentResponse
         var DocumentDetail = json.DXMessage.DocumentDetail
         //getDataset1 returns success, data, total or success, error
-        const result = await app.service('getDataset1').find({
+        const response = await app.service('getDataset1').find({
           query: {
             sqlQuery:
               `SELECT A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
               `  left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
           }
         })
-        if (result.success) {
-          const findoc = result.data[0].FINDOC
-          const retailer = result.data[0].retailer
-          const xmlFilename = result.data[0].xmlFilename
-          const xmlSentDate = result.data[0].xmlSentDate
-          var dataToCccAperakTable = {
-            TRDR_RETAILER: retailer,
-            TRDR_CLIENT: 1,
-            FINDOC: findoc,
-            MESSAGEDATE: MessageDate,
-            MESSAGETIME: MessageTime,
-            MESSAGEORIGIN: MessageOrigin,
-            DOCUMENTREFERENCE: DocumentReference,
-            DOCUMENTUID: DocumentUID,
-            SUPPLIERRECEIVERCODE: SupplierReceiverCode,
-            DOCUMENTRESPONSE: DocumentResponse,
-            DOCUMENTDETAIL: DocumentDetail
-          }
-          if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
-          if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
-          console.log('data', dataToCccAperakTable)
-          const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
-          console.log('CCCAPERAK result', result)
-
-          if (result.CCCAPERAK) {
-            returnedData.push({ filename: filename, success: true, response: result })
-            //move file to processed folder
-            if (!fs.existsSync(processedPath)) {
-              fs.mkdirSync(processedPath)
-            }
-            fs.renameSync(localPath, processedPath + '/' + filename)
-          } else {
-            returnedData.push({ filename: filename, success: false, response: result })
+        if (response.success) {
+          if (response.total === 0) {
+            returnedData.push({ filename: filename, success: false, response: response })
             //move file to error folder
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
             }
-            fs.renameSync(localPath, errorPath + '/' + filename)
+          } else {
+            if (response.total > 1) {
+              returnedData.push({
+                filename: filename,
+                success: false,
+                response:
+                  'More than one document found in ERP with the same DocumentReference and MessageDate'
+              })
+            }
+            const findoc = response.data[0].FINDOC
+            const retailer = response.data[0].retailer
+            const xmlFilename = response.data[0].xmlFilename
+            const xmlSentDate = response.data[0].xmlSentDate
+            var dataToCccAperakTable = {
+              TRDR_RETAILER: retailer,
+              TRDR_CLIENT: 1,
+              FINDOC: findoc,
+              MESSAGEDATE: MessageDate,
+              MESSAGETIME: MessageTime,
+              MESSAGEORIGIN: MessageOrigin,
+              DOCUMENTREFERENCE: DocumentReference,
+              DOCUMENTUID: DocumentUID,
+              SUPPLIERRECEIVERCODE: SupplierReceiverCode,
+              DOCUMENTRESPONSE: DocumentResponse,
+              DOCUMENTDETAIL: DocumentDetail
+            }
+            if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
+            if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
+            console.log('data', dataToCccAperakTable)
+            const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+            console.log('CCCAPERAK result', result)
+
+            if (result.CCCAPERAK) {
+              returnedData.push({ filename: filename, success: true, response: result })
+              //move file to processed folder
+              if (!fs.existsSync(processedPath)) {
+                fs.mkdirSync(processedPath)
+              }
+              fs.renameSync(localPath, processedPath + '/' + filename)
+            } else {
+              returnedData.push({ filename: filename, success: false, response: result })
+              //move file to error folder
+              if (!fs.existsSync(errorPath)) {
+                fs.mkdirSync(errorPath)
+              }
+              fs.renameSync(localPath, errorPath + '/' + filename)
+            }
           }
         } else {
           returnedData.push({ filename: filename, success: false, response: result })
