@@ -292,6 +292,8 @@ class SftpServiceClass {
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
+        //ufeff
+        xmlClean = xmlClean.replace(/\ufeff/g, '')
         console.log('xmlClean', xmlClean)
         //parse xml to json
         var json = null
