@@ -184,7 +184,13 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       }
       //DOCUMENTREFERENCE and DOCUMENTUID
       var documentReference = tr.insertCell()
-      documentReference.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + '<br>' + aperakRes.data[0].DOCUMENTUID
+      documentReference.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + '<br>' + aperakRes.data[0].DOCUMENTUID  
+      //MESSAGEORIGIN
+      var messageOrigin = tr.insertCell()
+      messageOrigin.innerHTML = aperakRes.data[0].MESSAGEORIGIN
+      //SUPPLIERRECEIVERCODE
+      var supplierReceiverCode = tr.insertCell()
+      supplierReceiverCode.innerHTML = aperakRes.data[0].SUPPLIERRECEIVERCODE
     }
   })
 }
