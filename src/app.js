@@ -377,7 +377,13 @@ class SftpServiceClass {
             }
           }
         } else {
-          returnedData.push({ filename: filename, success: false, response: response })
+          returnedData.push({
+            filename: filename,
+            success: false,
+            response:
+              response +
+              ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}, ${MessageOrigin}`
+          })
           //move file to error folder
           if (!fs.existsSync(errorPath)) {
             fs.mkdirSync(errorPath)
