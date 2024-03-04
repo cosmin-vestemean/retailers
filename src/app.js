@@ -290,6 +290,7 @@ class SftpServiceClass {
         const xml = fs.readFileSync(localPath, 'utf8')
         //remove xml declaration
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+        console.log('xmlClean', xmlClean)
         //parse xml to json
         var json = null
         parseString(data, { explicitArray: false }, (error, result) => {
