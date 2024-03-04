@@ -310,19 +310,13 @@ class SftpServiceClass {
         var DocumentResponse = json.DXMessage.DocumentResponse
         var DocumentDetail = json.DXMessage.DocumentDetail
         //getDataset1 returns success, data, total or success, error
-        await app
-          .service('getDataset1')
-          .find({
-            query: {
-              sqlQuery:
-                `SELECT A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
-                `  left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
-            }
-          })
-          .then(async (result) => {
-            console.log('getDataset1 result', result)
-          })
-
+        const result = await app.service('getDataset1').find({
+          query: {
+            sqlQuery:
+              `SELECT A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
+              `  left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
+          }
+        })
         if (result.success) {
           const findoc = result.data[0].FINDOC
           const retailer = result.data[0].retailer
