@@ -20,7 +20,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   //validate params
   validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId)
 
-  jsonData.rows.forEach((row) => {
+  jsonData.rows.forEach(async (row) => {
     //create row
     var tr = tbody.insertRow()
     //create cells
@@ -151,6 +151,23 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     var xmlFile = tr.insertCell()
     if (row.CCCXMLFile) {
       xmlFile.innerHTML = row.CCCXMLFile
+    }
+    var lastDXTResponse = tr.insertCell()
+    //CCCAPERAK(FINDOC, TRDR_RETAILER) last DOCUMENTRESPONSE + DOCUMENTDETAIL; sort by MESSAGEDATE adn MESSAGETIME
+    var aperakRes = await client.service('CCCAPERAK').find({
+      query: {
+        FINDOC: row.findoc,
+        TRDR_RETAILER: trdr,
+        $sort: {
+          MESSAGEDATE: -1,
+          MESSAGETIME: -1
+        }
+      }
+    })
+    console.log('response', aperakRes)
+    if (aperakRes.total > 0) {
+      lastDXTResponse.innerHTML =
+        aperakRes.data[0].DOCUMENTRESPONSE + '<br>' + aperakRes.data[0].DOCUMENTDETAIL
     }
   })
 }
