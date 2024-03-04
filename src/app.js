@@ -93,7 +93,7 @@ class SftpServiceClass {
       console.log('Connected')
 
       const olderThan = new Date()
-      const n = 7 // Number of days
+      const n = 8 // Number of days
       olderThan.setDate(olderThan.getDate() - n)
 
       const files = await sftp.list(initialDir, (item) => {
@@ -115,7 +115,8 @@ class SftpServiceClass {
         console.log('Found on server: ' + item.name)
       })
 
-      var limit = 20000000
+      //var limit = 20000000
+      var limit = 1
       var count = 0
       for (const item of files) {
         if (count < limit) {
@@ -280,14 +281,8 @@ class SftpServiceClass {
     const folderPath = aperakPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
-    var filesCount = 0
 
     for (const file of files) {
-      filesCount++
-      //get just one file for testing
-      if (filesCount > 1) {
-        break
-      }
       const filename = file
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename
