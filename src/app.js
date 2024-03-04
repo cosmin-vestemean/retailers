@@ -93,7 +93,7 @@ class SftpServiceClass {
       console.log('Connected')
 
       const olderThan = new Date()
-      const n = 14 // Number of days
+      const n = 60 // Number of days
       olderThan.setDate(olderThan.getDate() - n)
 
       const files = await sftp.list(initialDir, (item) => {
@@ -115,8 +115,8 @@ class SftpServiceClass {
         console.log('Found on server: ' + item.name)
       })
 
-      //var limit = 20000000
-      var limit = 1
+      var limit = 20000000
+      //var limit = 1
       var count = 0
       for (const item of files) {
         if (count < limit) {
