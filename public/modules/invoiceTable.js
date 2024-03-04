@@ -168,6 +168,21 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     if (aperakRes.total > 0) {
       lastDXTResponse.innerHTML =
         aperakRes.data[0].DOCUMENTRESPONSE + '<br>' + aperakRes.data[0].DOCUMENTDETAIL
+      //add column MESSAGEDATE, take only date part
+      var messageDate = tr.insertCell()
+      var messageDateData
+      if (aperakRes.data[0].MESSAGEDATE) {
+        messageDateData = aperakRes.data[0].MESSAGEDATE.split('T')[0]
+        //add MESSAGETIME, time part
+        var messageTimeData = aperakRes.data[0].MESSAGETIME.split('T')[1]
+        messageDateData += ' ' + messageTimeData
+        messageDate.innerHTML = messageDateData
+      } else {
+        messageDateData = ''
+      }
+
+      
+
     }
   })
 }

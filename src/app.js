@@ -93,7 +93,7 @@ class SftpServiceClass {
       console.log('Connected')
 
       const olderThan = new Date()
-      const n = 60 // Number of days
+      const n = 7 // Number of days
       olderThan.setDate(olderThan.getDate() - n)
 
       const files = await sftp.list(initialDir, (item) => {
