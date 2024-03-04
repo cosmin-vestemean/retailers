@@ -82,7 +82,7 @@ export async function getRemoteAperakXmlListToErp() {
     return
   }
   //change button text
-  document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
+  document.getElementById('preluareAperakBtn').innerHTML = 'Please wait...'
   await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
@@ -97,10 +97,7 @@ export async function getRemoteAperakXmlListToErp() {
       console.log('storeAperakInMessages', res)
     })
 
-  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
-  await getNDisplayOrders(retailer)
-  //5. change document.getElementById('preluareComenziBtn') text according to stage of process
-  document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
+  document.getElementById('preluareAperakBtn').innerHTML = 'Preluare APERAK'
 }
 
 async function getNDisplayOrders(retailer) {

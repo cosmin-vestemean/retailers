@@ -20,7 +20,7 @@ import * as fs from 'fs'
 import fetch from 'node-fetch'
 
 //xml2js
-//import { parseString } from 'xml2js'
+import { parseString } from 'xml2js'
 
 const app = koa(feathers())
 
