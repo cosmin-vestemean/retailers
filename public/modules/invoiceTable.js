@@ -136,6 +136,16 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       trimis.appendChild(resend)
     } else {
       trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+      //create checlbox already sent  by other means
+      var checkbox = document.createElement('input')
+      checkbox.type = 'checkbox'
+      checkbox.id = row.findoc + '_alreadySent'
+      checkbox.className = 'ml-2'
+      var label = document.createElement('label')
+      label.htmlFor = row.findoc + '_alreadySent'
+      label.appendChild(document.createTextNode('Already sent'))
+      trimis.appendChild(checkbox)
+      trimis.appendChild(label)
     }
     //add row.CCCXMLFile
     var xmlFile = tr.insertCell()
