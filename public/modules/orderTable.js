@@ -171,7 +171,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         var checkbox = document.createElement('input')
         checkbox.type = 'checkbox'
         checkbox.id = xml.XMLFILENAME + '_alreadySent'
-        checkbox.className = 'ml-2 col'
+        checkbox.className = 'ml-2'
         var label = document.createElement('label')
         label.htmlFor = xml.XMLFILENAME + '_alreadySent'
         label.appendChild(document.createTextNode('Already sent'))

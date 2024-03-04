@@ -64,7 +64,7 @@ app.hooks({
 })
 
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
-const orderPath = 'data/order'
+var orderPath = ''
 const orderXmlPath = orderPath + '/xml'
 const orderProcessedPath = orderPath + '/processed'
 const orderErrorPath = orderPath + '/error'
@@ -85,6 +85,9 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
+    //downloadXml({}, { query: { retailer: retailer, orderPath: orderPath, startsWith: 'ORDERS_' } })
+    orderPath = params.query.orderPath
+    const startsWith = params.query.startsWith
     try {
       const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
       const initialDir = sftpDataObj.INITIALDIRIN
@@ -102,7 +105,7 @@ class SftpServiceClass {
           item.type === '-' &&
           item.name.endsWith('.xml') &&
           item.modifyTime > olderThan &&
-          item.name.startsWith('ORDERS_')
+          item.name.startsWith(startsWith)
         )
       })
 

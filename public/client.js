@@ -4,6 +4,8 @@ import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.j
 
 console.log('Client.js loaded')
 
+const orderPath = 'data/order'
+
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
   localStorage.setItem('logo_retailer', urlLogo)
@@ -50,7 +52,7 @@ async function getRemoteXmlListToErp() {
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: retailer } })
+    .downloadXml({}, { query: { retailer: retailer, orderPath: orderPath, startsWith: 'ORDERS_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })

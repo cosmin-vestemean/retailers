@@ -26,12 +26,6 @@
           </a>
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
-            <button
-              id="preluareComenziBtn"
-              class="button ml-2 is-small is-info"
-            >
-              Preluare comenzi
-            </button>
             <button id="preluareFacturiBtn" class="button ml-2 is-small is-success">
               Preluare Facturi
             </button>
@@ -123,17 +117,12 @@
     <script type="module">
       import {
         openTab,
-        getRemoteXmlListToErp,
         getNDisplayS1Docs,
         getNDisplayOrders,
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
         sendAllFacturi
       } from './client.js'
-      //add onclick to preluareComenziBtn button id
-      document.getElementById('preluareComenziBtn').addEventListener('click', function () {
-        getRemoteXmlListToErp()
-      })
       //preluareFacturiBtn
       document.getElementById('preluareFacturiBtn').addEventListener('click', function () {
         getNDisplayS1Docs(1351, 712, 7121)

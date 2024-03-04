@@ -13,51 +13,49 @@
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item">
-          <img src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png" width="90" height="28">
+          <img
+            src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png"
+            width="90"
+            height="28"
+          />
           <!--add title-->
           <h1 class="title is-info">Retailers Integration</h1>
         </a>
-    
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
-    
+
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-    
-          <a class="navbar-item">
-            Documentation
-          </a>
-    
+          <a class="navbar-item"> Documentation </a>
+
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              More
-            </a>
-    
+            <a class="navbar-link"> More </a>
+
             <div class="navbar-dropdown">
-              <a class="navbar-item">
-                About
-              </a>
-              <a class="navbar-item">
-                Contact
-              </a>
-              <hr class="navbar-divider">
-              <a class="navbar-item">
-                Report an issue
-              </a>
+              <a class="navbar-item"> About </a>
+              <a class="navbar-item"> Contact </a>
+              <hr class="navbar-divider" />
+              <a class="navbar-item"> Report an issue </a>
             </div>
           </div>
+          <button id="preluareComenziBtn" class="button ml-2 is-small is-info">Preluare comenzi</button>
         </div>
-    
+
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
-                Log in
-              </a>
+              <a class="button is-primary"> Log in </a>
             </div>
           </div>
         </div>
@@ -85,16 +83,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html"
-              class="card-footer-item eMag"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html"
-              class="card-footer-item eMag"
-              >Configureaza</a
-            >
+            <a href="retailer_file_manager.html" class="card-footer-item eMag">File manager</a>
+            <a href="retailer_config.html" class="card-footer-item eMag">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -118,16 +108,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html"
-              class="card-footer-item supeco"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html"
-              class="card-footer-item supeco"
-              >Configureaza</a
-            >
+            <a href="retailer_file_manager.html" class="card-footer-item supeco">File manager</a>
+            <a href="retailer_config.html" class="card-footer-item supeco">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -151,16 +133,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html"
-              class="card-footer-item carrefour"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html"
-              class="card-footer-item carrefour"
-              >Configureaza</a
-            >
+            <a href="retailer_file_manager.html" class="card-footer-item carrefour">File manager</a>
+            <a href="retailer_config.html" class="card-footer-item carrefour">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -184,16 +158,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html"
-              class="card-footer-item cora"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html"
-              class="card-footer-item cora"
-              >Configureaza</a
-            >
+            <a href="retailer_file_manager.html" class="card-footer-item cora">File manager</a>
+            <a href="retailer_config.html" class="card-footer-item cora">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -220,16 +186,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html"
-              class="card-footer-item kaufland"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html"
-              class="card-footer-item kaufland"
-              >Configureaza</a
-            >
+            <a href="retailer_file_manager.html" class="card-footer-item kaufland">File manager</a>
+            <a href="retailer_config.html" class="card-footer-item kaufland">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -314,34 +272,41 @@
       </div>
     </div>
     <script type="module">
-      import { setRetailerId } from './client.js'
+      import { setRetailerId, getRemoteXmlListToErp } from './client.js'
+      //add onclick to preluareComenziBtn button id
+      document.getElementById('preluareComenziBtn').addEventListener('click', function () {
+        getRemoteXmlListToErp()
+      })
       //add to class eMag onclick event = setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
-      document.querySelectorAll('.eMag').forEach((el) => {
-        el.onclick = (e) => {
+      document.querySelectorAll('.eMag').forEach(el => {
+        el.onclick = e => {
           setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
         }
       })
       //supeco setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
-      document.querySelectorAll('.supeco').forEach((el) => {
-        el.onclick = (e) => {
+      document.querySelectorAll('.supeco').forEach(el => {
+        el.onclick = e => {
           setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
         }
       })
       //carrefour setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')
-      document.querySelectorAll('.carrefour').forEach((el) => {
-        el.onclick = (e) => {
-          setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')
+      document.querySelectorAll('.carrefour').forEach(el => {
+        el.onclick = e => {
+          setRetailerId(
+            11322,
+            'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'
+          )
         }
       })
       //cora setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
-      document.querySelectorAll('.cora').forEach((el) => {
-        el.onclick = (e) => {
+      document.querySelectorAll('.cora').forEach(el => {
+        el.onclick = e => {
           setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
         }
       })
       //kaufland setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
-      document.querySelectorAll('.kaufland').forEach((el) => {
-        el.onclick = (e) => {
+      document.querySelectorAll('.kaufland').forEach(el => {
+        el.onclick = e => {
           setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
         }
       })
