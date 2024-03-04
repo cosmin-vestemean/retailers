@@ -296,23 +296,7 @@ class SftpServiceClass {
         parseString(xmlClean, function (err, result) {
           json = result
         })
-        /*<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="C:/Users/rlixandru/Downloads/docxchange-message.xsd">
-	<MessageDate>2024-01-31</MessageDate>
-	<MessageTime>16:13:25</MessageTime>
-	<MessageOrigin>RO17275880</MessageOrigin>
-	<DocumentReference>18854</DocumentReference>
-	<DocumentUID>DX01_099_20240131_01007247</DocumentUID>
-	<SupplierReceiverCode>10011546</SupplierReceiverCode>
-	<DocumentResponse>ACCEPTAT</DocumentResponse>
-	<DocumentDetail>- -
-		ID document: DX01_099_20240131_01007247
-		Nume fisier: INVOIC_18854_VAT_RO25190857.xml
-		Status: Transmis la client
-		Mesaj: Document procesat de platforma DocXchange si livrat la client
-		Document processed by DocXchange platform and delivered to the customer
-</DocumentDetail>
-</DXMessage> */
+        console.log('json', json)
         var MessageDate = json.DXMessage.MessageDate[0]
         var MessageTime = json.DXMessage.MessageTime[0]
         var MessageOrigin = json.DXMessage.MessageOrigin[0]
