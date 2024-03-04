@@ -305,6 +305,10 @@ class SftpServiceClass {
         var MessageTime = json.DXMessage.MessageTime
         var MessageOrigin = json.DXMessage.MessageOrigin
         var DocumentReference = json.DXMessage.DocumentReference
+        //if DocumentReference is in this format: 'INVOIC_19362_VAT_RO25190857.xml' retain only the number
+        if (DocumentReference.includes('INVOIC_')) {
+          DocumentReference = DocumentReference.split('_')[1].split('_')[0]
+        }
         var DocumentUID = json.DXMessage.DocumentUID
         var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode
         var DocumentResponse = json.DXMessage.DocumentResponse
@@ -314,7 +318,8 @@ class SftpServiceClass {
           query: {
             sqlQuery:
               `SELECT A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
-              `  left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
+              ` left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and fprms=712 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' `
+              //` and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
           }
         })
         if (response.success) {
@@ -382,7 +387,7 @@ class SftpServiceClass {
             success: false,
             response:
               response +
-              ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}, ${MessageOrigin}`
+              ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}`
           })
           //move file to error folder
           if (!fs.existsSync(errorPath)) {
