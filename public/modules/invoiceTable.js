@@ -175,6 +175,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         messageDateData = aperakRes.data[0].MESSAGEDATE.split('T')[0]
         //add MESSAGETIME, time part
         var messageTimeData = aperakRes.data[0].MESSAGETIME.split('T')[1]
+        //split 22:26:22.000Z to 22:26:22
+        messageTimeData = messageTimeData.split('.')[0]
         messageDateData += ' ' + messageTimeData
         messageDate.innerHTML = messageDateData
       } else {
