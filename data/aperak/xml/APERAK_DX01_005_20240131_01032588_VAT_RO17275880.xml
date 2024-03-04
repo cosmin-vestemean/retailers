@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+	<MessageDate>2024-01-31</MessageDate>
+	<MessageTime>16:13:10</MessageTime>
+	<MessageOrigin>RO17275880</MessageOrigin>
+	<DocumentReference>Necunoscut</DocumentReference>
+	<DocumentUID>DX01_099_20240131_01007247</DocumentUID>
+	<SupplierReceiverCode>Necunoscut</SupplierReceiverCode>
+	<DocumentResponse>RECEPTIONAT</DocumentResponse>
+	<DocumentDetail>- - 
+ID document: DX01_099_20240131_01007247 
+Nume fisier: INVOIC_18854_VAT_RO25190857.xml
+Status: Primit de DX 
+Mesaj: Documentul a fost receptionat de platforma DocXchange
+The document has been received by DocXchange platform.</DocumentDetail>
+</DXMessage>

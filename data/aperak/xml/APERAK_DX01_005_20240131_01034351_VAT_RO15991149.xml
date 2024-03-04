@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+	<MessageDate>2024-01-31</MessageDate>
+	<MessageTime>16:20:49</MessageTime>
+	<MessageOrigin>RO15991149</MessageOrigin>
+	<DocumentReference>18853</DocumentReference>
+	<DocumentUID>DX01_099_20240131_01007246</DocumentUID>
+	<SupplierReceiverCode>10011546</SupplierReceiverCode>
+	<DocumentResponse>RECEPTIONAT</DocumentResponse>
+	<DocumentDetail>- - 
+ID document: DX01_099_20240131_01007246
+Nume fisier: null
+AS2MessageID: KAUFLAND-AS2-NEW-20240131-162039283-VuvP
+MessageDigestNotificationID: KAUFLAND-AS2-NEW-20240131-162039283-VuvP
+Status: Receptionat de Client
+Mesaj: Documentul a fost receptionat de catre client
+The document has been received by the customer.
+</DocumentDetail>
+</DXMessage>

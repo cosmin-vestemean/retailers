@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:///C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+	<MessageDate>2023-10-04</MessageDate>
+	<MessageTime>15:18:38</MessageTime>
+	<MessageOrigin>RO17275880</MessageOrigin>
+	<DocumentReference>INVOIC_16850_VAT_RO25190857.xml</DocumentReference>
+	<DocumentUID>DXDqGWNEPEcXJmVRGWbisJHQ</DocumentUID>
+	<SupplierReceiverCode>-</SupplierReceiverCode>
+	<DocumentResponse>RECEPTIONAT</DocumentResponse>
+	<DocumentDetail>- - ID document: DXDqGWNEPEcXJmVRGWbisJHQ Nume fisier:
+		INVOIC_16850_VAT_RO25190857.xml Status: Receptionat de destinatar / Received by recipient
+		Mesaj: Documentul a fost primit de cÄtre destinatar. The document has been received by the
+		recipient.</DocumentDetail>
+</DXMessage>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+	<MessageDate>2024-01-31</MessageDate>
+	<MessageTime>05:04:36</MessageTime>
+	<MessageOrigin>RO17275880</MessageOrigin>
+	<DocumentReference>DPR14834</DocumentReference>
+	<DocumentUID>DX01_099_20240131_01000455</DocumentUID>
+	<SupplierReceiverCode>RO25190857</SupplierReceiverCode>
+	<DocumentResponse>ACCEPTAT</DocumentResponse>
+	<DocumentDetail>- - 
+ID document: DX01_099_20240131_01000455 
+Nume fisier: INVOIC_1706670005767_INVOIC20240131DPR14834VATRO17275880_VAT_RO17275880.csv
+Status: Transmis la client 
+Mesaj: Document procesat de platforma DocXchange si livrat la client
+Document processed by DocXchange platform and delivered to the customer
+</DocumentDetail>
+</DXMessage>
