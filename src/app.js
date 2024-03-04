@@ -294,15 +294,12 @@ class SftpServiceClass {
         xmlClean = xmlClean.replace(/\ufeff/g, '')
         console.log('xmlClean', xmlClean)
         //parse xml to json
-        var json = null
-        parseString(xmlClean, { explicitArray: false }, (error, result) => {
-          if (error) {
-            throw new Error(error);
-          } else {
-            json = result;
-            console.log(result);
-          }
-        });
+        const json = await new Promise((resolve, reject) =>
+          parseString(xmlClean, { explicitArray: false }, (err, result) => {
+            if (err) reject(err)
+            else resolve(result)
+          })
+        )
         console.log('json', json)
         var MessageDate = json.DXMessage.MessageDate
         var MessageTime = json.DXMessage.MessageTime
@@ -324,55 +321,55 @@ class SftpServiceClass {
           })
           .then(async (result) => {
             console.log('getDataset1 result', result)
-
-            if (result.success) {
-              const findoc = result.data[0].FINDOC
-              const retailer = result.data[0].retailer
-              const xmlFilename = result.data[0].xmlFilename
-              const xmlSentDate = result.data[0].xmlSentDate
-              var dataToCccAperakTable = {
-                TRDR_RETAILER: retailer,
-                TRDR_CLIENT: 1,
-                FINDOC: findoc,
-                MESSAGEDATE: MessageDate,
-                MESSAGETIME: MessageTime,
-                MESSAGEORIGIN: MessageOrigin,
-                DOCUMENTREFERENCE: DocumentReference,
-                DOCUMENTUID: DocumentUID,
-                SUPPLIERRECEIVERCODE: SupplierReceiverCode,
-                DOCUMENTRESPONSE: DocumentResponse,
-                DOCUMENTDETAIL: DocumentDetail
-              }
-              if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
-              if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
-              console.log('data', dataToCccAperakTable)
-              const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
-              console.log('CCCAPERAK result', result)
-
-              if (result.CCCAPERAK) {
-                returnedData.push({ filename: filename, success: true, response: result })
-                //move file to processed folder
-                if (!fs.existsSync(processedPath)) {
-                  fs.mkdirSync(processedPath)
-                }
-                fs.renameSync(localPath, processedPath + '/' + filename)
-              } else {
-                returnedData.push({ filename: filename, success: false, response: result })
-                //move file to error folder
-                if (!fs.existsSync(errorPath)) {
-                  fs.mkdirSync(errorPath)
-                }
-                fs.renameSync(localPath, errorPath + '/' + filename)
-              }
-            } else {
-              returnedData.push({ filename: filename, success: false, response: result })
-              //move file to error folder
-              if (!fs.existsSync(errorPath)) {
-                fs.mkdirSync(errorPath)
-              }
-              fs.renameSync(localPath, errorPath + '/' + filename)
-            }
           })
+
+        if (result.success) {
+          const findoc = result.data[0].FINDOC
+          const retailer = result.data[0].retailer
+          const xmlFilename = result.data[0].xmlFilename
+          const xmlSentDate = result.data[0].xmlSentDate
+          var dataToCccAperakTable = {
+            TRDR_RETAILER: retailer,
+            TRDR_CLIENT: 1,
+            FINDOC: findoc,
+            MESSAGEDATE: MessageDate,
+            MESSAGETIME: MessageTime,
+            MESSAGEORIGIN: MessageOrigin,
+            DOCUMENTREFERENCE: DocumentReference,
+            DOCUMENTUID: DocumentUID,
+            SUPPLIERRECEIVERCODE: SupplierReceiverCode,
+            DOCUMENTRESPONSE: DocumentResponse,
+            DOCUMENTDETAIL: DocumentDetail
+          }
+          if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
+          if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
+          console.log('data', dataToCccAperakTable)
+          const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+          console.log('CCCAPERAK result', result)
+
+          if (result.CCCAPERAK) {
+            returnedData.push({ filename: filename, success: true, response: result })
+            //move file to processed folder
+            if (!fs.existsSync(processedPath)) {
+              fs.mkdirSync(processedPath)
+            }
+            fs.renameSync(localPath, processedPath + '/' + filename)
+          } else {
+            returnedData.push({ filename: filename, success: false, response: result })
+            //move file to error folder
+            if (!fs.existsSync(errorPath)) {
+              fs.mkdirSync(errorPath)
+            }
+            fs.renameSync(localPath, errorPath + '/' + filename)
+          }
+        } else {
+          returnedData.push({ filename: filename, success: false, response: result })
+          //move file to error folder
+          if (!fs.existsSync(errorPath)) {
+            fs.mkdirSync(errorPath)
+          }
+          fs.renameSync(localPath, errorPath + '/' + filename)
+        }
       }
     }
     return returnedData
