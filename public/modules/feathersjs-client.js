@@ -55,6 +55,11 @@ client.use('sftp', socketClient.service('sftp'), {
   client.use('getInvoiceDom', socketClient.service('getInvoiceDom'), {
     methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
   })
+
+  //CCCAPERAK
+  client.use('CCCAPERAK', socketClient.service('CCCAPERAK'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
   
   client.service('sftp').on('uploadResult', (data) => {
     console.log('uploadResult', data)

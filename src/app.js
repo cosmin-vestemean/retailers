@@ -64,10 +64,6 @@ app.hooks({
 })
 
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
-var orderPath = ''
-const orderXmlPath = orderPath + '/xml'
-const orderProcessedPath = orderPath + '/processed'
-const orderErrorPath = orderPath + '/error'
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
 
@@ -85,8 +81,8 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
-    //downloadXml({}, { query: { retailer: retailer, orderPath: orderPath, startsWith: 'ORDERS_' } })
-    orderPath = params.query.orderPath
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
     const startsWith = params.query.startsWith
     try {
       const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
@@ -124,10 +120,10 @@ class SftpServiceClass {
       for (const item of files) {
         if (count < limit) {
           const filename = item.name
-          const localPath = orderXmlPath + '/' + filename
+          const localPath = xmlPath + '/' + filename
 
-          if (!fs.existsSync(orderXmlPath)) {
-            fs.mkdirSync(orderXmlPath)
+          if (!fs.existsSync(xmlPath)) {
+            fs.mkdirSync(xmlPath)
           }
 
           const dst = fs.createWriteStream(localPath)
@@ -181,9 +177,13 @@ class SftpServiceClass {
   }
 
   async storeXmlInDB(data, params) {
-    var retailer = params.query.retailer
+    const retailer = params.query.retailer
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
+    const processedPath = xmlPath + '/processed'
+    const errorPath = xmlPath + '/error'
     console.log('storing xml in S1 DB for retailer', retailer)
-    const folderPath = orderXmlPath
+    const folderPath = xmlPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
@@ -203,11 +203,11 @@ class SftpServiceClass {
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-        //parse xml to json        
+        //parse xml to json
         var json = null
- /*        parseString(xmlClean, function (err, result) {
+        parseString(xmlClean, function (err, result) {
           json = result
-        }) */
+        })
         var endpointID = json.Order.DeliveryParty[0].EndpointID[0]
         console.log('endpointID', endpointID)
         //getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
@@ -216,14 +216,17 @@ class SftpServiceClass {
               .service('getDataset')
               .find({
                 query: {
-                  sqlQuery: "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" + endpointID + "'"
+                  sqlQuery:
+                    "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
+                    endpointID +
+                    "'"
                 }
               })
               .then((result) => {
                 console.log('getDataset result', result)
                 return result
               })
-          : null;
+          : null
         console.log('trdr', trdr)
         if (trdr.data) {
           retailer = parseInt(trdr.data)
@@ -242,7 +245,6 @@ class SftpServiceClass {
           if (result.success) {
             returnedData.push({ filename: filename, success: true, response: result })
             //move file to processed folder
-            const processedPath = orderProcessedPath
             if (!fs.existsSync(processedPath)) {
               fs.mkdirSync(processedPath)
             }
@@ -250,7 +252,6 @@ class SftpServiceClass {
           } else {
             returnedData.push({ filename: filename, success: false, response: result })
             //move file to error folder
-            const errorPath = orderErrorPath
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
             }
@@ -267,6 +268,102 @@ class SftpServiceClass {
     }
 
     console.log('List of inserted files', returnedData)
+    return returnedData
+  }
+
+  async storeAperakInErpMessages(data, params) {
+    const retailer = params.query.retailer
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
+    const processedPath = xmlPath + '/processed'
+    const errorPath = xmlPath + '/error'
+    const folderPath = aperakPath
+    const files = fs.readdirSync(folderPath)
+    var returnedData = []
+
+    for (const file of files) {
+      const filename = file
+      if (filename.endsWith('.xml')) {
+        const localPath = folderPath + '/' + filename
+        console.log('localPath', localPath)
+        const xml = fs.readFileSync(localPath, 'utf8')
+        //remove xml declaration
+        let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+        //remove unneeded characters from xml
+        xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
+        //create dom to parse
+        var dom = new DOMParser().parseFromString(xmlClean, 'text/xml')
+        var MessageDate = dom.getElementsByTagName('MessageDate')[0].textContent
+        var MessageTime = dom.getElementsByTagName('MessageTime')[0].textContent
+        var MessageOrigin = dom.getElementsByTagName('MessageOrigin')[0].textContent
+        var DocumentReference = dom.getElementsByTagName('DocumentReference')[0].textContent
+        var DocumentUID = dom.getElementsByTagName('DocumentUID')[0].textContent
+        var SupplierReceiverCode = dom.getElementsByTagName('SupplierReceiverCode')[0].textContent
+        var DocumentResponse = dom.getElementsByTagName('DocumentResponse')[0].textContent
+        var DocumentDetail = dom.getElementsByTagName('DocumentDetail')[0].textContent
+        //getDataset1 returns success, data, total or success, error
+        await app
+          .service('getDataset1')
+          .find({
+            query: {
+              sqlQuery:
+                `SELECT A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
+                `  left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and A.FINCODE LIKE '%${DocumentReference}%' AND A.TRNDATE = '${MessageDate}' and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
+            }
+          })
+          .then(async (result) => {
+            console.log('getDataset1 result', result)
+
+            if (result.success) {
+              const findoc = result.data[0].FINDOC
+              const retailer = result.data[0].retailer
+              const xmlFilename = result.data[0].xmlFilename
+              const xmlSentDate = result.data[0].xmlSentDate
+              var dataToCccAperakTable = {
+                TRDR_RETAILER: retailer,
+                TRDR_CLIENT: 1,
+                FINDOC: findoc,
+                MESSAGEDATE: MessageDate,
+                MESSAGETIME: MessageTime,
+                MESSAGEORIGIN: MessageOrigin,
+                DOCUMENTREFERENCE: DocumentReference,
+                DOCUMENTUID: DocumentUID,
+                SUPPLIERRECEIVERCODE: SupplierReceiverCode,
+                DOCUMENTRESPONSE: DocumentResponse,
+                DOCUMENTDETAIL: DocumentDetail
+              }
+              if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
+              if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
+              console.log('data', dataToCccAperakTable)
+              const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+              console.log('CCCAPERAK result', result)
+
+              if (result.CCCAPERAK) {
+                returnedData.push({ filename: filename, success: true, response: result })
+                //move file to processed folder
+                if (!fs.existsSync(processedPath)) {
+                  fs.mkdirSync(processedPath)
+                }
+                fs.renameSync(localPath, processedPath + '/' + filename)
+              } else {
+                returnedData.push({ filename: filename, success: false, response: result })
+                //move file to error folder
+                if (!fs.existsSync(errorPath)) {
+                  fs.mkdirSync(errorPath)
+                }
+                fs.renameSync(localPath, errorPath + '/' + filename)
+              }
+            } else {
+              returnedData.push({ filename: filename, success: false, response: result })
+              //move file to error folder
+              if (!fs.existsSync(errorPath)) {
+                fs.mkdirSync(errorPath)
+              }
+              fs.renameSync(localPath, errorPath + '/' + filename)
+            }
+          })
+      }
+    }
     return returnedData
   }
 

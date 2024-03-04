@@ -5,6 +5,7 @@ import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.j
 console.log('Client.js loaded')
 
 const orderPath = 'data/order'
+const aperakPath = 'data/aperak'
 
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
@@ -52,7 +53,7 @@ async function getRemoteXmlListToErp() {
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: retailer, orderPath: orderPath, startsWith: 'ORDERS_' } })
+    .downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })
@@ -60,9 +61,40 @@ async function getRemoteXmlListToErp() {
   //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .storeXmlInDB({}, { query: { retailer: retailer } })
+    .storeXmlInDB({}, { query: { retailer: retailer, rootPath: orderPath } })
     .then((res) => {
       console.log('storeXmlInDB', res)
+    })
+
+  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
+  await getNDisplayOrders(retailer)
+  //5. change document.getElementById('preluareComenziBtn') text according to stage of process
+  document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
+}
+
+async function getRemoteAperakXmlListToErp() {
+  var retailer
+  try {
+    retailer = parseInt(localStorage.getItem('trdr_retailer'))
+  } catch (err) {
+    alert('Please select a retailer')
+    console.log('Please select a retailer')
+    return
+  }
+  //change button text
+  document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
+  await client
+    .service('sftp')
+    .downloadXml({}, { query: { retailer: retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
+    .then((res) => {
+      console.log('downloadXml', res)
+    })
+
+  await client
+    .service('sftp')
+    .storeAperakInErpMessages({}, { query: { retailer: retailer, rootPath: aperakPath } })
+    .then((res) => {
+      console.log('storeAperakInMessages', res)
     })
 
   //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
