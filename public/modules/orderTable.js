@@ -167,6 +167,16 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         sendOrderButton.innerHTML = 'Order sent'
       } else {
         findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        //findoc: already sent by other meanse check, for user to indicate that the order was sent
+        var checkbox = document.createElement('input')
+        checkbox.type = 'checkbox'
+        checkbox.id = xml.XMLFILENAME + '_alreadySent'
+        checkbox.className = 'ml-2'
+        var label = document.createElement('label')
+        label.htmlFor = xml.XMLFILENAME + '_alreadySent'
+        label.appendChild(document.createTextNode('Already sent'))
+        findoc.appendChild(checkbox)
+        findoc.appendChild(label)
         //add a checkbox to actions cell
         var input = document.createElement('input')
         input.type = 'checkbox'
@@ -455,7 +465,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
       console.log('date logare', res)
       //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
       //var url = res.data[0].WSURL
-      var url = testUrl;
+      var url = testUrl
       var username = res.data[0].WSUSER
       var password = res.data[0].WSPASS
       await client
