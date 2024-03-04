@@ -280,8 +280,14 @@ class SftpServiceClass {
     const folderPath = aperakPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
+    var filesCount = 0
 
     for (const file of files) {
+      filesCount++
+      //get just one file for testing
+      if (filesCount > 1) {
+        break
+      }
       const filename = file
       if (filename.endsWith('.xml')) {
         const localPath = folderPath + '/' + filename
