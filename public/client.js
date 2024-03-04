@@ -72,7 +72,7 @@ async function getRemoteXmlListToErp() {
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
 }
 
-async function getRemoteAperakXmlListToErp() {
+export async function getRemoteAperakXmlListToErp() {
   var retailer
   try {
     retailer = parseInt(localStorage.getItem('trdr_retailer'))

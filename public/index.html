@@ -273,10 +273,14 @@
       </div>
     </div>
     <script type="module">
-      import { setRetailerId, getRemoteXmlListToErp } from './client.js'
+      import { setRetailerId, getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
+      })
+      //add onclick to preluareAperakBtn button id
+      document.getElementById('preluareAperakBtn').addEventListener('click', function () {
+        getRemoteAperakXmlListToErp()
       })
       //add to class eMag onclick event = setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
       document.querySelectorAll('.eMag').forEach(el => {
