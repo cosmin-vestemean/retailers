@@ -417,7 +417,7 @@ class SftpServiceClass {
 
 //register the service
 app.use('sftp', new SftpServiceClass(), {
-  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
+  methods: ['downloadXml', 'storeXmlInDB', 'storeAperakInErpMessages', 'uploadXml'],
   events: ['uploadResult']
 })
 
