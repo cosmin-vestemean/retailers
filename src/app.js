@@ -344,8 +344,8 @@ class SftpServiceClass {
             }
             const findoc = response.data[0].FINDOC
             const retailer = response.data[0].retailer
-            const xmlFilename = response.data[0].xmlFilename
-            const xmlSentDate = response.data[0].xmlSentDate
+            const xmlFilename = response.data[0].xmlFilename || null
+            const xmlSentDate = response.data[0].xmlSentDate || null
             var dataToCccAperakTable = {
               TRDR_RETAILER: retailer,
               TRDR_CLIENT: 1,
