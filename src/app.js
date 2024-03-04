@@ -292,16 +292,35 @@ class SftpServiceClass {
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-        //create dom to parse
-        var dom = new DOMParser().parseFromString(xmlClean, 'text/xml')
-        var MessageDate = dom.getElementsByTagName('MessageDate')[0].textContent
-        var MessageTime = dom.getElementsByTagName('MessageTime')[0].textContent
-        var MessageOrigin = dom.getElementsByTagName('MessageOrigin')[0].textContent
-        var DocumentReference = dom.getElementsByTagName('DocumentReference')[0].textContent
-        var DocumentUID = dom.getElementsByTagName('DocumentUID')[0].textContent
-        var SupplierReceiverCode = dom.getElementsByTagName('SupplierReceiverCode')[0].textContent
-        var DocumentResponse = dom.getElementsByTagName('DocumentResponse')[0].textContent
-        var DocumentDetail = dom.getElementsByTagName('DocumentDetail')[0].textContent
+        var json = null
+        parseString(xmlClean, function (err, result) {
+          json = result
+        })
+        /*<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="C:/Users/rlixandru/Downloads/docxchange-message.xsd">
+	<MessageDate>2024-01-31</MessageDate>
+	<MessageTime>16:13:25</MessageTime>
+	<MessageOrigin>RO17275880</MessageOrigin>
+	<DocumentReference>18854</DocumentReference>
+	<DocumentUID>DX01_099_20240131_01007247</DocumentUID>
+	<SupplierReceiverCode>10011546</SupplierReceiverCode>
+	<DocumentResponse>ACCEPTAT</DocumentResponse>
+	<DocumentDetail>- -
+		ID document: DX01_099_20240131_01007247
+		Nume fisier: INVOIC_18854_VAT_RO25190857.xml
+		Status: Transmis la client
+		Mesaj: Document procesat de platforma DocXchange si livrat la client
+		Document processed by DocXchange platform and delivered to the customer
+</DocumentDetail>
+</DXMessage> */
+        var MessageDate = json.DXMessage.MessageDate[0]
+        var MessageTime = json.DXMessage.MessageTime[0]
+        var MessageOrigin = json.DXMessage.MessageOrigin[0]
+        var DocumentReference = json.DXMessage.DocumentReference[0]
+        var DocumentUID = json.DXMessage.DocumentUID[0]
+        var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode[0] || ''
+        var DocumentResponse = json.DXMessage.DocumentResponse[0]
+        var DocumentDetail = json.DXMessage.DocumentDetail[0]
         //getDataset1 returns success, data, total or success, error
         await app
           .service('getDataset1')
