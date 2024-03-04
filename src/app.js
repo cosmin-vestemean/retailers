@@ -293,10 +293,16 @@ class SftpServiceClass {
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
         console.log('xmlClean', xmlClean)
+        //parse xml to json
         var json = null
-        parseString(xmlClean, function (err, result) {
-          json = result
-        })
+        parseString(data, { explicitArray: false }, (error, result) => {
+          if (error) {
+            throw new Error(error);
+          } else {
+            json = result;
+            console.log(result);
+          }
+        });
         console.log('json', json)
         var MessageDate = json.DXMessage.MessageDate[0]
         var MessageTime = json.DXMessage.MessageTime[0]
