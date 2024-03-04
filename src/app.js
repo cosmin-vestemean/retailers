@@ -319,7 +319,11 @@ class SftpServiceClass {
         })
         if (response.success) {
           if (response.total === 0) {
-            returnedData.push({ filename: filename, success: false, response: response })
+            returnedData.push({
+              filename: filename,
+              success: false,
+              response: response + ' No document found in ERP'
+            })
             //move file to error folder
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
@@ -373,7 +377,7 @@ class SftpServiceClass {
             }
           }
         } else {
-          returnedData.push({ filename: filename, success: false, response: result })
+          returnedData.push({ filename: filename, success: false, response: response })
           //move file to error folder
           if (!fs.existsSync(errorPath)) {
             fs.mkdirSync(errorPath)
