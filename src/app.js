@@ -278,7 +278,7 @@ class SftpServiceClass {
     const xmlPath = rootPath + '/xml'
     const processedPath = xmlPath + '/processed'
     const errorPath = xmlPath + '/error'
-    const folderPath = aperakPath
+    const folderPath = xmlPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
