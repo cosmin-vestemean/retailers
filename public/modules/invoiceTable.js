@@ -168,18 +168,38 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     //set width
     lastDXResponse.style.width = '300px'
     if (aperakRes.total > 0) {
-        //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
-        var article = document.createElement('article')
-        article.className = 'message is-small'
-        var header = document.createElement('div')
-        header.className = 'message-header'
-        header.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + ' ' + aperakRes.data[0].DOCUMENTUID + ' ' + aperakRes.data[0].DOCUMENTRESPONSE
-        article.appendChild(header)
-        var body = document.createElement('div')
-        body.className = 'message-body'
-        body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
-        article.appendChild(body)
-        lastDXResponse.appendChild(article)
+      //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
+      var article = document.createElement('article')
+      article.className = 'message is-small'
+      var header = document.createElement('div')
+      header.className = 'message-header'
+      //on click show hide body
+      header.onclick = function () {
+        var body = article.getElementsByClassName('message-body')[0]
+        if (body.style.display == 'none') {
+          body.style.display = 'block'
+        } else {
+          body.style.display = 'none'
+        }
+      header.innerHTML =
+        '<span class="tag is-info mx-2">' +
+        aperakRes.data[0].DOCUMENTREFERENCE +
+        '</span><span class="mx-2">' +
+        aperakRes.data[0].DOCUMENTUID +
+        '</span><span class="tag is-success mx-2">' +
+        aperakRes.data[0].DOCUMENTRESPONSE +
+        '</span>'
+      article.appendChild(header)
+      var body = document.createElement('div')
+      body.className = 'message-body'
+      //hidden by default
+      body.style.display = 'none'
+      body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace(
+        'Mesaj',
+        '<br>Mesaj'
+      )
+      article.appendChild(body)
+      lastDXResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
