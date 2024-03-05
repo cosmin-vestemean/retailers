@@ -190,11 +190,11 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         article.className = 'message is-info'
         var header = document.createElement('div')
         header.className = 'message-header'
-        header.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE
+        header.innerHTML = '<span>'+aperakRes.data[0].DOCUMENTREFERENCE + '</span><span class="tag is-primary ml-2">' + aperakRes.data[0].DOCUMENTUID + '</span><span class="tag is-success ml-2">' + aperakRes.data[0].DOCUMENTRESPONSE + '</span>'
         article.appendChild(header)
         var body = document.createElement('div')
         body.className = 'message-body'
-        body.innerHTML = aperakRes.data[0].DOCUMENTUID + '<br>' + aperakRes.data[0].DOCUMENTRESPONSE + '<br>' + aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
+        body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
         article.appendChild(body)
         lastDXTResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
