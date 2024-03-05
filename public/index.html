@@ -78,16 +78,17 @@
         ]
 
         // Generate the HTML for each card and add it to the DOM
-        for (var i = 0; i < retailers.length; i++) {
-          //4 cards per row between <div class="columns"></div>
-          if (i % 4 === 0) {
-            document.getElementById('cardsContainer').innerHTML += '<div class="columns">'
+        for (var i = 0; i < retailers.length; i = i + 4) {
+          const row = document.createElement('div')
+          row.className = 'columns'
+          for (var j = i; j < i + 4; j++) {
+            if (j < retailers.length) {
+              const retailer = retailers[j]
+              const card = retailer.getCard()
+              row.appendChild(card)
+            }
           }
-          document.getElementById('cardsContainer').innerHTML += retailers[i].getCardHtml()
-          //4 cards per row between <div class="columns"></div>
-          if (i % 4 === 3) {
-            document.getElementById('cardsContainer').innerHTML += '</div>'
-          }
+          document.getElementById('cardsContainer').appendChild(row)
         }
       </script>
     </div>
