@@ -64,14 +64,8 @@ async function getRemoteXmlListToErp() {
 }
 
 export async function getRemoteAperakXmlListToErp() {
-  var retailer
-  try {
-    retailer = trdrRetailerFromUrl
-  } catch (err) {
-    alert('Please select a retailer')
-    console.log('Retailer 11639 selected by default')
-    retailer = 11639
-  }
+  var retailer = trdrRetailerFromUrl ? trdrRetailerFromUrl : 11639
+  
   //change button text
   document.getElementById('preluareAperakBtn').innerHTML = 'Please wait...'
   await client
