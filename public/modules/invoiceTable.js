@@ -165,6 +165,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     })
     console.log('response', aperakRes)
     var lastDXResponse = tr.insertCell()
+    //set width
+    lastDXResponse.style.width = '300px'
     if (aperakRes.total > 0) {
         //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
         var article = document.createElement('article')
