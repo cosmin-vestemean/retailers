@@ -174,7 +174,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         '</span><br><span class="is-success">' +
         aperakRes.data[0].DOCUMENTRESPONSE +
         '</span><br>' +
-        aperakRes.data[0].DOCUMENTDETAIL
+        //aperakRes.data[0].DOCUMENTDETAIL; replace Status word with <br> and Status word. Same for Mesaj
+        aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
