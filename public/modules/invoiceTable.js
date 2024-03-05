@@ -186,7 +186,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         span4.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
         lastDXTResponse.appendChild(span4) */
         //rewrite the above with article specific tags
-        var article = document.createElement('article')
+        var article = document.createElement('article is-narrow')
         article.className = 'message is-info'
         var header = document.createElement('div')
         header.className = 'message-header'
