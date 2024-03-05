@@ -167,7 +167,14 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
       lastDXTResponse.innerHTML =
-        aperakRes.data[0].DOCUMENTRESPONSE + '<br>' + aperakRes.data[0].DOCUMENTDETAIL
+        '<i class="is-info">' +
+        aperakRes.data[0].DOCUMENTREFERENCE +
+        '</i><br><i class="is-primary">' +
+        aperakRes.data[0].DOCUMENTUID +
+        '</i><br><i class="is-success">' +
+        aperakRes.data[0].DOCUMENTRESPONSE +
+        '</i><br>' +
+        aperakRes.data[0].DOCUMENTDETAIL
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
@@ -182,15 +189,9 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       } else {
         messageDateData = ''
       }
-      //DOCUMENTREFERENCE and DOCUMENTUID
-      var documentReference = tr.insertCell()
-      documentReference.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + '<br>' + aperakRes.data[0].DOCUMENTUID  
-      //MESSAGEORIGIN
       var messageOrigin = tr.insertCell()
-      messageOrigin.innerHTML = aperakRes.data[0].MESSAGEORIGIN
-      //SUPPLIERRECEIVERCODE
-      var supplierReceiverCode = tr.insertCell()
-      supplierReceiverCode.innerHTML = aperakRes.data[0].SUPPLIERRECEIVERCODE
+      messageOrigin.innerHTML =
+        aperakRes.data[0].MESSAGEORIGIN + '<br>' + aperakRes.data[0].SUPPLIERRECEIVERCODE
     }
   })
 }
