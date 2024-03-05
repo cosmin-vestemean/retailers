@@ -85,10 +85,12 @@
             if (j < retailers.length) {
               const retailer = retailers[j]
               const card = retailer.getCardHtml()
-              row.appendChild(card)
+              //row.appendChild(card)
+              //Failed to execute 'appendChild' on 'Node': parameter 1 is not of type 'Node'.
+              row.innerHTML += card
             }
           }
-          document.getElementById('cardsContainer').appendChild(row)
+          document.getElementById('cardsContainer').innerHTML += row.outerHTML
         }
       </script>
     </div>
