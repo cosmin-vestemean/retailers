@@ -166,7 +166,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
         var lastDXTResponse = tr.insertCell()
-        lastDXTResponse.className = 'is-2'
+        lastDXTResponse.className = 'column is-one-quarter'
         //add span for each field
         var span1 = document.createElement('span')
         span1.className = 'tag is-info'
