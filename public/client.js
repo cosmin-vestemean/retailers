@@ -156,10 +156,15 @@ document.addEventListener('keydown', function (event) {
 })
 
 window.onload = function () {
+  if (trdrRetailerFromUrl) {
+    getRetailerName(trdrRetailerFromUrl)
+  }
+}
+
+function getRetailerName(trdr) {
   var params = {}
   params['query'] = {}
-  params['query']['sqlQuery'] =
-    'select name from trdr where sodtype=13 and trdr=' + trdrRetailerFromUrl
+  params['query']['sqlQuery'] = 'select name from trdr where sodtype=13 and trdr=' + trdr
   client
     .service('getDataset')
     .find(params)
