@@ -166,9 +166,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
         var lastDXTResponse = tr.insertCell()
-        lastDXTResponse.className = 'rows is-one-quarter'
-        //add span for each field
-        var span1 = document.createElement('div')
+        /* var span1 = document.createElement('div')
         span1.className = 'row tag is-info'
         span1.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE
         lastDXTResponse.appendChild(span1)
@@ -186,7 +184,19 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         var span4 = document.createElement('span')
         span4.className = 'row tag'
         span4.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
-        lastDXTResponse.appendChild(span4)
+        lastDXTResponse.appendChild(span4) */
+        //rewrite the above with article specific tags
+        var article = document.createElement('article')
+        article.className = 'message is-info'
+        var header = document.createElement('div')
+        header.className = 'message-header'
+        header.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE
+        article.appendChild(header)
+        var body = document.createElement('div')
+        body.className = 'message-body'
+        body.innerHTML = aperakRes.data[0].DOCUMENTUID + '<br>' + aperakRes.data[0].DOCUMENTRESPONSE + '<br>' + aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
+        article.appendChild(body)
+        lastDXTResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
