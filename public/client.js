@@ -11,7 +11,7 @@ const aperakPath = 'data/aperak'
 //get trdr and logo from url
 var url = new URL(window.location.href)
 console.log('url', url)
-export const trdrRetailerFromUrl = parseInt(url.searchParams.get('tdr'))
+export const trdrRetailerFromUrl = parseInt(url.searchParams.get('trdr'))
 export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
 async function getXmlListFromErp(retailer) {
