@@ -63,7 +63,7 @@
       </div>
     </nav>
     <!-- begin list of cards -->
-    <div id="cardsContainer" class="columns">
+    <div id="cardsContainer">
       <script type="module">
         import { Retailer } from './modules/retailer.js'
 
@@ -78,249 +78,18 @@
         ]
 
         // Generate the HTML for each card and add it to the DOM
-        retailers.forEach(retailer => {
-          const cardHtml = retailer.getHtml()
-          document.querySelector('#cardsContainer').innerHTML += cardHtml
-        })
+        for (var i = 0; i < retailers.length; i++) {
+          //4 cards per row between <div class="columns">
+          if (i % 4 === 0) {
+            document.getElementById('cardsContainer').innerHTML += '<div class="columns">'
+          }
+          document.getElementById('cardsContainer').innerHTML += retailers[i].getCardHtml()
+          //4 cards per row between </div>
+          if (i % 4 === 3) {
+            document.getElementById('cardsContainer').innerHTML += '</div>'
+          }
+        }
       </script>
-      <!-- <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'"
-              class="card-footer-item eMag"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'"
-              class="card-footer-item eMag"
-              >Configureaza</a
-            >
-          </footer>
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fcb900"
-                src="https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'"
-              class="card-footer-item supeco"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'"
-              class="card-footer-item supeco"
-              >Configureaza</a
-            >
-          </footer>
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'"
-              class="card-footer-item carrefour"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'"
-              class="card-footer-item carrefour"
-              >Configureaza</a
-            >
-          </footer>
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'"
-              class="card-footer-item cora"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'"
-              class="card-footer-item cora"
-              >Configureaza</a
-            >
-          </footer>
-        </div>
-      </div> -->
-    </div>
-    <!-- next 3 cards -->
-    <div class="columns">
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <footer class="card-footer">
-            <a href="#" class="card-footer-item">Statistici</a>
-            <a
-              href="retailer_file_manager.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'"
-              class="card-footer-item kaufland"
-              >File manager</a
-            >
-            <a
-              href="retailer_config.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'"
-              class="card-footer-item kaufland"
-              >Configureaza</a
-            >
-          </footer>
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Penny-Logo.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #e70000"
-                src="https://www.profi.ro/wp-content/uploads/2022/06/profi-logo-nou.png"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <!-- <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="#" class="card-footer-item">File manager</a>
-              <a href="#" class="card-footer-item">Configureaza</a>
-            </footer> -->
-        </div>
-      </div>
-      <div class="column coumn-is-third">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-128x128">
-              <img
-                style="background-color: #fff"
-                src="https://auchan.vtexassets.com/assets/vtex/assets-builder/auchan.store-theme/1.0.16/header/logo___b12269ef7e65e8c49c7c5dac38dd7b92.svg"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              44 comenzii procesate<br />
-              43 facturi emise<br />
-              Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
-            </div>
-          </div>
-          <!-- <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="#" class="card-footer-item">File manager</a>
-              <a href="#" class="card-footer-item">Configureaza</a>
-            </footer> -->
-        </div>
-      </div>
     </div>
     <script type="module">
       import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
