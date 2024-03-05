@@ -181,6 +181,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         } else {
           body.style.display = 'none'
         }
+      }
       header.innerHTML =
         '<span class="tag is-info mx-2">' +
         aperakRes.data[0].DOCUMENTREFERENCE +
