@@ -155,6 +155,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var checkbox = document.createElement('input')
       checkbox.type = 'checkbox'
       checkbox.readOnly = true
+      //hidden by default
+      checkbox.style.display = 'none'
       checkbox.className = 'trimisCheckbox'
       trimis.appendChild(checkbox)
       //create checlbox already sent  by other means
