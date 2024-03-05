@@ -166,31 +166,12 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
         var lastDXTResponse = tr.insertCell()
-        /* var span1 = document.createElement('div')
-        span1.className = 'row tag is-info'
-        span1.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE
-        lastDXTResponse.appendChild(span1)
-        lastDXTResponse.appendChild(document.createElement('br'))
-        var span2 = document.createElement('span')
-        span2.className = 'row tag is-primary'
-        span2.innerHTML = aperakRes.data[0].DOCUMENTUID
-        lastDXTResponse.appendChild(span2)
-        lastDXTResponse.appendChild(document.createElement('br'))
-        var span3 = document.createElement('span')
-        span3.className = 'row tag is-success'
-        span3.innerHTML = aperakRes.data[0].DOCUMENTRESPONSE
-        lastDXTResponse.appendChild(span3)
-        lastDXTResponse.appendChild(document.createElement('br'))
-        var span4 = document.createElement('span')
-        span4.className = 'row tag'
-        span4.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
-        lastDXTResponse.appendChild(span4) */
-        //rewrite the above with article specific tags
-        var article = document.createElement('article is-narrow')
+        //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
+        var article = document.createElement('article')
         article.className = 'message is-info'
         var header = document.createElement('div')
         header.className = 'message-header'
-        header.innerHTML = '<span>'+aperakRes.data[0].DOCUMENTREFERENCE + '</span><span class="tag is-primary ml-2">' + aperakRes.data[0].DOCUMENTUID + '</span><span class="tag is-success ml-2">' + aperakRes.data[0].DOCUMENTRESPONSE + '</span>'
+        header.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + ' ' + aperakRes.data[0].DOCUMENTUID + ' ' + aperakRes.data[0].DOCUMENTRESPONSE
         article.appendChild(header)
         var body = document.createElement('div')
         body.className = 'message-body'
