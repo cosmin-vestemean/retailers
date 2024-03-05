@@ -257,42 +257,21 @@ async function toggleFacturiNetrimise() {
   var facturiTrimise = document.getElementById('facturiTrimise')
   var table = document.getElementById('facturiTableBody')
   if (facturiTrimise.checked) {
-    const nrFacturi = table.getElementsByTagName('tr').length
-    var nrTrimise = 0
-    //show only rows with cell class="trimis" innerHTML empty if checkbox is checked, else show all rows
+    //hide rows with cell class trimis and checkbox trimisCheckbox is checked
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      var cell = row.getElementsByClassName('trimis')[0]
-      //contains <i class="fas fa-xl fa-check-circle has-text-danger">
-      if (cell.innerHTML.includes('fa-check-circle')) {
-        row.style.display = 'none'
-        nrTrimise++
+      //get checkbox with class trimisCheckbox
+      var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+      //if checked, hide row
+      if (trimisCheckbox.checked) {
+        rows[i].style.display = 'none'
       }
     }
-    if (nrFacturi > 0 && nrTrimise == nrFacturi) {
-      //alert('Toate facturile au fost trimise')
-      //write on the facturiTableBody if table has rows, even if they are hidden
-      var tr = table.insertRow()
-      var td = tr.insertCell()
-      td.innerHTML = 'Toate facturile au fost trimise'
-      td.colSpan = 9
-      td.classList.add('alertMesssage')
-      td.style.textAlign = 'center'
-      td.style.color = 'green'
-      td.style.fontWeight = 'bold'
-      td.style.fontSize = '20px'
-    }
   } else {
+    //show all rows
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
-      var row = rows[i]
-      row.style.display = ''
-    }
-    //find td class="alertMesssage" and remove it
-    var alertMessage = table.getElementsByClassName('alertMesssage')[0]
-    if (alertMessage) {
-      alertMessage.remove()
+      rows[i].style.display = ''
     }
   }
 }

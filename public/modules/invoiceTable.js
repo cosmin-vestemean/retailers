@@ -121,11 +121,23 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     trimis.className = 'trimis'
     //trimis.innerHTML = row.CCCXMLSendDate
     if (row.CCCXMLSendDate) {
-      trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
+      //trimis.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i>  ' + row.CCCXMLSendDate
+      //add checkbox readonly and checked
+      var checkbox = document.createElement('input')
+      checkbox.type = 'checkbox'
+      checkbox.checked = true
+      checkbox.readOnly = true
+      checkbox.className = 'trimisCheckbox'
+      trimis.appendChild(checkbox)
+      //add label for checkbox row.CCCXMLSendDate
+      var label = document.createElement('label')
+      label.htmlFor = row.findoc + '_alreadySent'
+      label.appendChild(document.createTextNode(row.CCCXMLSendDate))
+      trimis.appendChild(label)
       //add link to trimis cell for resending invoice with overrideTrimis = true
       var resend = document.createElement('a')
       resend.innerHTML = 'Resend'
-      resend.className = 'button is-small is-danger ml-2'
+      resend.className = 'is-small is-danger ml-2'
       resend.onclick = async function () {
         //ask if sure
         var r = confirm('Resend invoice?')
@@ -135,7 +147,12 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       }
       trimis.appendChild(resend)
     } else {
-      trimis.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+      //add checkbox readonly and not checked
+      var checkbox = document.createElement('input')
+      checkbox.type = 'checkbox'
+      checkbox.readOnly = true
+      checkbox.className = 'trimisCheckbox'
+      trimis.appendChild(checkbox)
       //create checlbox already sent  by other means
       var checkbox = document.createElement('input')
       checkbox.type = 'checkbox'
@@ -167,7 +184,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     var lastDXResponse = tr.insertCell()
     var messageDate = tr.insertCell()
     //set width
-    lastDXResponse.style.width = '300px'
+    lastDXResponse.style.width = '310px'
     if (aperakRes.total > 0) {
       var responseColor =
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'acceptat' ||
