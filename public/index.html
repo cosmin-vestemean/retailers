@@ -79,12 +79,12 @@
 
         // Generate the HTML for each card and add it to the DOM
         for (var i = 0; i < retailers.length; i++) {
-          //4 cards per row between <div class="columns">
+          //4 cards per row between <div class="columns"></div>
           if (i % 4 === 0) {
             document.getElementById('cardsContainer').innerHTML += '<div class="columns">'
           }
           document.getElementById('cardsContainer').innerHTML += retailers[i].getCardHtml()
-          //4 cards per row between </div>
+          //4 cards per row between <div class="columns"></div>
           if (i % 4 === 3) {
             document.getElementById('cardsContainer').innerHTML += '</div>'
           }
