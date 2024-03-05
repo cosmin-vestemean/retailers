@@ -149,6 +149,7 @@ class SftpServiceClass {
 
   async prepareConnection(data, params) {
     const retailer = params.query.retailer
+    console.log('prepareConnection:retailer', retailer)
     const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
     const sftpDataObj = sftpData.data[0]
     const privateKey = sftpDataObj.PRIVATEKEY
