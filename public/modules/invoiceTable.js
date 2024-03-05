@@ -167,13 +167,13 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
       lastDXTResponse.innerHTML =
-        '<i class="is-info">' +
+        '<span class="is-info">' +
         aperakRes.data[0].DOCUMENTREFERENCE +
-        '</i><br><i class="is-primary">' +
+        '</span><br><span class="is-primary">' +
         aperakRes.data[0].DOCUMENTUID +
-        '</i><br><i class="is-success">' +
+        '</span><br><span class="is-success">' +
         aperakRes.data[0].DOCUMENTRESPONSE +
-        '</i><br>' +
+        '</span><br>' +
         aperakRes.data[0].DOCUMENTDETAIL
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
