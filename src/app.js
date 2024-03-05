@@ -802,8 +802,8 @@ app
   }) */
 
   //test scanForAperak service
-  app
+  /* app
   .service('sftp')
-  .scanForAperak({}, {})
+  .scanForAperak({}, {}) */
 
 export { app }
