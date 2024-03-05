@@ -134,10 +134,20 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     var findoc = row.insertCell()
     //add class for findoc
     findoc.className = 'findoc'
-    //if findoc is not null, add a green tick, else add a red cross; big icons
-    if (xml.FINDOC) {
-      //findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
-      //add checkbox checked and readonly
+    //verify if order was sent but not confirmed
+    //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
+    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+    console.log('orderId', orderId)
+    //get order from SALDOC
+    var params = {}
+    params['query'] = {}
+    params['query'][
+      'sqlQuery'
+    ] = `select FINDOC, FINCODE, TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+    var res = await client.service('getDataset').find(params)
+    console.log('getDataset1', res)
+    //add checkbox checked and readonly
+    if (res.success == true && res.data.length > 0) {
       var input = document.createElement('input')
       input.type = 'checkbox'
       input.name = xml.XMLFILENAME
@@ -149,43 +159,20 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       //add label
       var label = document.createElement('label')
       label.htmlFor = xml.XMLFILENAME
-      label.appendChild(document.createTextNode(xml.FINDOC))
+      label.appendChild(
+        document.createTextNode(res.data[0].FINCODE +  '<br> ' + res.data[0].TRNDATE + '<br>' + res.data[0].FINDOC)
+      )
       findoc.appendChild(label)
+    }
+    if (xml.FINDOC) {
     } else {
-      //verify if order was sent but not confirmed
-      //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
-      var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
-      console.log('orderId', orderId)
-      //get order from SALDOC
-      var params = {}
-      params['query'] = {}
-      params['query'][
-        'sqlQuery'
-      ] = `select FINDOC, FINCODE, TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
-      var res = await client.service('getDataset').find(params)
-      console.log('getDataset1', JSON.stringify(res))
-      if (res.data) {
-        //findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
-        //add checkbox checked and readonly
-        var input = document.createElement('input')
-        input.type = 'checkbox'
-        input.name = xml.XMLFILENAME
-        input.id = xml.XMLFILENAME
-        input.className = 'checkbox is-small ml-2 trimisCheckbox'
-        input.checked = true
-        input.readOnly = true
-        findoc.appendChild(input)
-        //add label
-        var label = document.createElement('label')
-        label.htmlFor = xml.XMLFILENAME
-        label.appendChild(document.createTextNode(res.data[0].FINCODE + ' ' + res.data[0].FINDOC + ' ' + res.data[0].TRNDATE))
-        findoc.appendChild(label)
+      if (res.success == true && res.data.length > 0) {
         //update CCCSFTPXML with order internal number as findoc
         client
           .service('CCCSFTPXML')
           .patch(
             null,
-            { FINDOC: parseInt(res.data) },
+            { FINDOC: parseInt(res.data[0].FINDOC) },
             { query: { XMLFILENAME: xml.XMLFILENAME, XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } }
           )
           .then((res) => {
