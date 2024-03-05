@@ -63,8 +63,27 @@
       </div>
     </nav>
     <!-- begin list of cards -->
-    <div class="columns">
-      <div class="column coumn-is-third">
+    <div id="cardsContainer" class="columns">
+      <script type="module">
+        import { Retailer } from './modules/retailer.js'
+
+        // Create an array of Retailer objects
+        const retailers = [
+          new Retailer('11639', 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'),
+          new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'),
+          new Retailer('78631', 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'),
+          new Retailer('11322', 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'),
+          new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'),
+          new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
+        ]
+
+        // Generate the HTML for each card and add it to the DOM
+        retailers.forEach(retailer => {
+          const cardHtml = retailer.getHtml()
+          document.querySelector('#cardsContainer').innerHTML += cardHtml
+        })
+      </script>
+      <!-- <div class="column coumn-is-third">
         <div class="card">
           <div class="card-image">
             <figure class="image is-128x128">
@@ -84,8 +103,16 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'" class="card-footer-item eMag">File manager</a>
-            <a href="retailer_config.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'" class="card-footer-item eMag">Configureaza</a>
+            <a
+              href="retailer_file_manager.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'"
+              class="card-footer-item eMag"
+              >File manager</a
+            >
+            <a
+              href="retailer_config.html?trdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'"
+              class="card-footer-item eMag"
+              >Configureaza</a
+            >
           </footer>
         </div>
       </div>
@@ -109,8 +136,16 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'" class="card-footer-item supeco">File manager</a>
-            <a href="retailer_config.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'" class="card-footer-item supeco">Configureaza</a>
+            <a
+              href="retailer_file_manager.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'"
+              class="card-footer-item supeco"
+              >File manager</a
+            >
+            <a
+              href="retailer_config.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'"
+              class="card-footer-item supeco"
+              >Configureaza</a
+            >
           </footer>
         </div>
       </div>
@@ -134,8 +169,16 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'" class="card-footer-item carrefour">File manager</a>
-            <a href="retailer_config.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'" class="card-footer-item carrefour">Configureaza</a>
+            <a
+              href="retailer_file_manager.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'"
+              class="card-footer-item carrefour"
+              >File manager</a
+            >
+            <a
+              href="retailer_config.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'"
+              class="card-footer-item carrefour"
+              >Configureaza</a
+            >
           </footer>
         </div>
       </div>
@@ -159,11 +202,19 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'" class="card-footer-item cora">File manager</a>
-            <a href="retailer_config.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'" class="card-footer-item cora">Configureaza</a>
+            <a
+              href="retailer_file_manager.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'"
+              class="card-footer-item cora"
+              >File manager</a
+            >
+            <a
+              href="retailer_config.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'"
+              class="card-footer-item cora"
+              >Configureaza</a
+            >
           </footer>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- next 3 cards -->
     <div class="columns">
@@ -187,8 +238,16 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'" class="card-footer-item kaufland">File manager</a>
-            <a href="retailer_config.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'" class="card-footer-item kaufland">Configureaza</a>
+            <a
+              href="retailer_file_manager.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'"
+              class="card-footer-item kaufland"
+              >File manager</a
+            >
+            <a
+              href="retailer_config.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'"
+              class="card-footer-item kaufland"
+              >Configureaza</a
+            >
           </footer>
         </div>
       </div>
