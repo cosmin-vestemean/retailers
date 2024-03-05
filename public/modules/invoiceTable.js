@@ -173,7 +173,6 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'receptionat'
           ? 'is-success'
           : 'is-danger'
-      //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
       var article = document.createElement('article')
       article.className = 'message is-small ' + responseColor
       var header = document.createElement('div')
@@ -187,26 +186,20 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
           body.style.display = 'none'
         }
       }
-      header.innerHTML =
-        '<span class="tag is-info mx-2">' +
-        aperakRes.data[0].DOCUMENTREFERENCE +
-        '</span><span class="mx-2">' +
-        aperakRes.data[0].DOCUMENTUID +
-        '</span>' +
-        '<span class="tag ' +
-        responseColor +
-        ' mx-2">' +
-        aperakRes.data[0].DOCUMENTRESPONSE +
-        '</span>'
+      header.innerHTML = '<span class="tag">' + aperakRes.data[0].DOCUMENTRESPONSE + '</span>'
       article.appendChild(header)
       var body = document.createElement('div')
       body.className = 'message-body'
       //hidden by default
       body.style.display = 'none'
-      body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace(
-        'Mesaj',
-        '<br>Mesaj'
-      )
+      body.innerHTML =
+        '<span class="tag is-info mx-2">' +
+        aperakRes.data[0].DOCUMENTREFERENCE +
+        '</span><span class="tag is-info mx-2">' +
+        aperakRes.data[0].DOCUMENTUID +
+        '</span><div>' +
+        aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj') +
+        '</div>'
       article.appendChild(body)
       lastDXResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
