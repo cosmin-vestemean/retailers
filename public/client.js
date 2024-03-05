@@ -7,18 +7,20 @@ console.log('Client.js loaded')
 const orderPath = 'data/order'
 const aperakPath = 'data/aperak'
 
+//https://retailers-modular-975638ebe522.herokuapp.com/retailer_file_manager.html?tdr=11639&logo=%27https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg%27
+//get trdr and logo from url
+var url = new URL(window.location.href)
+console.log('url', url)
+var trdr = url.searchParams.get('tdr')
+var logo = url.searchParams.get('logo')
+console.log('trdr', trdr)
+console.log('logo', logo)
+
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
   localStorage.setItem('logo_retailer', urlLogo)
   console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
   console.log('Logo url set to ', localStorage.getItem('logo_retailer'))
-  //https://retailers-modular-975638ebe522.herokuapp.com/retailer_file_manager.html?tdr=11639&logo=%27https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg%27
-  //get trdr and logo from url
-  var url = new URL(window.location.href)
-  var trdr = url.searchParams.get('tdr')
-  var logo = url.searchParams.get('logo')
-  console.log('trdr', trdr)
-  console.log('logo', logo)
 }
 
 async function getXmlListFromErp(retailer) {
