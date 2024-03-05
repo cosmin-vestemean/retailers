@@ -39,7 +39,7 @@ export class Retailer {
   }
 
   //class method: getHtml
-  getHtml() {
+  getCardHtml() {
     return `
                 <div class="column coumn-is-third">
                 <div class="card">
