@@ -144,7 +144,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     params['query'][
       'sqlQuery'
     ] = `select FINDOC, FINCODE, TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
-    var res = await client.service('getDataset').find(params)
+    var res = await client.service('getDataset1').find(params)
     console.log('getDataset1', res)
     //add checkbox checked and readonly
     if (res.success == true && res.data.length > 0) {
