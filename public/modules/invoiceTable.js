@@ -152,7 +152,6 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     if (row.CCCXMLFile) {
       xmlFile.innerHTML = row.CCCXMLFile
     }
-    var lastDXTResponse = tr.insertCell()
     //CCCAPERAK(FINDOC, TRDR_RETAILER) last DOCUMENTRESPONSE + DOCUMENTDETAIL; sort by MESSAGEDATE adn MESSAGETIME
     var aperakRes = await client.service('CCCAPERAK').find({
       query: {
@@ -166,7 +165,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     })
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
-      lastDXTResponse.innerHTML =
+      /* lastDXTResponse.innerHTML =
         '<span class="is-info">' +
         aperakRes.data[0].DOCUMENTREFERENCE +
         '</span><br><span class="is-primary">' +
@@ -175,7 +174,27 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         aperakRes.data[0].DOCUMENTRESPONSE +
         '</span><br>' +
         //aperakRes.data[0].DOCUMENTDETAIL; replace Status word with <br> and Status word. Same for Mesaj
-        aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
+        aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj') */
+        var lastDXTResponse = tr.insertCell()
+        //add span for each field
+        var span1 = document.createElement('span')
+        span1.className = 'is-info'
+        span1.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE
+        lastDXTResponse.appendChild(span1)
+        lastDXTResponse.appendChild(document.createElement('br'))
+        var span2 = document.createElement('span')
+        span2.className = 'is-primary'
+        span2.innerHTML = aperakRes.data[0].DOCUMENTUID
+        lastDXTResponse.appendChild(span2)
+        lastDXTResponse.appendChild(document.createElement('br'))
+        var span3 = document.createElement('span')
+        span3.className = 'is-success'
+        span3.innerHTML = aperakRes.data[0].DOCUMENTRESPONSE
+        lastDXTResponse.appendChild(span3)
+        lastDXTResponse.appendChild(document.createElement('br'))
+        var span4 = document.createElement('span')
+        span4.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
+        lastDXTResponse.appendChild(span4)
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
@@ -190,9 +209,6 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       } else {
         messageDateData = ''
       }
-      var messageOrigin = tr.insertCell()
-      messageOrigin.innerHTML =
-        aperakRes.data[0].MESSAGEORIGIN + '<br>' + aperakRes.data[0].SUPPLIERRECEIVERCODE
     }
   })
 }
