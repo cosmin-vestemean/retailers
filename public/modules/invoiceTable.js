@@ -172,7 +172,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var article = document.createElement('article')
       article.className = 'message is-small'
       var header = document.createElement('div')
-      header.className = 'message-header'
+      header.className = 'message-header has-background-light has-text-dark'
       //on click show hide body
       header.onclick = function () {
         var body = article.getElementsByClassName('message-body')[0]
@@ -182,12 +182,20 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
           body.style.display = 'none'
         }
       }
+      var responseColor =
+        aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'acceptat' ||
+        aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'receptionat'
+          ? 'is-success'
+          : 'is-danger'
       header.innerHTML =
         '<span class="tag is-info mx-2">' +
         aperakRes.data[0].DOCUMENTREFERENCE +
         '</span><span class="mx-2">' +
         aperakRes.data[0].DOCUMENTUID +
-        '</span><span class="tag is-success mx-2">' +
+        '</span>' +
+        '<span class="tag ' +
+        responseColor +
+        ' mx-2">' +
         aperakRes.data[0].DOCUMENTRESPONSE +
         '</span>'
       article.appendChild(header)
