@@ -200,7 +200,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         '</span>'
       article.appendChild(header)
       var body = document.createElement('div')
-      body.className = 'message-body'
+      body.className = 'message-body ' + responseColor
       //hidden by default
       body.style.display = 'none'
       body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace(
