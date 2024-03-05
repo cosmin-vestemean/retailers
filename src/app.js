@@ -144,7 +144,6 @@ class SftpServiceClass {
       return returnedData
     } catch (err) {
       console.error('Error:', err)
-      throw err
     }
   }
 

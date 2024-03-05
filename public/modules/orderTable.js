@@ -136,7 +136,21 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     findoc.className = 'findoc'
     //if findoc is not null, add a green tick, else add a red cross; big icons
     if (xml.FINDOC) {
-      findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
+      //findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + xml.FINDOC
+      //add checkbox checked and readonly
+      var input = document.createElement('input')
+      input.type = 'checkbox'
+      input.name = xml.XMLFILENAME
+      input.id = xml.XMLFILENAME
+      input.className = 'checkbox is-small ml-2 trimisCheckbox'
+      input.checked = true
+      input.readOnly = true
+      findoc.appendChild(input)
+      //add label
+      var label = document.createElement('label')
+      label.htmlFor = xml.XMLFILENAME
+      label.appendChild(document.createTextNode(xml.FINDOC))
+      findoc.appendChild(label)
     } else {
       //verify if order was sent but not confirmed
       //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
@@ -147,11 +161,25 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       params['query'] = {}
       params['query'][
         'sqlQuery'
-      ] = `select findoc from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+      ] = `select FINDOC, FINCODE, TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
       var res = await client.service('getDataset').find(params)
-      console.log('getDataset', JSON.stringify(res))
+      console.log('getDataset1', JSON.stringify(res))
       if (res.data) {
-        findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
+        //findoc.innerHTML = '<i class="fas fa-xl fa-check-circle has-text-success"></i><br><br>' + res.data
+        //add checkbox checked and readonly
+        var input = document.createElement('input')
+        input.type = 'checkbox'
+        input.name = xml.XMLFILENAME
+        input.id = xml.XMLFILENAME
+        input.className = 'checkbox is-small ml-2 trimisCheckbox'
+        input.checked = true
+        input.readOnly = true
+        findoc.appendChild(input)
+        //add label
+        var label = document.createElement('label')
+        label.htmlFor = xml.XMLFILENAME
+        label.appendChild(document.createTextNode(res.data[0].FINCODE + ' ' + res.data[0].FINDOC + ' ' + res.data[0].TRNDATE))
+        findoc.appendChild(label)
         //update CCCSFTPXML with order internal number as findoc
         client
           .service('CCCSFTPXML')
@@ -166,7 +194,16 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         //button text
         sendOrderButton.innerHTML = 'Order sent'
       } else {
-        findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        //findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        //add a checkbox to FINDOC cell
+        var input = document.createElement('input')
+        input.type = 'checkbox'
+        input.name = xml.XMLFILENAME
+        input.id = xml.XMLFILENAME
+        input.className = 'checkbox is-small ml-2 trimisCheckbox'
+        //hide
+        input.style.display = 'none'
+        findoc.appendChild(input)
         //findoc: already sent by other meanse check, for user to indicate that the order was sent
         var checkbox = document.createElement('input')
         checkbox.type = 'checkbox'

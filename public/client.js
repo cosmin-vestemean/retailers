@@ -211,57 +211,24 @@ async function openTab(evt, tabName) {
 }
 
 async function toggleComenziNetrimise() {
-  var comenziTrimise = document.getElementById('comenziTrimise')
-  var table = document.getElementById('xmlTableBody')
-  if (comenziTrimise.checked) {
-    var nrTrimise = 0
-    var totalCOmenzi = table.getElementsByTagName('tr').length
-    //hide rows with <i class="fas fa-xl fa-check-circle has-text-success"></i> or all
-    var rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < totalCOmenzi; i++) {
-      if (rows[i].innerHTML.indexOf('fa-check-circle') > -1) {
-        rows[i].style.display = 'none'
-        nrTrimise++
-      }
-    }
-    if (totalCOmenzi > 0 && nrTrimise == totalCOmenzi) {
-      //alert('Toate comenzile au fost trimise')
-      //xmlTableBody if table has rows, even if they are hidden
-      var tr = table.insertRow()
-      var td = tr.insertCell()
-      td.innerHTML = 'Toate comenzile au fost trimise'
-      td.colSpan = 9
-      td.classList.add('alertMesssage')
-      td.style.textAlign = 'center'
-      td.style.color = 'green'
-      td.style.fontWeight = 'bold'
-      td.style.fontSize = '20px'
-    }
-  } else {
-    //show all rows
-    var rows = table.getElementsByTagName('tr')
-    for (var i = 0; i < rows.length; i++) {
-      rows[i].style.display = ''
-    }
-    //find td class="alertMesssage" and remove it
-    var alertMessage = table.getElementsByClassName('alertMesssage')[0]
-    if (alertMessage) {
-      alertMessage.remove()
-    }
-  }
+  hideRows('comenziTrimise', 'xmlTableBody', 'trimisCheckbox')
 }
 
 //onClick event for id="facturiTrimise" to show only facturi netrimise sau toate facturile
 //netrimise means <td class="trimis"> contains <i class="fas fa-xl fa-times-circle has-text-danger">
 async function toggleFacturiNetrimise() {
-  var facturiTrimise = document.getElementById('facturiTrimise')
-  var table = document.getElementById('facturiTableBody')
+  hideRows('facturiTrimise', 'facturiTableBody', 'trimisCheckbox')
+}
+
+function hideRows(chkName, tbodyName, className) {
+  var facturiTrimise = document.getElementById(chkName)
+  var table = document.getElementById(tbodyName)
   if (facturiTrimise.checked) {
     //hide rows with cell class trimis and checkbox trimisCheckbox is checked
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
       //get checkbox with class trimisCheckbox
-      var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+      var trimisCheckbox = rows[i].getElementsByClassName(className)[0]
       //if checked, hide row
       if (trimisCheckbox.checked) {
         rows[i].style.display = 'none'
