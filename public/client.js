@@ -11,15 +11,8 @@ const aperakPath = 'data/aperak'
 //get trdr and logo from url
 var url = new URL(window.location.href)
 console.log('url', url)
-var trdr = url.searchParams.get('tdr')
-var logo = url.searchParams.get('logo')
-
-async function setRetailerId(trdr, urlLogo) {
-  localStorage.setItem('trdr_retailer', trdr)
-  localStorage.setItem('logo_retailer', urlLogo)
-  console.log('Retailer id set to ', parseInt(localStorage.getItem('trdr_retailer')))
-  console.log('Logo url set to ', localStorage.getItem('logo_retailer'))
-}
+export const trdrRetailerFromUrl = parseInt(url.searchParams.get('tdr'))
+export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
 async function getXmlListFromErp(retailer) {
   return new Promise((resolve, reject) => {
@@ -41,14 +34,9 @@ async function getXmlListFromErp(retailer) {
 }
 
 async function getRemoteXmlListToErp() {
-  //1. localStorage.getItem('trdr_retailer')
-  //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
-  //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
-  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
-  //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   var retailer
   try {
-    retailer = parseInt(localStorage.getItem('trdr_retailer'))
+    retailer = trdrRetailerFromUrl
   } catch (err) {
     alert('Please select a retailer')
     console.log('Retailer 11639 selected by default')
@@ -56,8 +44,6 @@ async function getRemoteXmlListToErp() {
   }
   //change button text
   document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
-  //1. localStorage.getItem('trdr_retailer')
-  //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
     .downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
@@ -65,7 +51,6 @@ async function getRemoteXmlListToErp() {
       console.log('downloadXml', res)
     })
 
-  //3. client.service('sftp').storeXmlInDB({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
     .storeXmlInDB({}, { query: { retailer: retailer, rootPath: orderPath } })
@@ -73,7 +58,6 @@ async function getRemoteXmlListToErp() {
       console.log('storeXmlInDB', res)
     })
 
-  //4. getNDisplayOrders(localStorage.getItem('trdr_retailer'))"
   await getNDisplayOrders(retailer)
   //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
@@ -82,7 +66,7 @@ async function getRemoteXmlListToErp() {
 export async function getRemoteAperakXmlListToErp() {
   var retailer
   try {
-    retailer = parseInt(localStorage.getItem('trdr_retailer'))
+    retailer = trdrRetailerFromUrl
   } catch (err) {
     alert('Please select a retailer')
     console.log('Retailer 11639 selected by default')
@@ -108,7 +92,6 @@ export async function getRemoteAperakXmlListToErp() {
 }
 
 async function getNDisplayOrders(retailer) {
-  //localStorage.getItem('trdr_retailer')
   await getXmlListFromErp(retailer).then((data) => {
     console.log('getXmlListFromErp', data)
     displayOrdersForRetailers(data, retailer, 'xmlTableBody')
@@ -118,7 +101,7 @@ async function getNDisplayOrders(retailer) {
 async function getNDisplayS1Docs(sosource, fprms, series) {
   var trdr
   try {
-    trdr = parseInt(localStorage.getItem('trdr_retailer'))
+    trdr = parseInt(trdrRetailerFromUrl)
   } catch (err) {
     alert('Please select a retailer')
     console.log('Please select a retailer')
@@ -172,12 +155,11 @@ document.addEventListener('keydown', function (event) {
   }
 })
 
-//if user refreshes page, then message alert localStorageRetailer
 window.onload = function () {
   var params = {}
   params['query'] = {}
   params['query']['sqlQuery'] =
-    'select name from trdr where sodtype=13 and trdr=' + localStorage.getItem('trdr_retailer')
+    'select name from trdr where sodtype=13 and trdr=' + trdrRetailerFromUrl
   client
     .service('getDataset')
     .find(params)
@@ -251,7 +233,6 @@ function hideRows(chkName, tbodyName, className) {
 }
 
 export {
-  setRetailerId,
   openTab,
   getRemoteXmlListToErp,
   getNDisplayOrders,

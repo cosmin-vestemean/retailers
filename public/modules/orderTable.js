@@ -1,3 +1,4 @@
+import { trdrRetailerFromUrl } from '../Client.js'
 import client from './feathersjs-client.js'
 
 const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'
@@ -464,7 +465,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   //add series and trdr to SALDOC
   jsonOrder['DATA']['SALDOC'][0]['SERIES'] = series
   //TRDR_RETAILER
-  localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+  localStorageRetailer = parseInt(trdrRetailerFromUrl)
   jsonOrder['DATA']['SALDOC'][0]['TRDR'] = localStorageRetailer
 
   console.log('jsonOrder', jsonOrder)

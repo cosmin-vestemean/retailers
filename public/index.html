@@ -109,8 +109,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html" class="card-footer-item supeco">File manager</a>
-            <a href="retailer_config.html" class="card-footer-item supeco">Configureaza</a>
+            <a href="retailer_file_manager.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'" class="card-footer-item supeco">File manager</a>
+            <a href="retailer_config.html?trdr=78631&logo='https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg'" class="card-footer-item supeco">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -134,8 +134,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html" class="card-footer-item carrefour">File manager</a>
-            <a href="retailer_config.html" class="card-footer-item carrefour">Configureaza</a>
+            <a href="retailer_file_manager.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'" class="card-footer-item carrefour">File manager</a>
+            <a href="retailer_config.html?trdr=11322&logo='https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'" class="card-footer-item carrefour">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -159,8 +159,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html" class="card-footer-item cora">File manager</a>
-            <a href="retailer_config.html" class="card-footer-item cora">Configureaza</a>
+            <a href="retailer_file_manager.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'" class="card-footer-item cora">File manager</a>
+            <a href="retailer_config.html?trdr=13249&logo='https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'" class="card-footer-item cora">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -187,8 +187,8 @@
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html" class="card-footer-item kaufland">File manager</a>
-            <a href="retailer_config.html" class="card-footer-item kaufland">Configureaza</a>
+            <a href="retailer_file_manager.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'" class="card-footer-item kaufland">File manager</a>
+            <a href="retailer_config.html?trdr=12349&logo='https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'" class="card-footer-item kaufland">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -210,15 +210,6 @@
               Ultimul document procesat: <time datetime="2016-1-1">16 iunie 2023 - 11:09 PM</time>
             </div>
           </div>
-          <!-- <footer class="card-footer">
-              <a href="#" class="card-footer-item">Statistici</a>
-              <a href="retailer_file_manager.html" class="card-footer-item" onclick="setRetailerId(78991)"
-                >File manager</a
-              >
-              <a href="retailer_config.html" class="card-footer-item" onclick="setRetailerId(78991)"
-                >Configureaza</a
-              >
-            </footer> -->
         </div>
       </div>
       <div class="column coumn-is-third">
@@ -273,7 +264,7 @@
       </div>
     </div>
     <script type="module">
-      import { setRetailerId, getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
+      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -281,33 +272,6 @@
       //add onclick to preluareAperakBtn button id
       document.getElementById('preluareAperakBtn').addEventListener('click', function () {
         getRemoteAperakXmlListToErp()
-      })
-      //supeco setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
-      document.querySelectorAll('.supeco').forEach(el => {
-        el.onclick = e => {
-          setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
-        }
-      })
-      //carrefour setRetailerId(11322, 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png')
-      document.querySelectorAll('.carrefour').forEach(el => {
-        el.onclick = e => {
-          setRetailerId(
-            11322,
-            'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'
-          )
-        }
-      })
-      //cora setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
-      document.querySelectorAll('.cora').forEach(el => {
-        el.onclick = e => {
-          setRetailerId(13249, 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
-        }
-      })
-      //kaufland setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
-      document.querySelectorAll('.kaufland').forEach(el => {
-        el.onclick = e => {
-          setRetailerId(12349, 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
-        }
       })
     </script>
   </body>

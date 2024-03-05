@@ -324,7 +324,7 @@ async function sendInvoice(findoc, domObj, overrideTrimis = false) {
   var response = { success: false, xml: '' }
   var localStorageRetailer
   try {
-    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+    localStorageRetailer = trdrRetailerFromUrl
   } catch (err) {
     alert('Please select a retailer')
     return

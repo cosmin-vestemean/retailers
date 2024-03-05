@@ -1,3 +1,4 @@
+import { trdrRetailerFromUrl } from '../Client.js'
 import client from './feathersjs-client.js'
 
 //////TODO:finish implementing this approach----------------------------------------------
@@ -851,7 +852,7 @@ var xsdCommonsDom = null
 export async function getRetailerConfData() {
   var localStorageRetailer
   try {
-    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+    localStorageRetailer = parseInt(trdrRetailerFromUrl)
   } catch (err) {
     console.log(err)
   }
@@ -2137,7 +2138,7 @@ export async function loadListaDocumente() {
   //get all documents from database table CCCDOCUMENTES1MAPPINGS
   var localStorageRetailer
   try {
-    localStorageRetailer = parseInt(localStorage.getItem('trdr_retailer'))
+    localStorageRetailer = parseInt(trdrRetailerFromUrl)
   } catch (err) {
     console.log(err)
     return

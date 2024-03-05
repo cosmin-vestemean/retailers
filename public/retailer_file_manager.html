@@ -122,7 +122,9 @@
         getNDisplayOrders,
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
-        sendAllFacturi
+        sendAllFacturi,
+        urlLogoRetailerFromUrl,
+        trdrRetailerFromUrl
       } from './client.js'
       //preluareFacturiBtn
       document.getElementById('preluareFacturiBtn').addEventListener('click', function () {
@@ -150,9 +152,8 @@
       })
       //defaultOpen
       document.getElementById('defaultOpen').click()      
-      //set img src to logo_retailer from localStorage
-      document.getElementById('retailerLogo').src = localStorage.getItem('logo_retailer')
-      getNDisplayOrders(localStorage.getItem('trdr_retailer'))
+      document.getElementById('retailerLogo').src = urlLogoRetailerFromUrl
+      getNDisplayOrders(trdrRetailerFromUrl)
       getNDisplayS1Docs(1351, 712, 7121);
     </script>
   </body>
