@@ -85,7 +85,7 @@
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
             <a href="retailer_file_manager.html?tdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'" class="card-footer-item eMag">File manager</a>
-            <a href="retailer_config.html" class="card-footer-item eMag">Configureaza</a>
+            <a href="retailer_config.html?tdr=11639&logo='https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'" class="card-footer-item eMag">Configureaza</a>
           </footer>
         </div>
       </div>
@@ -281,12 +281,6 @@
       //add onclick to preluareAperakBtn button id
       document.getElementById('preluareAperakBtn').addEventListener('click', function () {
         getRemoteAperakXmlListToErp()
-      })
-      //add to class eMag onclick event = setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
-      document.querySelectorAll('.eMag').forEach(el => {
-        el.onclick = e => {
-          setRetailerId(11639, 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg')
-        }
       })
       //supeco setRetailerId(78631, 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg')
       document.querySelectorAll('.supeco').forEach(el => {

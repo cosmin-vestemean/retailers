@@ -13,8 +13,6 @@ var url = new URL(window.location.href)
 console.log('url', url)
 var trdr = url.searchParams.get('tdr')
 var logo = url.searchParams.get('logo')
-console.log('trdr', trdr)
-console.log('logo', logo)
 
 async function setRetailerId(trdr, urlLogo) {
   localStorage.setItem('trdr_retailer', trdr)
