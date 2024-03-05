@@ -190,7 +190,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     var lastDXResponse = tr.insertCell()
     var messageDate = tr.insertCell()
     //set width
-    lastDXResponse.style.width = '310px'
+    lastDXResponse.style.width = '330px'
     if (aperakRes.total > 0) {
       var responseColor =
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'acceptat' ||
@@ -225,7 +225,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace(
         'Mesaj',
         '<br>Mesaj'
-      )
+      ).replace('Nume fisier', '<br>Nume fisier')
       article.appendChild(body)
       lastDXResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
