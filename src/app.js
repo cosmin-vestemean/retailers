@@ -272,7 +272,6 @@ class SftpServiceClass {
   }
 
   async storeAperakInErpMessages(data, params) {
-    const retailer = params.query.retailer
     const rootPath = params.query.rootPath
     const xmlPath = rootPath + '/xml'
     const processedPath = xmlPath + '/processed'

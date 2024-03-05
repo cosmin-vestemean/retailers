@@ -53,7 +53,7 @@ async function getRemoteXmlListToErp() {
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
+    .downloadXml({}, { query: { rootPath: orderPath, startsWith: 'ORDERS_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })
@@ -85,14 +85,14 @@ export async function getRemoteAperakXmlListToErp() {
   document.getElementById('preluareAperakBtn').innerHTML = 'Please wait...'
   await client
     .service('sftp')
-    .downloadXml({}, { query: { retailer: retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
+    .downloadXml({}, { query: { rootPath: aperakPath, startsWith: 'APERAK_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })
 
   await client
     .service('sftp')
-    .storeAperakInErpMessages({}, { query: { retailer: retailer, rootPath: aperakPath } })
+    .storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     .then((res) => {
       console.log('storeAperakInMessages', res)
     })
