@@ -143,7 +143,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     params['query'] = {}
     params['query'][
       'sqlQuery'
-    ] = `select FINDOC, FINCODE, TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+    ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
     var res = await client.service('getDataset1').find(params)
     console.log('getDataset1', res)
     //add checkbox checked and readonly
@@ -159,9 +159,12 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       //add label
       var label = document.createElement('label')
       label.htmlFor = xml.XMLFILENAME
-      label.appendChild(
-        document.createTextNode(res.data[0].FINCODE +  '<br> ' + res.data[0].TRNDATE + '<br>' + res.data[0].FINDOC)
-      )
+      //add res.data[0].FINCODE, res.data[0].TRNDATE, res.data[0].FINDOC stacked vertically
+      label.appendChild(document.createTextNode(res.data[0].FINCODE))
+      label.appendChild(document.createElement('br'))
+      label.appendChild(document.createTextNode(res.data[0].TRNDATE))
+      label.appendChild(document.createElement('br'))
+      label.appendChild(document.createTextNode(res.data[0].FINDOC))
       findoc.appendChild(label)
     }
     if (xml.FINDOC) {
