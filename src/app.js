@@ -317,8 +317,8 @@ class SftpServiceClass {
             sqlQuery:
               `SELECT FORMAT(a.trndate, 'dd.MM.yyyy') TRNDATE , A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
               ` left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and fprms=712 and A.FINCODE LIKE '%${DocumentReference}%' order by a.TRNDATE desc`
-              //` AND A.TRNDATE = '${MessageDate}' `
-              //` and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
+            //` AND A.TRNDATE = '${MessageDate}' `
+            //` and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
           }
         })
         if (response.success) {
@@ -384,9 +384,7 @@ class SftpServiceClass {
           returnedData.push({
             filename: filename,
             success: false,
-            response:
-              response +
-              ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}`
+            response: response + ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}`
           })
           //move file to error folder
           if (!fs.existsSync(errorPath)) {
@@ -397,6 +395,22 @@ class SftpServiceClass {
       }
     }
     return returnedData
+  }
+
+  async scanForAperak(data, params) {
+    //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
+    //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
+    //scan periodically (30') for aperak files
+    const period = 30 * 60 * 1000
+    const aperakPath = 'data/aperak'
+    setInterval(async () => {
+      data = {}
+      params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
+      await this.downloadXml(data, params)
+      data = {}
+      params = { query: { rootPath: aperakPath } }
+      await this.storeAperakInErpMessages(data, params)
+    }, period)
   }
 
   async uploadXml(data, params) {
@@ -786,5 +800,10 @@ app
         console.log(data)
       })
   }) */
+
+  //test scanForAperak service
+  app
+  .service('sftp')
+  .scanForAperak({}, {})
 
 export { app }

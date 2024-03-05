@@ -44,8 +44,8 @@ async function getRemoteXmlListToErp() {
     retailer = parseInt(localStorage.getItem('trdr_retailer'))
   } catch (err) {
     alert('Please select a retailer')
-    console.log('Please select a retailer')
-    return
+    console.log('Retailer 11639 selected by default')
+    retailer = 11639
   }
   //change button text
   document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
@@ -53,7 +53,7 @@ async function getRemoteXmlListToErp() {
   //2. client.service('sftp').downloadXml({}, { query: { retailer: localStorage.getItem('trdr_retailer') } })
   await client
     .service('sftp')
-    .downloadXml({}, { query: { rootPath: orderPath, startsWith: 'ORDERS_' } })
+    .downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })
@@ -78,14 +78,14 @@ export async function getRemoteAperakXmlListToErp() {
     retailer = parseInt(localStorage.getItem('trdr_retailer'))
   } catch (err) {
     alert('Please select a retailer')
-    console.log('Please select a retailer')
-    return
+    console.log('Retailer 11639 selected by default')
+    retailer = 11639
   }
   //change button text
   document.getElementById('preluareAperakBtn').innerHTML = 'Please wait...'
   await client
     .service('sftp')
-    .downloadXml({}, { query: { rootPath: aperakPath, startsWith: 'APERAK_' } })
+    .downloadXml({}, { query: { retailer: retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     .then((res) => {
       console.log('downloadXml', res)
     })
