@@ -230,7 +230,7 @@ function hideRows(chkName, tbodyName, className) {
       //get checkbox with class trimisCheckbox
       var trimisCheckbox = rows[i].getElementsByClassName(className)[0]
       //if checked, hide row
-      if (trimisCheckbox.checked) {
+      if (trimisCheckbox && trimisCheckbox.checked) {
         rows[i].style.display = 'none'
       }
     }
