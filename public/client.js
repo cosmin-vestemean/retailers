@@ -2,7 +2,7 @@ import client from './modules/feathersjs-client.js'
 import { displayDocsForRetailers } from './modules/invoiceTable.js'
 import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.js'
 
-console.log('Client.js loaded')
+console.log('client.js loaded')
 
 const orderPath = 'data/order'
 const aperakPath = 'data/aperak'

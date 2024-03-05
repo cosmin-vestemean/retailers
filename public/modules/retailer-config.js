@@ -1,4 +1,4 @@
-import { trdrRetailerFromUrl } from '../Client.js'
+import { trdrRetailerFromUrl } from '../client.js'
 import client from './feathersjs-client.js'
 
 //////TODO:finish implementing this approach----------------------------------------------
