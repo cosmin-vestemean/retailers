@@ -17,6 +17,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         */
 
   const tbody = document.getElementById(tableBodyId)
+  //clear table
+  tbody.innerHTML = ''
   //validate params
   validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId)
 
@@ -135,6 +137,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       label.appendChild(document.createTextNode(row.CCCXMLSendDate))
       trimis.appendChild(label)
       //add link to trimis cell for resending invoice with overrideTrimis = true
+      var div = document.createElement('div')
       var resend = document.createElement('a')
       resend.innerHTML = 'Resend'
       resend.className = 'is-small is-danger ml-2'
@@ -145,7 +148,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
           sendInvoiceAndMark(row, tr, button.id, true)
         }
       }
-      trimis.appendChild(resend)
+      div.appendChild(resend)
+      trimis.appendChild(div)
     } else {
       //add checkbox readonly and not checked
       var checkbox = document.createElement('input')
