@@ -164,11 +164,11 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       }
     })
     console.log('response', aperakRes)
+    var lastDXResponse = tr.insertCell()
     if (aperakRes.total > 0) {
-        var lastDXTResponse = tr.insertCell()
         //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
         var article = document.createElement('article')
-        article.className = 'message is-info'
+        article.className = 'message is-small'
         var header = document.createElement('div')
         header.className = 'message-header'
         header.innerHTML = aperakRes.data[0].DOCUMENTREFERENCE + ' ' + aperakRes.data[0].DOCUMENTUID + ' ' + aperakRes.data[0].DOCUMENTRESPONSE
@@ -177,7 +177,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         body.className = 'message-body'
         body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
         article.appendChild(body)
-        lastDXTResponse.appendChild(article)
+        lastDXResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
       var messageDate = tr.insertCell()
       var messageDateData
@@ -192,6 +192,9 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       } else {
         messageDateData = ''
       }
+    } else {
+      //font awesome waiting spinner
+      lastDXResponse.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
     }
   })
 }

@@ -230,7 +230,7 @@ async function toggleComenziNetrimise() {
       var tr = table.insertRow()
       var td = tr.insertCell()
       td.innerHTML = 'Toate comenzile au fost trimise'
-      td.colSpan = 6
+      td.colSpan = 9
       td.classList.add('alertMesssage')
       td.style.textAlign = 'center'
       td.style.color = 'green'
@@ -276,7 +276,7 @@ async function toggleFacturiNetrimise() {
       var tr = table.insertRow()
       var td = tr.insertCell()
       td.innerHTML = 'Toate facturile au fost trimise'
-      td.colSpan = 6
+      td.colSpan = 9
       td.classList.add('alertMesssage')
       td.style.textAlign = 'center'
       td.style.color = 'green'
