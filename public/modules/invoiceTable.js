@@ -165,16 +165,6 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     })
     console.log('response', aperakRes)
     if (aperakRes.total > 0) {
-      /* lastDXTResponse.innerHTML =
-        '<span class="is-info">' +
-        aperakRes.data[0].DOCUMENTREFERENCE +
-        '</span><br><span class="is-primary">' +
-        aperakRes.data[0].DOCUMENTUID +
-        '</span><br><span class="is-success">' +
-        aperakRes.data[0].DOCUMENTRESPONSE +
-        '</span><br>' +
-        //aperakRes.data[0].DOCUMENTDETAIL; replace Status word with <br> and Status word. Same for Mesaj
-        aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj') */
         var lastDXTResponse = tr.insertCell()
         lastDXTResponse.className = 'is-2'
         //add span for each field
@@ -194,7 +184,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         lastDXTResponse.appendChild(span3)
         lastDXTResponse.appendChild(document.createElement('br'))
         var span4 = document.createElement('span')
-        span4.className = 'tag'
+        span4.className = 'tag is-2'
         span4.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace('Mesaj', '<br>Mesaj')
         lastDXTResponse.appendChild(span4)
       //add column MESSAGEDATE, take only date part
@@ -390,7 +380,7 @@ function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
     var tr = tbody.insertRow()
     var td = tr.insertCell()
     td.innerHTML = 'Error: ' + jsonData.error
-    td.colSpan = 3
+    td.colSpan = 9
     td.style.textAlign = 'center'
     return
   }
@@ -404,7 +394,7 @@ function validateParams(jsonData, trdr, sosource, fprms, series, tableBodyId) {
     td.className = 'has-text-danger has-text-centered has-text-weight-bold'
     //font 20px
     td.style.fontSize = '20px'
-    td.colSpan = 6
+    td.colSpan = 9
     return
   }
 }
