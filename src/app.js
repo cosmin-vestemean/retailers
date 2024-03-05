@@ -402,7 +402,8 @@ class SftpServiceClass {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
-    const period = 30 * 60 * 1000
+    const min = 30;
+    const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
     setInterval(async () => {
       console.log('scanForAperak service called')
@@ -804,8 +805,8 @@ app
   }) */
 
   //test scanForAperak service
-  /* app
+  app
   .service('sftp')
-  .scanForAperak({}, {}) */
+  .scanForAperak({}, {})
 
 export { app }
