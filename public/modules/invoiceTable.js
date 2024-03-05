@@ -172,8 +172,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var responseColor =
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'acceptat' ||
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'receptionat'
-          ? 'has-text-success'
-          : 'has-text-danger'
+          ? 'is-success'
+          : 'is-danger'
       //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
       var article = document.createElement('article')
       article.className = 'message is-small ' + responseColor
