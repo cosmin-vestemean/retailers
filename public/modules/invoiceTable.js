@@ -177,7 +177,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var article = document.createElement('article')
       article.className = 'message is-small ' + responseColor
       var header = document.createElement('div')
-      header.className = 'message-header has-background-light has-text-dark'
+      header.className = 'message-header'
       //on click show hide body
       header.onclick = function () {
         var body = article.getElementsByClassName('message-body')[0]
