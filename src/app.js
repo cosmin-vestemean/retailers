@@ -404,6 +404,7 @@ class SftpServiceClass {
     const period = 30 * 60 * 1000
     const aperakPath = 'data/aperak'
     setInterval(async () => {
+      console.log('scanForAperak service called')
       data = {}
       params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
       await this.downloadXml(data, params)
