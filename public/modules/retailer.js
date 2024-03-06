@@ -13,9 +13,12 @@ export class Retailer {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
-    this.#nrComenziDeTrimis = client.service('getDataset').find({
+    let responseObj1 = client.service('getDataset').find({
       sqlQuery: `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
-    }).data.nrComenziDeTrimis || 0
+    })
+    if (responseObj1.success) {
+      this.#nrComenziDeTrimis = responseObj1.data[0].nrComenziDeTrimis || 0
+    }
     this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
   }
 
