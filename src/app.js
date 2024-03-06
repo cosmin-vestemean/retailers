@@ -832,7 +832,7 @@ app
 app.service('sftp').scanForAperak({}, {})
 
 //scanForOrders service
-app.service('sftp').scanForOrders({}, {})
+//app.service('sftp').scanForOrders({}, {})
 
 
 export { app }
