@@ -24,7 +24,7 @@ export class Retailer {
     params['query'] = {}
     params['query'][
       'sqlQuery'
-    ] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
+    ] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${this.#trdr} AND COALESCE(FINDOC, 0) = 0`
     let responseObj1 = await client.service('getDataset').find(params)
     console.log('responseObj1', responseObj1)
     if (responseObj1.data) {
