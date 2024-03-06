@@ -58,7 +58,7 @@ export class Retailer {
   getCardHtml() {
     return `
                 <div class="column coumn-is-third">
-                <div class="card">
+                <div class="card retailer-card">
                     <div class="card-image">
                         <figure class="image is-128x128">
                             <img
