@@ -39,7 +39,11 @@ export class Retailer {
     let res = 0
     let params = {}
     params['query'] = {}
-    params['query']['sqlQuery'] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+    params['query'][
+      'sqlQuery'
+    ] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
+      this.#trdr
+    } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
     let responseObj1 = await client.service('getDataset').find(params)
     if (responseObj1.data) {
       res = responseObj1.data || 0
@@ -66,7 +70,13 @@ export class Retailer {
                         </div>
                         <div class="card-content">
                         <div class="content">
-                            ${this.#nrFacturiDeTrimis} facturi de trimis<br />
+                            ${
+                              this.#nrFacturiDeTrimis > 0
+                                ? '<span class="tag is-danger">' +
+                                  this.#nrFacturiDeTrimis +
+                                  ' facturi de trimis</span>'
+                                : '<span class="tag is-success">Nu sunt facturi de trimis</span>'
+                            }
                             ${
                               this.#nrComenziDeTrimis > 0
                                 ? '<span class="tag is-danger">' +
