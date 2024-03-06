@@ -1,3 +1,5 @@
+import client from './modules/feathersjs-client.js'
+
 //make a class for retailer so it returns the html
 //use the class in the main file
 
@@ -11,8 +13,14 @@ export class Retailer {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
-    this.#nrComenziDeTrimis = 0
+    this.#nrComenziDeTrimis = client.service('getDataset').find({
+      sqlQuery: `SELECT COUNT(*) FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
+    })
     this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
+  }
+
+  setNrComenziDeTrimis(nrComenziDeTrimis) {
+    this.#nrComenziDeTrimis = nrComenziDeTrimis
   }
 
   //class method: getHtml
