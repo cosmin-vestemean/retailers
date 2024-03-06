@@ -53,7 +53,7 @@ async function getRemoteXmlListToErp() {
       console.log('storeXmlInDB', res)
     })
 
-  await getNDisplayOrders(retailer)
+  //await getNDisplayOrders(retailer)
   //5. change document.getElementById('preluareComenziBtn') text according to stage of process
   document.getElementById('preluareComenziBtn').innerHTML = 'Preluare comenzi'
 }
