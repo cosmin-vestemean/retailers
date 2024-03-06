@@ -84,9 +84,6 @@ export class Retailer {
                                   ' facturi de trimis</span>'
                                 : '<span class="tag is-success">Nu sunt facturi de trimis</span>'
                             }
-                            <br>Ultimul document procesat: <time datetime="2016-1-1">${
-                              this.#utlimulDocumentProcesat
-                            }</time>
                         </div>
                         </div>
                         <footer class="card-footer">
