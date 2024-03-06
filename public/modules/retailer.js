@@ -18,12 +18,12 @@ export class Retailer {
   }
 
   async setNrComenziDeTrimis() {
-    let res = 0;
+    let res = 0
     let params = {}
     params['query'] = {}
-    params['query'][
-      'sqlQuery'
-    ] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${this.#trdr} AND COALESCE(FINDOC, 0) = 0`
+    params['query']['sqlQuery'] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${
+      this.#trdr
+    } AND COALESCE(FINDOC, 0) = 0`
     let responseObj1 = await client.service('getDataset').find(params)
     console.log('responseObj1', responseObj1)
     if (responseObj1.data) {
@@ -52,7 +52,13 @@ export class Retailer {
                         <div class="card-content">
                         <div class="content">
                             ${this.#nrFacturiDeTrimis} facturi de trimis<br />
-                            ${this.#nrComenziDeTrimis} comenzi de trimis<br />
+                            ${
+                              this.#nrComenziDeTrimis > 0
+                                ? '<span class="tag is-danger">' +
+                                  this.#nrComenziDeTrimis +
+                                  ' comenzi de trimis'
+                                : 'Nu sunt comenzi de trimis'
+                            }
                             Ultimul document procesat: <time datetime="2016-1-1">${
                               this.#utlimulDocumentProcesat
                             }</time>
