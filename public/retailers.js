@@ -1,4 +1,4 @@
-import { Retailer, drawRetailers } from './modules/retailer.js'
+import { Retailer } from './modules/retailer.js'
 
 // Create an array of Retailer objects
 export let retailers = [
