@@ -411,6 +411,7 @@ class SftpServiceClass {
     const min = 30
     const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
+    const orderPath = 'data/order'
     setInterval(async () => {
       /*console.log('scanning for orders...')
       data = {}
