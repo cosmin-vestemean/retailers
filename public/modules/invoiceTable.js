@@ -249,7 +249,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   })
 }
 
-async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
+export async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
   var domObj = await cheatGetXmlFromS1(row.findoc)

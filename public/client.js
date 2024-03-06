@@ -1,5 +1,5 @@
 import client from './modules/feathersjs-client.js'
-import { displayDocsForRetailers } from './modules/invoiceTable.js'
+import { displayDocsForRetailers, sendInvoiceAndMark } from './modules/invoiceTable.js'
 import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.js'
 import { retailers } from './retailers.js'
 
@@ -132,7 +132,15 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
 }
 
 async function sendAllFacturi() {
-  alert('To be implemented')
+  //faturyTableBody > rows > trimisCheckbox unchecked > sendInvoiceAndMark
+  var table = document.getElementById('facturiTableBody')
+  var rows = table.getElementsByTagName('tr')
+  for (var i = 0; i < rows.length; i++) {
+    var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+    if (trimisCheckbox && !trimisCheckbox.checked) {
+      await sendInvoiceAndMark(rows[i])
+    }
+  }
 }
 
 //create function to close bulma modal on escape key
