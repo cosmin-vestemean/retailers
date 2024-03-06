@@ -422,6 +422,24 @@ class SftpServiceClass {
     }, period)
   }
 
+  async scanForOrders(data, params) {
+    //.downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
+    //.storeXmlInDB({}, { query: { retailer: retailer, rootPath: orderPath } })
+    //scan periodically (30') for order files
+    const min = 30
+    const period = min * 60 * 1000
+    const orderPath = 'data/order'
+    setInterval(async () => {
+      console.log('scanForOrders service called')
+      data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+      await this.downloadXml(data, params)
+      data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath } }
+      await this.storeXmlInDB(data, params)
+    }, period)
+  }
+
   async uploadXml(data, params) {
     const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
     const initialDir = sftpDataObj.INITIALDIROUT
@@ -810,7 +828,11 @@ app
       })
   }) */
 
-//test scanForAperak service
+//scanForAperak service
 app.service('sftp').scanForAperak({}, {})
+
+//scanForOrders service
+app.service('sftp').scanForOrders({}, {})
+
 
 export { app }
