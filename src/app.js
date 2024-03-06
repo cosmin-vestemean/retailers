@@ -404,7 +404,7 @@ class SftpServiceClass {
     return returnedData
   }
 
-  async scanForAperak(data, params) {
+  async scanPeriodically(data, params) {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
@@ -412,31 +412,20 @@ class SftpServiceClass {
     const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
     setInterval(async () => {
-      console.log('scanForAperak service called')
+      console.log('scanning for orders...')
+     /*  data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+      await this.downloadXml(data, params)
+      data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath } }
+      await this.storeXmlInDB(data, params) */
+      console.log('scanning for aperak...')
       data = {}
       params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
       await this.downloadXml(data, params)
       data = {}
       params = { query: { rootPath: aperakPath } }
       await this.storeAperakInErpMessages(data, params)
-    }, period)
-  }
-
-  async scanForOrders(data, params) {
-    //.downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
-    //.storeXmlInDB({}, { query: { retailer: retailer, rootPath: orderPath } })
-    //scan periodically (30') for order files
-    const min = 30
-    const period = min * 60 * 1000
-    const orderPath = 'data/order'
-    setInterval(async () => {
-      console.log('scanForOrders service called')
-      data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
-      await this.downloadXml(data, params)
-      data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath } }
-      await this.storeXmlInDB(data, params)
     }, period)
   }
 
@@ -828,11 +817,8 @@ app
       })
   }) */
 
-//scanForAperak service
-app.service('sftp').scanForAperak({}, {})
-
-//scanForOrders service
-//app.service('sftp').scanForOrders({}, {})
+//scanPeriodically run
+app.service('sftp').scanPeriodically({}, {})
 
 
 export { app }
