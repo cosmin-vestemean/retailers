@@ -19,8 +19,8 @@ export class Retailer {
       'sqlQuery'
     ] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
     let responseObj1 = client.service('getDataset').find(params)
-    if (responseObj1.success) {
-      this.#nrComenziDeTrimis = responseObj1.data[0].nrComenziDeTrimis || 0
+    if (responseObj1.data) {
+      this.#nrComenziDeTrimis = responseObj1.data
     }
     this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
   }
