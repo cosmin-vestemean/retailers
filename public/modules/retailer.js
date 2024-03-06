@@ -59,7 +59,7 @@ export class Retailer {
                                   ' comenzi de trimis</span>'
                                 : '<span class="tag is-success">Nu sunt comenzi de trimis</span>'
                             }
-                            Ultimul document procesat: <time datetime="2016-1-1">${
+                            <br>Ultimul document procesat: <time datetime="2016-1-1">${
                               this.#utlimulDocumentProcesat
                             }</time>
                         </div>
