@@ -51,12 +51,7 @@
           </div>
           <button id="preluareComenziBtn" class="button is-link is-inverted mx-2">Preluare comenzi</button>
           <button id="preluareAperakBtn" class="button is-link is-inverted mx-2">Preluare APERAK</button>
-          <button
-            id="openAperakBtn"
-            class="button is-link is-inverted mx-2"
-          >
-            Fisiere APERAK
-          </button>
+          <button id="openAperakBtn" class="button is-link is-inverted mx-2">Fisiere APERAK</button>
         </div>
 
         <div class="navbar-end">
@@ -76,7 +71,7 @@
       </script>
     </div>
     <script type="module">
-      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
+      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -87,10 +82,7 @@
       })
       //aperakModal on click
       document.getElementById('openAperakBtn').addEventListener('click', function () {
-        // Get the modal
-        var modal = document.getElementById('aperakModal')
-        //add class is-active to modal
-        modal.classList.add('is-active')
+        getEmptyAperak()
       })
       //modal-close on click
       document.querySelector('.modal-close').addEventListener('click', function () {
@@ -101,21 +93,27 @@
       })
     </script>
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
-    <div
-      class="modal fade"
-      id="aperakModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="headerlLabel"
-      aria-hidden="true"
-    >
     <div id="aperakModal" class="modal">
       <div class="modal-background"></div>
       <div class="modal-content">
-        <!-- Any other Bulma elements you want -->
+        <p>APERAK</p>
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>MESSAGEDATE</th>
+              <th>MESSAGETIME</th>
+              <th>MESSAGEORIGIN</th>
+              <th>DOCUMENTREFERENCE</th>
+              <th>DOCUMENTUID</th>
+              <th>SUPPLIERRECEIVERCODE</th>
+              <th>DOCUMENTRESPONSE</th>
+              <th>DOCUMENTDETAIL</th>
+            </tr>
+          </thead>
+          <tbody id="aperakTable"></tbody>
+        </table>
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
-    </div>
     </div>
   </body>
 </html>

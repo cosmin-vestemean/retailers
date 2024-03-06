@@ -1,7 +1,7 @@
 import client from './modules/feathersjs-client.js'
 import { displayDocsForRetailers } from './modules/invoiceTable.js'
 import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.js'
-import { retailers } from './retailers.js';
+import { retailers } from './retailers.js'
 
 console.log('client.js loaded')
 
@@ -36,7 +36,7 @@ async function getXmlListFromErp(retailer) {
 
 async function getRemoteXmlListToErp() {
   var retailer = trdrRetailerFromUrl ? trdrRetailerFromUrl : 11639
-  
+
   //change button text
   document.getElementById('preluareComenziBtn').innerHTML = 'Please wait...'
   await client
@@ -60,7 +60,7 @@ async function getRemoteXmlListToErp() {
 
 export async function getRemoteAperakXmlListToErp() {
   var retailer = trdrRetailerFromUrl ? trdrRetailerFromUrl : 11639
-  
+
   //change button text
   document.getElementById('preluareAperakBtn').innerHTML = 'Please wait...'
   await client
@@ -224,6 +224,52 @@ function hideRows(chkName, tbodyName, className) {
       rows[i].style.display = ''
     }
   }
+}
+
+function getEmptyAperak() {
+  //get * from cccaperak with findoc=-1
+  client
+    .service('CCCAPERAK')
+    .find({
+      query: {
+        FINDOC: -1,
+        $limit: 200,
+        $sort: {
+          MESSAGEDATE: -1,
+          MESSAGETIME: -1
+        }
+      }
+    })
+    .then((res) => {
+      //get aperakTable
+      var table = document.getElementById('aperakTable') //it's a tbody
+      //clear table
+      table.innerHTML = ''
+      //iterate through res.data
+      for (var i = 0; i < res.data.length; i++) {
+        //create tr
+        var tr = document.createElement('tr')
+        //create td
+        var td = document.createElement('td')
+        //set innerHTML
+        td.innerHTML = res.data[i].MESSAGEDATE
+        td.innerHTML = res.data[i].MESSAGETIME
+        td.innerHTML = res.data[i].MESSAGEORIGIN
+        td.innerHTML = res.data[i].DOCUMENTREFERENCE
+        td.innerHTML = res.data[i].DOCUMENTUID
+        td.innerHTML = res.data[i].SUPPLIERRECEIVERCODE
+        td.innerHTML = res.data[i].DOCUMENTRESPONSE
+        td.innerHTML = res.data[i].DOCUMENTDETAIL
+        //append td to tr
+        tr.appendChild(td)
+        //append tr to table
+        table.appendChild(tr)
+      }
+      // Get the modal
+      var modal = document.getElementById('aperakModal')
+      //add class is-active to modal
+      modal.classList.add('is-active')
+    })
 }
 
 export {
