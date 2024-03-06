@@ -413,13 +413,13 @@ class SftpServiceClass {
     const aperakPath = 'data/aperak'
     const orderPath = 'data/order'
     setInterval(async () => {
-      /*console.log('scanning for orders...')
+      console.log('scanning for orders...')
       data = {}
       params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
       await this.downloadXml(data, params)
       data = {}
       params = { query: { retailer: 11639, rootPath: orderPath } }
-      await this.storeXmlInDB(data, params) */
+      await this.storeXmlInDB(data, params)
       console.log('scanning for aperak...')
       data = {}
       params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
