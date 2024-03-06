@@ -70,21 +70,20 @@ export class Retailer {
                         </div>
                         <div class="card-content">
                         <div class="content">
-                        <strong>Comenzi si facturi</strong>
-                        <section>
-                            Comenzi de trimis:
+                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+                            <tr><td>Comenzi de trimis:</td><td>
                             ${
                               this.#nrComenziDeTrimis > 0
                                 ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
                                 : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
                             }</section><section>
-                            Facturi de trimis:
+                            </td></tr><tr><td>Facturi de trimis:</td><td>
                             ${
                               this.#nrFacturiDeTrimis > 0
                                 ? '<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
                                 : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                             }
-                            </section>
+                            </td></tr></table>
                         </div>
                         </div>
                         <footer class="card-footer">
