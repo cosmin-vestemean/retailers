@@ -9,8 +9,7 @@ export let retailers = [
     '11322',
     'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'
   ),
-  new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg'),
-  new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
+  new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg')
 ]
 
 export async function drawRetailers() {
