@@ -70,7 +70,7 @@ export class Retailer {
                         </div>
                         <div class="card-content">
                         <div class="content">
-                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+                        <table class="table is-striped is-narrow is-hoverable is-fullwidth is-small">
                             <tr><td>Comenzi de trimis:</td><td>
                             ${
                               this.#nrComenziDeTrimis > 0
