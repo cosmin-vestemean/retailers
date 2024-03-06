@@ -15,10 +15,10 @@ export let retailers = [
 
 export async function drawRetailers() {
   // Generate the HTML for each card and add it to the DOM
-  for (var i = 0; i < retailers.length; i = i + 4) {
+  for (var i = 0; i < retailers.length; i = i + 3) {
     const row = document.createElement('div')
     row.className = 'columns'
-    for (var j = i; j < i + 4; j++) {
+    for (var j = i; j < i + 3; j++) {
       if (j < retailers.length) {
         const retailer = retailers[j]
         console.log('retailer', retailer)
