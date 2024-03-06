@@ -24,7 +24,7 @@ export class Retailer {
                         <figure class="image is-128x128">
                             <img
                                 style="background-color: #fff"
-                                src="${this.logo}"
+                                src="${this.#logo}"
                                 alt="Placeholder image"
                             />
                         </figure>
