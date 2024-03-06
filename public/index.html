@@ -51,7 +51,13 @@
           </div>
           <button id="preluareComenziBtn" class="button is-link is-inverted mx-2">Preluare comenzi</button>
           <button id="preluareAperakBtn" class="button is-link is-inverted mx-2">Preluare APERAK</button>
-          <button class="js-modal-trigger" data-target="aperakModal">Aperak files</button>
+          <button
+            id="openAperakBtn"
+            class="button is-link is-inverted mx-2 js-modal-trigger"
+            data-target="aperakModal"
+          >
+            Fisiere APERAK
+          </button>
         </div>
 
         <div class="navbar-end">
@@ -69,6 +75,17 @@
         import { retailers } from './retailers.js'
       </script>
     </div>
+    <script type="module">
+      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
+      //add onclick to preluareComenziBtn button id
+      document.getElementById('preluareComenziBtn').addEventListener('click', function () {
+        getRemoteXmlListToErp()
+      })
+      //add onclick to preluareAperakBtn button id
+      document.getElementById('preluareAperakBtn').addEventListener('click', function () {
+        getRemoteAperakXmlListToErp()
+      })
+    </script>
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal">
       <div class="modal-background"></div>
@@ -82,16 +99,5 @@
 
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <script type="module">
-      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp } from './client.js'
-      //add onclick to preluareComenziBtn button id
-      document.getElementById('preluareComenziBtn').addEventListener('click', function () {
-        getRemoteXmlListToErp()
-      })
-      //add onclick to preluareAperakBtn button id
-      document.getElementById('preluareAperakBtn').addEventListener('click', function () {
-        getRemoteAperakXmlListToErp()
-      })
-    </script>
   </body>
 </html>
