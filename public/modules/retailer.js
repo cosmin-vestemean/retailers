@@ -13,9 +13,12 @@ export class Retailer {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
-    let responseObj1 = client.service('getDataset').find({
-      sqlQuery: `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
-    })
+    var params = {}
+    params['query'] = {}
+    params['query'][
+      'sqlQuery'
+    ] = `SELECT COUNT(*) nrFacturiDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0`
+    let responseObj1 = client.service('getDataset').find(params)
     if (responseObj1.success) {
       this.#nrComenziDeTrimis = responseObj1.data[0].nrComenziDeTrimis || 0
     }
