@@ -69,21 +69,21 @@ export class Retailer {
                         </figure>
                         </div>
                         <div class="card-content">
-                        <div class="content">
+                        <div class="content"><section>
                             ${
                               this.#nrComenziDeTrimis > 0
                                 ? '<span class="tag is-danger">' +
                                   this.#nrComenziDeTrimis +
                                   ' comenzi de trimis</span>'
                                 : '<span class="tag is-success">Nu sunt comenzi de trimis</span>'
-                            }
+                            }</section><section>
                             ${
                               this.#nrFacturiDeTrimis > 0
                                 ? '<span class="tag is-danger">' +
                                   this.#nrFacturiDeTrimis +
                                   ' facturi de trimis</span>'
                                 : '<span class="tag is-success">Nu sunt facturi de trimis</span>'
-                            }
+                            }</section>
                         </div>
                         </div>
                         <footer class="card-footer">
