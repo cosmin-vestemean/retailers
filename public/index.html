@@ -95,25 +95,33 @@
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal">
       <div class="modal-background"></div>
-      <div class="modal-content">
-        <p>APERAK</p>
-        <table class="table is-fullwidth">
-          <thead>
-            <tr>
-              <th>MESSAGEDATE</th>
-              <th>MESSAGETIME</th>
-              <th>MESSAGEORIGIN</th>
-              <th>DOCUMENTREFERENCE</th>
-              <th>DOCUMENTUID</th>
-              <th>SUPPLIERRECEIVERCODE</th>
-              <th>DOCUMENTRESPONSE</th>
-              <th>DOCUMENTDETAIL</th>
-            </tr>
-          </thead>
-          <tbody id="aperakTable"></tbody>
-        </table>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">APERAK</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <table class="table is-fullwidth">
+            <thead>
+              <tr>
+                <th>MESSAGEDATE</th>
+                <th>MESSAGETIME</th>
+                <th>MESSAGEORIGIN</th>
+                <th>DOCUMENTREFERENCE</th>
+                <th>DOCUMENTUID</th>
+                <th>SUPPLIERRECEIVERCODE</th>
+                <th>DOCUMENTRESPONSE</th>
+                <th>DOCUMENTDETAIL</th>
+              </tr>
+            </thead>
+            <tbody id="aperakTable"></tbody>
+          </table>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button">Cancel</button>
+        </footer>
       </div>
-      <button class="modal-close is-large" aria-label="close"></button>
     </div>
   </body>
 </html>
