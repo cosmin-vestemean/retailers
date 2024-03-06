@@ -322,6 +322,17 @@ class SftpServiceClass {
             //` and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
           }
         })
+        var dataToCccAperakTable = {
+          TRDR_CLIENT: 1,
+          MESSAGEDATE: MessageDate,
+          MESSAGETIME: MessageTime,
+          MESSAGEORIGIN: MessageOrigin,
+          DOCUMENTREFERENCE: DocumentReference,
+          DOCUMENTUID: DocumentUID,
+          SUPPLIERRECEIVERCODE: SupplierReceiverCode,
+          DOCUMENTRESPONSE: DocumentResponse,
+          DOCUMENTDETAIL: DocumentDetail
+        }
         if (response.success) {
           if (response.total === 0) {
             returnedData.push({
@@ -346,19 +357,9 @@ class SftpServiceClass {
             const retailer = response.data[0].retailer
             const xmlFilename = response.data[0].xmlFilename || null
             const xmlSentDate = response.data[0].xmlSentDate || null
-            var dataToCccAperakTable = {
-              TRDR_RETAILER: retailer,
-              TRDR_CLIENT: 1,
-              FINDOC: findoc,
-              MESSAGEDATE: MessageDate,
-              MESSAGETIME: MessageTime,
-              MESSAGEORIGIN: MessageOrigin,
-              DOCUMENTREFERENCE: DocumentReference,
-              DOCUMENTUID: DocumentUID,
-              SUPPLIERRECEIVERCODE: SupplierReceiverCode,
-              DOCUMENTRESPONSE: DocumentResponse,
-              DOCUMENTDETAIL: DocumentDetail
-            }
+
+            if (findoc) dataToCccAperakTable.FINDOC = parseInt(findoc)
+            if (retailer) dataToCccAperakTable.TRDR_RETAILER = parseInt(retailer)
             if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
             if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
             console.log('data', dataToCccAperakTable)
@@ -382,6 +383,11 @@ class SftpServiceClass {
             }
           }
         } else {
+          //push data to CCCAPERAK, findoc is mandaTory, TRDR_RETAILER is mandatory, they will be -1
+          dataToCccAperakTable.FINDOC = -1
+          dataToCccAperakTable.TRDR_RETAILER = -1
+          const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+          console.log('CCCAPERAK result with no link to findoc', result)
           returnedData.push({
             filename: filename,
             success: false,
@@ -402,7 +408,7 @@ class SftpServiceClass {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
-    const min = 30;
+    const min = 30
     const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
     setInterval(async () => {
@@ -804,9 +810,7 @@ app
       })
   }) */
 
-  //test scanForAperak service
-  app
-  .service('sftp')
-  .scanForAperak({}, {})
+//test scanForAperak service
+app.service('sftp').scanForAperak({}, {})
 
 export { app }
