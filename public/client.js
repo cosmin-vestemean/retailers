@@ -226,7 +226,7 @@ function hideRows(chkName, tbodyName, className) {
   }
 }
 
-function getEmptyAperak() {
+export function getEmptyAperak() {
   //get * from cccaperak with findoc=-1
   client
     .service('CCCAPERAK')
