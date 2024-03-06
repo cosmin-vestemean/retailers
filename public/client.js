@@ -138,7 +138,7 @@ async function sendAllFacturi() {
   for (var i = 0; i < rows.length; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     if (trimisCheckbox && !trimisCheckbox.checked) {
-      await sendInvoiceAndMark(rows[i])
+      //await sendInvoiceAndMark(, rows[i], 'sendAllFacturi')
     }
   }
 }
