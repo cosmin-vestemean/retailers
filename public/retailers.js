@@ -24,6 +24,7 @@ export async function drawRetailers() {
         console.log('retailer', retailer)
         await retailer.setNrComenziDeTrimis()
         const card = retailer.getCardHtml()
+        console.log('card', card)
         row.innerHTML += card
       }
     }

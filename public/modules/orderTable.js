@@ -465,8 +465,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   //add series and trdr to SALDOC
   jsonOrder['DATA']['SALDOC'][0]['SERIES'] = series
   //TRDR_RETAILER
-  localStorageRetailer = parseInt(trdrRetailerFromUrl)
-  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = localStorageRetailer
+  jsonOrder['DATA']['SALDOC'][0]['TRDR'] = parseInt(trdrRetailerFromUrl)
 
   console.log('jsonOrder', jsonOrder)
 
