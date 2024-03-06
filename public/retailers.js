@@ -21,6 +21,7 @@ export function drawRetailers() {
     for (var j = i; j < i + 4; j++) {
       if (j < retailers.length) {
         const retailer = retailers[j]
+        retailer.setNrComenziDeTrimis()
         const card = retailer.getCardHtml()
         row.innerHTML += card
       }

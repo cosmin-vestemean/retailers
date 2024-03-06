@@ -15,10 +15,9 @@ export class Retailer {
     this.#nrFacturiDeTrimis = 0
     this.#nrComenziDeTrimis = 0
     this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
-    this.#setNrComenziDeTrimis()
   }
 
-  async #setNrComenziDeTrimis() {
+  async setNrComenziDeTrimis() {
     let res = 0;
     let params = {}
     params['query'] = {}
