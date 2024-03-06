@@ -23,6 +23,7 @@ export async function drawRetailers() {
         const retailer = retailers[j]
         console.log('retailer', retailer)
         await retailer.setNrComenziDeTrimis()
+        await retailer.setNrFacturiDeTrimis()
         const card = retailer.getCardHtml()
         console.log('card', card)
         row.innerHTML += card

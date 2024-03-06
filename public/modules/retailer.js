@@ -25,7 +25,6 @@ export class Retailer {
       this.#trdr
     } AND COALESCE(FINDOC, 0) = 0`
     let responseObj1 = await client.service('getDataset').find(params)
-    console.log('responseObj1', responseObj1)
     if (responseObj1.data) {
       res = responseObj1.data || 0
     } else {
@@ -33,6 +32,22 @@ export class Retailer {
     }
 
     this.#nrComenziDeTrimis = res
+  }
+
+  async setNrFacturiDeTrimis() {
+    //select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=this.#trdr AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0
+    let res = 0
+    let params = {}
+    params['query'] = {}
+    params['query']['sqlQuery'] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+    let responseObj1 = await client.service('getDataset').find(params)
+    if (responseObj1.data) {
+      res = responseObj1.data || 0
+    } else {
+      res = 0
+    }
+
+    this.#nrFacturiDeTrimis = res
   }
 
   //class method: getHtml
