@@ -71,18 +71,18 @@ export class Retailer {
                         <div class="card-content">
                         <div class="content">
                             ${
-                              this.#nrFacturiDeTrimis > 0
-                                ? '<span class="tag is-danger">' +
-                                  this.#nrFacturiDeTrimis +
-                                  ' facturi de trimis</span>'
-                                : '<span class="tag is-success">Nu sunt facturi de trimis</span>'
-                            }
-                            ${
                               this.#nrComenziDeTrimis > 0
                                 ? '<span class="tag is-danger">' +
                                   this.#nrComenziDeTrimis +
                                   ' comenzi de trimis</span>'
                                 : '<span class="tag is-success">Nu sunt comenzi de trimis</span>'
+                            }
+                            ${
+                              this.#nrFacturiDeTrimis > 0
+                                ? '<span class="tag is-danger">' +
+                                  this.#nrFacturiDeTrimis +
+                                  ' facturi de trimis</span>'
+                                : '<span class="tag is-success">Nu sunt facturi de trimis</span>'
                             }
                             <br>Ultimul document procesat: <time datetime="2016-1-1">${
                               this.#utlimulDocumentProcesat
