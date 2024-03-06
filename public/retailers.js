@@ -13,7 +13,7 @@ export let retailers = [
   new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg')
 ]
 
-export function drawRetailers() {
+export async function drawRetailers() {
   // Generate the HTML for each card and add it to the DOM
   for (var i = 0; i < retailers.length; i = i + 4) {
     const row = document.createElement('div')
@@ -22,7 +22,7 @@ export function drawRetailers() {
       if (j < retailers.length) {
         const retailer = retailers[j]
         console.log('retailer', retailer)
-        retailer.setNrComenziDeTrimis()
+        await retailer.setNrComenziDeTrimis()
         const card = retailer.getCardHtml()
         row.innerHTML += card
       }
