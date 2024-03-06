@@ -13,11 +13,13 @@ export class Retailer {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
-    this.#nrComenziDeTrimis = this.#recalculeazaNrComenziDeTrimis()
+    this.#nrComenziDeTrimis = 0
     this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
+    this.#setNrComenziDeTrimis()
   }
 
-  async #recalculeazaNrComenziDeTrimis() {
+  async #setNrComenziDeTrimis() {
+    let res = 0;
     let params = {}
     params['query'] = {}
     params['query'][
@@ -26,10 +28,12 @@ export class Retailer {
     let responseObj1 = await client.service('getDataset').find(params)
     console.log('responseObj1', responseObj1)
     if (responseObj1.data) {
-      this.#nrComenziDeTrimis = responseObj1.data || 0
+      res = responseObj1.data || 0
+    } else {
+      res = 0
     }
 
-    return this.#nrComenziDeTrimis
+    this.#nrComenziDeTrimis = res
   }
 
   //class method: getHtml
