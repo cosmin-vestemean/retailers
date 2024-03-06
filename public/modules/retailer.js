@@ -1,4 +1,4 @@
-import client from './modules/feathersjs-client.js'
+import client from './feathersjs-client.js'
 
 //make a class for retailer so it returns the html
 //use the class in the main file
