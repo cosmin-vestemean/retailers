@@ -26,9 +26,7 @@
           </a>
           <!--ADD A Preluare comenzi button-->
           <a class="navbar-item" href="#">
-            <button id="preluareFacturiBtn" class="button ml-2 is-small is-success">
-              Preluare Facturi
-            </button>
+            <button id="preluareFacturiBtn" class="button ml-2 is-small is-success">Preluare Facturi</button>
             <!--add spinner text input with default value 7-->
             <input
               id="daysOlder"
@@ -122,11 +120,10 @@
         getNDisplayOrders,
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
-        sendAllFacturi,
         urlLogoRetailerFromUrl,
         trdrRetailerFromUrl
       } from './client.js'
-      import {sendAllFacturi} from './modules/invoiceTable.js'
+      import { sendAllFacturi } from './modules/invoiceTable.js'
       console.log('urlLogoRetailerFromUrl', urlLogoRetailerFromUrl)
       console.log('trdrRetailerFromUrl', trdrRetailerFromUrl)
       //preluareFacturiBtn
@@ -154,10 +151,10 @@
         sendAllFacturi()
       })
       //defaultOpen
-      document.getElementById('defaultOpen').click()      
+      document.getElementById('defaultOpen').click()
       document.getElementById('retailerLogo').src = urlLogoRetailerFromUrl
       getNDisplayOrders(trdrRetailerFromUrl)
-      getNDisplayS1Docs(1351, 712, 7121);
+      getNDisplayS1Docs(1351, 712, 7121)
     </script>
   </body>
 </html>
