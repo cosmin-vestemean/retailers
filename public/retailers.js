@@ -1,7 +1,7 @@
 import { Retailer } from './modules/retailer.js'
 
 // Create an array of Retailer objects
-export let retailers = [
+export const retailers = [
   new Retailer('11639', 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg', 'eMAG'),
   new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg', 'Kaufland'),
   new Retailer('78631', 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg', 'Supeco'),
