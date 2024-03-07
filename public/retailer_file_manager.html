@@ -190,5 +190,22 @@
         }
       }
     </script>
+    <!--//scary bulma modal for deleting a row-->
+    <div id="deleteModal" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title is-danger">Stergere</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body has-text-danger has-text-centered has-background-light">
+          <p>Sunteti sigur ca doriti sa stergeti acest rand?</p>
+        </section>
+        <footer class="modal-card-foot">
+          <button id="deleteYes" class="button is-danger">Da</button>
+          <button id="deleteNo" class="button">Nu</button>
+        </footer>
+      </div>
+    </div>
   </body>
 </html>

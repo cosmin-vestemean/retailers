@@ -74,9 +74,11 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     deleteButton.className = 'button is-small is-danger ml-2'
     deleteButton.onclick = function () {
       //ask for confirmation
-      if (!confirm(`Sterg ${xml.XMLFILENAME} din data  ${xml.XMLDATE}?`)) {
-        return
-      } else {
+      var deleteModal = document.getElementById('deleteModal')
+      //add class is-active to show the modal
+      deleteModal.classList.add('is-active')
+      //on click on id="deleteYes" remove the xml from the table
+      document.getElementById('deleteYes').onclick = function () {
         //delete the xml from the table
         const CCCSFTPXML = xml.CCCSFTPXML
         client
