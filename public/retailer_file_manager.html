@@ -171,6 +171,8 @@
           const retailer = retailers[i]
           console.log('retailer', retailer)
           //document.getElementById('retailerName').textContent = retailer.name
+          retailer.setNrComenziDeTrimis()
+          retailer.setNrFacturiDeTrimis()
           const nrComenziDeTrimis = await retailer.getNrComenziDeTrimis()
           const nrFacturiDeTrimis = await retailer.getNrFacturiDeTrimis()
           document.getElementById(
