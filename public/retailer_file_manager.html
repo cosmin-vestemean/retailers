@@ -179,7 +179,7 @@
             'trimiteComenzileNetrimise'
           ).textContent = `Trimite toate (${nrComenziDeTrimis})`
           document.getElementById('sendAllFacturi').textContent = `Trimite toate (${nrFacturiDeTrimis})`
-/*           //if 0 de trimis, disable buttons
+          /*           //if 0 de trimis, disable buttons
           if (nrComenziDeTrimis == 0) {
             document.getElementById('trimiteComenzileNetrimise').disabled = true
           }
@@ -191,15 +191,14 @@
       }
     </script>
     <!--//scary bulma modal for deleting a row-->
-    <div id="deleteModal" class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title is-danger">Stergere</p>
-          <button class="delete" aria-label="close"></button>
+    <div id="deleteModal" class="modal modal-full-screen modal-fx-slideTop">
+      <div class="modal-content modal-card">
+        <header class="modal-card-head is-danger">
+          <p class="modal-card-title">Stergere xml comanda ${xmlFileName} din data ${xmlDate}</p>
+          <button class="modal-button-close delete" aria-label="close"></button>
         </header>
-        <section class="modal-card-body has-text-danger has-text-centered has-background-light">
-          <p>Sunteti sigur ca doriti sa stergeti acest rand?</p>
+        <section class="modal-card-body is-dark">
+          <p>Esti sigur ca vrei sa stergi aceasta comanda?</p>
         </section>
         <footer class="modal-card-foot">
           <button id="deleteYes" class="button is-danger">Da</button>
