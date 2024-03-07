@@ -169,6 +169,7 @@
         var trdr = await retailers[i].getTrdr()
         if (trdr == trdrRetailerFromUrl) {
           const retailer = retailers[i]
+          console.log('retailer', retailer)
           //document.getElementById('retailerName').textContent = retailer.name
           const nrComenziDeTrimis = await retailer.getNrComenziDeTrimis()
           const nrFacturiDeTrimis = await retailer.getNrFacturiDeTrimis()
