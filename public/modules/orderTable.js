@@ -74,7 +74,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     deleteButton.className = 'button is-small is-danger ml-2'
     var deleteModal = document.getElementById('deleteModal')
     var h1deletedRow = document.getElementById('deletedRow')
-    h1deletedRow.innerHTML = `Row with filename: ${xml.XMLFILENAME} <br> and date: ${humanDate} <br> will be DELETED.<br><br>Are you sure?`
+    h1deletedRow.innerHTML = `<p>Row with filename:</p><span class="tag is-info">${xml.XMLFILENAME}</span><p>and date: <span class="tag is-info">${humanDate}</span></p><p>will be <span class="tag is-danger">DELETED.</span></p><h5>Are you sure?</h5>`
     deleteButton.onclick = function () {
       //ask for confirmation
       //on click on id="deleteYes" remove the xml from the table
