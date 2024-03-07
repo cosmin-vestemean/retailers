@@ -167,6 +167,7 @@
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
       for (let i = 0; i < retailers.length; i++) {
         var trdr = await retailers[i].getTrdr()
+        console.log('trdr', trdr, 'trdrRetailerFromUrl', trdrRetailerFromUrl)
         if (trdr === parseInt(trdrRetailerFromUrl)) {
           console.log('retailer', retailers[i])
           //document.getElementById('retailerName').textContent = retailer.name
