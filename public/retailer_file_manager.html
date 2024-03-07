@@ -167,21 +167,20 @@
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
       for (let i = 0; i < retailers.length; i++) {
         var trdr = await retailers[i].getTrdr()
-        console.log('trdr', trdr, 'trdrRetailerFromUrl', trdrRetailerFromUrl)
         if (trdr == trdrRetailerFromUrl) {
           const retailer = retailers[i]
           //document.getElementById('retailerName').textContent = retailer.name
+          const nrComenziDeTrimis = await retailer.getNrComenziDeTrimis()
+          const nrFacturiDeTrimis = await retailer.getNrFacturiDeTrimis()
           document.getElementById(
             'trimiteComenzileNetrimise'
-          ).textContent = `Trimite toate (${retailer.getNrComenziDeTrimis()})`
-          document.getElementById(
-            'sendAllFacturi'
-          ).textContent = `Trimite toate (${retailer.getNrFacturiDeTrimis()})`
+          ).textContent = `Trimite toate (${nrComenziDeTrimis})`
+          document.getElementById('sendAllFacturi').textContent = `Trimite toate (${nrFacturiDeTrimis})`
           //if 0 de trimis, disable buttons
-          if (retailer.getNrComenziDeTrimis() == 0) {
+          if (nrComenziDeTrimis == 0) {
             document.getElementById('trimiteComenzileNetrimise').disabled = true
           }
-          if (retailer.getNrFacturiDeTrimis() == 0) {
+          if (nrFacturiDeTrimis == 0) {
             document.getElementById('sendAllFacturi').disabled = true
           }
           break
