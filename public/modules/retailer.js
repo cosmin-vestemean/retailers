@@ -8,13 +8,21 @@ export class Retailer {
   #logo
   #nrFacturiDeTrimis
   #nrComenziDeTrimis
-  #utlimulDocumentProcesat
-  constructor(trdr, logo) {
+  #name
+  constructor(trdr, logo, name = '') {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
     this.#nrComenziDeTrimis = 0
-    this.#utlimulDocumentProcesat = '16 iunie 2023 - 11:09 PM'
+    this.#name = name
+  }
+
+  async getName() {
+    return this.#name
+  }
+
+  async getNrComenziDeTrimis() {
+    return this.#nrComenziDeTrimis
   }
 
   async setNrComenziDeTrimis() {
@@ -32,6 +40,10 @@ export class Retailer {
     }
 
     this.#nrComenziDeTrimis = res
+  }
+
+  async getNrFacturiDeTrimis() {
+    return this.#nrFacturiDeTrimis
   }
 
   async setNrFacturiDeTrimis() {
@@ -52,6 +64,14 @@ export class Retailer {
     }
 
     this.#nrFacturiDeTrimis = res
+  }
+
+  async getTrdr() {
+    return this.#trdr
+  }
+
+  async getLogo() {
+    return this.#logo
   }
 
   //class method: getHtml
