@@ -177,6 +177,13 @@
           document.getElementById(
             'sendAllFacturi'
           ).textContent = `Trimite toate (${retailer.getNrFacturiDeTrimis()})`
+          //if 0 de trimis, disable buttons
+          if (retailer.getNrComenziDeTrimis() == 0) {
+            document.getElementById('trimiteComenzileNetrimise').disabled = true
+          }
+          if (retailer.getNrFacturiDeTrimis() == 0) {
+            document.getElementById('sendAllFacturi').disabled = true
+          }
           break
         }
       }
