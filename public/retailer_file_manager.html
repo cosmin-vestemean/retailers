@@ -165,6 +165,7 @@
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
       const retailer = retailers.find((retailer) => retailer.trdr === trdrRetailerFromUrl)
       if (retailer) {
+        console.log('retailer', retailer)
         //document.getElementById('retailerName').textContent = retailer.name
         document.getElementById('trimiteComenzileNetrimise').textContent = `Trimite toate (${retailer.nrComenziDeTrimis})`
         document.getElementById('sendAllFacturi').textContent = `Trimite toate (${retailer.nrFacturiDeTrimis})`
