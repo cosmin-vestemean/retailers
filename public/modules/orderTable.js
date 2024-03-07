@@ -245,6 +245,21 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   return await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
 }
 
+export async function trimiteComenzileNetrimise() {
+  //sendOrder
+  var table = document.getElementById('xmlTableBody')
+  var rows = table.getElementsByTagName('tr')
+  for (var i = 0; i < rows.length; i++) {
+    var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+    if (trimisCheckbox && !trimisCheckbox.checked) {
+      var xmlData = rows[i].getElementsByTagName('textarea')[0].value
+      var xmlFilename = rows[i].getElementsByTagName('td')[1].innerHTML
+      var xmlDate = rows[i].getElementsByTagName('td')[0].innerHTML
+      await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
+    }
+  }
+}
+
 async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
   //use await instead of promises
   //get a token for s1 connection

@@ -76,6 +76,7 @@
                 <label class="checkbox">
                   <input id="comenziTrimise" type="checkbox" />
                   Netrimise
+                  <button id="trimiteComenzileNetrimise" class="button is-success is-small">Trimite toate</button>
                 </label>
               </th>
             </tr>
@@ -124,6 +125,7 @@
         trdrRetailerFromUrl
       } from './client.js'
       import { sendAllFacturi } from './modules/invoiceTable.js'
+      import { trimiteComenzileNetrimise } from './modules/orderTable.js'
       console.log('urlLogoRetailerFromUrl', urlLogoRetailerFromUrl)
       console.log('trdrRetailerFromUrl', trdrRetailerFromUrl)
       //preluareFacturiBtn
@@ -147,8 +149,12 @@
         toggleFacturiNetrimise()
       })
       //sendAllFacturi
-      document.getElementById('sendAllFacturi').addEventListener('click', function () {
-        sendAllFacturi()
+      document.getElementById('sendAllFacturi').addEventListener('click', async function () {
+        await sendAllFacturi()
+      })
+      //trimiteComenzileNetrimise
+      document.getElementById('trimiteComenzileNetrimise').addEventListener('click', async function () {
+        await trimiteComenzileNetrimise()
       })
       //defaultOpen
       document.getElementById('defaultOpen').click()

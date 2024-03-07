@@ -115,7 +115,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     button.id = row.findoc + '_sendInvoice'
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
-      sendInvoiceAndMark(row, tr, button.id)
+      await sendInvoiceAndMark(row, tr, button.id)
     }
     actions.appendChild(button)
     //add cell trimis
@@ -146,7 +146,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         //ask if sure
         var r = confirm('Resend invoice?')
         if (r == true) {
-          sendInvoiceAndMark(row, tr, button.id, true)
+          await sendInvoiceAndMark(row, tr, button.id, true)
         }
       }
       div.appendChild(resend)
@@ -249,7 +249,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   })
 }
 
-export function sendAllFacturi() {
+export async  function sendAllFacturi() {
   var table = document.getElementById('facturiTableBody')
   var rows = table.getElementsByTagName('tr')
   for (var i = 0; i < rows.length; i++) {
@@ -260,7 +260,7 @@ export function sendAllFacturi() {
       //get button with id like 1236204_sendInvoice
       var sendInvoiceButton = document.getElementById(rows[i].cells[0].innerHTML + '_sendInvoice')
       //click button
-      sendInvoiceButton.click()
+      await sendInvoiceButton.click()
     }
   }
 }
