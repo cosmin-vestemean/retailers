@@ -137,18 +137,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     findoc.className = 'findoc'
     //verify if order was sent but not confirmed
     //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
-    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
-    console.log('orderId', orderId)
-    //get order from SALDOC
-    var params = {}
-    params['query'] = {}
-    params['query'][
-      'sqlQuery'
-    ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
-    var res = await client.service('getDataset1').find(params)
-    console.log('getDataset1', res)
-    //add checkbox checked and readonly
-    if (res.success == true && res.data.length > 0) {
+
+    if (xml.FINDOC) {
       var input = document.createElement('input')
       input.type = 'checkbox'
       input.name = xml.XMLFILENAME
@@ -160,16 +150,19 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       //add label
       var label = document.createElement('label')
       label.htmlFor = xml.XMLFILENAME
-      //add res.data[0].FINCODE, res.data[0].TRNDATE, res.data[0].FINDOC stacked vertically
-      label.appendChild(document.createTextNode(res.data[0].FINCODE))
-      label.appendChild(document.createElement('br'))
-      label.appendChild(document.createTextNode(res.data[0].TRNDATE))
-      label.appendChild(document.createElement('br'))
-      label.appendChild(document.createTextNode(res.data[0].FINDOC))
+      label.appendChild(document.createTextNode(xml.FINDOC))
       findoc.appendChild(label)
-    }
-    if (xml.FINDOC) {
     } else {
+      var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+      console.log('orderId', orderId)
+      //get order from SALDOC
+      var params = {}
+      params['query'] = {}
+      params['query'][
+        'sqlQuery'
+      ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+      var res = await client.service('getDataset1').find(params)
+      console.log('getDataset1', res)
       if (res.success == true && res.data.length > 0) {
         //update CCCSFTPXML with order internal number as findoc
         client
