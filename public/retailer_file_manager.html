@@ -163,7 +163,7 @@
       getNDisplayOrders(trdrRetailerFromUrl)
       getNDisplayS1Docs(1351, 712, 7121)
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
-      const retailer = retailers.find((retailer) => retailer.trdr === trdrRetailerFromUrl)
+      const retailer = retailers.find((retailer) => retailer.getTrdr() === trdrRetailerFromUrl)
       console.log('retailer', retailer)
       if (retailer) {
         //document.getElementById('retailerName').textContent = retailer.name
