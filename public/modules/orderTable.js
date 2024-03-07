@@ -74,9 +74,6 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     deleteButton.className = 'button is-small is-danger ml-2'
     deleteButton.onclick = function () {
       //ask for confirmation
-      var deleteModal = document.getElementById('deleteModal')
-      //add class is-active to show the modal
-      deleteModal.classList.add('is-active')
       //on click on id="deleteYes" remove the xml from the table
       document.getElementById('deleteYes').onclick = function () {
         //delete the xml from the table
@@ -93,6 +90,10 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             console.error('CCCSFTPXML remove', err)
           })
       }
+
+      var deleteModal = document.getElementById('deleteModal')
+      //add class is-active to show the modal
+      deleteModal.classList.add('is-active')
     }
     //send order
     var sendOrderButton = document.createElement('button')
