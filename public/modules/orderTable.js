@@ -537,7 +537,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
             .then((res) => {
               console.log(res)
               if (res.success == true) {
-                alert('Order sent to S1, order internal number: ' + res.id)
+                //alert('Order sent to S1, order internal number: ' + res.id)
                 //update CCCSFTPXML with order internal number as findoc
                 client
                   .service('CCCSFTPXML')
