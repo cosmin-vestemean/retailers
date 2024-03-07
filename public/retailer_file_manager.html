@@ -166,6 +166,7 @@
       var retailer
       for (let i = 0; i < retailers.length; i++) {
         var trdr = await retailers[i].getTrdr()
+        console.log('trdr', trdr)
         if (trdr === parseInt(trdrRetailerFromUrl)) {
           retailer = retailers[i]
           break
