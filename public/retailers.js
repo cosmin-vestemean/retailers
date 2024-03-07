@@ -7,7 +7,7 @@ export let retailers = [
   new Retailer('78631', 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg', 'Supeco'),
   new Retailer(
     '11322',
-    'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png,', 'Carrefour'
+    'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png', 'Carrefour'
   ),
   new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg', 'Cora'),
 ]
