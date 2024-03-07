@@ -72,6 +72,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     var deleteButton = document.createElement('button')
     deleteButton.innerHTML = 'Delete'
     deleteButton.className = 'button is-small is-danger ml-2'
+    var deleteModal = document.getElementById('deleteModal')
     deleteButton.onclick = function () {
       //ask for confirmation
       //on click on id="deleteYes" remove the xml from the table
@@ -91,7 +92,12 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           })
       }
 
-      var deleteModal = document.getElementById('deleteModal')
+      //deleteNo
+      document.getElementById('deleteNo').onclick = function () {
+        //close the modal by removing the class is-active
+        deleteModal.classList.remove('is-active')
+      }
+
       //add class is-active to show the modal
       deleteModal.classList.add('is-active')
     }
