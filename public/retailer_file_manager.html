@@ -164,8 +164,8 @@
       getNDisplayS1Docs(1351, 712, 7121)
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
       const retailer = retailers.find((retailer) => retailer.trdr === trdrRetailerFromUrl)
+      console.log('retailer', retailer)
       if (retailer) {
-        console.log('retailer', retailer)
         //document.getElementById('retailerName').textContent = retailer.name
         document.getElementById('trimiteComenzileNetrimise').textContent = `Trimite toate (${retailer.nrComenziDeTrimis})`
         document.getElementById('sendAllFacturi').textContent = `Trimite toate (${retailer.nrFacturiDeTrimis})`
