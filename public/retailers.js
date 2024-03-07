@@ -4,12 +4,12 @@ import { Retailer } from './modules/retailer.js'
 export const retailers = [
   new Retailer('11639', 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg', 'eMAG'),
   new Retailer('12349', 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg', 'Kaufland'),
+  new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg', 'Cora'),
   new Retailer('78631', 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg', 'Supeco'),
   new Retailer(
     '11322',
     'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png', 'Carrefour'
   ),
-  new Retailer('13249', 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg', 'Cora'),
 ]
 
 export async function drawRetailers() {
