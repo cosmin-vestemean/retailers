@@ -191,20 +191,16 @@
       }
     </script>
     <!--//scary bulma modal for deleting a row-->
-    <div id="deleteModal" class="modal modal-fx-3dSlit">
-      <div class="modal-content modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title is-danger">Stergere xml comanda</p>
-          <button class="modal-button-close delete" aria-label="close"></button>
-        </header>
-        <section class="modal-card-body">
-          <p>Esti sigur ca vrei sa stergi aceasta comanda?</p>
-        </section>
-        <footer class="modal-card-foot">
-          <button id="deleteYes" class="button is-danger">Da</button>
-          <button id="deleteNo" class="button">Nu</button>
-        </footer>
+    <div id="deleteModal" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content is-danger text-center text-bold text-large">
+        <div class="box">
+          <p>Are you sure you want to delete this row?</p>
+          <button id="deleteYes" class="button is-danger">Yes</button>
+          <button id="deleteNo" class="button">No</button>
+        </div>
       </div>
+      <button class="modal-close is-large" aria-label="close"></button>
     </div>
     <link rel="stylesheet" href="https://unpkg.com/bulma-modal-fx/dist/css/modal-fx.min.css" />
     <script type="text/javascript" src="https://unpkg.com/bulma-modal-fx/dist/js/modal-fx.min.js"></script>

@@ -86,6 +86,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             console.log('CCCSFTPXML remove', res)
             //refresh xml table
             row.remove()
+            //close the modal by removing the class is-active
+            deleteModal.classList.remove('is-active')
           })
           .catch((err) => {
             console.error('CCCSFTPXML remove', err)
