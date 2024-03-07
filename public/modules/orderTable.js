@@ -73,7 +73,16 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     deleteButton.innerHTML = 'Delete'
     deleteButton.className = 'button is-small is-danger ml-2'
     deleteButton.onclick = function () {
-      alert('delete')
+      //ask for confirmation
+      if (!confirm(`Sterg ${xml.XMLFILENAME} din data  ${xml.XMLDATE}?`)) {
+        return
+      } else {
+        //delete the xml from the table
+        client
+          .service('CCCSFTPXML')
+          .remove(xml.XMLFILENAME, { query: { XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } })
+        row.remove()
+      }
     }
     //send order
     var sendOrderButton = document.createElement('button')
@@ -188,23 +197,6 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         //hide
         input.style.display = 'none'
         findoc.appendChild(input)
-        //findoc: already sent by other meanse check, for user to indicate that the order was sent
-        var checkbox = document.createElement('input')
-        checkbox.type = 'checkbox'
-        checkbox.id = xml.XMLFILENAME + '_alreadySent'
-        checkbox.className = 'ml-2'
-        var label = document.createElement('label')
-        label.htmlFor = xml.XMLFILENAME + '_alreadySent'
-        label.appendChild(document.createTextNode('Already sent'))
-        findoc.appendChild(checkbox)
-        findoc.appendChild(label)
-        //add a checkbox to actions cell
-        var input = document.createElement('input')
-        input.type = 'checkbox'
-        input.name = xml.XMLFILENAME
-        input.id = xml.XMLFILENAME
-        input.className = 'checkbox is-small ml-2'
-        actionsCell.appendChild(input)
       }
     }
   })
