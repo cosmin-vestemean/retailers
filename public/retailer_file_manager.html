@@ -76,7 +76,9 @@
                 <label class="checkbox">
                   <input id="comenziTrimise" type="checkbox" />
                   Netrimise
-                  <button id="trimiteComenzileNetrimise" class="button is-success is-small">Trimite toate</button>
+                  <button id="trimiteComenzileNetrimise" class="button is-success is-small">
+                    Trimite toate
+                  </button>
                 </label>
               </th>
             </tr>
@@ -163,20 +165,19 @@
       getNDisplayOrders(trdrRetailerFromUrl)
       getNDisplayS1Docs(1351, 712, 7121)
       //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
-      var retailer
       for (let i = 0; i < retailers.length; i++) {
         var trdr = await retailers[i].getTrdr()
-        console.log('trdr', trdr)
         if (trdr === parseInt(trdrRetailerFromUrl)) {
-          retailer = retailers[i]
+          console.log('retailer', retailers[i])
+          //document.getElementById('retailerName').textContent = retailer.name
+          document.getElementById(
+            'trimiteComenzileNetrimise'
+          ).textContent = `Trimite toate (${retailer.getNrComenziDeTrimis()})`
+          document.getElementById(
+            'sendAllFacturi'
+          ).textContent = `Trimite toate (${retailer.getNrFacturiDeTrimis()})`
           break
         }
-      }
-      console.log('retailer', retailer)
-      if (retailer) {
-        //document.getElementById('retailerName').textContent = retailer.name
-        document.getElementById('trimiteComenzileNetrimise').textContent = `Trimite toate (${retailer.getNrComenziDeTrimis()})`
-        document.getElementById('sendAllFacturi').textContent = `Trimite toate (${retailer.getNrFacturiDeTrimis()})`
       }
     </script>
   </body>
