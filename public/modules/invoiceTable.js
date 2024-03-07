@@ -249,6 +249,22 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   })
 }
 
+export function sendAllFacturi() {
+  var table = document.getElementById('facturiTableBody')
+  var rows = table.getElementsByTagName('tr')
+  for (var i = 0; i < rows.length; i++) {
+    //get checkbox with class trimisCheckbox
+    var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+    //if not checked, send invoice
+    if (trimisCheckbox && !trimisCheckbox.checked) {
+      //get button with id like 1236204_sendInvoice
+      var sendInvoiceButton = document.getElementById(rows[i].cells[0].innerHTML + '_sendInvoice')
+      //click button
+      sendInvoiceButton.click()
+    }
+  }
+}
+
 export async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false) {
   //send invoice
   var button = document.getElementById(elemId)
