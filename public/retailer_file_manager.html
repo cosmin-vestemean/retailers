@@ -169,7 +169,7 @@
         var trdr = await retailers[i].getTrdr()
         console.log('trdr', trdr, 'trdrRetailerFromUrl', trdrRetailerFromUrl)
         if (trdr == trdrRetailerFromUrl) {
-          console.log('retailer', retailers[i])
+          const retailer = retailers[i]
           //document.getElementById('retailerName').textContent = retailer.name
           document.getElementById(
             'trimiteComenzileNetrimise'
