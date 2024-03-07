@@ -2,18 +2,14 @@
   "name": "public",
   "version": "1.0.0",
   "description": "",
-  "source": "src/index.html",
+  "source": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel",
-    "build": "parcel build"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "type": "module",
   "keywords": [],
-  "author": "",
+  "author": "Vestemean Cosmin",
   "license": "ISC",
-  "devDependencies": {
-    "parcel": "^2.11.0"
-  },
   "dependencies": {
     "@feathersjs/feathers": "^5.0.23",
     "@feathersjs/socketio-client": "^5.0.23",

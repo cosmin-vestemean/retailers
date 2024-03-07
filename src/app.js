@@ -64,10 +64,6 @@ app.hooks({
 })
 
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
-const orderPath = 'data/order'
-const orderXmlPath = orderPath + '/xml'
-const orderProcessedPath = orderPath + '/processed'
-const orderErrorPath = orderPath + '/error'
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
 
@@ -85,6 +81,9 @@ class SftpServiceClass {
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
   async downloadXml(data, params) {
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
+    const startsWith = params.query.startsWith
     try {
       const { sftp, config, sftpDataObj } = await this.prepareConnection(data, params)
       const initialDir = sftpDataObj.INITIALDIRIN
@@ -102,7 +101,7 @@ class SftpServiceClass {
           item.type === '-' &&
           item.name.endsWith('.xml') &&
           item.modifyTime > olderThan &&
-          item.name.startsWith('ORDERS_')
+          item.name.startsWith(startsWith)
         )
       })
 
@@ -117,14 +116,15 @@ class SftpServiceClass {
       })
 
       var limit = 20000000
+      //var limit = 1
       var count = 0
       for (const item of files) {
         if (count < limit) {
           const filename = item.name
-          const localPath = orderXmlPath + '/' + filename
+          const localPath = xmlPath + '/' + filename
 
-          if (!fs.existsSync(orderXmlPath)) {
-            fs.mkdirSync(orderXmlPath)
+          if (!fs.existsSync(xmlPath)) {
+            fs.mkdirSync(xmlPath)
           }
 
           const dst = fs.createWriteStream(localPath)
@@ -144,12 +144,12 @@ class SftpServiceClass {
       return returnedData
     } catch (err) {
       console.error('Error:', err)
-      throw err
     }
   }
 
   async prepareConnection(data, params) {
     const retailer = params.query.retailer
+    console.log('prepareConnection:retailer', retailer)
     const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
     const sftpDataObj = sftpData.data[0]
     const privateKey = sftpDataObj.PRIVATEKEY
@@ -179,8 +179,12 @@ class SftpServiceClass {
 
   async storeXmlInDB(data, params) {
     var retailer = params.query.retailer
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
+    const processedPath = xmlPath + '/processed'
+    const errorPath = xmlPath + '/error'
     console.log('storing xml in S1 DB for retailer', retailer)
-    const folderPath = orderXmlPath
+    const folderPath = xmlPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
 
@@ -200,7 +204,7 @@ class SftpServiceClass {
         let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
         //remove unneeded characters from xml
         xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-        //parse xml to json        
+        //parse xml to json
         var json = null
         parseString(xmlClean, function (err, result) {
           json = result
@@ -213,14 +217,17 @@ class SftpServiceClass {
               .service('getDataset')
               .find({
                 query: {
-                  sqlQuery: "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" + endpointID + "'"
+                  sqlQuery:
+                    "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
+                    endpointID +
+                    "'"
                 }
               })
               .then((result) => {
                 console.log('getDataset result', result)
                 return result
               })
-          : null;
+          : null
         console.log('trdr', trdr)
         if (trdr.data) {
           retailer = parseInt(trdr.data)
@@ -239,7 +246,6 @@ class SftpServiceClass {
           if (result.success) {
             returnedData.push({ filename: filename, success: true, response: result })
             //move file to processed folder
-            const processedPath = orderProcessedPath
             if (!fs.existsSync(processedPath)) {
               fs.mkdirSync(processedPath)
             }
@@ -247,7 +253,6 @@ class SftpServiceClass {
           } else {
             returnedData.push({ filename: filename, success: false, response: result })
             //move file to error folder
-            const errorPath = orderErrorPath
             if (!fs.existsSync(errorPath)) {
               fs.mkdirSync(errorPath)
             }
@@ -265,6 +270,164 @@ class SftpServiceClass {
 
     console.log('List of inserted files', returnedData)
     return returnedData
+  }
+
+  async storeAperakInErpMessages(data, params) {
+    const rootPath = params.query.rootPath
+    const xmlPath = rootPath + '/xml'
+    const processedPath = xmlPath + '/processed'
+    const errorPath = xmlPath + '/error'
+    const folderPath = xmlPath
+    const files = fs.readdirSync(folderPath)
+    var returnedData = []
+
+    for (const file of files) {
+      const filename = file
+      if (filename.endsWith('.xml')) {
+        const localPath = folderPath + '/' + filename
+        console.log('localPath', localPath)
+        const xml = fs.readFileSync(localPath, 'utf8')
+        //remove xml declaration
+        let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+        //ufeff
+        xmlClean = xmlClean.replace(/\ufeff/g, '')
+        console.log('xmlClean', xmlClean)
+        //parse xml to json
+        const json = await new Promise((resolve, reject) =>
+          parseString(xmlClean, { explicitArray: false }, (err, result) => {
+            if (err) reject(err)
+            else resolve(result)
+          })
+        )
+        console.log('json', json)
+        var MessageDate = json.DXMessage.MessageDate
+        var MessageTime = json.DXMessage.MessageTime
+        var MessageOrigin = json.DXMessage.MessageOrigin
+        var DocumentReference = json.DXMessage.DocumentReference
+        //if DocumentReference is in this format: 'INVOIC_19362_VAT_RO25190857.xml' retain only the number
+        if (DocumentReference.includes('INVOIC_')) {
+          DocumentReference = DocumentReference.split('_')[1].split('_')[0]
+        }
+        var DocumentUID = json.DXMessage.DocumentUID
+        var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode
+        var DocumentResponse = json.DXMessage.DocumentResponse
+        var DocumentDetail = json.DXMessage.DocumentDetail
+        //getDataset1 returns success, data, total or success, error
+        const response = await app.service('getDataset1').find({
+          query: {
+            sqlQuery:
+              `SELECT FORMAT(a.trndate, 'dd.MM.yyyy') TRNDATE , A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR ` +
+              ` left join mtrdoc c on c.findoc=a.findoc WHERE A.SOSOURCE = 1351 and fprms=712 and A.FINCODE LIKE '%${DocumentReference}%' order by a.TRNDATE desc`
+            //` AND A.TRNDATE = '${MessageDate}' `
+            //` and ((CONCAT(B.BGBULSTAT, B.AFM) = '${MessageOrigin}') or (b.afm = '${MessageOrigin}'))`
+          }
+        })
+        var dataToCccAperakTable = {
+          TRDR_CLIENT: 1,
+          MESSAGEDATE: MessageDate,
+          MESSAGETIME: MessageTime,
+          MESSAGEORIGIN: MessageOrigin,
+          DOCUMENTREFERENCE: DocumentReference,
+          DOCUMENTUID: DocumentUID,
+          SUPPLIERRECEIVERCODE: SupplierReceiverCode,
+          DOCUMENTRESPONSE: DocumentResponse,
+          DOCUMENTDETAIL: DocumentDetail
+        }
+        if (response.success) {
+          if (response.total === 0) {
+            returnedData.push({
+              filename: filename,
+              success: false,
+              response: response + ' No document found in ERP'
+            })
+            //move file to error folder
+            if (!fs.existsSync(errorPath)) {
+              fs.mkdirSync(errorPath)
+            }
+          } else {
+            if (response.total > 1) {
+              returnedData.push({
+                filename: filename,
+                success: false,
+                response:
+                  'More than one document found in ERP with the same DocumentReference and MessageDate'
+              })
+            }
+            const findoc = response.data[0].FINDOC
+            const retailer = response.data[0].retailer
+            const xmlFilename = response.data[0].xmlFilename || null
+            const xmlSentDate = response.data[0].xmlSentDate || null
+
+            if (findoc) dataToCccAperakTable.FINDOC = parseInt(findoc)
+            if (retailer) dataToCccAperakTable.TRDR_RETAILER = parseInt(retailer)
+            if (xmlFilename) dataToCccAperakTable.XMLFILENAME = xmlFilename
+            if (xmlSentDate) dataToCccAperakTable.XMLSENTDATE = xmlSentDate
+            console.log('data', dataToCccAperakTable)
+            const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+            console.log('CCCAPERAK result', result)
+
+            if (result.CCCAPERAK) {
+              returnedData.push({ filename: filename, success: true, response: result })
+              //move file to processed folder
+              if (!fs.existsSync(processedPath)) {
+                fs.mkdirSync(processedPath)
+              }
+              fs.renameSync(localPath, processedPath + '/' + filename)
+            } else {
+              returnedData.push({ filename: filename, success: false, response: result })
+              //move file to error folder
+              if (!fs.existsSync(errorPath)) {
+                fs.mkdirSync(errorPath)
+              }
+              fs.renameSync(localPath, errorPath + '/' + filename)
+            }
+          }
+        } else {
+          //push data to CCCAPERAK, findoc is mandaTory, TRDR_RETAILER is mandatory, they will be -1
+          dataToCccAperakTable.FINDOC = -1
+          dataToCccAperakTable.TRDR_RETAILER = -1
+          const result = await app.service('CCCAPERAK').create(dataToCccAperakTable)
+          console.log('CCCAPERAK result with no link to findoc', result)
+          returnedData.push({
+            filename: filename,
+            success: false,
+            response: response + ` Error in getDataset1 with params ${MessageDate}, ${DocumentReference}`
+          })
+          //move file to error folder
+          if (!fs.existsSync(errorPath)) {
+            fs.mkdirSync(errorPath)
+          }
+          fs.renameSync(localPath, errorPath + '/' + filename)
+        }
+      }
+    }
+    return returnedData
+  }
+
+  async scanPeriodically(data, params) {
+    //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
+    //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
+    //scan periodically (30') for aperak files
+    const min = 30
+    const period = min * 60 * 1000
+    const aperakPath = 'data/aperak'
+    const orderPath = 'data/order'
+    setInterval(async () => {
+      console.log('scanning for orders...')
+      data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+      await this.downloadXml(data, params)
+      data = {}
+      params = { query: { retailer: 11639, rootPath: orderPath } }
+      await this.storeXmlInDB(data, params)
+      console.log('scanning for aperak...')
+      data = {}
+      params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
+      await this.downloadXml(data, params)
+      data = {}
+      params = { query: { rootPath: aperakPath } }
+      await this.storeAperakInErpMessages(data, params)
+    }, period)
   }
 
   async uploadXml(data, params) {
@@ -311,7 +474,7 @@ class SftpServiceClass {
 
 //register the service
 app.use('sftp', new SftpServiceClass(), {
-  methods: ['downloadXml', 'storeXmlInDB', 'uploadXml'],
+  methods: ['downloadXml', 'storeXmlInDB', 'storeAperakInErpMessages', 'uploadXml'],
   events: ['uploadResult']
 })
 
@@ -463,6 +626,22 @@ class getDatasetServiceClass {
 
 //register the service
 app.use('getDataset', new getDatasetServiceClass())
+
+class getDataset1ServiceClass {
+  async find(params) {
+    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
+    const method = 'POST'
+    const sqlQuery = params.query.sqlQuery
+    console.log('sqlQuery', sqlQuery)
+    const response = await fetch(url, { method: method, body: JSON.stringify({ sqlQuery: sqlQuery }) })
+    const json = await response.json()
+    console.log(json)
+    return json //success, data, total or success, error
+  }
+}
+
+//register the service
+app.use('getDataset1', new getDataset1ServiceClass())
 
 class getS1ObjData {
   async find(params) {
@@ -638,5 +817,9 @@ app
         console.log(data)
       })
   }) */
+
+//scanPeriodically run
+app.service('sftp').scanPeriodically({}, {})
+
 
 export { app }
