@@ -78,10 +78,18 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         return
       } else {
         //delete the xml from the table
+        const CCCSFTPXML = xml.CCCSFTPXML
         client
           .service('CCCSFTPXML')
-          .remove(xml.XMLFILENAME, { query: { XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } })
-        row.remove()
+          .remove(CCCSFTPXML)
+          .then((res) => {
+            console.log('CCCSFTPXML remove', res)
+            //refresh xml table
+            row.remove()
+          })
+          .catch((err) => {
+            console.error('CCCSFTPXML remove', err)
+          })
       }
     }
     //send order
