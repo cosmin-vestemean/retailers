@@ -111,6 +111,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     sendOrderButton.onclick = async function () {
       //daca am findoc nu mai trimit
       if (!xml.FINDOC) {
+        //disable the button
+        sendOrderButton.disabled = true
         sendOrderButton.innerHTML = 'Sending...'
         var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
         if (response.success == false) {
@@ -149,6 +151,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           return
         } else {
           sendOrderButton.innerHTML = 'Order sent'
+          //enable the button
+          sendOrderButton.disabled = false
         }
       } else {
         alert('Already sent')
