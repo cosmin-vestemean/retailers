@@ -19,6 +19,42 @@
           overflow-x: auto;
           display: block;
         }
+
+        .is-responsive th {
+          white-space: nowrap;
+        }
+        
+        .is-responsive th:not(:last-child) {
+          border-bottom: 1px solid #dbdbdb;
+        }
+
+        .is-responsive td {
+          border-bottom: 1px solid #dbdbdb;
+        }
+
+        .is-responsive tr:last-child {
+          border-bottom: 1px solid #dbdbdb;
+        }
+
+        .is-responsive th,
+        .is-responsive td {
+          min-width: 100px;
+          max-width: 200px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .is-responsive th:first-child,
+        .is-responsive td:first-child {
+          min-width: 200px;
+          max-width: 300px;
+        }
+
+        .is-responsive th:last-child,
+        .is-responsive td:last-child {
+          min-width: 200px;
+          max-width: 300px;
+        }
       }
     </style>
   </head>
