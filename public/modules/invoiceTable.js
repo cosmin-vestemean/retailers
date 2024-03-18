@@ -75,7 +75,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       //add cell and textarea
       var textarea = document.createElement('textarea')
       textarea.className = 'textarea is-small'
-      textarea.rows = 10
+      textarea.rows = 5
       textarea.cols = 50
       textarea.innerHTML = domObj.dom
       //no spellcheck
@@ -169,6 +169,12 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var label = document.createElement('label')
       label.htmlFor = row.findoc + '_alreadySent'
       label.appendChild(document.createTextNode('Already sent'))
+      //when checked, mark invoice as sent
+      checkbox.onclick = async function () {
+        if (checkbox.checked) {
+          await markInvoiceAsSent(row.findoc, 'Already sent by other means')
+        }
+      }
       trimis.appendChild(checkbox)
       trimis.appendChild(label)
     }
@@ -268,8 +274,13 @@ export async  function sendAllFacturi() {
       //click button
       //sendInvoiceButton.click()
       //wait until click assigned to button is executed and returns findoc
+      //change color of row to secondary
+      let oldColor = rows[i].style.backgroundColor
+      rows[i].style.backgroundColor = 'lightgrey'
       var findoc = await sendInvoiceButton.onclick()
       console.log('sent', findoc)
+      //change back color of row to white
+      rows[i].style.backgroundColor = oldColor
     }
   }
   //set all buttons enabled
@@ -302,7 +313,7 @@ export async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false
       //add cell and textarea
       var textarea = document.createElement('textarea')
       textarea.className = 'textarea is-small'
-      textarea.rows = 10
+      textarea.rows = 5
       textarea.cols = 50
       textarea.innerHTML = xml
       //no spellcheck

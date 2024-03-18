@@ -139,7 +139,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             sendOrderButton.innerHTML = 'See errors'
             //add text area with errors beneath the buttons
             var textarea = document.createElement('textarea')
-            textarea.rows = 10
+            textarea.rows = 5
             textarea.cols = 50
             textarea.innerHTML = errorMsg
             actionsCell.appendChild(textarea)
