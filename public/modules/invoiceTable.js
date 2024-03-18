@@ -298,7 +298,7 @@ export async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false
       //add cell
       var td = tr.insertCell()
       td.appendChild(textarea)
-      markInvoiceAsSent(row.findoc, domObj.filename)
+      await markInvoiceAsSent(row.findoc, domObj.filename)
     }
   })
   //update btn caption to sent
