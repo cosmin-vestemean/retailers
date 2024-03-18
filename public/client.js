@@ -144,6 +144,9 @@ window.onload = function () {
   if (trdrRetailerFromUrl) {
     getRetailerName(trdrRetailerFromUrl)
   }
+  //add font to body
+  document.body.style.fontFamily =
+    'Inter, BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif'
 }
 
 function getRetailerName(trdr) {
