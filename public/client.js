@@ -229,6 +229,7 @@ export function getEmptyAperak() {
     .find({
       query: {
         FINDOC: -1,
+        TRDR_RETAILER: -1,
         $limit: 200,
         $sort: {
           MESSAGEDATE: -1,
@@ -249,14 +250,29 @@ export function getEmptyAperak() {
         var td = document.createElement('td')
         //set innerHTML
         td.innerHTML = res.data[i].MESSAGEDATE
-        td.innerHTML = res.data[i].MESSAGETIME
-        td.innerHTML = res.data[i].MESSAGEORIGIN
-        td.innerHTML = res.data[i].DOCUMENTREFERENCE
-        td.innerHTML = res.data[i].DOCUMENTUID
-        td.innerHTML = res.data[i].SUPPLIERRECEIVERCODE
-        td.innerHTML = res.data[i].DOCUMENTRESPONSE
-        td.innerHTML = res.data[i].DOCUMENTDETAIL
         //append td to tr
+        tr.appendChild(td)
+        //another td
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].MESSAGETIME
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].MESSAGEORIGIN
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].DOCUMENTREFERENCE
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].DOCUMENTUID
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].SUPPLIERRECEIVERCODE
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].DOCUMENTRESPONSE
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].DOCUMENTDETAIL
         tr.appendChild(td)
         //append tr to table
         table.appendChild(tr)
