@@ -116,6 +116,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     button.innerHTML = 'Send Invoice'
     button.onclick = async function () {
       await sendInvoiceAndMark(row, tr, button.id)
+      console.log('sendInvoice', row.findoc)
     }
     actions.appendChild(button)
     //add cell trimis
