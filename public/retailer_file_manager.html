@@ -16,45 +16,38 @@
     <style>
       @media screen and (max-width: 800px) {
         .is-responsive {
-          overflow-x: auto;
-          display: block;
+          width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: block;
+    position: relative
         }
-
-        .is-responsive th {
-          white-space: nowrap;
-        }
-        
-        .is-responsive th:not(:last-child) {
-          border-bottom: 1px solid #dbdbdb;
-        }
-
-        .is-responsive td {
-          border-bottom: 1px solid #dbdbdb;
-        }
-
-        .is-responsive tr:last-child {
-          border-bottom: 1px solid #dbdbdb;
-        }
-
         .is-responsive th,
         .is-responsive td {
-          min-width: 100px;
-          max-width: 200px;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          border-bottom: 1px solid #dbdbdb;
+          display: block;
+          text-align: right;
         }
-
-        .is-responsive th:first-child,
-        .is-responsive td:first-child {
-          min-width: 200px;
-          max-width: 300px;
+        .is-responsive th {
+          display: block;
+          text-align: right;
         }
-
-        .is-responsive th:last-child,
-        .is-responsive td:last-child {
-          min-width: 200px;
-          max-width: 300px;
+        .is-responsive thead {
+          display: none;
         }
+        .is-responsive tbody tr {
+          margin-bottom: 1em;
+          display: block;
+        }
+        .is-responsive tbody tr:last-child {
+          margin-bottom: 0;
+        }
+        .is-responsive tbody td:before {
+          content: attr(data-label);
+          float: left;
+          font-weight: bold;
+          text-transform: uppercase;
+        }    
       }
     </style>
   </head>
@@ -124,7 +117,7 @@
       <div class="table-container">
         <table
           id="xmlTable"
-          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
+          class="table is-bordered is-striped is-narrow is-ho</table>verable is-fullwidth is-small is-responsive"
         >
           <thead>
             <tr>
