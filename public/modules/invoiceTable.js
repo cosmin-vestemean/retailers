@@ -172,7 +172,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       //when checked, mark invoice as sent
       checkbox.onclick = async function () {
         if (checkbox.checked) {
-          await markInvoiceAsSent(row.findoc, 'Already sent by other means')
+          let confirmed = confirm('Mark invoice as sent by other means?')
+          if (confirmed) await markInvoiceAsSent(row.findoc, 'Already sent by other means')
         }
       }
       trimis.appendChild(checkbox)
@@ -230,10 +231,9 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       body.className = 'message-body'
       //hidden by default
       body.style.display = 'none'
-      body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status').replace(
-        'Mesaj',
-        '<br>Mesaj'
-      ).replace('Nume fisier', '<br>Nume fisier')
+      body.innerHTML = aperakRes.data[0].DOCUMENTDETAIL.replace('Status', '<br>Status')
+        .replace('Mesaj', '<br>Mesaj')
+        .replace('Nume fisier', '<br>Nume fisier')
       article.appendChild(body)
       lastDXResponse.appendChild(article)
       //add column MESSAGEDATE, take only date part
@@ -256,7 +256,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
   })
 }
 
-export async  function sendAllFacturi() {
+export async function sendAllFacturi() {
   var table = document.getElementById('facturiTableBody')
   var rows = table.getElementsByTagName('tr')
   //set all buttons disabled
@@ -348,7 +348,9 @@ async function markInvoiceAsSent(findoc, xmlFilename) {
   body['KEY'] = findoc
   body['DATA'] = {}
   body['DATA']['MTRDOC'] = [{ CCCXMLFile: xmlFilename }]
-  body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+  //body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
+  //local time
+  body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toLocaleString() }]
   console.log('body', body)
   await client
     .service('setDocument')
