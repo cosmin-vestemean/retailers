@@ -255,6 +255,10 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
 }
 
 export async function trimiteComenzileNetrimise() {
+  //are you sure?
+  if (!confirm('Are you sure?')) {
+    return
+  }
   //sendOrder
   var table = document.getElementById('xmlTableBody')
   var rows = table.getElementsByTagName('tr')

@@ -257,6 +257,11 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
 }
 
 export async function sendAllFacturi() {
+  //are you sure?
+  var r = confirm('Send all invoices?')
+  if (r == false) {
+    return
+  }
   var table = document.getElementById('facturiTableBody')
   var rows = table.getElementsByTagName('tr')
   //set all buttons disabled

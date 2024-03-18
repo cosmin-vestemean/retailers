@@ -52,9 +52,12 @@
       <ul>
         <li id="defaultOpen" class="tab is-active">
           <a>Comenzi</a>
+          <button id="trimiteComenzileNetrimise" class="button is-success is-small">Trimite toate</button>
         </li>
         <li id="facturi_link" class="tab">
           <a>Facturi</a>
+          <!--add button send all-->
+          <button id="sendAllFacturi" class="button is-success is-small">Trimite toate</button>
         </li>
       </ul>
     </div>
@@ -75,9 +78,6 @@
                 <label class="checkbox">
                   <input id="comenziTrimise" type="checkbox" />
                   Netrimise
-                  <button id="trimiteComenzileNetrimise" class="button is-success is-small">
-                    Trimite toate
-                  </button>
                 </label>
               </th>
             </tr>
@@ -103,8 +103,6 @@
                   <input id="facturiTrimise" type="checkbox" />
                   Netrimise
                 </label>
-                <!--add button send all-->
-                <button id="sendAllFacturi" class="button is-success is-small">Trimite toate</button>
               </th>
               <th class="has-text-info">XML</th>
               <th class="has-text-info" colspan="2">Raspuns</th>
@@ -201,7 +199,13 @@
       </div>
       <button class="modal-close is-large" aria-label="close"></button>
     </div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"
+    ></script>
   </body>
 </html>
