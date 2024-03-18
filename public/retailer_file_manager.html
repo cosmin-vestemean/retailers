@@ -13,6 +13,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
     <!--load socket.io-->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <style>
+      @media screen and (max-width: 800px) {
+        .is-responsive {
+          overflow-x: auto;
+          display: block;
+        }
+      }
+    </style>
   </head>
   <body>
     <!--
@@ -80,7 +88,7 @@
       <div class="table-container">
         <table
           id="xmlTable"
-          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
         >
           <thead>
             <tr>
@@ -104,16 +112,16 @@
     <div id="facturi" class="content-tab">
       <buttons>
         <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
-          <!--add spinner text input with default value 7-->
-          <input id="daysOlder" class="input is-small is-info p-1" type="number" value="7" min="1" max="30" />
-          [zile] Preluare din Softone
+          Preluare din Softone
+          <input id="daysOlder" class="input is-small is-info p-1 mx-1" type="number" value="7" min="1" max="30" />
+          zile
         </button>
         <button id="sendAllFacturi" class="button is-success is-small mx-1">Trimite in Sofone</button>
       </buttons>
       <div class="table-container">
         <table
           id="facturiTable"
-          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
         >
           <thead>
             <tr>
