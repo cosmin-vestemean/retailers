@@ -248,13 +248,13 @@ export function getEmptyAperak() {
         var tr = document.createElement('tr')
         //create td
         var td = document.createElement('td')
-        //set innerHTML
-        td.innerHTML = res.data[i].MESSAGEDATE
+        //set innerHTML with date part of MESSAGEDATE
+        td.innerHTML = res.data[i].MESSAGEDATE.split('T')[0]
         //append td to tr
         tr.appendChild(td)
         //another td
         td = document.createElement('td')
-        td.innerHTML = res.data[i].MESSAGETIME
+        td.innerHTML = res.data[i].MESSAGETIME.split('T')[1].split('.')[0]
         tr.appendChild(td)
         td = document.createElement('td')
         td.innerHTML = res.data[i].MESSAGEORIGIN
