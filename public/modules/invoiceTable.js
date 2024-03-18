@@ -253,6 +253,11 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
 export async  function sendAllFacturi() {
   var table = document.getElementById('facturiTableBody')
   var rows = table.getElementsByTagName('tr')
+  //set all buttons disabled
+  var buttons = document.getElementsByTagName('button')
+  for (var j = 0; j < buttons.length; j++) {
+    buttons[j].disabled = true
+  }
   for (var i = 0; i < rows.length; i++) {
     //get checkbox with class trimisCheckbox
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
@@ -264,8 +269,12 @@ export async  function sendAllFacturi() {
       //sendInvoiceButton.click()
       //wait until click assigned to button is executed and returns findoc
       var findoc = await sendInvoiceButton.onclick()
-      console.log('findoc', findoc)
+      console.log('sent', findoc)
     }
+  }
+  //set all buttons enabled
+  for (var j = 0; j < buttons.length; j++) {
+    buttons[j].disabled = false
   }
 }
 
