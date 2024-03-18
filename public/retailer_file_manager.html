@@ -8,7 +8,10 @@
     <!--load font awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <!-- Bulma Responsive Tables -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css"
+    />
     <!--load feathers-->
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
     <!--load socket.io-->
@@ -17,23 +20,19 @@
       @media screen and (max-width: 800px) {
         .is-responsive {
           width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    display: block;
-    position: relative
+          border-collapse: collapse;
+          border-spacing: 0;
+          display: block;
+          position: relative;
         }
         .is-responsive th,
         .is-responsive td {
-          border-bottom: 1px solid #dbdbdb;
           display: block;
           text-align: right;
         }
         .is-responsive th {
           display: block;
           text-align: right;
-        }
-        .is-responsive thead {
-          display: none;
         }
         .is-responsive tbody tr {
           margin-bottom: 1em;
@@ -47,7 +46,7 @@
           float: left;
           font-weight: bold;
           text-transform: uppercase;
-        }    
+        }
       }
     </style>
   </head>
@@ -142,7 +141,14 @@
       <buttons>
         <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
           Preluare din Softone
-          <input id="daysOlder" class="input is-small is-info p-1 mx-1" type="number" value="7" min="1" max="30" />
+          <input
+            id="daysOlder"
+            class="input is-small is-info p-1 mx-1"
+            type="number"
+            value="7"
+            min="1"
+            max="30"
+          />
           zile
         </button>
         <button id="sendAllFacturi" class="button is-success is-small mx-1">Trimite in Sofone</button>
