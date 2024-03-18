@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
     <!--load font awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- Bulma Responsive Tables -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css" />
     <!--load feathers-->
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
     <!--load socket.io-->
@@ -22,7 +24,9 @@
          create Bulma navbar
     -->
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
-      <a class="navbar-item is-info" href="./"><i class="fa fa-arrow-left" aria-hidden="true"></i> Retailers list </a>
+      <a class="navbar-item is-info" href="./"
+        ><i class="fa fa-arrow-left" aria-hidden="true"></i> Retailers list
+      </a>
       <div class="navbar-brand">
         <a class="navbar-item">
           <h1 id="retailerName" class="title is-info">Retailers Integration</h1>
@@ -54,7 +58,7 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">Log in</a>
+              <a class="button is-primary">Log out</a>
             </div>
           </div>
         </div>
@@ -102,14 +106,7 @@
         <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
           Preluare din Softone (zile)
           <!--add spinner text input with default value 7-->
-          <input
-            id="daysOlder"
-            class="input is-small is-info p-1"
-            type="number"
-            value="7"
-            min="1"
-            max="30"
-          />
+          <input id="daysOlder" class="input is-small is-info p-1" type="number" value="7" min="1" max="30" />
         </button>
         <button id="sendAllFacturi" class="button is-success is-small mx-1">Trimite in Sofone</button>
       </buttons>
