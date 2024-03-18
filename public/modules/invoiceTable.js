@@ -260,7 +260,7 @@ export async  function sendAllFacturi() {
       //get button with id like 1236204_sendInvoice
       var sendInvoiceButton = document.getElementById(rows[i].cells[0].innerHTML + '_sendInvoice')
       //click button
-      await sendInvoiceButton.click()
+      sendInvoiceButton.click()
     }
   }
 }
