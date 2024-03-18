@@ -312,6 +312,12 @@ class SftpServiceClass {
         var SupplierReceiverCode = json.DXMessage.SupplierReceiverCode
         var DocumentResponse = json.DXMessage.DocumentResponse
         var DocumentDetail = json.DXMessage.DocumentDetail
+        /*- - ID document: DX01_099_20240313_01005264 Nume fisier: INVOIC_19868_VAT_RO25190857.xml Status: Primit de DX Mesaj: Documentul a fost receptionat de platforma DocXchange The document has been received by DocXchange platform. */
+        //search for Nume fisier: INVOIC_19868_VAT_RO25190857.xml in messagedetail and try to recup 19868 part
+        var possibleDocumentReference = DocumentDetail.split('Nume fisier: ')[1].split('.xml')[0]
+        if (DocumentReference === 'Necunoscut' && possibleDocumentReference.includes('INVOIC_')) {
+          DocumentReference = possibleDocumentReference.split('_')[1]
+        }
         //getDataset1 returns success, data, total or success, error
         const response = await app.service('getDataset1').find({
           query: {
