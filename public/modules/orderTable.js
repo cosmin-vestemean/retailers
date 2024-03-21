@@ -187,7 +187,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       findoc.appendChild(label)
       //add details icon
       var detailsIcon = document.createElement('i')
-      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2 is-info'
       detailsIcon.title = 'Details'
       detailsIcon.onclick = async function () {
         var { orderId, res } = await getFindocForOrder(orderId, xml)
@@ -197,8 +197,6 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         details.innerHTML = detailsText
         //add class to details
         details.className = 'is-info is-small'
-        //remove detailsIcon and add details
-        detailsIcon.remove()
         findoc.appendChild(details)
       }
       findoc.appendChild(detailsIcon)
@@ -249,7 +247,9 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     //get order from SALDOC
     var params = {}
     params['query'] = {}
-    params['query']['sqlQuery'] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+    params['query'][
+      'sqlQuery'
+    ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
     var res = await client.service('getDataset1').find(params)
     return { orderId, res }
   }
