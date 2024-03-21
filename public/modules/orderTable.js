@@ -197,8 +197,9 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         details.innerHTML = detailsText
         //add class to details
         details.className = 'is-info is-small'
-        //add it to the cell
-        detailsIcon.appendChild(details)
+        //remove detailsIcon and add details
+        detailsIcon.remove()
+        findoc.appendChild(details)
       }
       findoc.appendChild(detailsIcon)
     } else {
