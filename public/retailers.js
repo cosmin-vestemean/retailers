@@ -17,6 +17,8 @@ export async function drawRetailers() {
   for (var i = 0; i < retailers.length; i = i + 3) {
     const row = document.createElement('div')
     row.className = 'columns'
+    //add row to cardsContainer
+    document.getElementById('cardsContainer').appendChild(row)
     for (var j = i; j < i + 3; j++) {
       if (j < retailers.length) {
         const retailer = retailers[j]
@@ -28,6 +30,5 @@ export async function drawRetailers() {
         row.innerHTML += card
       }
     }
-    document.getElementById('cardsContainer').innerHTML += row.outerHTML
   }
 }
