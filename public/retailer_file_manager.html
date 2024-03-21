@@ -16,8 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
     <!--load socket.io-->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <!-- <style>
-      @media screen and (max-width: 768px){
+    <style>
+      @media screen and (max-width: 800px) {
         .is-responsive {
           width: 100%;
           border-collapse: collapse;
@@ -28,33 +28,30 @@
         .is-responsive th,
         .is-responsive td {
           display: block;
+          text-align: right;
         }
-        .is-responsive td {
-          /* display: flex; */
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.5em;
-          border-bottom: 1px solid #f2f2f2;
-          position: relative;
-          background-color: #fff;
-          width: 100%;
-          display: flex;
+        .is-responsive th {
+          display: block;
+          text-align: right;
         }
         .is-responsive thead {
           display: none;
         }
         .is-responsive tbody tr {
-          border-radius: 0.25em;
-          margin-bottom: 2em;
-          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+          margin-bottom: 1em;
           display: block;
         }
         .is-responsive tbody tr:last-child {
           margin-bottom: 0;
         }
+        .is-responsive tbody td:before {
+          content: attr(data-label);
+          float: left;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
       }
-    </style> -->
+    </style>
   </head>
   <body>
     <!--
@@ -122,7 +119,7 @@
       <div class="table-container">
         <table
           id="xmlTable"
-          class="table is-bordered is-striped is-hoverable is-fullwidth is-small is-responsive"
+          class="table is-bordered is-striped is-narrow is-ho</table>verable is-fullwidth is-small is-responsive"
         >
           <thead>
             <tr>
@@ -139,7 +136,7 @@
               </th>
             </tr>
           </thead>
-          <tbody id="xmlTableBody"></tbody>
+          <tbody id="xmlTableBody" class="is-size-7"></tbody>
         </table>
       </div>
     </div>
@@ -162,7 +159,7 @@
       <div class="table-container">
         <table
           id="facturiTable"
-          class="table is-bordered is-striped is-hoverable is-fullwidth is-small is-responsive"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
         >
           <thead>
             <tr>
