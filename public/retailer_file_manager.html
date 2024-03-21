@@ -17,7 +17,7 @@
     <!--load socket.io-->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <style>
-      @media screen and (max-width: 800px){
+      @media screen and (max-width: 768px){
         .is-responsive {
           width: 100%;
           border-collapse: collapse;
@@ -38,8 +38,8 @@
           display: none;
         }
         .is-responsive tbody tr {
-          margin-bottom: 1em;
-          box-shadow: 0 0 0 1px #f0f0f0;
+          margin-bottom: 2em;
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
           display: block;
         }
         .is-responsive tbody tr:last-child {
@@ -50,14 +50,6 @@
           float: left;
           font-weight: bold;
           text-transform: uppercase;
-        }
-
-        .is-responsive tbody td {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.5em 1em;
-          border-bottom: 1px solid #f0f0f0;
         }
       }
     </style>
