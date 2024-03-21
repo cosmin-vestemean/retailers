@@ -123,7 +123,7 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
       console.debug(JSON.stringify(result, null, 2))
       await displayDocsForRetailers(result, trdr, sosource, fprms, series, 'facturiTableBody')
       //check id comenziTrimise
-      document.getElementById('comenziTrimise').checked = true
+      //document.getElementById('comenziTrimise').checked = true
       toggleComenziNetrimise()
       //facturiTrimise
       document.getElementById('facturiTrimise').checked = true
@@ -181,8 +181,8 @@ async function openTab(evt, tabName) {
 
   if (tabName == 'comenzi') {
     //check id comenziTrimise
-    document.getElementById('comenziTrimise').checked = true
-    toggleComenziNetrimise()
+    //document.getElementById('comenziTrimise').checked = true
+    //toggleComenziNetrimise()
   }
 
   if (tabName == 'facturi') {
