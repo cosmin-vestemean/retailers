@@ -316,6 +316,7 @@ class SftpServiceClass {
         var possibleDocumentReference = DocumentDetail.split('Nume fisier: ')[1].split('.xml')[0]
         if (DocumentReference === 'Necunoscut' && possibleDocumentReference.includes('INVOIC_')) {
           DocumentReference = possibleDocumentReference.split('_')[1]
+          console.log('DocumentReference', DocumentReference)
         }
         //getDataset1 returns success, data, total or success, error
         const response = await app.service('getDataset1').find({
