@@ -130,13 +130,20 @@
       </ul>
     </div>
     <div id="comenzi" class="content-tab">
-      <button id="trimiteComenzileNetrimise" class="button is-success is-small">
-        Trimite comenzile in Softone
-      </button>
-      <label class="checkbox tag">
-        <input id="comenziTrimise" type="checkbox" />
-        Netrimise
-      </label>
+      <buttons class="buttons operatii">
+        <button id="preluareComenziBtn" class="button is-link is-inverted is-small">
+          Preluare din Softone
+        </button>
+        <button id="preluareAperakBtn" class="button is-link is-inverted is-small">Preluare APERAK</button>
+        <button id="openAperakBtn" class="button is-link is-inverted is-small">Fisiere APERAK</button>
+        <button id="trimiteComenzileNetrimise" class="button is-success is-small">
+          Trimite comenzile in Softone
+        </button>
+        <label class="checkbox tag">
+          <input id="comenziTrimise" type="checkbox" />
+          Netrimise
+        </label>
+      </buttons>
       <div class="table-container">
         <table
           id="xmlTable"
@@ -157,7 +164,6 @@
       </div>
     </div>
     <div id="facturi" class="content-tab">
-
       <buttons class="buttons operatii">
         <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
           Preluare din Softone
