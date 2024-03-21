@@ -61,6 +61,11 @@
         /*cursor*/
         cursor: pointer;
       }
+      .operatii {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1em;
+      }
     </style>
   </head>
   <body>
@@ -152,7 +157,8 @@
       </div>
     </div>
     <div id="facturi" class="content-tab">
-      <buttons>
+
+      <buttons class="buttons operatii">
         <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
           Preluare din Softone
           <input
