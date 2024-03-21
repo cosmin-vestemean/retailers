@@ -864,7 +864,7 @@ export async function getRetailerConfData() {
       }
     })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
       //URL
       document.getElementById('URL').value = res.data[0].URL
       //PORT
@@ -920,7 +920,7 @@ export function updateRetailerConfData() {
       })
     )
     .then((res) => {
-      console.log(res)
+      //console.log(res)
     })
 }
 
@@ -938,7 +938,7 @@ async function loadMapping(id) {
       }
     })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
       //get all rows from xmlAsTable
       var table = document.getElementById('xmlAsTable')
       //if xmlAsTable has rows, delete the ones with the same item.XMLNODE in the third column
@@ -1205,14 +1205,14 @@ export async function loadFile(event) {
     var x = xmlDoc.getElementsByTagName(mainNode)
     //loop recursivly through all nodes from main node "Order" and create an object with the values
     var obj = xml2json(x[0])
-    console.log('xml2json', obj)
+    //console.log('xml2json', obj)
 
     //get node name for lines; select id "delimitareLinieDocument"
     var linesNode = document.getElementById('delimitareLinieDocument').value
     //cut obj in two parts: header and lines; lines are in an array (obj.OrderLine)
     var header = {}
     var lines = []
-    console.log('header', header)
+    //console.log('header', header)
     for (var i in obj) {
       if (i == linesNode && obj[i].length > 0 && typeof obj[i] === 'object') {
         lines = obj[i]
@@ -1487,14 +1487,14 @@ async function deleteMapping(id) {
     .service('CCCXMLS1MAPPINGS')
     .remove(null, { query: { CCCDOCUMENTES1MAPPINGS: id } })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
     })
 
   await client
     .service('CCCDOCUMENTES1MAPPINGS')
     .remove(id)
     .then((res) => {
-      console.log(res)
+      //console.log(res)
     })
 }
 
@@ -1635,7 +1635,7 @@ export async function loadCommonXSD() {
     alert('Select XSD Commons file')
     return
   }
-  console.log('xsdFile', xsdFile)
+  //console.log('xsdFile', xsdFile)
 
   //find elements without minOccurs="0"
   var reader = new FileReader()
@@ -1650,7 +1650,7 @@ export async function loadCommonXSD() {
 export async function mandatoryFields() {
   //get file from input id="xsdFile"
   var xsdFile = document.getElementById('xsdFile').files[0]
-  console.log('xsdFile', xsdFile)
+  //console.log('xsdFile', xsdFile)
   //find elements without minOccurs="0"
   var mandatoryFields = []
   var nonMandatoryFields = []
@@ -1664,7 +1664,7 @@ export async function mandatoryFields() {
     var dxInvoice = xsdDom.getElementsByTagName('xs:element')[0]
     dxInvoice.parentNode.removeChild(dxInvoice)
     var elements = xsdDom.getElementsByTagName('xs:element')
-    console.log('numar elemente', elements.length)
+    //console.log('numar elemente', elements.length)
     for (var i = 0; i < elements.length; i++) {
       var element = elements[i]
       //find parents
@@ -1739,8 +1739,8 @@ export async function mandatoryFields() {
         }
       }
     }
-    console.log('mandatoryFields', mandatoryFields)
-    console.log('nonMandatoryFields', nonMandatoryFields)
+    //console.log('mandatoryFields', mandatoryFields)
+    //console.log('nonMandatoryFields', nonMandatoryFields)
 
     displayMandatoryFields(mandatoryFields, nonMandatoryFields)
 
@@ -1894,7 +1894,7 @@ export async function mandatoryFields() {
       var cell = row.getElementsByClassName('xmlPath')[0]
       var path = cell.innerHTML
       mandatoryFields.every((item) => {
-        console.log('path', path, 'item.path', item.path)
+        //console.log('path', path, 'item.path', item.path)
         //if (item.path == path) {
         //if (path.includes(item.path)) {
         if (path == item.path) {
@@ -2037,7 +2037,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
       console.log('mySearchedComplexType not found')
       return { thisMandatoryFields: thisMandatoryFields, thisNonMandatoryFields: thisNonMandatoryFields }
     }
-    console.log('searchFor', searchFor, 'mySearchedComplexType', mySearchedComplexType)
+    //console.log('searchFor', searchFor, 'mySearchedComplexType', mySearchedComplexType)
     //get all xs:element children
     var myElements = mySearchedComplexType.getElementsByTagName('xs:element')
     var arrMyElements = Array.from(myElements)
@@ -2104,7 +2104,7 @@ function recursiveSearchForTypes(searchFor, orderNumber, mandatoryFields, nonMan
     })
   }
 
-  console.log('thisMandatoryFields', thisMandatoryFields, 'thisNonMandatoryFields', thisNonMandatoryFields)
+  //console.log('thisMandatoryFields', thisMandatoryFields, 'thisNonMandatoryFields', thisNonMandatoryFields)
   return { thisMandatoryFields: thisMandatoryFields, thisNonMandatoryFields: thisNonMandatoryFields }
 }
 
@@ -2116,7 +2116,7 @@ function getDocument() {
   //find cell in row with class CCCDOCUMENTES1MAPPINGS
   var cell = row.getElementsByClassName('CCCDOCUMENTES1MAPPINGS')[0]
   var CCCDOCUMENTES1MAPPINGS = cell.innerHTML
-  console.log('CCCDOCUMENTES1MAPPINGS', CCCDOCUMENTES1MAPPINGS)
+  //console.log('CCCDOCUMENTES1MAPPINGS', CCCDOCUMENTES1MAPPINGS)
   //save row data in an object
   var currentDoc = {}
   currentDoc['SOSOURCE'] = 1351
@@ -2130,7 +2130,7 @@ function getDocument() {
   ).value
   currentDoc['TRDR_RETAILER'] = parseInt(document.getElementById('TRDR_RETAILER').value)
   currentDoc['TRDR_CLIENT'] = 1
-  console.log(currentDoc)
+  //console.log(currentDoc)
   return currentDoc
 }
 
@@ -2151,7 +2151,7 @@ export async function loadListaDocumente() {
       }
     })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
       var table = document.getElementById('documenteBody')
       res.data.forEach((item) => {
         var row = table.insertRow()
@@ -2297,10 +2297,10 @@ function xml2json(node) {
               var old = result[child.nodeName]
               result[child.nodeName] = []
               result[child.nodeName].push(old)
-              console.log('old', old)
+              //console.log('old', old)
             }
             result[child.nodeName].push(xml2json(child))
-            console.log('array', child.nodeName)
+            //console.log('array', child.nodeName)
           }
         }
       }

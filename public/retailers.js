@@ -20,11 +20,11 @@ export async function drawRetailers() {
     for (var j = i; j < i + 3; j++) {
       if (j < retailers.length) {
         const retailer = retailers[j]
-        console.log('retailer', retailer)
+        //console.log('retailer', retailer)
         await retailer.setNrComenziDeTrimis()
         await retailer.setNrFacturiDeTrimis()
         const card = retailer.getCardHtml()
-        console.log('card', card)
+        //console.log('card', card)
         row.innerHTML += card
       }
     }

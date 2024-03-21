@@ -195,7 +195,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
         }
       }
     })
-    console.log('response', aperakRes)
+    //console.log('response', aperakRes)
     var lastDXResponse = tr.insertCell()
     var messageDate = tr.insertCell()
     //set width
@@ -283,7 +283,7 @@ export async function sendAllFacturi() {
       let oldColor = rows[i].style.backgroundColor
       rows[i].style.backgroundColor = 'lightgrey'
       var findoc = await sendInvoiceButton.onclick()
-      console.log('sent', findoc)
+      //console.log('sent', findoc)
       //change back color of row to white
       rows[i].style.backgroundColor = oldColor
     }
@@ -311,7 +311,7 @@ export async function sendInvoiceAndMark(row, tr, elemId, overrideTrimis = false
   await sendInvoice(row.findoc, domObj, overrideTrimis).then(async (response) => {
     //update btn caption to sent
     button.innerHTML = 'Sent'
-    console.log('response', response)
+    //console.log('response', response)
     var xml = response.xml
     var success = response.success
     if (success == true) {
@@ -354,15 +354,15 @@ async function markInvoiceAsSent(findoc, xmlFilename) {
   body['DATA'] = {}
   body['DATA']['MTRDOC'] = [{ CCCXMLFile: xmlFilename }]
   body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
-  console.log('body', body)
+  //console.log('body', body)
   await client
     .service('setDocument')
     .create(body)
     .then((res) => {
-      console.log(res)
+      //console.log(res)
     })
     .catch((err) => {
-      console.log(err)
+      //console.log(err)
     })
 }
 
@@ -376,7 +376,7 @@ async function sendInvoice(findoc, domObj, overrideTrimis = false) {
     return
   }
 
-  console.log('localStorageRetailer', localStorageRetailer)
+  //console.log('localStorageRetailer', localStorageRetailer)
 
   if (domObj.trimis == false || overrideTrimis == true) {
     //uploadXml service
@@ -389,7 +389,7 @@ async function sendInvoice(findoc, domObj, overrideTrimis = false) {
         { query: { retailer: localStorageRetailer } }
       )
       .then((res) => {
-        console.log('sftp uploadXml', res)
+        //console.log('sftp uploadXml', res)
         if (res && Object.keys(res).length > 0 && Object.hasOwnProperty.call(res, 'success')) {
           if (res.success == true) {
             //alert('Factura fost trimisa cu succes sub denumirea ' + res.filename + ' (' + res.findoc + ')')
@@ -415,9 +415,9 @@ function getNewFilenamePostfix(filename, row) {
   var posfixVal = ''
   try {
     posfixVal = postfixElem.value
-    console.log('posfix', posfixVal)
+    //console.log('posfix', posfixVal)
   } catch (err) {
-    console.log('no postfix')
+    //console.log('no postfix')
   }
   //filename like INVOIC_17713_VAT_RO25190857.xml; split before_vat then add postfix then add _vat...
   var split = filename.split('_')
@@ -443,7 +443,7 @@ async function cheatGetXmlFromS1(findoc) {
     }
   })
 
-  console.log('dom', dom)
+  //console.log('dom', dom)
   return dom
 }
 

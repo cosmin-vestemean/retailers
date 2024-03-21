@@ -3,7 +3,7 @@ import { displayDocsForRetailers } from './modules/invoiceTable.js'
 import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.js'
 import { retailers } from './retailers.js'
 
-console.log('client.js loaded')
+//console.log('client.js loaded')
 
 const orderPath = 'data/order'
 const aperakPath = 'data/aperak'
@@ -11,7 +11,7 @@ const aperakPath = 'data/aperak'
 //https://retailers-modular-975638ebe522.herokuapp.com/retailer_file_manager.html?tdr=11639&logo=%27https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg%27
 //get trdr and logo from url
 var url = new URL(window.location.href)
-console.log('url', url)
+//console.log('url', url)
 export const trdrRetailerFromUrl = parseInt(url.searchParams.get('trdr'))
 export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
@@ -43,14 +43,14 @@ async function getRemoteXmlListToErp() {
     .service('sftp')
     .downloadXml({}, { query: { retailer: retailer, rootPath: orderPath, startsWith: 'ORDERS_' } })
     .then((res) => {
-      console.log('downloadXml', res)
+      //console.log('downloadXml', res)
     })
 
   await client
     .service('sftp')
     .storeXmlInDB({}, { query: { retailer: retailer, rootPath: orderPath } })
     .then((res) => {
-      console.log('storeXmlInDB', res)
+      //console.log('storeXmlInDB', res)
     })
 
   //await getNDisplayOrders(retailer)
@@ -74,7 +74,7 @@ export async function getRemoteAperakXmlListToErp() {
     .service('sftp')
     .storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     .then((res) => {
-      console.log('storeAperakInMessages', res)
+      //console.log('storeAperakInMessages', res)
     })
 
   document.getElementById('preluareAperakBtn').innerHTML = 'Preluare APERAK'
@@ -82,7 +82,7 @@ export async function getRemoteAperakXmlListToErp() {
 
 async function getNDisplayOrders(retailer) {
   await getXmlListFromErp(retailer).then((data) => {
-    console.log('getXmlListFromErp', data)
+    //console.log('getXmlListFromErp', data)
     displayOrdersForRetailers(data, retailer, 'xmlTableBody')
   })
 }
@@ -96,7 +96,7 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
     console.log('Please select a retailer')
     return
   }
-  console.log('trdr', trdr)
+  //console.log('trdr', trdr)
   //Open tab facturi
   document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value

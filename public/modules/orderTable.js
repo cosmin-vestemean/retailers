@@ -85,7 +85,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           .service('CCCSFTPXML')
           .remove(CCCSFTPXML)
           .then((res) => {
-            console.log('CCCSFTPXML remove', res)
+            //console.log('CCCSFTPXML remove', res)
             //refresh xml table
             row.remove()
             //close the modal by removing the class is-active
@@ -187,7 +187,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       findoc.appendChild(label)
     } else {
       var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
-      console.log('orderId', orderId)
+      //console.log('orderId', orderId)
       //get order from SALDOC
       var params = {}
       params['query'] = {}
@@ -195,7 +195,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         'sqlQuery'
       ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
       var res = await client.service('getDataset1').find(params)
-      console.log('getDataset1', res)
+      //console.log('getDataset1', res)
       if (res.success == true && res.data.length > 0) {
         //update CCCSFTPXML with order internal number as findoc
         client
@@ -281,7 +281,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       TRDR_CLIENT: 1
     }
   })
-  console.log('date logare', res)
+  //console.log('date logare', res)
   var url = res.data[0].WSURL
   var username = res.data[0].WSUSER
   var password = res.data[0].WSPASS
@@ -292,7 +292,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       password: password
     }
   })
-  console.log('connectToS1', res)
+  //console.log('connectToS1', res)
   var token = res.token
   //get CCCDOCUMENTES1MAPPINGS for sourcCCCDOCUMENTES1MAPPINGSe, fprms, series
   var res = await client.service('CCCDOCUMENTES1MAPPINGS').find({
@@ -303,7 +303,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       TRDR_RETAILER: retailer
     }
   })
-  console.log('CCCDOCUMENTES1MAPPINGS', res)
+  //console.log('CCCDOCUMENTES1MAPPINGS', res)
 
   var CCCDOCUMENTES1MAPPINGS = res.data[0].CCCDOCUMENTES1MAPPINGS
   //get CCCXMLS1MAPPINGS for CCCDOCUMENTES1MAPPINGS
@@ -312,7 +312,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS
     }
   })
-  console.log('CCCXMLS1MAPPINGS', res)
+  //console.log('CCCXMLS1MAPPINGS', res)
   var CCCXMLS1MAPPINGS = res.data
   //create json order
   var jsonOrder = {}
@@ -329,7 +329,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       distinctS1TABLE1.push(item.S1TABLE1)
     }
   })
-  console.log('distinctS1TABLE1', distinctS1TABLE1)
+  //console.log('distinctS1TABLE1', distinctS1TABLE1)
   //create jsonOrder['DATA']
   var DATA = {}
   //create jsonOrder['DATA'][distinct]
@@ -362,7 +362,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   })
   jsonOrder['DATA'] = DATA
 
-  console.log('jsonOrder', jsonOrder)
+  //console.log('jsonOrder', jsonOrder)
 
   //for each value containing an object, replace it with the returned getDataset value from the object
   //for ex: {SQL: "select trdbranch from trdbranch where trdr=12334 and cccs1dxgln='{value}'"}
@@ -374,7 +374,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
       objects.push(item)
     })
   }
-  console.log('objects', objects)
+  //console.log('objects', objects)
   var errors = [],
     errors2 = []
   //if object has an object with a key SQL, replace it with the returned getDataset value from the object
@@ -383,8 +383,8 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
     for (var key in item) {
       if (typeof item[key] == 'object') {
         if (item[key].SQL) {
-          console.log('SQL', item[key].SQL)
-          console.log('xml Value', item[key].value)
+          //console.log('SQL', item[key].SQL)
+          //console.log('xml Value', item[key].value)
           //replace item[key] with the returned getDataset value from the object
 
           //set params' query
@@ -394,7 +394,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           //replace {value} with xml value
           params['query']['sqlQuery'] = params['query']['sqlQuery'].replace('{value}', item[key].value)
           var res = await client.service('getDataset').find(params)
-          console.log('getDataset', JSON.stringify(res))
+          //console.log('getDataset', JSON.stringify(res))
           if (res.data) {
             item[key] = res.data
           } else {
@@ -406,9 +406,9 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
               */
             //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
             var xpath = `//*[contains(text(), '${item[key].value}')]`
-            console.log('xpath', xpath, 'key', key, 'value', item[key].value, 'sql', item[key].SQL)
+            //('xpath', xpath, 'key', key, 'value', item[key].value, 'sql', item[key].SQL)
             var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
-            console.log('nodes', nodes)
+            //console.log('nodes', nodes)
             errors2.push({ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes })
             try {
               var node = nodes.iterateNext()
@@ -495,7 +495,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   //TRDR_RETAILER
   jsonOrder['DATA']['SALDOC'][0]['TRDR'] = parseInt(trdrRetailerFromUrl)
 
-  console.log('jsonOrder', jsonOrder)
+  //console.log('jsonOrder', jsonOrder)
 
   //send order to server
   await sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
@@ -517,7 +517,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
       }
     })
     .then(async (res) => {
-      console.log('date logare', res)
+      //console.log('date logare', res)
       //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
       //var url = res.data[0].WSURL
       var url = testUrl
@@ -533,17 +533,17 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
           }
         })
         .then(async (res) => {
-          console.log(res)
-          console.log('s1 token', res.token)
+          //console.log(res)
+          //console.log('s1 token', res.token)
           //replace jsonOrder clientID with token
           jsonOrder['clientID'] = res.token
-          console.log('jsonOrder', jsonOrder)
-          console.log('url', url)
+          //console.log('jsonOrder', jsonOrder)
+          //console.log('url', url)
           await client
             .service('setDocument')
             .create(jsonOrder)
             .then((res) => {
-              console.log(res)
+              //console.log(res)
               if (res.success == true) {
                 //alert('Order sent to S1, order internal number: ' + res.id)
                 //update CCCSFTPXML with order internal number as findoc
@@ -555,7 +555,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                     { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
                   )
                   .then((res) => {
-                    console.log('CCCSFTPXML patch', res)
+                    //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
                     getNDisplayOrders(retailer)
                   })

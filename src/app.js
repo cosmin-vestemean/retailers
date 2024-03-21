@@ -149,7 +149,6 @@ class SftpServiceClass {
 
   async prepareConnection(data, params) {
     const retailer = params.query.retailer
-    console.log('prepareConnection:retailer', retailer)
     const sftpData = await app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
     const sftpDataObj = sftpData.data[0]
     const privateKey = sftpDataObj.PRIVATEKEY
@@ -670,10 +669,10 @@ class getS1ObjData {
       KEY: KEY,
       LOCATEINFO: LOCATEINFO
     }
-    console.log(body)
+    //console.log(body)
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })
     const json = await response.json()
-    //console.log(json)
+    console.log(json)
     return json
   }
 }
@@ -705,7 +704,7 @@ class getS1SqlData {
       series: series,
       daysOlder: daysOlder
     }
-    console.log(body)
+    //console.log(body)
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })
     const json = await response.json()
     console.log(json)
@@ -728,7 +727,7 @@ class getInvoiceDom {
       appID: appID,
       findoc: findoc
     }
-    console.log(body)
+    //console.log(body)
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })
     const json = await response.json()
     console.log(json)
