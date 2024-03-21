@@ -193,7 +193,10 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         var { orderId, res } = await getFindocForOrder(orderId, xml)
         //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
         var details = document.createElement('div')
-        details.innerHTML = `Order internal number: ${res.data[0].FINDOC}, Order code: ${res.data[0].FINCODE}, Date: ${res.data[0].TRNDATE}`
+        var detailsText = `Order internal number: ${res.data[0].FINDOC}<br>Order code: ${res.data[0].FINCODE}<br>Date: ${res.data[0].TRNDATE}`
+        details.innerHTML = detailsText
+        //add class to details
+        details.className = 'is-info is-small'
         //add it to the cell
         detailsIcon.appendChild(details)
       }
