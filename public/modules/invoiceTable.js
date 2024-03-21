@@ -130,7 +130,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var checkbox = document.createElement('input')
       checkbox.type = 'checkbox'
       checkbox.checked = true
-      checkbox.readOnly = true
+      checkbox.disabled = true
       checkbox.className = 'trimisCheckbox'
       trimis.appendChild(checkbox)
       //add label for checkbox row.CCCXMLSendDate
@@ -156,7 +156,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       //add checkbox readonly and not checked
       var checkbox = document.createElement('input')
       checkbox.type = 'checkbox'
-      checkbox.readOnly = true
+      checkbox.disabled = true
       //hidden by default
       checkbox.style.display = 'none'
       checkbox.className = 'trimisCheckbox'

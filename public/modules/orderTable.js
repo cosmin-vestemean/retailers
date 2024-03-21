@@ -178,7 +178,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       input.id = xml.XMLFILENAME
       input.className = 'checkbox is-small ml-2 trimisCheckbox'
       input.checked = true
-      input.readOnly = true
+      input.disabled = true
       findoc.appendChild(input)
       //add label
       var label = document.createElement('label')
@@ -226,7 +226,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             input.id = xml.XMLFILENAME
             input.className = 'checkbox is-small ml-2 trimisCheckbox'
             input.checked = true
-            input.readOnly = true
+            input.disabled = true
             findoc.appendChild(input)
           })
         //button text
