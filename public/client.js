@@ -126,7 +126,7 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
       //document.getElementById('comenziTrimise').checked = true
       toggleComenziNetrimise()
       //facturiTrimise
-      document.getElementById('facturiTrimise').checked = true
+      document.getElementById('').checked = true
       toggleFacturiNetrimise()
     })
 }
@@ -187,8 +187,8 @@ async function openTab(evt, tabName) {
 
   if (tabName == 'facturi') {
     //facturiTrimise
-    document.getElementById('facturiTrimise').checked = true
-    toggleFacturiNetrimise()
+    //document.getElementById('facturiTrimise').checked = true
+    //toggleFacturiNetrimise()
   }
 }
 
@@ -203,9 +203,9 @@ async function toggleFacturiNetrimise() {
 }
 
 function hideRows(chkName, tbodyName, className) {
-  var facturiTrimise = document.getElementById(chkName)
+  var chk = document.getElementById(chkName)
   var table = document.getElementById(tbodyName)
-  if (facturiTrimise.checked) {
+  if (chk.checked) {
     //hide rows with cell class trimis and checkbox trimisCheckbox is checked
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
