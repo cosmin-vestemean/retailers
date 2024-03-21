@@ -30,9 +30,19 @@
           display: block;
           text-align: right;
         }
-        .is-responsive th {
-          display: block;
-          text-align: right;
+        .is-responsive td {
+          /* display: flex; */
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.5em;
+          border-bottom: 1px solid #f2f2f2;
+          border-radius: 5px;
+          position: relative;
+          background-color: #fff;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
         }
         .is-responsive thead {
           display: none;
@@ -44,12 +54,6 @@
         }
         .is-responsive tbody tr:last-child {
           margin-bottom: 0;
-        }
-        .is-responsive tbody td:before {
-          content: attr(data-label);
-          float: left;
-          font-weight: bold;
-          text-transform: uppercase;
         }
       }
     </style>
