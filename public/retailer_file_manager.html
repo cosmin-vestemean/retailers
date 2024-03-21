@@ -27,33 +27,42 @@
         }
         .is-responsive th,
         .is-responsive td {
-          display: block;
-        }
-        .is-responsive td {
-          display: block;
-          padding: 0.5em;
+          margin: 0;
+          vertical-align: top;
         }
         .is-responsive thead {
-          display: none;
-        }
-        .is-responsive tbody tr {
-          margin-bottom: 2em;
           display: block;
-          background-color: #fff;
-          border-radius: 0.25rem;
-          box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
-          color: #4a4a4a;
-          max-width: 100%;
-          position: relative;
-        }
-        .is-responsive tbody tr:last-child {
-          margin-bottom: 0;
-        }
-        .is-responsive tbody td:before {
-          content: attr(data-label);
           float: left;
-          font-weight: bold;
-          text-transform: uppercase;
+        }
+        
+        .is-responsive thead th {
+          display: block;
+          text-align: center;
+        }
+        .is-responsive tbody {
+          display: block;
+          width: auto;
+          position: relative;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+
+        .is-responsive tbody tr {
+          display: inline-block;
+        }
+
+        .is-responsive td {
+          display: block;
+          text-align: center;
+        }
+
+        .is-responsive th {
+          display: block;
+          text-align: center;
+        }
+
+        .is-responsive th:last-child {
+          border-bottom: 0;
         }
       }
       .message-header {
