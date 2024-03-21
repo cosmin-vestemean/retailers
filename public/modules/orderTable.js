@@ -185,16 +185,19 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       label.htmlFor = xml.XMLFILENAME
       label.appendChild(document.createTextNode(xml.FINDOC))
       findoc.appendChild(label)
+      //add details icon
+      var detailsIcon = document.createElement('i')
+      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+      detailsIcon.title = 'Details'
+      detailsIcon.onclick = async function () {
+        var { orderId, res } = await getFindocForOrder(orderId, xml)
+        //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
+        var details = document.createElement('div')
+        details.innerHTML = `Order internal number: ${res.data[0].FINDOC}, Order code: ${res.data[0].FINCODE}, Date: ${res.data[0].TRNDATE}`
+        details.style.display = 'none'
+      }
     } else {
-      var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
-      //console.log('orderId', orderId)
-      //get order from SALDOC
-      var params = {}
-      params['query'] = {}
-      params['query'][
-        'sqlQuery'
-      ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
-      var res = await client.service('getDataset1').find(params)
+      var { orderId, res } = await getFindocForOrder(orderId, xml)
       //console.log('getDataset1', res)
       if (res.success == true && res.data.length > 0) {
         //update CCCSFTPXML with order internal number as findoc
@@ -207,6 +210,15 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           )
           .then((res) => {
             console.log('CCCSFTPXML patch', res)
+            //checkbox checked
+            var input = document.createElement('input')
+            input.type = 'checkbox'
+            input.name = xml.XMLFILENAME
+            input.id = xml.XMLFILENAME
+            input.className = 'checkbox is-small ml-2 trimisCheckbox'
+            input.checked = true
+            input.readOnly = true
+            findoc.appendChild(input)
           })
         //button text
         sendOrderButton.innerHTML = 'Order sent'
@@ -224,6 +236,17 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       }
     }
   })
+
+  async function getFindocForOrder(orderId, xml) {
+    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+    //console.log('orderId', orderId)
+    //get order from SALDOC
+    var params = {}
+    params['query'] = {}
+    params['query']['sqlQuery'] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'`
+    var res = await client.service('getDataset1').find(params)
+    return { orderId, res }
+  }
 }
 
 export function getValFromXML(xml, node) {
