@@ -25,44 +25,38 @@
           display: block;
           position: relative;
         }
-        .is-responsive th,
-        .is-responsive td {
-          margin: 0;
-          vertical-align: top;
-        }
+        /* Hide table headers (but not display: none;, for accessibility). Vertical stack the table cells in tr elements displayed like cards. */
         .is-responsive thead {
+          display: none;
+        }
+        .is-responsive tr {
+          border-bottom: 1px solid #ddd;
           display: block;
-          float: left;
+          margin-bottom: 0.625em;
         }
-        
-        .is-responsive thead th {
-          display: block;
-          text-align: center;
-        }
-        .is-responsive tbody {
-          display: block;
-          width: auto;
-          position: relative;
-          overflow-x: auto;
-          white-space: nowrap;
-        }
-
-        .is-responsive tbody tr {
-          display: inline-block;
-        }
-
         .is-responsive td {
-          display: block;
-          text-align: center;
+          /* Behave  like a "row" */
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding-left: 50%;
+          white-space: normal;
+          text-align: left;
         }
-
-        .is-responsive th {
-          display: block;
-          text-align: center;
+        .is-responsive td:before {
+          /* Now like a table header */
+          position: absolute;
+          /* Top/left values mimic padding */
+          top: 0.3em;
+          left: 6px;
+          width: 45%;
+          padding-right: 10px;
+          white-space: nowrap;
+          text-align: left;
+          font-weight: bold;
         }
-
-        .is-responsive th:last-child {
-          border-bottom: 0;
+        .is-responsive td:before {
+          content: attr(data-label);
         }
       }
       .message-header {
