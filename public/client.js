@@ -124,10 +124,10 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
       await displayDocsForRetailers(result, trdr, sosource, fprms, series, 'facturiTableBody')
       //check id comenziTrimise
       //document.getElementById('comenziTrimise').checked = true
-      toggleComenziNetrimise()
+      //toggleComenziNetrimise()
       //facturiTrimise
-      document.getElementById('').checked = true
-      toggleFacturiNetrimise()
+      //document.getElementById('facturiTrimise').checked = true
+      //toggleFacturiNetrimise()
     })
 }
 
@@ -203,9 +203,9 @@ async function toggleFacturiNetrimise() {
 }
 
 function hideRows(chkName, tbodyName, className) {
-  var chk = document.getElementById(chkName)
+  var facturiTrimise = document.getElementById(chkName)
   var table = document.getElementById(tbodyName)
-  if (chk.checked) {
+  if (facturiTrimise.checked) {
     //hide rows with cell class trimis and checkbox trimisCheckbox is checked
     var rows = table.getElementsByTagName('tr')
     for (var i = 0; i < rows.length; i++) {
