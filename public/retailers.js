@@ -24,11 +24,10 @@ export async function drawRetailers() {
         await retailer.setNrComenziDeTrimis()
         await retailer.setNrFacturiDeTrimis()
         const card = retailer.getCardHtml()
-        //append card to row
-        row.appendChild(card)
+        //console.log('card', card)
+        row.innerHTML += card
       }
     }
-    //append row to container
-    document.getElementById('retailerContainer').appendChild(row)
+    document.getElementById('cardsContainer').innerHTML += row.outerHTML
   }
 }
