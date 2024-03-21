@@ -39,7 +39,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     if (orderId) {
       filenameCell.innerHTML += '<br><span class="tag is-info is-light">' + orderId + '</span>'
     }
-    row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
+    //row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
     //create the actions cell
     var actionsCell = row.insertCell()
     //create the buttons
