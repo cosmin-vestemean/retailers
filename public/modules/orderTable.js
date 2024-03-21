@@ -187,13 +187,18 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       findoc.appendChild(label)
       //add details icon
       var detailsIcon = document.createElement('i')
-      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2 is-info'
+      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+      //style
+      detailsIcon.style.cursor = 'pointer'
+      detailsIcon.style.color = 'blue'
       detailsIcon.title = 'Details'
       detailsIcon.onclick = async function () {
+        //delete detailsIcon
+        detailsIcon.remove()
         var { orderId, res } = await getFindocForOrder(orderId, xml)
         //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
         var details = document.createElement('div')
-        var detailsText = `Order internal number: ${res.data[0].FINDOC}<br>Order code: ${res.data[0].FINCODE}<br>Date: ${res.data[0].TRNDATE}`
+        var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
         details.innerHTML = detailsText
         //add class to details
         details.className = 'is-info is-small'
