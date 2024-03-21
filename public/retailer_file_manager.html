@@ -115,13 +115,7 @@
       </ul>
     </div>
     <div id="comenzi" class="content-tab">
-      <button id="trimiteComenzileNetrimise" class="button is-success is-small">
-        Trimite comenzile in Softone
-      </button>
-      <label class="checkbox tag">
-        <input id="comenziTrimise" type="checkbox" />
-        Netrimise
-      </label>
+      <button id="trimiteComenzileNetrimise" class="button is-success is-small">Trimite comenzile in Softone</button>
       <div class="table-container">
         <table
           id="xmlTable"
@@ -134,7 +128,12 @@
               <th>XML</th>
               <th>Partener</th>
               <th>Actions</th>
-              <th>Stare</th>
+              <th>
+                <label class="checkbox">
+                  <input id="comenziTrimise" type="checkbox" />
+                  Netrimise
+                </label>
+              </th>
             </tr>
           </thead>
           <tbody id="xmlTableBody" class="is-size-7"></tbody>
@@ -155,13 +154,7 @@
           />
           zile
         </button>
-        <button id="sendAllFacturi" class="button is-success is-small mx-1">
-          Trimite facturile spre retailer
-        </button>
-        <label class="checkbox tag">
-          <input id="facturiTrimise" type="checkbox" />
-          Netrimise
-        </label>
+        <button id="sendAllFacturi" class="button is-success is-small mx-1">Trimite facturile spre retailer</button>
       </buttons>
       <div class="table-container">
         <table
@@ -174,7 +167,12 @@
               <th class="is-narrow">Document</th>
               <th>Suma</th>
               <th>Actions</th>
-              <th>Stare</th>
+              <th>
+                <label class="checkbox">
+                  <input id="facturiTrimise" type="checkbox" />
+                  Netrimise
+                </label>
+              </th>
               <th class="has-text-info">XML</th>
               <th class="has-text-info" colspan="2">Raspuns</th>
               <th>XML</th>
