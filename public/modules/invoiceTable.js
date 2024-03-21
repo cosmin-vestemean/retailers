@@ -180,10 +180,10 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       trimis.appendChild(label)
     }
     //add row.CCCXMLFile
-    var xmlFile = tr.insertCell()
+    /* var xmlFile = tr.insertCell()
     if (row.CCCXMLFile) {
       xmlFile.innerHTML = row.CCCXMLFile
-    }
+    } */
     //CCCAPERAK(FINDOC, TRDR_RETAILER) last DOCUMENTRESPONSE + DOCUMENTDETAIL; sort by MESSAGEDATE adn MESSAGETIME
     var aperakRes = await client.service('CCCAPERAK').find({
       query: {
