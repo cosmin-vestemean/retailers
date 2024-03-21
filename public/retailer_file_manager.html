@@ -24,11 +24,15 @@
           width: 100%;
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
+          -ms-overflow-style: -ms-autohiding-scrollbar;
+          border-collapse: collapse;
+          border-spacing: 0;
+          border: none;
         }
         .is-responsive th,
         .is-responsive td {
           min-width: 140px;
-          width: auto;
+          width: 100%;
           display: block;
           text-align: left;
         }
@@ -37,6 +41,7 @@
         }
         .is-responsive tr {
           margin-bottom: 1em;
+          border-bottom: 1px solid #ddd;
         }
         .is-responsive thead {
           display: none;
