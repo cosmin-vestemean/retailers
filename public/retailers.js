@@ -27,7 +27,7 @@ export async function drawRetailers() {
         //console.log('card', card)
         row.innerHTML += card
       }
-      document.getElementById('cardsContainer').innerHTML += row.outerHTML
     }
+    document.getElementById('cardsContainer').innerHTML += row.outerHTML
   }
 }
