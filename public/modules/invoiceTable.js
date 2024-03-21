@@ -353,9 +353,7 @@ async function markInvoiceAsSent(findoc, xmlFilename) {
   body['KEY'] = findoc
   body['DATA'] = {}
   body['DATA']['MTRDOC'] = [{ CCCXMLFile: xmlFilename }]
-  //body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
-  //local time
-  body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toLocaleString() }]
+  body['DATA']['MTRDOC'] = [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }]
   console.log('body', body)
   await client
     .service('setDocument')
