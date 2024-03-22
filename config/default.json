@@ -3,7 +3,7 @@
   "port": 5000,
   "public": "./public/",
   "origins": [
-    "http://www.retailers.acct.ro"
+    "https://www.retailers.acct.ro"
   ],
   "paginate": {
     "default": 100,
