@@ -433,7 +433,9 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   })
 
   async function getValues(item, xml, errors, errors2) {
-    for (var key in item) {
+    //for (var key in item) {
+    //enumerate keys asyncronously to be able to await getValues
+    Object.keys(item).forEach(async (key) => {
       if (typeof item[key] == 'object') {
         if (item[key].SQL) {
           //console.log('SQL', item[key].SQL)
@@ -481,7 +483,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           }
         }
       }
-    }
+    })
   }
 
   if (errors.length > 0) {
