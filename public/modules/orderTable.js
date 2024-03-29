@@ -304,8 +304,10 @@ export async function trimiteComenzileNetrimise() {
     if (trimisCheckbox && !trimisCheckbox.checked) {
       if (processed < stopAt) {
         var xmlData = rows[i].getElementsByTagName('textarea')[0].value
-        var xmlFilename = rows[i].getElementsByTagName('td')[1].innerHTML
-        var xmlDate = rows[i].getElementsByTagName('td')[0].innerHTML
+        //var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML
+        //split filename by <br> and get the first part
+        var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[0]
+        var xmlDate = rows[i].getElementsByTagName('td')[1].innerHTML
         console.log(
           'xmlData',
           xmlData,
