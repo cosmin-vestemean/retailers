@@ -267,7 +267,7 @@ export function getValFromXML(xml, node) {
   //console.log('getValFromXML', doc)
   //node value by xpath
   var iterator = dom.evaluate(node, doc, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
-  console.log('getValFromXML', iterator)
+  //console.log('getValFromXML', iterator)
   var matchingNodes = []
   try {
     let thisNode = iterator.iterateNext()
