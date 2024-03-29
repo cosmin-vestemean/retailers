@@ -311,10 +311,18 @@ export async function trimiteComenzileNetrimise() {
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
       if (processed < stopAt) {
-        var xmlData = rows[i].getElementsByTagName('textarea')[0].value
+        //var xmlData = rows[i].getElementsByTagName('textarea')[0].value
         //var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML
         //split filename by <br> and get the first part
         var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[0]
+        let xmlData = await client
+        .service('CCCSFTPXML')
+        .find({
+          query: {
+            TRDR_RETAILER: trdrRetailerFromUrl,
+            XMLFILENAME: xmlFilename
+          }
+        })
         var xmlDate = rows[i].getElementsByTagName('td')[1].innerHTML
         await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
         processed++
