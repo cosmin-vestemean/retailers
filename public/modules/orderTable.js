@@ -287,13 +287,20 @@ export function getValFromXML(xml, node) {
 }
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  let jsonOrder = await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+  let response = await createOrderJSON(
+    xml,
+    1351,
+    701,
+    7012,
+    xmlFilename,
+    xmlDate,
+    retailer
+  )
   //send order to server
-  if (jsonOrder) {
-    await sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
-    return { success: true }
+  if (response.success == true) {
+    sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
   } else {
-    return { success: false }
+    return response
   }
 }
 
@@ -548,7 +555,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
 
   //console.log('jsonOrder', jsonOrder)
 
-  return jsonOrder
+  return { success: true, jsonOrder: jsonOrder }
 }
 
 async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
