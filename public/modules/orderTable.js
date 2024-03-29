@@ -217,7 +217,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           .patch(
             null,
             { FINDOC: parseInt(res.data[0].FINDOC) },
-            { query: { XMLFILENAME: xml.XMLFILENAME, XMLDATE: xml.XMLDATE, TRDR_RETAILER: retailer } }
+            { query: { XMLFILENAME: xml.XMLFILENAME, TRDR_RETAILER: retailer } }
           )
           .then((res) => {
             console.log('CCCSFTPXML patch', res)
@@ -627,7 +627,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   .then((res) => {
                     //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
-                    getNDisplayOrders(retailer)
+                    //getNDisplayOrders(retailer)
                   })
               } else {
                 alert('Error: ' + res.error)
