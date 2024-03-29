@@ -619,14 +619,21 @@ app.use('setDocument', new setDocumentServiceClass())
 //create a service called getDataset that gets a dataset from S1 in return to a token and a string containing a sql query
 class getDatasetServiceClass {
   async find(params) {
-    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset'
-    const method = 'POST'
-    const sqlQuery = params.query.sqlQuery
-    console.log('sqlQuery', sqlQuery)
-    const response = await fetch(url, { method: method, body: JSON.stringify({ sqlQuery: sqlQuery }) })
-    const json = await response.json()
-    console.log(json)
-    return json
+    return new Promise((resolve, reject) => {
+      const url = mainURL + '/JS/JSRetailers/processSqlAsDataset'
+      const method = 'POST'
+      const sqlQuery = params.query.sqlQuery
+      console.log('sqlQuery', sqlQuery)
+      fetch(url, { method: method, body: JSON.stringify({ sqlQuery: sqlQuery }) })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json)
+          resolve(json)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
