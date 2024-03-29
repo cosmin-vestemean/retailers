@@ -315,16 +315,20 @@ export async function trimiteComenzileNetrimise() {
         //var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML
         //split filename by <br> and get the first part
         var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[0]
-        let xmlData = await client
-        .service('CCCSFTPXML')
-        .find({
-          query: {
-            TRDR_RETAILER: trdrRetailerFromUrl,
-            XMLFILENAME: xmlFilename
-          }
-        })
         var xmlDate = rows[i].getElementsByTagName('td')[1].innerHTML
-        await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
+        await client
+          .service('CCCSFTPXML')
+          .find({
+            query: {
+              TRDR_RETAILER: trdrRetailerFromUrl,
+              XMLFILENAME: xmlFilename
+            }
+          })
+          .then(async (res) => {
+            console.log('CCCSFTPXML', res)
+            var xmlData = res.data[0].XMLDATA
+            await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
+          })
         processed++
       }
     }
