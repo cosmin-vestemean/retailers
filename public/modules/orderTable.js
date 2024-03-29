@@ -297,16 +297,28 @@ export async function trimiteComenzileNetrimise() {
   var table = document.getElementById('xmlTableBody')
   var rows = table.getElementsByTagName('tr')
   var stopAt = 1
-  //var stopAt = rows.length
+  var processed = 0
   for (var i = 0; i < stopAt; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
-      var xmlData = rows[i].getElementsByTagName('textarea')[0].value
-      var xmlFilename = rows[i].getElementsByTagName('td')[1].innerHTML
-      var xmlDate = rows[i].getElementsByTagName('td')[0].innerHTML
-      console.log('xmlData', xmlData, 'xmlFilename', xmlFilename, 'xmlDate', xmlDate, 'retailer', trdrRetailerFromUrl)
-      await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
+      if (processed <= stopAt) {
+        var xmlData = rows[i].getElementsByTagName('textarea')[0].value
+        var xmlFilename = rows[i].getElementsByTagName('td')[1].innerHTML
+        var xmlDate = rows[i].getElementsByTagName('td')[0].innerHTML
+        console.log(
+          'xmlData',
+          xmlData,
+          'xmlFilename',
+          xmlFilename,
+          'xmlDate',
+          xmlDate,
+          'retailer',
+          trdrRetailerFromUrl
+        )
+        await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
+        processed++
+      }
     }
   }
 }
