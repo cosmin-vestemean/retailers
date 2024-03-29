@@ -428,8 +428,9 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   var errors = [],
     errors2 = []
   //if object has an object with a key SQL, replace it with the returned getDataset value from the object
-  objects.forEach(async (item) => {
-    Object.keys(item).forEach(async (key) => {
+  for (var i = 0; i < objects.length; i++) {
+    var item = objects[i]
+    for (var key in item) {
       if (typeof item[key] == 'object') {
         if (item[key].SQL) {
           //console.log('SQL', item[key].SQL)
@@ -442,57 +443,43 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           params['query']['sqlQuery'] = item[key].SQL
           //replace {value} with xml value
           params['query']['sqlQuery'] = params['query']['sqlQuery'].replace('{value}', item[key].value)
-          await client
-            .service('getDataset')
-            .find(params)
-            .then((res) => {
-              console.log('getDataset', JSON.stringify(res))
-              //wait for res
-              if (res.data) {
-                item[key] = res.data
-              } else {
-                //1. xml > dom
-                var parser = new DOMParser()
-                var xmlDoc = parser.parseFromString(xml, 'text/xml')
-                /*2.1. example
+          var res = await client.service('getDataset').find(params)
+          console.log('getDataset', JSON.stringify(res))
+          if (res.data) {
+            item[key] = res.data
+          } else {
+            //1. xml > dom
+            var parser = new DOMParser()
+            var xmlDoc = parser.parseFromString(xml, 'text/xml')
+            /*2.1. example
               <Item><Description>Litter without roof Stefanplast Sprint Corner Plus, Blue, 40x56x h 14</Description><BuyersItemIdentification>8003507968158</BuyersItemIdentification><SellersItemIdentification>MF.06759</SellersItemIdentification><StandardItemIdentification>8003507968158</StandardItemIdentification><AdditionalItemIdentification>DeliveryDate:2023-10-03</AdditionalItemIdentification><AdditionalItemIdentification>LineStatus:valid</AdditionalItemIdentification><AdditionalItemIdentification>ClientConfirmationStatus:confirmed</AdditionalItemIdentification></Item>
               */
-                //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
-                var xpath = `//*[contains(text(), '${item[key].value}')]`
-                //('xpath', xpath, 'key', key, 'value', item[key].value, 'sql', item[key].SQL)
-                var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
-                //console.log('nodes', nodes)
-                errors2.push({
-                  key: key,
-                  value: item[key].value,
-                  sql: item[key].SQL,
-                  xpath: xpath,
-                  nodes: nodes
-                })
-                try {
-                  var node = nodes.iterateNext()
-                  //2.3. get sibling "Description"
-                  var description = node.parentNode.getElementsByTagName('Description')[0].innerHTML
-                  //2.4. get sibling "BuyersItemIdentification"
-                  var BuyersItemIdentification =
-                    node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
-                  //make error message fiendly
-                  errors.push(
-                    `Error in converting code ${item[key].value} to S1 value.\nDescription: ${description},\nBuyersItemIdentification: ${BuyersItemIdentification}`
-                  )
-                } catch (err) {
-                  console.log(err)
-                  errors.push(`Error in converting code ${item[key].value} to S1 value.`)
-                }
-              }
-            })
-            .catch((err) => {
-              console.error('getDataset', err)
-            })
+            //2.2. xpath: find node with item[key].value and coresponing sibling "Description"
+            var xpath = `//*[contains(text(), '${item[key].value}')]`
+            //('xpath', xpath, 'key', key, 'value', item[key].value, 'sql', item[key].SQL)
+            var nodes = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.ANY_TYPE, null)
+            //console.log('nodes', nodes)
+            errors2.push({ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes })
+            try {
+              var node = nodes.iterateNext()
+              //2.3. get sibling "Description"
+              var description = node.parentNode.getElementsByTagName('Description')[0].innerHTML
+              //2.4. get sibling "BuyersItemIdentification"
+              var BuyersItemIdentification =
+                node.parentNode.getElementsByTagName('BuyersItemIdentification')[0].innerHTML
+              //make error message fiendly
+              errors.push(
+                `Error in converting code ${item[key].value} to S1 value.\nDescription: ${description},\nBuyersItemIdentification: ${BuyersItemIdentification}`
+              )
+            } catch (err) {
+              console.log(err)
+              errors.push(`Error in converting code ${item[key].value} to S1 value.`)
+            }
+          }
         }
       }
-    })
-  })
+    }
+  }
 
   if (errors.length > 0) {
     alert(errors.join('\n\n'))
