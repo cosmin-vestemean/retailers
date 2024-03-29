@@ -308,16 +308,6 @@ export async function trimiteComenzileNetrimise() {
         //split filename by <br> and get the first part
         var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[0]
         var xmlDate = rows[i].getElementsByTagName('td')[1].innerHTML
-        console.log(
-          'xmlData',
-          xmlData,
-          'xmlFilename',
-          xmlFilename,
-          'xmlDate',
-          xmlDate,
-          'retailer',
-          trdrRetailerFromUrl
-        )
         await sendOrder(xmlData, xmlFilename, xmlDate, trdrRetailerFromUrl)
         processed++
       }
@@ -589,13 +579,13 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
           //console.log('s1 token', res.token)
           //replace jsonOrder clientID with token
           jsonOrder['clientID'] = res.token
-          //console.log('jsonOrder', jsonOrder)
+          console.log('jsonOrder', jsonOrder)
           //console.log('url', url)
           await client
             .service('setDocument')
             .create(jsonOrder)
             .then((res) => {
-              //console.log(res)
+              console.log(res)
               if (res.success == true) {
                 //alert('Order sent to S1, order internal number: ' + res.id)
                 //update CCCSFTPXML with order internal number as findoc
