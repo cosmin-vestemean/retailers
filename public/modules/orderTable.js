@@ -115,7 +115,9 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         sendOrderButton.disabled = true
         sendOrderButton.innerHTML = 'Sending...'
         var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
-        if (response.success == false) {
+        //if (response.success == false) {
+        //check if response obj has a key named success and key success is false
+        if (Object.keys(response).includes('success') && response.success == false) {
           //show no of errors
           var errorMsg = ''
           errorMsg += 'Errors: ' + response.errors.length + '\n\n'
