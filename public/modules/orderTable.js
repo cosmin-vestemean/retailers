@@ -429,12 +429,6 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
     errors2 = []
   //if object has an object with a key SQL, replace it with the returned getDataset value from the object
   objects.forEach(async (item) => {
-    await getValues(item, xml, errors, errors2)
-  })
-
-  async function getValues(item, xml, errors, errors2) {
-    //for (var key in item) {
-    //enumerate keys asyncronously to be able to await getValues
     Object.keys(item).forEach(async (key) => {
       if (typeof item[key] == 'object') {
         if (item[key].SQL) {
@@ -484,7 +478,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
         }
       }
     })
-  }
+  })
 
   if (errors.length > 0) {
     alert(errors.join('\n\n'))
