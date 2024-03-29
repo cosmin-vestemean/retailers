@@ -514,7 +514,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   })
 
   //create itelines array
-  var itelines = []
+  itelines = []
   //create objects with fieldnames and values
   for (var i = 0; i < arrays[fieldNames[0]].length; i++) {
     var obj = {}
