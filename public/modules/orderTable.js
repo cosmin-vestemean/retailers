@@ -298,7 +298,7 @@ export async function trimiteComenzileNetrimise() {
   var rows = table.getElementsByTagName('tr')
   var stopAt = 1
   var processed = 0
-  for (var i = 0; i < stopAt; i++) {
+  for (var i = 0; i < rows.length; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
