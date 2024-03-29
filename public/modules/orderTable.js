@@ -285,7 +285,18 @@ export function getValFromXML(xml, node) {
 }
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  return await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+  await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+    .then(async (res) => {
+      if (res.success == true) {
+        //send order to server
+        await sendOrderToServer(res, xmlFilename, xmlDate, retailer)
+      } else {
+        return res
+      }
+    })
+    .catch((err) => {
+      console.error('createOrderJSON', err)
+    })
 }
 
 export async function trimiteComenzileNetrimise() {
@@ -538,9 +549,6 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   jsonOrder['DATA']['SALDOC'][0]['TRDR'] = parseInt(trdrRetailerFromUrl)
 
   //console.log('jsonOrder', jsonOrder)
-
-  //send order to server
-  await sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer)
 
   return { success: true }
 }
