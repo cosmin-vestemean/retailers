@@ -300,6 +300,7 @@ export async function trimiteComenzileNetrimise() {
   //var stopAt = rows.length
   for (var i = 0; i < stopAt; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
+    console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
       var xmlData = rows[i].getElementsByTagName('textarea')[0].value
       var xmlFilename = rows[i].getElementsByTagName('td')[1].innerHTML
