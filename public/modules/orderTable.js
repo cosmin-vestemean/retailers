@@ -298,7 +298,7 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   )
   //send order to server
   if (response.success == true) {
-    sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
+    await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
   } else {
     return response
   }
