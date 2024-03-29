@@ -311,6 +311,9 @@ export async function trimiteComenzileNetrimise() {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
+      //rename button trimiteComenzileNetrimise to Sending rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
+      const btnSendAll = document.getElementById('trimiteComezileNetrimise')
+      btnSendAll.innerHTML = 'Sending ' + rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
       if (processed < stopAt) {
         //var xmlData = rows[i].getElementsByTagName('textarea')[0].value
         //var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML
@@ -334,6 +337,10 @@ export async function trimiteComenzileNetrimise() {
       }
     }
   }
+  //rename button trimiteComenzileNetrimise to Trimite comenzile in Softone
+  btnSendAll.innerHTML = 'All orders sent'
+  //disable button
+  btnSendAll.disabled = true
 }
 
 async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
