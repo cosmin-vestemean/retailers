@@ -428,9 +428,8 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   var errors = [],
     errors2 = []
   //if object has an object with a key SQL, replace it with the returned getDataset value from the object
-  for (var i = 0; i < objects.length; i++) {
-    var item = objects[i]
-    for (var key in item) {
+  objects.forEach(async (item) => {
+    item.forEach(async (item, key) => {
       if (typeof item[key] == 'object') {
         if (item[key].SQL) {
           //console.log('SQL', item[key].SQL)
@@ -478,8 +477,8 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           }
         }
       }
-    }
-  }
+    })
+  })
 
   if (errors.length > 0) {
     alert(errors.join('\n\n'))
