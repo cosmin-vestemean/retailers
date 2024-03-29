@@ -304,7 +304,8 @@ export async function trimiteComenzileNetrimise() {
   //sendOrder
   var table = document.getElementById('xmlTableBody')
   var rows = table.getElementsByTagName('tr')
-  var stopAt = 1
+  //var stopAt = 1
+  var stopAt = rows.length
   var processed = 0
   for (var i = 0; i < rows.length; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
