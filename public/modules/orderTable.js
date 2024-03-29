@@ -436,7 +436,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           //replace {value} with xml value
           params['query']['sqlQuery'] = params['query']['sqlQuery'].replace('{value}', item[key].value)
           var res = await client.service('getDataset').find(params)
-          //console.log('getDataset', JSON.stringify(res))
+          console.log('getDataset', JSON.stringify(res))
           if (res.data) {
             item[key] = res.data
           } else {
