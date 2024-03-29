@@ -442,8 +442,12 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
           params['query']['sqlQuery'] = item[key].SQL
           //replace {value} with xml value
           params['query']['sqlQuery'] = params['query']['sqlQuery'].replace('{value}', item[key].value)
-          var res = await client.service('getDataset').find(params)
-          console.log('getDataset', JSON.stringify(res))
+          //wait for res, check if res.data exists, if not, wait a little and try again
+          while (!res.data) {
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            res = await client.service('getDataset').find(params)
+            console.log('getDataset', JSON.stringify(res))
+          }
           if (res.data) {
             item[key] = res.data
           } else {
