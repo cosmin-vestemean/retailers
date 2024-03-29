@@ -389,6 +389,7 @@ async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDat
   //add data to jsonOrder['DATA'][distinct]
   CCCXMLS1MAPPINGS.forEach((item) => {
     var xmlVals = getValFromXML(xml, item.XMLNODE)
+    console.log('xmlVals', xmlVals)
     xmlVals.forEach((xmlVal) => {
       var val = 0
       if (item.SQL) {
