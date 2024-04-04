@@ -292,9 +292,9 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   //send order to server
   console.log('createOrderJSON', response)
   if (response.success == true) {
-    response = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
-    console.log('sendOrderToServer', response)
-    return response
+    var response1 = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
+    console.log('sendOrderToServer', response1)
+    return response1
   } else {
     console.log('createOrderJSON', response)
     return response
@@ -615,12 +615,12 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
           await client
             .service('setDocument')
             .create(jsonOrder)
-            .then((res) => {
+            .then(async (res) => {
               console.log('setDocument', res)
               if (res.success == true) {
                 //alert('Order sent to S1, order internal number: ' + res.id)
                 //update CCCSFTPXML with order internal number as findoc
-                client
+                await client
                   .service('CCCSFTPXML')
                   .patch(
                     null,
