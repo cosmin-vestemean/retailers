@@ -288,18 +288,21 @@ export function getValFromXML(xml, node) {
 }
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
-  await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer).then(async (response) => {
-    console.log('createOrderJSON', response)
-    if (response.success == true) {
-      await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer).then((res) => {
-        console.log('sendOrderToServer', res)
-        return res
-      })
+  try {
+    const response = await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer);
+    console.log('createOrderJSON', response);
+    if (response.success) {
+      const res = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer);
+      console.log('sendOrderToServer', res);
+      return res;
     } else {
-      console.log('createOrderJSON', response)
-      return response
+      console.log('createOrderJSON', response);
+      return response;
     }
-  })
+  } catch (error) {
+    console.error('Error:', error);
+    return error;
+  }
 }
 
 export async function trimiteComenzileNetrimise() {
