@@ -585,48 +585,45 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
   //3. call setDocument service with jsonOrder and token
 
   //1. url, username and password returnd from call to service CCCRETAILERSCLIENTS
-  await client
-    .service('CCCRETAILERSCLIENTS')
-    .find({
+  try {
+    const res = await client.service('CCCRETAILERSCLIENTS').find({
       query: {
         TRDR_CLIENT: 1
       }
-    })
-    .then(async (res) => {
-      const url = testUrl
-      const username = res.data[0].WSUSER
-      const password = res.data[0].WSPASS
-      const connectToS1Res = await client.service('connectToS1').find({
-        query: {
-          url: url,
-          username: username,
-          password: password
-        }
-      })
-      jsonOrder['clientID'] = connectToS1Res.token
-      console.log('jsonOrder', jsonOrder)
-      const setDocumentRes = await client.service('setDocument').create(jsonOrder)
-      console.log('setDocument', setDocumentRes)
-      if (setDocumentRes.success == true) {
-        await client
-          .service('CCCSFTPXML')
-          .patch(
-            null,
-            { FINDOC: parseInt(setDocumentRes.id) },
-            { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
-          )
-          .then((res) => {
-            console.log('CCCSFTPXML patch', res)
-            let response = {
-              success: true,
-              message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC
-            }
-            console.log('CCCSFTPXML', response)
-            return response
-          })
-      } else {
-        alert({ success: false, errors: setDocumentRes.errors })
+    });
+    const url = testUrl;
+    const username = res.data[0].WSUSER;
+    const password = res.data[0].WSPASS;
+    const connectToS1Res = await client.service('connectToS1').find({
+      query: {
+        url: url,
+        username: username,
+        password: password
       }
-      return { success: true, message: 'Order sent to S1, order internal number: ' + setDocumentRes.id }
-    })
+    });
+    jsonOrder['clientID'] = connectToS1Res.token;
+    console.log('jsonOrder', jsonOrder);
+    const setDocumentRes = await client.service('setDocument').create(jsonOrder);
+    console.log('setDocument', setDocumentRes);
+    if (setDocumentRes.success == true) {
+      const patchRes = await client.service('CCCSFTPXML').patch(
+        null,
+        { FINDOC: parseInt(setDocumentRes.id) },
+        { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
+      );
+      console.log('CCCSFTPXML patch', patchRes);
+      let response = {
+        success: true,
+        message: 'Marked as sent: ' + patchRes[0].CCCSFTPXML + ' ' + patchRes[0].FINDOC
+      };
+      console.log('CCCSFTPXML', response);
+      return response;
+    } else {
+      alert({ success: false, errors: setDocumentRes.errors });
+    }
+    return { success: true, message: 'Order sent to S1, order internal number: ' + setDocumentRes.id };
+  } catch (error) {
+    console.error('Error sending order to server:', error);
+    return { success: false, message: 'Error sending order to server' };
+  }
 }
