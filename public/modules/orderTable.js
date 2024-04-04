@@ -292,9 +292,10 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   //send order to server
   console.log('createOrderJSON', response)
   if (response.success == true) {
-    var response1 = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
-    console.log('sendOrderToServer', response1)
-    return response1
+    await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer).then((res) => {
+      console.log('sendOrderToServer', res)
+      return res
+    })
   } else {
     console.log('createOrderJSON', response)
     return response
@@ -629,7 +630,10 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   )
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
-                    let response = { success: true , message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC }
+                    let response = {
+                      success: true,
+                      message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC
+                    }
                     console.log('CCCSFTPXML', response)
                     return response
                     //console.log('CCCSFTPXML patch', res)
@@ -637,7 +641,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                     //getNDisplayOrders(retailer)
                   })
               } else {
-                alert({ success: false, errors: res.message })
+                alert({ success: false, errors: res.errors })
               }
               return { success: true, message: 'Order sent to S1, order internal number: ' + res.id }
             })
