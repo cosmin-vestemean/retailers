@@ -156,6 +156,40 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           sendOrderButton.innerHTML = 'Order sent'
           //enable the button
           sendOrderButton.disabled = false
+          //creaza un checkbox cu findoc si onclick sa afiseze detalii
+          //append the checkbox to the cell
+          var input = document.createElement('input')
+          input.type = 'checkbox'
+          input.name = xml.XMLFILENAME
+          input.id = xml.XMLFILENAME
+          input.className = 'checkbox is-small ml-2 trimisCheckbox'
+          input.checked = true
+          input.disabled = true
+          actionsCell.appendChild(input)
+          //add label
+          var label = document.createElement('label')
+          label.htmlFor = xml.XMLFILENAME
+          label.appendChild(document.createTextNode(response.message))
+          actionsCell.appendChild(label)
+          //add details icon
+          var detailsIcon = document.createElement('i')
+          detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+          //style
+          detailsIcon.style.cursor = 'pointer'
+          detailsIcon.style.color = 'blue'
+          detailsIcon.title = 'Details'
+          detailsIcon.onclick = async function () {
+            //delete detailsIcon
+            detailsIcon.remove()
+            var { orderId, res } = await getFindocForOrder(orderId, xml)
+            //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
+            var details = document.createElement('div')
+            var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
+            details.innerHTML = detailsText
+            //add class to details
+            details.className = 'is-info is-small'
+            actionsCell.appendChild(details)
+          }
         }
       } else {
         alert('Already sent')
