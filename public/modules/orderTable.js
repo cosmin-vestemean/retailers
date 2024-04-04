@@ -626,13 +626,14 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                     { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
                   )
                   .then((res) => {
+                    console.log('CCCSFTPXML patch', res)
                     return res
                     //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
                     //getNDisplayOrders(retailer)
                   })
               } else {
-                alert('Error: ' + res.error)
+                alert({ success: false, errors: res.errors })
               }
               return res
             })
