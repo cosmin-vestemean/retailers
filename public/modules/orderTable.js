@@ -627,13 +627,13 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   )
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
-                    return res
+                    return { success: true , message: 'Order sent to S1, order internal number: ' + res.CCCSFTPXML }
                     //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
                     //getNDisplayOrders(retailer)
                   })
               } else {
-                alert({ success: false, errors: res.errors })
+                alert({ success: false, errors: res.message })
               }
               return res
             })
