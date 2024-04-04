@@ -289,6 +289,7 @@ export function getValFromXML(xml, node) {
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer).then(async (response) => {
+    console.log('createOrderJSON', response)
     if (response.success == true) {
       await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer).then((res) => {
         console.log('sendOrderToServer', res)
@@ -592,58 +593,40 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
       }
     })
     .then(async (res) => {
-      //console.log('date logare', res)
-      //2. server new service: app.use('connectToS1', new connectToS1ServiceClass()) return connection token to use in axios call
-      //var url = res.data[0].WSURL
-      var url = testUrl
-      var username = res.data[0].WSUSER
-      var password = res.data[0].WSPASS
-      await client
-        .service('connectToS1')
-        .find({
-          query: {
-            url: url,
-            username: username,
-            password: password
-          }
-        })
-        .then(async (res) => {
-          //replace jsonOrder clientID with token
-          jsonOrder['clientID'] = res.token
-          console.log('jsonOrder', jsonOrder)
-          //console.log('url', url)
-          await client
-            .service('setDocument')
-            .create(jsonOrder)
-            .then(async (res) => {
-              console.log('setDocument', res)
-              if (res.success == true) {
-                //alert('Order sent to S1, order internal number: ' + res.id)
-                //update CCCSFTPXML with order internal number as findoc
-                await client
-                  .service('CCCSFTPXML')
-                  .patch(
-                    null,
-                    { FINDOC: parseInt(res.id) },
-                    { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
-                  )
-                  .then((res) => {
-                    console.log('CCCSFTPXML patch', res)
-                    let response = {
-                      success: true,
-                      message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC
-                    }
-                    console.log('CCCSFTPXML', response)
-                    return response
-                    //console.log('CCCSFTPXML patch', res)
-                    //refresh xml table
-                    //getNDisplayOrders(retailer)
-                  })
-              } else {
-                alert({ success: false, errors: res.errors })
-              }
-              return { success: true, message: 'Order sent to S1, order internal number: ' + res.id }
-            })
-        })
+      const url = testUrl
+      const username = res.data[0].WSUSER
+      const password = res.data[0].WSPASS
+      const connectToS1Res = await client.service('connectToS1').find({
+        query: {
+          url: url,
+          username: username,
+          password: password
+        }
+      })
+      jsonOrder['clientID'] = connectToS1Res.token
+      console.log('jsonOrder', jsonOrder)
+      const setDocumentRes = await client.service('setDocument').create(jsonOrder)
+      console.log('setDocument', setDocumentRes)
+      if (setDocumentRes.success == true) {
+        await client
+          .service('CCCSFTPXML')
+          .patch(
+            null,
+            { FINDOC: parseInt(setDocumentRes.id) },
+            { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
+          )
+          .then((res) => {
+            console.log('CCCSFTPXML patch', res)
+            let response = {
+              success: true,
+              message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC
+            }
+            console.log('CCCSFTPXML', response)
+            return response
+          })
+      } else {
+        alert({ success: false, errors: setDocumentRes.errors })
+      }
+      return { success: true, message: 'Order sent to S1, order internal number: ' + setDocumentRes.id }
     })
 }
