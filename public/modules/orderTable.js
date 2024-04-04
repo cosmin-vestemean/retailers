@@ -292,9 +292,11 @@ async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   //send order to server
   console.log('createOrderJSON', response)
   if (response.success == true) {
-    return await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
+    response = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
     console.log('sendOrderToServer', response)
+    return response
   } else {
+    console.log('createOrderJSON', response)
     return response
   }
 }
