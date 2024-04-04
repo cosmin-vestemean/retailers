@@ -608,8 +608,6 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
           }
         })
         .then(async (res) => {
-          //console.log(res)
-          //console.log('s1 token', res.token)
           //replace jsonOrder clientID with token
           jsonOrder['clientID'] = res.token
           console.log('jsonOrder', jsonOrder)
@@ -618,7 +616,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
             .service('setDocument')
             .create(jsonOrder)
             .then((res) => {
-              console.log(res)
+              console.log('setDocument', res)
               if (res.success == true) {
                 //alert('Order sent to S1, order internal number: ' + res.id)
                 //update CCCSFTPXML with order internal number as findoc
@@ -631,7 +629,9 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   )
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
-                    return { success: true , message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC }
+                    let response = { success: true , message: 'Marked as sent: ' + res[0].CCCSFTPXML + ' ' + res[0].FINDOC }
+                    console.log('CCCSFTPXML', response)
+                    return response
                     //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
                     //getNDisplayOrders(retailer)
