@@ -627,7 +627,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
                   )
                   .then((res) => {
                     console.log('CCCSFTPXML patch', res)
-                    return { success: true , message: 'Order sent to S1, order internal number: ' + res.CCCSFTPXML }
+                    return { success: true , message: 'Order sent to S1, order internal number: ' + res[0].CCCSFTPXML }
                     //console.log('CCCSFTPXML patch', res)
                     //refresh xml table
                     //getNDisplayOrders(retailer)
