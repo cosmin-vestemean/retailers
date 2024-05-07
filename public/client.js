@@ -84,7 +84,13 @@ async function getNDisplayOrders(retailer) {
   //get table body
   let xmlTableBody = document.getElementById('xmlTableBody')
   //add a message to table: loading...
-  xmlTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>'
+  var tr = xmlTableBody.insertRow()
+  var td = tr.insertCell()
+  td.innerHTML = 'No data'
+  td.className = 'has-text-danger has-text-centered has-text-weight-bold'
+  //font 20px
+  td.style.fontSize = '20px'
+  td.colSpan = 5
   await getXmlListFromErp(retailer).then(async (data) => {
     //console.log('getXmlListFromErp', data)
     await displayOrdersForRetailers(data, retailer, 'xmlTableBody')
