@@ -1,4 +1,4 @@
-import { trdrRetailerFromUrl, getNDisplayOrders } from '../client.js'
+import { trdrRetailerFromUrl, getNDisplayOrders } from './client.js'
 import client from './feathersjs-client.js'
 
 const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'

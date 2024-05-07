@@ -1,5 +1,5 @@
 import client from './feathersjs-client.js'
-import { trdrRetailerFromUrl } from '../client.js'
+import { trdrRetailerFromUrl } from './client.js'
 
 export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, series, tableBodyId) {
   /*
