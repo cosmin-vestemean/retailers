@@ -264,6 +264,11 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             input.className = 'checkbox is-small ml-2 trimisCheckbox'
             input.checked = true
             input.disabled = true
+            //add res[0].findoc to cell
+            var label = document.createElement('label')
+            label.htmlFor = xml.XMLFILENAME
+            label.appendChild(document.createTextNode(xml.FINDOC))
+            findoc.appendChild(label)
             findoc.appendChild(input)
           })
         //button text
@@ -323,19 +328,19 @@ export function getValFromXML(xml, node) {
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   try {
-    const response = await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer);
-    console.log('createOrderJSON', response);
+    const response = await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+    console.log('createOrderJSON', response)
     if (response.success) {
-      const res = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer);
-      console.log('sendOrderToServer', res);
-      return res;
+      const res = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
+      console.log('sendOrderToServer', res)
+      return res
     } else {
-      console.log('createOrderJSON', response);
-      return response;
+      console.log('createOrderJSON', response)
+      return response
     }
   } catch (error) {
-    console.error('Error:', error);
-    return error;
+    console.error('Error:', error)
+    return error
   }
 }
 
@@ -628,40 +633,42 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
       query: {
         TRDR_CLIENT: 1
       }
-    });
-    const url = testUrl;
-    const username = res.data[0].WSUSER;
-    const password = res.data[0].WSPASS;
+    })
+    const url = testUrl
+    const username = res.data[0].WSUSER
+    const password = res.data[0].WSPASS
     const connectToS1Res = await client.service('connectToS1').find({
       query: {
         url: url,
         username: username,
         password: password
       }
-    });
-    jsonOrder['clientID'] = connectToS1Res.token;
-    console.log('jsonOrder', jsonOrder);
-    const setDocumentRes = await client.service('setDocument').create(jsonOrder);
-    console.log('setDocument', setDocumentRes);
+    })
+    jsonOrder['clientID'] = connectToS1Res.token
+    console.log('jsonOrder', jsonOrder)
+    const setDocumentRes = await client.service('setDocument').create(jsonOrder)
+    console.log('setDocument', setDocumentRes)
     if (setDocumentRes.success == true) {
-      const patchRes = await client.service('CCCSFTPXML').patch(
-        null,
-        { FINDOC: parseInt(setDocumentRes.id) },
-        { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
-      );
-      console.log('CCCSFTPXML patch', patchRes);
+      const patchRes = await client
+        .service('CCCSFTPXML')
+        .patch(
+          null,
+          { FINDOC: parseInt(setDocumentRes.id) },
+          { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
+        )
+      console.log('CCCSFTPXML patch', patchRes)
       let response = {
         success: true,
         message: 'Marked as sent: ' + patchRes[0].CCCSFTPXML + ' ' + patchRes[0].FINDOC
-      };
-      console.log('CCCSFTPXML', response);
-      return response;
+      }
+      console.log('CCCSFTPXML', response)
+      return response
     } else {
-      alert({ success: false, errors: setDocumentRes.errors });
+      alert({ success: false, errors: setDocumentRes.errors })
     }
-    return { success: true, message: 'Order sent to S1, order internal number: ' + setDocumentRes.id };
+    return { success: true, message: 'Order sent to S1, order internal number: ' + setDocumentRes.id }
   } catch (error) {
-    console.error('Error sending order to server:', error);
-    return { success: false, message: 'Error sending order to server' };
+    console.error('Error sending order to server:', error)
+    return { success: false, message: 'Error sending order to server' }
   }
 }
