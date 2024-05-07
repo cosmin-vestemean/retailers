@@ -384,7 +384,7 @@ export async function trimiteComenzileNetrimise() {
   btnSendAll.innerHTML = 'All orders sent'
   //disable button
   btnSendAll.disabled = true
-  displayOrdersForRetailers(await getNDisplayOrders(trdrRetailerFromUrl), trdrRetailerFromUrl, 'xmlTableBody')
+  getNDisplayOrders(trdrRetailerFromUrl)
 }
 
 async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
