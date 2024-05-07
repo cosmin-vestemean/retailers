@@ -81,9 +81,13 @@ export async function getRemoteAperakXmlListToErp() {
 }
 
 async function getNDisplayOrders(retailer) {
-  await getXmlListFromErp(retailer).then((data) => {
+  //get table body
+  let xmlTableBody = document.getElementById('xmlTableBody')
+  //add a message to table: loading...
+  xmlTableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>'
+  await getXmlListFromErp(retailer).then(async (data) => {
     //console.log('getXmlListFromErp', data)
-    displayOrdersForRetailers(data, retailer, 'xmlTableBody')
+    await displayOrdersForRetailers(data, retailer, 'xmlTableBody')
   })
 }
 
