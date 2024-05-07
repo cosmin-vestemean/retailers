@@ -350,7 +350,7 @@ export async function trimiteComenzileNetrimise() {
   //var stopAt = 1
   var stopAt = rows.length
   var processed = 0
-  const btnSendAll = document.getElementById('trimiteComezileNetrimise')
+  var btnSendAll = document.getElementById('trimiteComenzileNetrimise')
   for (var i = 0; i < rows.length; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     console.log('trimisCheckbox', trimisCheckbox)
