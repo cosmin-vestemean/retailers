@@ -256,6 +256,10 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           )
           .then((res) => {
             console.log('CCCSFTPXML patch', res)
+            var label = document.createElement('label')
+            label.htmlFor = xml.XMLFILENAME
+            label.appendChild(document.createTextNode(res[0].FINDOC))
+            findoc.appendChild(label)
             //checkbox checked
             var input = document.createElement('input')
             input.type = 'checkbox'
@@ -264,11 +268,6 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             input.className = 'checkbox is-small ml-2 trimisCheckbox'
             input.checked = true
             input.disabled = true
-            //add res[0].findoc to cell
-            var label = document.createElement('label')
-            label.htmlFor = xml.XMLFILENAME
-            label.appendChild(document.createTextNode(xml.FINDOC))
-            findoc.appendChild(label)
             findoc.appendChild(input)
           })
         //button text
