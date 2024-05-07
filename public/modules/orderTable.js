@@ -1,4 +1,4 @@
-import { trdrRetailerFromUrl, getNDisplayOrders } from '../client.js'
+//import { trdrRetailerFromUrl, getNDisplayOrders } from '../client.js'
 import client from './feathersjs-client.js'
 
 const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'
@@ -350,12 +350,12 @@ export async function trimiteComenzileNetrimise() {
   //var stopAt = 1
   var stopAt = rows.length
   var processed = 0
+  const btnSendAll = document.getElementById('trimiteComezileNetrimise')
   for (var i = 0; i < rows.length; i++) {
     var trimisCheckbox = rows[i].getElementsByClassName('trimisCheckbox')[0]
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
       //rename button trimiteComenzileNetrimise to Sending rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
-      const btnSendAll = document.getElementById('trimiteComezileNetrimise')
       btnSendAll.innerHTML = 'Sending ' + rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
       if (processed < stopAt) {
         //var xmlData = rows[i].getElementsByTagName('textarea')[0].value

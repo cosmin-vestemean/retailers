@@ -1,7 +1,7 @@
 import client from './modules/feathersjs-client.js'
 import { displayDocsForRetailers } from './modules/invoiceTable.js'
 import { displayOrdersForRetailers, getValFromXML } from './modules/orderTable.js'
-import { retailers } from './retailers.js'
+//import { retailers } from './retailers.js'
 
 //console.log('client.js loaded')
 
