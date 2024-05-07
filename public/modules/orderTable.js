@@ -215,7 +215,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
       input.id = xml.XMLFILENAME
       input.className = 'checkbox is-small ml-2 trimisCheckbox'
       input.checked = true
-      //input.disabled = true
+      input.disabled = true
       findoc.appendChild(input)
       //add label
       var label = document.createElement('label')
@@ -360,7 +360,7 @@ export async function trimiteComenzileNetrimise() {
     console.log('trimisCheckbox', trimisCheckbox)
     if (trimisCheckbox && !trimisCheckbox.checked) {
       //rename button trimiteComenzileNetrimise to Sending rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
-      btnSendAll.innerHTML = 'Sending ' + rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1]
+      btnSendAll.innerHTML = 'Sending  ' + rows[i].getElementsByTagName('td')[2].innerHTML.split('<br>')[1] + '...'
       if (processed < stopAt) {
         //var xmlData = rows[i].getElementsByTagName('textarea')[0].value
         //var xmlFilename = rows[i].getElementsByTagName('td')[2].innerHTML
