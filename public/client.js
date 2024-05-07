@@ -86,7 +86,7 @@ async function getNDisplayOrders(retailer) {
   //add a message to table: loading...
   var tr = xmlTableBody.insertRow()
   var td = tr.insertCell()
-  td.innerHTML = 'No data'
+  td.innerHTML = 'Loading...'
   td.className = 'has-text-danger has-text-centered has-text-weight-bold'
   //font 20px
   td.style.fontSize = '20px'
