@@ -164,7 +164,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
           input.id = xml.XMLFILENAME
           input.className = 'checkbox is-small ml-2 trimisCheckbox'
           input.checked = true
-          input.disabled = true
+          //input.disabled = true
           actionsCell.appendChild(input)
           //add label
           var label = document.createElement('label')
