@@ -80,7 +80,7 @@ export async function getRemoteAperakXmlListToErp() {
   document.getElementById('preluareAperakBtn').innerHTML = 'Preluare APERAK'
 }
 
-export async function getNDisplayOrders(retailer) {
+async function getNDisplayOrders(retailer) {
   await getXmlListFromErp(retailer).then((data) => {
     //console.log('getXmlListFromErp', data)
     displayOrdersForRetailers(data, retailer, 'xmlTableBody')
