@@ -646,7 +646,7 @@ async function sendOrderToServer(jsonOrder, xmlFilename, xmlDate, retailer) {
       const patchRes = await client.service('CCCSFTPXML').patch(
         null,
         { FINDOC: parseInt(setDocumentRes.id) },
-        { query: { XMLFILENAME: xmlFilename, XMLDATE: xmlDate, TRDR_RETAILER: retailer } }
+        { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
       );
       console.log('CCCSFTPXML patch', patchRes);
       let response = {
