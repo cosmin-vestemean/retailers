@@ -296,7 +296,6 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     params['query'][
       'sqlQuery'
     ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'
-    //si nu mai veche de 30 zile
     and TRNDATE > DATEADD(day, -30, GETDATE())
     `
     var res = await client.service('getDataset1').find(params)
