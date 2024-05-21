@@ -295,8 +295,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     params['query'] = {}
     params['query'][
       'sqlQuery'
-    ] = `select FINDOC, FINCODE, FORMAT(TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc where sosource=1351 and trdr=${retailer} and num04='${orderId}'
-    and TRNDATE > DATEADD(day, -30, GETDATE())
+    ] = `select a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc a inner join salfprms b on a.fprms=b.fprms where a.sosource=1351 and a.trdr=${retailer} and a.num04='${orderId}'
+    and a.TRNDATE > DATEADD(day, -30, GETDATE()) and b.tfprms=201
     `
     var res = await client.service('getDataset1').find(params)
     return { orderId, res }
