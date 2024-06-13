@@ -10,7 +10,7 @@ export const retailers = [
     '11322',
     'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png', 'Carrefour'
   ),
-  new Retailer('11654', 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg', 'Lidl'),
+  new Retailer('11654', 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg', 'Dedeman'),
 ]
 
 export async function drawRetailers() {
