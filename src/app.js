@@ -829,3 +829,11 @@ app.service('sftp').scanPeriodically({}, {})
 
 
 export { app }
+
+/*
+CREATE TABLE CCCEDIPROVIDER (
+    CCCEDIPROVIDER INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    NAME VARCHAR(50),
+    CONNTYPE INT NOT NULL
+)
+*/

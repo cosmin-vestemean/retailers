@@ -13,7 +13,8 @@ export const cccsftpSchema = Type.Object(
     PASSPHRASE: Type.String(),
     INITIALDIR: Type.String(),
     FINGERPRINT: Type.String(),
-    PRIVATEKEY: Type.String()
+    PRIVATEKEY: Type.String(),
+    EDIPROVIDER: Type.Number(),
   },
   { $id: 'CCCSFTP', additionalProperties: false }
 )
@@ -25,7 +26,7 @@ export const cccsftpExternalResolver = resolve({})
 // Schema for creating new entries
 export const cccsftpDataSchema = Type.Pick(
   cccsftpSchema,
-  ['TRDR_RETAILER', 'URL', 'USERNAME', 'PASSPHRASE', 'INITIALDIR', 'FINGERPRINT', 'PRIVATEKEY'],
+  ['TRDR_RETAILER', 'URL', 'USERNAME', 'PASSPHRASE', 'INITIALDIR', 'FINGERPRINT', 'PRIVATEKEY', 'EDIPROVIDER'],
   {
     $id: 'CccsftpData'
   }
@@ -49,7 +50,8 @@ export const cccsftpQueryProperties = Type.Pick(cccsftpSchema, [
   'PASSPHRASE',
   'INITIALDIR',
   'FINGERPRINT',
-  'PRIVATEKEY'
+  'PRIVATEKEY',
+  'EDIPROVIDER'
 ])
 export const cccsftpQuerySchema = Type.Intersect(
   [

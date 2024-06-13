@@ -994,10 +994,6 @@ function EXECCOMMAND(cmd) {
     }
   }
 
-  if (cmd == 20240613) {
-    trimiteSelectateLaEmag()
-  }
-
   if (cmd == 20210915) {
     runExternalCode({ findoc: SALDOC.FINDOC })
   }
@@ -1622,46 +1618,6 @@ function ON_SALDOC_TRDBRANCH() {
 function ON_CREATE() {
   loadABC() //creaza var ABC global
   //X.WARNING('__ABC module loaded__');
-  ChangeBrowserMenu() //Change context menu of browser
-}
-
-function ChangeBrowserMenu() {
-  //StringList of most SoftOne Objects Browser is BRMENU
-  var vBrowserMenu = X.EXEC('CODE:ModuleIntf.FindXStrings', X.MODULE, 'BRMENU')
-  X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '-=-') //divider
-  X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '20240613=1;eMag Retail: Trimite facturi') //1; displays the job when one or more rows are selected.
-  X.EXEC('CODE:SysRequest.RefreshPopupMenu', X.MODULE, 'BRMENU', 1)
-}
-
-function trimiteSelectateLaEmag() {
-  var vSelRecs
-  vSelRecs = X.GETPARAM('SELRECS')
-  vSelRecs = vSelRecs.replace(/\?/g, ',')
-  //vSelRecs example: ((FINDOC.FINDOC IN (1447939,1447947,1447950)))
-  //get the numbers
-  var vSelRecsArr = vSelRecs.match(/\d+/g)
-  var ans
-  ans = X.ASK('Confirmati trimiterea facturilor selectate la eMag?', 'eMag Retail')
-  if (ans == 7 || ans == 2) X.EXCEPTION('Cancelled by user')
-  var folderPath = 'c:\\S1Print\\FTP\\Online\\eMag\\'
-  var errors = []
-  for (var i = 0; i < vSelRecsArr.length; i++) {
-    var currentFindoc = vSelRecsArr[i]
-    //create a new SALDOC object
-    var sal = X.CreateObj('SALDOC')
-    try {
-      sal.DBLocate(currentFindoc)
-      //printAndFtp('SALDOC', 107, folderPath)
-    } catch (e) {
-      errors.push(currentFindoc)
-    } finally {
-      sal.free
-      sal = null
-      if (errors.length) {
-        X.WARNING('Facturile\n' + errors.join(', ') + '\nnu au putut fi trimise la eMag.')
-      }
-    }
-  }
 }
 
 function ON_LOCATE() {
