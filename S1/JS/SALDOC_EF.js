@@ -9,7 +9,6 @@ var zoomed = false,
   aDoua = false,
   itsMeStackOverflow = false,
   danteOutFolder = 'dante_out'
-//end teste---------------------------------------------------------------------------------------------------
 
 function exportXML() {
   //testjs('test apel');
@@ -989,7 +988,7 @@ function EXECCOMMAND(cmd) {
 
   if (cmd == 20210704) {
     if (SALDOC.NUM04.toString().length == 9) {
-      var resp = printAndFtp('SALDOC', 107, folderPath, SALDOC.FINDOC)
+      var resp = printAndFtp('SALDOC', 107, folderPath, SALDOC.FINDOC, 0, 0)
       X.WARNING(resp)
     }
   }
@@ -1222,38 +1221,43 @@ function processXML(xmlFile, xmlStr) {
 }
 
 //printAndFtp('SALDOC', 107, folderPath)
-function printAndFtp(strModul, printTemplate, fldr, findoc) {
+function printAndFtp(strModul, printTemplate, fldr, findoc, crt, last) {
+  if (!findoc) return 'Nu exista document de procesat.\n'
+  var msg = []
   asiguraCalea(fldr)
   var pdfFile = '',
     num04 = '',
     fincode = ''
+  //var start = new Date().getTime()
   var resp = printInvoice(strModul, printTemplate, findoc)
+  //read time in a while loop until start + 5 seconds
+  //while (new Date().getTime() < start + 5000) {}
   if (resp) {
     //check for keys
     if (Object.keys(resp).length) {
       if (resp.hasOwnProperty('pdfFile')) pdfFile = resp.pdfFile
       if (resp.hasOwnProperty('fincode')) fincode = resp.fincode
       if (resp.hasOwnProperty('num04')) num04 = resp.num04
+    } else {
+      msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
     }
+  } else {
+    msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
   }
-  if (pdfFile, fincode, num04) {
+  if ((pdfFile, fincode, num04)) {
     var url = ftpPdf(pdfFile, fincode)
     if (url) {
-      eMag_publishURL(url, num04, fincode)
-    } else {
-      if (fincode) {
-        return 'Factura ' + fincode + ' nu a putut fi trimisa la eMag.'
-      } else {
-        return 'Factura ' + findoc + ' nu a putut fi trimisa la eMag.'
-      }
+      eMag_publishURL(url, num04, findoc, fincode, crt, last)
     }
   } else {
     if (fincode) {
-      return 'Factura ' + fincode + ' nu a putut fi tiparita in PDF.'
+      msg.push('Factura ' + fincode + ' nu a putut fi tiparita in PDF.')
     } else {
-      return 'Factura ' + findoc + ' nu a putut fi tiparita in PDF.'
+      msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
     }
   }
+
+  return msg.join('\n')
 }
 
 function delFile(file) {
@@ -1279,9 +1283,10 @@ function printInvoice(strModul, printTemplate, findoc) {
       asiguraCalea(folderPath)
       sal = X.CreateObj(strModul)
       sal.DBLocate(findoc)
-      pdfFile = folderPath + sal.FINCODE + '.pdf'
+      var findocTbl = sal.FINDTABLE('FINDOC')
+      pdfFile = folderPath + findocTbl.FINCODE + '.pdf'
       sal.PRINTFORM(printTemplate, 'PDF file', pdfFile)
-      return { pdfFile: pdfFile, fincode: sal.FINCODE, num04: sal.NUM04 }
+      return { pdfFile: pdfFile, fincode: findocTbl.FINCODE, num04: findocTbl.NUM04 }
     } catch (e) {
       X.WARNING(e.message)
       return null
@@ -1326,7 +1331,9 @@ function ftpPdf(fisier, fincode) {
   }
 }
 
-function eMag_publishURL(linkToSend, num04, fincode, findoc) {
+var emagAPImessages = []
+
+function eMag_publishURL(linkToSend, num04, findoc, fincode, crt, last) {
   try {
     var xmlhttp = new ActiveXObject('MSXML2.XMLHTTP.6.0')
     xmlhttp.open('POST', 'https://marketplace-api.emag.ro/api-3/order/attachments/save', true)
@@ -1336,13 +1343,44 @@ function eMag_publishURL(linkToSend, num04, fincode, findoc) {
     )
     xmlhttp.setRequestHeader('Content-Type', 'application/json')
     xmlhttp.onreadystatechange = function () {
-      if (xmlhttp.readyState != 4) return
-      if (xmlhttp.status != 200 && xmlhttp.status != 304) {
-        X.WARNING('HTTP error ' + xmlhttp.status)
-        markItAsSent(0, findoc)
-      }
       if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        interpretResponse(xmlhttp, findoc)
+        /*
+        {
+          "isError": false,
+          "messages": [],
+          "results": []
+        }
+        */
+
+        eval('var o = ' + xmlhttp.responseText)
+        if (o.isError) {
+          var messages = o.messages,
+            results = o.results,
+            strM = ''
+          for (var i = 0; i < messages.length; i++) {
+            strM += messages[i] + '\n'
+          }
+          if (results.length) strM += 'order_id:' + results[0][0].order_id + '\n' + 'url:' + results[0][0].url
+          markItAsSent(0, findoc)
+          //X.WARNING('Eroare la transmitere link factura.\n' + strM)
+          emagAPImessages.push(fincode + ': ' + strM)
+          if (crt == last) {
+            X.WARNING(emagAPImessages.join('\n'))
+          }
+        } else {
+          markItAsSent(1, findoc)
+          emagAPImessages.push('Factura ' + fincode + ' a fost trimisa cu succes.')
+          if (crt == last) {
+            X.WARNING(emagAPImessages.join('\n'))
+          }
+        }
+      } else if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
+        markItAsSent(0, findoc)
+        //X.WARNING('Eroare la transmitere link factura.\n' + xmlhttp.responseText)
+        emagAPImessages.push('Eroare la transmitere link factura ' + fincode + '.\n' + xmlhttp.responseText)
+        if (crt == last) {
+          X.WARNING(emagAPImessages.join('\n'))
+        }
       }
     }
 
@@ -1350,34 +1388,7 @@ function eMag_publishURL(linkToSend, num04, fincode, findoc) {
 
     xmlhttp.send(dataToSend)
   } catch (err) {
-    X.WARNING(err.message)
-  }
-}
-
-function interpretResponse(xmlhttp, findoc) {
-  //X.WARNING(xmlhttp.responseText);
-  /*
-{
-    "isError": false,
-    "messages": [],
-    "results": []
-    }
-     */
-
-  eval('var o = ' + xmlhttp.responseText)
-  if (o.isError) {
-    var messages = o.messages,
-      results = o.results,
-      strM = ''
-    for (var i = 0; i < messages.length; i++) {
-      strM += messages[i] + '\n'
-    }
-    if (results.length) strM += 'order_id:' + results[0][0].order_id + '\n' + 'url:' + results[0][0].url
-    X.WARNING('Eroare la transmitere link factura.\n' + strM)
-    markItAsSent(0, findoc)
-  } else {
-    markItAsSent(1, findoc)
-    X.WARNING('Link factura transmis.')
+    msg.push(err.message)
   }
 }
 
@@ -1396,7 +1407,10 @@ function composeJSON(linkToSend, num04, fincode) {
 }
 
 function markItAsSent(sent, findoc) {
-  if (findoc && findoc > 0) X.RUNSQL('update findoc set CCCTRIMIS=' + sent + ' where findoc=' + findoc, null)
+  debugger
+  if (findoc && findoc > 0) {
+    X.RUNSQL('update findoc set CCCTRIMIS=' + sent + ' where findoc=' + findoc, null)
+  } else return 'Documentul ' + findoc + ' nu a fost marcat ca trimis.'
 }
 
 function exportXML1() {
@@ -1649,11 +1663,12 @@ function ChangeBrowserMenu() {
   //StringList of most SoftOne Objects Browser is BRMENU
   var vBrowserMenu = X.EXEC('CODE:ModuleIntf.FindXStrings', X.MODULE, 'BRMENU')
   X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '-=-') //divider
-  X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '20240613=1;eMag Retail: Trimite facturi') //1; displays the job when one or more rows are selected.
+  X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '20240613=1;eMag marketplace: Trimite facturi') //1; displays the job when one or more rows are selected.
   X.EXEC('CODE:SysRequest.RefreshPopupMenu', X.MODULE, 'BRMENU', 1)
 }
 
 function trimiteSelectateLaEmag() {
+  //debugger
   var vSelRecs
   vSelRecs = X.GETPARAM('SELRECS')
   vSelRecs = vSelRecs.replace(/\?/g, ',')
@@ -1661,34 +1676,48 @@ function trimiteSelectateLaEmag() {
   //get the numbers
   var vSelRecsArr = vSelRecs.match(/\d+/g)
   var ans
-  ans = X.ASK('Confirmati trimiterea facturilor selectate la eMag?', 'eMag Retail')
+  ans = X.ASK('eMag marketplace', 'Confirmati trimiterea facturilor selectate la eMag marketplace?')
   if (ans == 7 || ans == 2) X.EXCEPTION('Cancelled by user')
   var errors = []
   var msg = []
   var msgAndErr = []
+  emagAPImessages = []
   for (var i = 0; i < vSelRecsArr.length; i++) {
     var currentFindoc = vSelRecsArr[i]
     //create a new SALDOC object
     var sal = X.CreateObj('SALDOC')
     try {
       sal.DBLocate(currentFindoc)
+      var findocTbl = sal.findTable('FINDOC')
+      var series = findocTbl.SERIES
+      var agent = findocTbl.SALESMAN
+      var fincode = findocTbl.FINCODE
+      //documentul trebuie sa fie din seria 7033 si sa aiba agentul 170, altfel continuam cu urmatorul
+      if (series != 7033) {
+        errors.push('Factura ' + fincode + ' nu este din seria 7033.')
+        continue
+      } else if (agent != 170) {
+        errors.push('Factura ' + fincode + ' nu are agentul CLIENTI EMAG.')
+        continue
+      }
       var resp
-      //resp = printAndFtp('SALDOC', 107, folderPath, currentFindoc)
+      resp = printAndFtp('SALDOC', 107, folderPath, currentFindoc, i, vSelRecsArr.length - 1)
       if (resp) msg.push(resp)
     } catch (e) {
       errors.push(currentFindoc)
     } finally {
       sal.free
       sal = null
-      if (errors.length) {
-        msgAndErr.push('Erori la trimiterea facturilor:\n' + errors.join('\n'))
-      }
-      if (msg.length) {
-        msgAndErr.push('Mesaje:\n' + msg.join('\n'))
-      }
-      X.WARNING(msgAndErr.join('\n'))
     }
   }
+
+  if (errors.length) {
+    msgAndErr.push('Erori la trimiterea facturilor:\n' + errors.join('\n'))
+  }
+  if (msg.length) {
+    msgAndErr.push('Mesaje:\n' + msg.join('\n'))
+  }
+  if (msgAndErr.length) X.WARNING(msgAndErr.join('\n'))
 }
 
 function ON_LOCATE() {
@@ -1936,8 +1965,7 @@ function ON_RESTOREEVENTS() {
   SALDOC.CCCVALDEFACTURA = null
   SALDOC.CCCIDANAFVIEW = null
   SALDOC.CCCIDDWLDVIEW = null
-  S
-  ALDOC.CCCFCTELLOADDATE = null
+  SALDOC.CCCFCTELLOADDATE = null
   SALDOC.CCCFCTELVLDDATE = null
   SALDOC.CCCEROARE = null
   SALDOC.CCCEROAREMSJ = null
