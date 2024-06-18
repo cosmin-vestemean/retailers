@@ -3,14 +3,13 @@
  */
 
 lib.include('runCmd20210915')
+lib.include('eMagMarketplace')
 
 var zoomed = false
 var objABC = {}
 var aDoua = false
 var itsMeStackOverflow = false
 var danteOutFolder = 'dante_out'
-var ftpQueue = []
-var eMagMarketplaceBatchSize = 10
 
 function exportXML() {
   //testjs('test apel');
@@ -990,13 +989,13 @@ function EXECCOMMAND(cmd) {
 
   if (cmd == 20210704) {
     if (SALDOC.NUM04.toString().length == 9) {
-      var resp = printAndFtp('SALDOC', 107, folderPath, SALDOC.FINDOC, 0, 0)
-      X.WARNING(resp)
+      //var resp = printAndFtp('SALDOC', 107, folderPath, SALDOC.FINDOC, 0, 0)
+      var resp = processEmagMarketplace([SALDOC.FINDOC])
+      if (resp) X.WARNING(resp)
     }
   }
 
   if (cmd == 20240613) {
-    eMagMarketplaceBatchSize = 10
     var vSelRecs
     vSelRecs = X.GETPARAM('SELRECS')
     vSelRecs = vSelRecs.replace(/\?/g, ',')
@@ -1008,16 +1007,7 @@ function EXECCOMMAND(cmd) {
       ans = X.ASK('eMag marketplace', 'Confirmati trimiterea facturilor selectate la eMag marketplace?')
       if (ans == 7 || ans == 2) X.EXCEPTION('Cancelled by user')
       //send batches of emagMarketplaceBatchSize from vSelRecsArr by calling trimiteSelectateLaEmag
-      for (var i = 0; i < vSelRecsArr.length; i += eMagMarketplaceBatchSize) {
-        var vSelRecsArrBatch = []
-        vSelRecsArrBatch = vSelRecsArr.slice(i, i + eMagMarketplaceBatchSize)
-        //debugger
-        //if last batch redim eMagMarketplaceBatchSize to the actual length
-        if (i + eMagMarketplaceBatchSize > vSelRecsArr.length) {
-          eMagMarketplaceBatchSize = vSelRecsArr.length - i
-        }
-        trimiteSelectateLaEmag(vSelRecsArrBatch)
-      }
+      processEmagMarketplace(vSelRecsArr)
     } else {
       X.EXCEPTION('Nu sunt documente selectate')
     }
@@ -1247,255 +1237,12 @@ function processXML(xmlFile, xmlStr) {
 }
 
 //printAndFtp('SALDOC', 107, folderPath)
-function printAndFtp(strModul, printTemplate, fldr, findoc) {
-  if (!findoc) return 'Nu exista document de procesat.\n'
-  var msg = []
-  asiguraCalea(fldr)
-  var pdfFile = '',
-    num04 = '',
-    fincode = ''
-  var resp = printInvoice(strModul, printTemplate, findoc)
-  if (resp) {
-    //check for keys
-    if (Object.keys(resp).length) {
-      if (resp.hasOwnProperty('pdfFile')) pdfFile = resp.pdfFile
-      if (resp.hasOwnProperty('fincode')) fincode = resp.fincode
-      if (resp.hasOwnProperty('num04')) num04 = resp.num04
-    } else {
-      msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
-    }
-  } else {
-    msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
-  }
-  if ((pdfFile, fincode, num04)) {
-    var url = 'https://ftp.petfactory.ro/petfactortypdf/' + fincode + '.pdf'
-    if (!urlExists(url)) {
-      url = ftpPdf(pdfFile, fincode)
-    }
-
-    //debugger
-    if (url) {
-      ftpQueue.push({ url: url, num04: num04, findoc: findoc, fincode: fincode })
-      if (ftpQueue.length == eMagMarketplaceBatchSize) {
-        eMag_publishURL(ftpQueue)
-      }
-    }
-  } else {
-    if (fincode) {
-      msg.push('Factura ' + fincode + ' nu a putut fi tiparita in PDF.')
-    } else {
-      msg.push('Factura ' + findoc + ' nu a putut fi tiparita in PDF.')
-    }
-  }
-
-  return msg.join('\n')
-}
 
 function delFile(file) {
   var fso = new ActiveXObject('Scripting.FileSystemObject'),
     f2 = fso.GetFile(file)
   //f2.Copy ("c:\\Somth\\Bak");
   f2.Delete()
-}
-
-function asiguraCalea(fldr) {
-  var parts = fldr.split('\\'),
-    c = parts[0],
-    fso = new ActiveXObject('Scripting.FileSystemObject')
-  for (var i = 1; i < parts.length - 1; i++) {
-    c += '\\' + parts[i]
-    if (!fso.FolderExists(c)) fso.CreateFolder(c)
-  }
-}
-
-function printInvoice(strModul, printTemplate, findoc) {
-  if (findoc) {
-    try {
-      asiguraCalea(folderPath)
-      sal = X.CreateObj(strModul)
-      sal.DBLocate(findoc)
-      var findocTbl = sal.FINDTABLE('FINDOC')
-      var fincode = findocTbl.FINCODE
-      //verifica in ftp daca exista deja; daca exista in https://ftp.petfactory.ro/petfactortypdf/fincode.pdf returneaza url-ul
-      var url = 'https://ftp.petfactory.ro/petfactortypdf/' + fincode + '.pdf'
-      if (urlExists(url)) {
-        return { pdfFile: url, fincode: findocTbl.FINCODE, num04: findocTbl.NUM04 }
-      }
-      pdfFile = folderPath + fincode + '.pdf'
-      sal.PRINTFORM(printTemplate, 'PDF file', pdfFile)
-      return { pdfFile: pdfFile, fincode: findocTbl.FINCODE, num04: findocTbl.NUM04 }
-    } catch (e) {
-      X.WARNING(e.message)
-      return null
-    }
-  } else {
-    return false
-  }
-}
-
-function urlExists(url) {
-  var http = new ActiveXObject('Msxml2.XMLHTTP')
-  http.open('GET', url, false)
-  http.send()
-  return http.status != 404
-}
-
-function ftpPdf(fisier, fincode) {
-  try {
-    var shell = new ActiveXObject('WScript.Shell')
-    var exec = shell.Exec('winscp.com /xmllog=log.xml /log=' + folderPath + 'log.txt')
-    exec.StdIn.Write(
-      'option batch abort\n' +
-        'open ftp://petfactortypdf@petfactory.ro:1#kBsWpGZI51@ftp.petfactory.ro\n' +
-        'put -delete ' +
-        fisier +
-        '\n' +
-        'exit\n'
-    )
-    var output = exec.StdOut.ReadAll()
-    //X.WARNING(output);
-    var doc = new ActiveXObject('MSXML2.DOMDocument')
-    doc.async = false
-    doc.load('log.xml')
-    doc.setProperty('SelectionNamespaces', "xmlns:w='http://winscp.net/schema/session/1.0'")
-    var nodes = doc.selectNodes('//w:upload')
-    var success = false
-    for (var i = 0; i < nodes.length; ++i) {
-      var filename = nodes[i].selectSingleNode('w:filename/@value').value
-      if (filename === fisier) {
-        success = true
-        break
-      }
-    }
-    if (success) {
-      return 'https://ftp.petfactory.ro/petfactortypdf/' + fincode + '.pdf'
-    } else {
-      return false
-    }
-  } catch (e) {
-    X.WARNING(e.message)
-    return false
-  }
-}
-
-var emagAPImessages = []
-
-function eMag_publishURL(linksToSend) {
-  try {
-    var xmlhttp = new ActiveXObject('MSXML2.XMLHTTP.6.0')
-    xmlhttp.open('POST', 'https://marketplace-api.emag.ro/api-3/order/attachments/save', true)
-    xmlhttp.setRequestHeader(
-      'Authorization',
-      'Basic b3ZpZGl1LnR1dHVuYXJ1QHBldGZhY3Rvcnkucm86ZnJlZWRvbTMxMg=='
-    )
-    xmlhttp.setRequestHeader('Content-Type', 'application/json')
-    xmlhttp.onreadystatechange = handleEmagAPIResponse(xmlhttp, linksToSend)
-
-    var dataToSend = composeJSON(linksToSend)
-
-    xmlhttp.send(dataToSend)
-  } catch (err) {
-    msg.push(err.message)
-  }
-}
-
-function handleEmagAPIResponse(xmlhttp, linksToSend) {
-  return function () {
-    //write to log
-    //create or append if exists
-    //var logFile = folderPath + 'emagAPIlog.txt'
-    //make it daily
-    var logFile = folderPath + 'emagAPIlog' + new Date().toISOString().split('T')[0] + '.txt'
-    var f
-    var fso = new ActiveXObject('Scripting.FileSystemObject')
-    //check if it's open
-    if (fso.FileExists(logFile)) {
-      f = fso.OpenTextFile(logFile, 8, false)
-      f.Close()
-    }
-    f = fso.OpenTextFile(logFile, 8, true)
-    if (xmlhttp.readyState == 4) {
-      var currentDate = new Date()
-      var dateString =
-        currentDate.getDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear()
-      var timeString =
-        currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds()
-      f.WriteLine(dateString + ' ' + timeString + ' - ' + xmlhttp.status + ' - ' + xmlhttp.responseText)
-      if (xmlhttp.status == 200) {
-        /*
-      {
-        "isError": false,
-        "messages": [],
-        "results": []
-      }
-      */
-        eval('var o = ' + xmlhttp.responseText)
-        if (o.isError) {
-          var messages = o.messages,
-            results = o.results,
-            strM = ''
-          //messages
-          if (messages.length) {
-            strM = messages.join('\n')
-          }
-          if (results.length) {
-            for (var i = 0; i < results.length; i++) {
-              strM += '\n' + JSON.stringify(results[i])
-            }
-          }
-          //markItAsSent(0, findoc)
-          //X.WARNING('Eroare la transmitere link factura.\n' + strM)
-          emagAPImessages.push(strM)
-          f.WriteLine(strM)
-        } else {
-          //markItAsSent(1, findoc)
-          //emagAPImessages.push('Factura ' + fincode + ' a fost trimisa cu succes.')
-          for (let i = 0; i < linksToSend.length; i++) {
-            markItAsSent(1, linksToSend[i].findoc)
-            emagAPImessages.push('Factura ' + linksToSend[i].fincode + ' a fost trimisa cu succes.')
-          }
-          //X.WARNING(emagAPImessages.join('\n'))
-          f.WriteLine(emagAPImessages.join('\n'))
-          //debugger;
-          ftpQueue = []
-        }
-      } else if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
-        //markItAsSent(0, findoc)
-        //X.WARNING('Eroare la transmitere link factura.\n' + xmlhttp.responseText)
-        emagAPImessages.push('Eroare la transmitere link factura ' + fincode + '.\n' + xmlhttp.responseText)
-        if (crt == last) {
-          //X.WARNING(emagAPImessages.join('\n'))
-          f.WriteLine(emagAPImessages.join('\n'))
-        }
-      }
-    }
-    f.Close()
-  }
-}
-
-function composeJSON(linksToSend) {
-  var r = {
-    data: []
-  }
-
-  for (var i = 0; i < linksToSend.length; i++) {
-    var o = {
-      order_id: linksToSend[i].num04,
-      name: linksToSend[i].fincode,
-      url: linksToSend[i].url,
-      type: 1 //invoice
-    }
-    r.data.push(o)
-  }
-
-  return JSON.stringify(r)
-}
-
-function markItAsSent(sent, findoc) {
-  //debugger
-  if (findoc && findoc > 0) {
-    X.RUNSQL('update findoc set CCCTRIMIS=' + sent + ' where findoc=' + findoc, null)
-  } else return 'Documentul ' + findoc + ' nu a fost marcat ca trimis.'
 }
 
 function exportXML1() {
@@ -1750,56 +1497,6 @@ function ChangeBrowserMenu() {
   X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '-=-') //divider
   X.EXEC('CODE:PiLib.TStringsAdd', vBrowserMenu, '20240613=1;eMag marketplace: Trimite facturi') //1; displays the job when one or more rows are selected.
   X.EXEC('CODE:SysRequest.RefreshPopupMenu', X.MODULE, 'BRMENU', 1)
-}
-
-function trimiteSelectateLaEmag(batch) {
-  ftpQueue = []
-  //debugger
-  var errors = []
-  var msg = []
-  var msgAndErr = []
-  emagAPImessages = []
-
-  for (var i = 0; i < batch.length; i++) {
-    var currentFindoc = batch[i]
-    //create a new SALDOC object
-    var sal = X.CreateObj('SALDOC')
-    try {
-      sal.DBLocate(currentFindoc)
-      var findocTbl = sal.findTable('FINDOC')
-      var series = findocTbl.SERIES
-      var agent = findocTbl.SALESMAN
-      var fincode = findocTbl.FINCODE
-      var trimis = findocTbl.CCCTRIMIS
-      //documentul trebuie sa fie din seria 7033 si sa aiba agentul 170, altfel continuam cu urmatorul
-      if (series != 7033) {
-        errors.push('Factura ' + fincode + ' nu este din seria 7033.')
-        continue
-      } else if (agent != 170) {
-        errors.push('Factura ' + fincode + ' nu are agentul CLIENTI EMAG.')
-        continue
-      } else if (trimis) {
-        errors.push('Factura ' + fincode + ' a fost deja trimisa.')
-        continue
-      }
-      var resp
-      resp = printAndFtp('SALDOC', 107, folderPath, currentFindoc)
-      if (resp) msg.push(resp)
-    } catch (e) {
-      errors.push(currentFindoc)
-    } finally {
-      sal.free
-      sal = null
-    }
-  }
-
-  if (errors.length) {
-    msgAndErr.push('Erori la trimiterea facturilor:\n' + errors.join('\n'))
-  }
-  if (msg.length) {
-    msgAndErr.push('Mesaje:\n' + msg.join('\n'))
-  }
-  if (msgAndErr.length) X.WARNING(msgAndErr.join('\n'))
 }
 
 function ON_LOCATE() {
