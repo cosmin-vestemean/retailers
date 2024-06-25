@@ -741,7 +741,7 @@ app.use('getInvoiceDom', new getInvoiceDom())
 class retailerServiceClass {
   async findRetailerDetails(data, params) {
     const retailer = params.query.retailer
-    const clientPlatforma = params.query.TRDR_CLIENT
+    const clientPlatforma = params.query.clientPlatforma
     const ediQry = `SELECT A.*, B.NAME EDIPROVIDER, C.NAME CONNTYPE FROM CCCSFTP A 
       INNER JOIN CCCEDIPROVIDER B ON A.CCCEDIPROVIDER = B.CCCEDIPROVIDER 
       INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CONNTYPE WHERE A.TRDR_RETAILER = ${retailer} and A.TRDR_CLIENT = ${clientPlatforma}`
@@ -778,8 +778,8 @@ class retailerServiceClass {
 //register the service
 app.use('retailer', new retailerServiceClass())
 
-//test it with TRDR_CLIENT=1 and TRDR_RETAILER=11654
-app.service('retailer').findRetailerDetails({}, { query: { retailer: 11654, TRDR_CLIENT: 1 } })
+//test it with TRDR_CLIENT=1 and clientPlatforma=11654
+app.service('retailer').findRetailerDetails({}, { query: { retailer: 11654, clientPlatforma: 1 } })
 
 
 //scanPeriodically run
