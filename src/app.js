@@ -743,12 +743,11 @@ class retailerServiceClass {
     const retailer = params.query.retailer
     const clientPlatforma = params.query.clientPlatforma
     const ediQry = `SELECT A.*, B.NAME EDIPROVIDER, C.NAME CONNTYPE FROM CCCSFTP A 
-      INNER JOIN CCCEDIPROVIDER B ON A.CCCEDIPROVIDER = B.CCCEDIPROVIDER 
-      INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CONNTYPE WHERE A.TRDR_RETAILER = ${retailer} and A.TRDR_CLIENT = ${clientPlatforma}`
+      INNER JOIN CCCEDIPROVIDER B ON A.EDIPROVIDER = B.CCCEDIPROVIDER 
+      INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CONNTYPE WHERE A.TRDR_RETAILER = ${retailer}`
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
     const ediDetails = response.success
       ? {
-          TRDR_CLIENT: response.TRDR_CLIENT,
           TRDR_RETAILER: response.TRDR_RETAILER,
           EDIPROVIDER: response.EDIPROVIDER,
           CONNTYPE: response.CONNTYPE,
