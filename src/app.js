@@ -763,7 +763,7 @@ class retailerServiceClass {
       : {}
 
     //CCCDOCUMENTES1MAPPINGS
-    const documentMappingsQry = `SELECT CCCDOCUMENTES1MAPPINGS, SOSOURCE, FPRMS, SERIES, INITALDIRIN, INITALDIROUT FROM CCCDOCUMENTES1MAPPINGS WHERE TRDR_RETAILER = ${retailer} and TRDR_CLIENT = ${clientPlatforma}`
+    const documentMappingsQry = `SELECT CCCDOCUMENTES1MAPPINGS, SOSOURCE, FPRMS, SERIES, INITIALDIRIN, INITIALDIROUT FROM CCCDOCUMENTES1MAPPINGS WHERE TRDR_RETAILER = ${retailer} and TRDR_CLIENT = ${clientPlatforma}`
     const documentMappingsResponse = await app
       .service('getDataset1')
       .find({ query: { sqlQuery: documentMappingsQry } })
