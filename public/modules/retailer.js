@@ -7,12 +7,15 @@ export class Retailer {
   #trdr
   #logo
   #nrFacturiDeTrimis
+  #enumFacturiDeTrimis
   #nrComenziDeTrimis
   #name
+  
   constructor(trdr, logo, name = '') {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
+    this.#enumFacturiDeTrimis = ''
     this.#nrComenziDeTrimis = 0
     this.#name = name
   }
@@ -66,6 +69,30 @@ export class Retailer {
     this.#nrFacturiDeTrimis = res
   }
 
+  async setEnumFacturiDeTrimis() {
+    //getDataset1
+    let res = ''
+    let params = {}
+    params['query'] = {}
+    params['query'][
+      'sqlQuery'
+    ] = `select fincode, trndate  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
+      this.#trdr
+    } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+    let responseObj1 = await client.service('getDataset1').find(params)
+    if (responseObj1.success) {
+      //[{fincode:'fac1', trndate: '20240611'}, ...]
+      for (let i = 0; i < responseObj1.data.length; i++) {
+        let item = responseObj1.data[i]
+        res += item.fincode + ' ' + item.trndate + '\n'
+      }
+    } else {
+      res = ''
+    }
+
+    this.#enumFacturiDeTrimis = res
+  }
+
   async getTrdr() {
     return this.#trdr
   }
@@ -103,7 +130,9 @@ export class Retailer {
                             <td>Facturi de trimis:</td><td>
                             ${
                               this.#nrFacturiDeTrimis > 0
-                                ? '<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
+                                ? 
+                                //'<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
+                                <span class="tag is-danger" onclick="function() {alert('Facturi de trimis: ${this.#enumFacturiDeTrimis}')}">${this.#nrFacturiDeTrimis}</span>
                                 : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                             }
                             </td>
