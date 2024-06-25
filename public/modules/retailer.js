@@ -83,6 +83,7 @@ export class Retailer {
       for (let i = 0; i < responseObj1.data.length; i++) {
         let item = responseObj1.data[i]
         res += item.fincode + ' ' + item.trndate + '\n'
+        console.log('res', res)
       }
     } else {
       res = ''
