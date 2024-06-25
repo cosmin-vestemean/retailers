@@ -78,12 +78,12 @@ export class Retailer {
       'sqlQuery': `select fincode, DATE_FORMAT(trndate, '%Y-%m-%d') as trndate from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
     }
     let responseObj1 = await client.service('getDataset1').find(params)
+    console.log('responseObj1', responseObj1)
     if (responseObj1.success) {
       //[{fincode:'fac1', trndate: '20240611'}, ...]
       for (let i = 0; i < responseObj1.data.length; i++) {
         let item = responseObj1.data[i]
         res += item.fincode + ' ' + item.trndate + '\n'
-        console.log('res', res)
       }
     } else {
       res = ''
