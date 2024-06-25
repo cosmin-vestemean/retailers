@@ -121,7 +121,7 @@ export class Retailer {
                             <td>Comenzi de trimis:</td><td>
                             ${
                               this.#nrComenziDeTrimis > 0
-                                ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
+                                ? '<span class="tag is-danger" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrComenziDeTrimis + '</span>'
                                 : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
                             }</section><section>
                             </td>
@@ -131,8 +131,7 @@ export class Retailer {
                             ${
                               this.#nrFacturiDeTrimis > 0
                                 ? 
-                                //'<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
-                                <span class="tag is-danger" onclick={() => {alert(`Facturi de trimis: ${this.#enumFacturiDeTrimis}`)}}>${this.#nrFacturiDeTrimis}</span>
+                                '<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
                                 : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                             }
                             </td>
