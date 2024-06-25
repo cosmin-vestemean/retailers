@@ -1,5 +1,6 @@
-const eMagMarketplaceBatchSize = 20
+const eMagMarketplaceBatchSize = 10
 var ftpQueue = []
+folderPath = 'C:\\S1Print\\FTP\\Online\\'
 
 function processEmagMarketplace(selectedDocsArr) {
   var batchSize = eMagMarketplaceBatchSize
@@ -13,6 +14,7 @@ function processEmagMarketplace(selectedDocsArr) {
     }
     //debugger
     trimiteSelectateLaEmag(vSelRecsArrBatch, batchSize)
+    X.PROCESSMESSAGES
   }
 }
 
@@ -59,6 +61,7 @@ function trimiteSelectateLaEmag(batch, batchSize) {
       sal.free
       sal = null
     }
+    X.PROCESSMESSAGES
   }
 
   if (errors.length) {
@@ -103,8 +106,10 @@ function printAndFtp(strModul, printTemplate, fldr, findoc, batchSize, startDeta
     if (url) {
       ftpQueue.push({ url: url, num04: num04, findoc: findoc, fincode: fincode })
       if (ftpQueue.length == batchSize) {
-        eMag_publishURL(ftpQueue, { startTime: startOfBatch, startDateTime: startDateTime })
+        eMag_publishURL(ftpQueue, { startTime: startOfBatch, startDateTime: startDateTime }, batchSize)
       }
+    } else {
+      msg.push('Factura ' + fincode + ' nu a putut fi incarcata pe FTP.')
     }
   } else {
     if (fincode) {
@@ -151,18 +156,20 @@ function urlExists(url) {
 
 function ftpPdf(fisier, fincode) {
   try {
+    //debugger;
     var shell = new ActiveXObject('WScript.Shell')
-    var exec = shell.Exec('winscp.com /xmllog=log.xml /log=' + folderPath + 'log.txt')
-    exec.StdIn.Write(
-      'option batch abort\n' +
-        'open ftp://petfactortypdf@petfactory.ro:1#kBsWpGZI51@ftp.petfactory.ro\n' +
-        'put -delete ' +
-        fisier +
-        '\n' +
-        'exit\n'
-    )
-    var output = exec.StdOut.ReadAll()
-    //X.WARNING(output);
+    //get current directory
+    var currentDir = shell.CurrentDirectory
+    var winscpexe = currentDir + '\\WinSCP.com'
+    var command =
+      '"' +
+      winscpexe +
+      '" /xmllog=log.xml /log=' +
+      folderPath +
+      'WinSCP.log /command "open ftp://petfactortypdf@petfactory.ro:1#kBsWpGZI51@ftp.petfactory.ro" "put -delete ' +
+      fisier +
+      '" "exit"'
+    shell.Run(command, 0, true)
     var doc = new ActiveXObject('MSXML2.DOMDocument')
     doc.async = false
     doc.load('log.xml')
@@ -187,7 +194,7 @@ function ftpPdf(fisier, fincode) {
   }
 }
 
-function eMag_publishURL(linksToSend, startDetails) {
+function eMag_publishURL(linksToSend, startDetails, batchSize) {
   try {
     var xmlhttp = new ActiveXObject('MSXML2.XMLHTTP.6.0')
     xmlhttp.open('POST', 'https://marketplace-api.emag.ro/api-3/order/attachments/save', true)
@@ -196,7 +203,7 @@ function eMag_publishURL(linksToSend, startDetails) {
       'Basic b3ZpZGl1LnR1dHVuYXJ1QHBldGZhY3Rvcnkucm86ZnJlZWRvbTMxMg=='
     )
     xmlhttp.setRequestHeader('Content-Type', 'application/json')
-    xmlhttp.onreadystatechange = handleEmagAPIResponse(xmlhttp, linksToSend, startDetails)
+    xmlhttp.onreadystatechange = handleEmagAPIResponse(xmlhttp, linksToSend, startDetails, batchSize)
 
     var dataToSend = composeJSON(linksToSend)
 
@@ -207,7 +214,7 @@ function eMag_publishURL(linksToSend, startDetails) {
   }
 }
 
-function handleEmagAPIResponse(xmlhttp, linksToSend, startDetails) {
+function handleEmagAPIResponse(xmlhttp, linksToSend, startDetails, batchSize) {
   return function () {
     var emagAPImessages = []
     //write to log
@@ -221,7 +228,9 @@ function handleEmagAPIResponse(xmlhttp, linksToSend, startDetails) {
         currentDate.getDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear()
       var timeString =
         currentDate.getHours() + ':' + currentDate.getMinutes() + ':' + currentDate.getSeconds()
-      f.WriteLine(dateString + ' ' + timeString + ' - ' + xmlhttp.status + ' - ' + xmlhttp.responseText)
+      f.WriteLine(
+        '\n\n' + dateString + ' ' + timeString + ' - ' + xmlhttp.status + ' - ' + xmlhttp.responseText
+      )
       var startTime = startDetails.startTime
       var startDateTime = startDetails.startDateTime
       var stopTime = new Date().getTime()
@@ -279,6 +288,15 @@ function handleEmagAPIResponse(xmlhttp, linksToSend, startDetails) {
       }
     }
     f.Close()
+    if (batchSize != eMagMarketplaceBatchSize) {
+      //open file for display
+      fso = new ActiveXObject('Scripting.FileSystemObject')
+      var logFile = folderPath + 'emagAPIlog' + new Date().toISOString().split('T')[0] + '.txt'
+      if (fso.FileExists(logFile)) {
+        var shell = new ActiveXObject('WScript.Shell')
+        shell.Run(logFile)
+      }
+    }
   }
 }
 
@@ -318,4 +336,14 @@ function markItAsSent(sent, findoc) {
   if (findoc && findoc > 0) {
     X.RUNSQL('update findoc set CCCTRIMIS=' + sent + ' where findoc=' + findoc, null)
   } else return 'Documentul ' + findoc + ' nu a fost marcat ca trimis.'
+}
+
+function asiguraCalea(fldr) {
+  var parts = fldr.split('\\'),
+    c = parts[0],
+    fso = new ActiveXObject('Scripting.FileSystemObject')
+  for (var i = 1; i < parts.length - 1; i++) {
+    c += '\\' + parts[i]
+    if (!fso.FolderExists(c)) fso.CreateFolder(c)
+  }
 }
