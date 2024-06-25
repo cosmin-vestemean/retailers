@@ -132,7 +132,7 @@ export class Retailer {
                               this.#nrFacturiDeTrimis > 0
                                 ? 
                                 //'<span class="tag is-danger">' + this.#nrFacturiDeTrimis + '</span>'
-                                <span class="tag is-danger" onclick="function() {alert('Facturi de trimis: ${this.#enumFacturiDeTrimis}')}">${this.#nrFacturiDeTrimis}</span>
+                                <span class="tag is-danger" onclick="function() {alert(`Facturi de trimis: ${this.#enumFacturiDeTrimis}`)}">${this.#nrFacturiDeTrimis}</span>
                                 : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                             }
                             </td>
