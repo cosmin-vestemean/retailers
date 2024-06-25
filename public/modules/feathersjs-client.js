@@ -65,4 +65,6 @@ client.use('sftp', socketClient.service('sftp'), {
     console.log('uploadResult', data)
   })
 
+  
+
 export default client

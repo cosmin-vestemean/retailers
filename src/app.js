@@ -739,7 +739,7 @@ class getInvoiceDom {
 app.use('getInvoiceDom', new getInvoiceDom())
 
 class retailerServiceClass {
-  async findRetailerDetails(data, params) {
+  async find(params) {
     const retailer = params.query.retailer
     const clientPlatforma = params.query.clientPlatforma
     const ediQry = `SELECT A.*, B.NAME EDIPROVIDER, C.NAME CONNTYPE FROM CCCSFTP A 
@@ -779,8 +779,7 @@ class retailerServiceClass {
 app.use('retailer', new retailerServiceClass())
 
 //test it with TRDR_CLIENT=1 and clientPlatforma=11654
-app.service('retailer').findRetailerDetails({}, { query: { retailer: 11654, clientPlatforma: 1 } })
-
+app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
 //scanPeriodically run
 app.service('sftp').scanPeriodically({}, {})
