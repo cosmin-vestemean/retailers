@@ -750,6 +750,7 @@ class retailerServiceClass {
       ? {
           TRDR_RETAILER: response.TRDR_RETAILER,
           EDIPROVIDER: response.EDIPROVIDER,
+          EDIPROVIDERNAME: response.EDIPROVIDERNAME,
           CONNTYPE: response.CONNTYPE,
           URL: response.URL,
           PORT: response.PORT,
