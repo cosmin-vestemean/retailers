@@ -76,7 +76,7 @@ export class Retailer {
     params['query'] = {}
     params['query'] = {
       'sqlQuery': `select fincode, 
-      format(trndate, 'dd.MM.yyyy') trndate
+      format(trndate, 'dd.MM.yyyy') trndate 
       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
     }
     let responseObj1 = await client.service('getDataset1').find(params)
@@ -85,7 +85,7 @@ export class Retailer {
       //[{fincode:'fac1', trndate: '20240611'}, ...]
       for (let i = 0; i < responseObj1.data.length; i++) {
         let item = responseObj1.data[i]
-        res += item.fincode + ' ' + item.trndate + '\n'
+        res += item.fincode + ' ' + item.trndate + '; '
       }
     } else {
       res = ''
