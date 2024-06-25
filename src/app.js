@@ -738,95 +738,48 @@ class getInvoiceDom {
 
 app.use('getInvoiceDom', new getInvoiceDom())
 
-//test getInvoiceDom service
-/* app
-  .service('getInvoiceDom')
-  .find({
-    query: {
-      clientID:
-        await app
-          .service('connectToS1')
-          .find()
-          .then((result) => {
-            return result.token
-          }),
-      appID: '1001',
-      findoc: '1222852'
-    }
-  })
-  .then(async (result) => {
-    //var_dump(result) as in php
-    console.debug(JSON.stringify(result, null, 2))
-  }) */
+class retailerServiceClass {
+  async findRetailerDetails(data, params) {
+    const retailer = params.query.retailer
+    const clientPlatforma = params.query.TRDR_CLIENT
+    const ediQry = `SELECT A.*, B.NAME EDIPROVIDER, C.NAME CONNTYPE FROM CCCSFTP A 
+      INNER JOIN CCCEDIPROVIDER B ON A.CCCEDIPROVIDER = B.CCCEDIPROVIDER 
+      INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CONNTYPE WHERE A.TRDR_RETAILER = ${retailer} and A.TRDR_CLIENT = ${clientPlatforma}`
+    const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
+    const ediDetails = response.success
+      ? {
+          TRDR_CLIENT: response.TRDR_CLIENT,
+          TRDR_RETAILER: response.TRDR_RETAILER,
+          EDIPROVIDER: response.EDIPROVIDER,
+          CONNTYPE: response.CONNTYPE,
+          URL: response.URL,
+          PORT: response.PORT,
+          USERNAME: response.USERNAME,
+          PASSPHRASE: response.PASSPHRASE,
+          PRIVATEKEY: response.PRIVATEKEY,
+          FINGERPRINT: response.FINGERPRINT,
+          INITIALDIRIN: response.INITIALDIRIN,
+          INITIALDIROUT: response.INITIALDIROUT
+        }
+      : {}
 
-/*
-example of use
-{
-    "service": "getData",
-    "clientID": "9J8pHczKKqLd9JL3ObHLPMLNLcLdJIKsC2KsC791KbbbLqTGOartQ69DQtXcKNPqG59CS5909JL5GL5FPdHJLYKrH5L5JK5COrDN9JL4HrPIMNLPMb5II7ObDKD3Jsv1S5bKLN9EGdX3IKibDKDZLrfHPLHiL7D0Rq1JIoKtHNb5LLL1PbPvR5D8PqXYHKnCHbLqH5D2PqH29JL5NoKrH4LL9JT3K7LNLq57",
-    "appId": "1001",
-    "OBJECT": "SALDOC",
-    "FORM":"EF",
-    "KEY":"1222852",
-    "LOCATEINFO": "SALDOC:TRNDATE,FINCODE,TRDR_CUSTOMER_PHONE01;MTRDOC:DELIVDATE,CCCXMLSendDate;ITELINES:MTRL,QTY1,PRICE,MTRL_ITEM_CODE1"
+    //CCCDOCUMENTES1MAPPINGS
+    const documentMappingsQry = `SELECT CCCDOCUMENTES1MAPPINGS, SOSOURCE, FPRMS, SERIES, INITALDIRIN, INITALDIROUT FROM CCCDOCUMENTES1MAPPINGS WHERE TRDR_RETAILER = ${retailer} and TRDR_CLIENT = ${clientPlatforma}`
+    const documentMappingsResponse = await app
+      .service('getDataset1')
+      .find({ query: { sqlQuery: documentMappingsQry } })
+
+    const documenteS1 = documentMappingsResponse.success ? documentMappingsResponse.data : []
+
+    return { success: response.success, edi: ediDetails, documenteS1: documenteS1 }
+  }
 }
-*/
 
-//test getS1ObjData service with data from example above
-/*
-app
-  .service('getS1ObjData')
-  .find({
-    query: {
-      KEY: '1222852',
-      clientID:
-        await app
-          .service('connectToS1')
-          .find()
-          .then((result) => {
-            return result.token
-          }),
-      appID: '1001',
-      OBJECT: 'SALDOC',
-      FORM: 'EFIntegrareRetailers',
-      LOCATEINFO:
-        'SALDOC:TRNDATE,FINCODE,TRDR_CUSTOMER_PHONE01;MTRDOC:DELIVDATE,CCCXMLSendDate;ITELINES:MTRL,QTY1,PRICE,MTRL_ITEM_CODE1'
-    }
-  })
-  .then(async (result) => {
-    //var_dump(result) as in php
-    console.debug(JSON.stringify(result, null, 2))
-
-  })
-  */
-
-//test connectToS1 service
-/* 
-app
-  .service('connectToS1')
-  .create()
-  .then((result) => {
-    console.log(result)
-  })
-  */
-
-//find all sftp data
-/* app
-  .service('CCCSFTP')
-  .find()
-  .then((result) => {
-    const retailer = result.data[0].TRDR_RETAILER
-    app
-      .service('sftp')
-      .find({ query: { retailer: retailer } })
-      .then((data) => {
-        console.log(data)
-      })
-  }) */
+//register the service
+app.use('retailer', new retailerServiceClass())
 
 //scanPeriodically run
 app.service('sftp').scanPeriodically({}, {})
-
 
 export { app }
 
