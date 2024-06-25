@@ -742,7 +742,7 @@ class retailerServiceClass {
   async find(params) {
     const retailer = params.query.retailer
     const clientPlatforma = params.query.clientPlatforma
-    const ediQry = `SELECT A.*, B.NAME EDIPROVIDER, C.NAME CONNTYPE FROM CCCSFTP A 
+    const ediQry = `SELECT A.*, B.NAME EDIPROVIDERNAME, C.NAME CONNTYPE FROM CCCSFTP A 
       INNER JOIN CCCEDIPROVIDER B ON A.EDIPROVIDER = B.CCCEDIPROVIDER 
       INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CCCCONNTYPE WHERE A.TRDR_RETAILER = ${retailer}`
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
