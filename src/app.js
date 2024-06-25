@@ -778,6 +778,10 @@ class retailerServiceClass {
 //register the service
 app.use('retailer', new retailerServiceClass())
 
+//test it with TRDR_CLIENT=1 and TRDR_RETAILER=11654
+app.service('retailer').findRetailerDetails({}, { query: { retailer: 11654, TRDR_CLIENT: 1 } })
+
+
 //scanPeriodically run
 app.service('sftp').scanPeriodically({}, {})
 
