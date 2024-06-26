@@ -142,7 +142,7 @@ export class Retailer {
             </div>
             <footer class="card-footer">
               <a href="#" class="card-footer-item">Statistici</a>
-              <a href="${this.#trdr === 11654 ? 'new_retailer_file_manager' : 'retailer_file_manager'}.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
+              <a href="${this.#trdr == 11654 ? 'new_retailer_file_manager' : 'retailer_file_manager'}.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
               <a href="retailer_config.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">Configureaza</a>
             </footer>
             </div>
