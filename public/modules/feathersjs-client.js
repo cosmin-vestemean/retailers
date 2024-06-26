@@ -10,6 +10,10 @@ client.use('sftp', socketClient.service('sftp'), {
     methods: ['downloadXml', 'storeXmlInDB', 'uploadXml', 'storeAperakInErpMessages'],
     events: ['uploadResult']
   })
+
+  client.use('retailer', socketClient.service('retailer'), {
+    methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
+  })
   
   client.use('storeXml', socketClient.service('storeXml'), {
     methods: ['find', 'get', 'create', 'update', 'patch', 'remove']
@@ -64,7 +68,5 @@ client.use('sftp', socketClient.service('sftp'), {
   client.service('sftp').on('uploadResult', (data) => {
     console.log('uploadResult', data)
   })
-
-  
 
 export default client

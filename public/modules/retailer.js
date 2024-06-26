@@ -105,47 +105,55 @@ export class Retailer {
   //class method: getHtml
   getCardHtml() {
     return `
-                <div class="column coumn-is-third">
-                  <div class="card">
-                    <div class="card-image">
-                        <figure class="image is-128x128">
-                            <img
-                                src="${this.#logo}"
-                                alt="Placeholder image"
-                            />
-                        </figure>
-                    </div>
-                    <div class="card-content">
-                      <div class="content">
-                        <table class="table is-narrow is-small">
-                          <tr>
-                            <td>Comenzi de trimis:</td><td>
-                            ${
-                              this.#nrComenziDeTrimis > 0
-                                ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
-                                : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
-                            }</section><section>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Facturi de trimis:</td><td>
-                            ${
-                              this.#nrFacturiDeTrimis > 0
-                                ? 
-                                '<span class="tag is-danger is-clickable" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrFacturiDeTrimis + '</span>'
-                                : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
-                            }
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                    </div>
-                    <footer class="card-footer">
-                      <a href="#" class="card-footer-item">Statistici</a>
-                      <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
-                      <a href="retailer_config.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">Configureaza</a>
-                    </footer>
-                  </div>
-                </div>`
+            <div class="column coumn-is-third">
+              <div class="card">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img
+                    src="${this.#logo}"
+                    alt="Placeholder image"
+                  />
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                <table class="table is-narrow is-small">
+                  <tr>
+                  <td>Comenzi de trimis:</td><td>
+                  ${
+                    this.#nrComenziDeTrimis > 0
+                    ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
+                    : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
+                  }</section><section>
+                  </td>
+                  </tr>
+                  <tr>
+                  <td>Facturi de trimis:</td><td>
+                  ${
+                    this.#nrFacturiDeTrimis > 0
+                    ? 
+                    '<span class="tag is-danger is-clickable" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrFacturiDeTrimis + '</span>'
+                    : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
+                  }
+                  </td>
+                  </tr>
+                </table>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a href="#" class="card-footer-item">Statistici</a>
+                ${
+                this.#trdr === 11654
+                  ? '<a href="new_retailer_file_manager.html" class="card-footer-item eMag">File manager</a>'
+                  : '<a href="retailer_file_manager.html?trdr=${this.#trdr}&logo=\'${this.#logo}\'" class="card-footer-item eMag">File manager</a>'
+                }
+                ${
+                this.#trdr === 11654
+                  ? '<a href="new_retailer_config.html" class="card-footer-item eMag">Configureaza</a>'
+                  : '<a href="retailer_config.html?trdr=${this.#trdr}&logo=\'${this.#logo}\'" class="card-footer-item eMag">Configureaza</a>'
+                }
+              </footer>
+              </div>
+            </div>`
   }
 }

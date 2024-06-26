@@ -769,9 +769,9 @@ class retailerServiceClass {
       .service('getDataset1')
       .find({ query: { sqlQuery: documentMappingsQry } })
 
-    const documenteS1 = documentMappingsResponse.success ? documentMappingsResponse.data : []
+    const S1DocumentSeries = documentMappingsResponse.success ? documentMappingsResponse.data : []
 
-    return { success: response.success, edi: ediDetails, documenteS1: documenteS1 }
+    return { success: response.success, edi: ediDetails, S1DocumentSeries: S1DocumentSeries }
   }
 }
 
@@ -779,7 +779,7 @@ class retailerServiceClass {
 app.use('retailer', new retailerServiceClass())
 
 //test it with TRDR_CLIENT=1 and clientPlatforma=11654
-app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
+//app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
 //scanPeriodically run
 app.service('sftp').scanPeriodically({}, {})
