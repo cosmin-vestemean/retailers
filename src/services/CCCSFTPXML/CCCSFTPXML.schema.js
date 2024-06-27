@@ -15,7 +15,8 @@ export const cccsftpxmlSchema = Type.Object(
     XMLSTATUS: Type.Optional(Type.String()),
     XMLERROR: Type.Optional(Type.String()),
     FINDOC: Type.Optional(Type.Number()),
-    XMLFILENAME: Type.String()
+    XMLFILENAME: Type.String(),
+    EDIDOCTYPE: Type.Optional(Type.String()),
   },
   { $id: 'Cccsftpxml', additionalProperties: false }
 )
@@ -36,7 +37,8 @@ export const cccsftpxmlDataSchema = Type.Pick(
     'XMLSTATUS',
     'XMLERROR',
     'XMLFILENAME',
-    'FINDOC'
+    'FINDOC',
+    'EDIDOCTYPE',
   ],
   {
     $id: 'CccsftpxmlData'
@@ -61,6 +63,7 @@ export const cccsftpxmlPatchSchema = Type.Intersect(
         XMLFILENAME: Type.String(),
         XMLDATE: Type.String(),
         TRDR_RETAILER: Type.Number(),
+        EDIDOCTYPE: Type.String(),
       },
       { additionalProperties: false }
     )
@@ -82,7 +85,8 @@ export const cccsftpxmlQueryProperties = Type.Pick(cccsftpxmlSchema, [
   'XMLSTATUS',
   'XMLERROR',
   'XMLFILENAME',
-  'FINDOC'
+  'FINDOC',
+  'EDIDOCTYPE',
 ])
 export const cccsftpxmlQuerySchema = Type.Intersect(
   [

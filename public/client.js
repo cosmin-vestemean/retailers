@@ -297,11 +297,18 @@ export function getEmptyAperak() {
     })
 }
 
+async function getRetailer() {
+  await client.service('retailer').find({ query: { retailer: trdrRetailerFromUrl, clientPlatforma: 1 } }).then((res) => {
+    console.log('res', res)
+  })
+}
+
 export {
   openTab,
   getRemoteXmlListToErp,
   getNDisplayOrders,
   getNDisplayS1Docs,
   toggleComenziNetrimise,
-  toggleFacturiNetrimise
+  toggleFacturiNetrimise,
+  getRetailer,
 }

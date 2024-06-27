@@ -749,17 +749,19 @@ class retailerServiceClass {
     const ediDetails = response.success
       ? {
           TRDR_RETAILER: response.TRDR_RETAILER,
-          EDIPROVIDER: response.EDIPROVIDER,
-          EDIPROVIDERNAME: response.EDIPROVIDERNAME,
-          CONNTYPE: response.CONNTYPE,
-          URL: response.URL,
-          PORT: response.PORT,
-          USERNAME: response.USERNAME,
-          PASSPHRASE: response.PASSPHRASE,
-          PRIVATEKEY: response.PRIVATEKEY,
-          FINGERPRINT: response.FINGERPRINT,
-          INITIALDIRIN: response.INITIALDIRIN,
-          INITIALDIROUT: response.INITIALDIROUT
+          EDI: {
+            EDIPROVIDERID: response.EDIPROVIDER,
+            EDIPROVIDERNAME: response.EDIPROVIDERNAME,
+            CONNTYPE: response.CONNTYPE,
+            URL: response.URL,
+            PORT: response.PORT,
+            USERNAME: response.USERNAME,
+            PASSPHRASE: response.PASSPHRASE,
+            PRIVATEKEY: response.PRIVATEKEY,
+            FINGERPRINT: response.FINGERPRINT,
+            INITIALDIRIN: response.INITIALDIRIN,
+            INITIALDIROUT: response.INITIALDIROUT
+          }
         }
       : {}
 
