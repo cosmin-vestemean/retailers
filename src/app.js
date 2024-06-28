@@ -990,12 +990,16 @@ class conectorEdinet {
       await this.getEdinetConnectionDetails().then((response) => {
         if (response.success) {
           const sftp = new Client()
-          const data = response.data
+          const resData = response.data
+          if (resData.length > 1) {
+            console.error('Error getting connection details from database: too many entries')
+            resolve(null)
+          }
           const config = {
-            host: data.URL,
-            port: data.PORT,
-            username: data.USERNAME,
-            passphrase: data.PASSPHRASE
+            host: resData[0].URL,
+            port: resData[0].PORT,
+            username: resData[0].USERNAME,
+            passphrase: resData[0].PASSPHRASE
           }
           console.log('config for connection', config)
           sftp
