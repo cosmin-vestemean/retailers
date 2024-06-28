@@ -783,13 +783,13 @@ app.use('retailer', new retailerServiceClass())
 class conectorEdinet {
   #ediProvider = 2
   #scaneazaLaIntervalDeMinute = 30
-  #downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
+  downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
   #filtruDownload = {}
   #clientPlatforma = -1 //1 = PetFactory
   #testing = true
 
   //get connections details from CCCDATECONECTOR with ediProvider = 2 and TRDR_CLIENT = 1 in a private method
-  async #getEdinetConnectionDetails() {
+  async getEdinetConnectionDetails() {
     const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
       this.#ediProvider
     } AND TRDR_CLIENT = ${this.#clientPlatforma}`
@@ -813,10 +813,10 @@ class conectorEdinet {
   //edinet keeps files for download in a folder /orders, /recadv, /retanns, etc
   //and files are called 'DEDEMAN_14448777.xml or 'AUCHAN_14448743.xml etc
   //files are downloaded at scaneazaLaIntervalDeMinute but can be downloaded at any time by user
-  async #downloadFilesFromEdi() {
-    const connection = await this.#connectToEdi()
+  async downloadFilesFromEdi() {
+    const connection = await this.connectToEdi()
     if (connection) {
-      const rootPath = this.#downloadFromEdi
+      const rootPath = this.downloadFromEdi
       for (const path of rootPath) {
         const ediPath = path.ediPath
         const downloadPath = path.downloadPath
@@ -858,15 +858,15 @@ class conectorEdinet {
   //a function that download and store in database the files from edi provider, can be called at any time
   async downloadAndStoreFilesFromEdi(options = {}) {
     console.log('downloadAndStoreFilesFromEdi', options)
-    this.#downloadFromEdi = options?.downloadFromEdi || []
-    console.log('downloadFromEdi', this.#downloadFromEdi)
+    this.downloadFromEdi = options?.downloadFromEdi || []
+    console.log('downloadFromEdi', this.downloadFromEdi)
     this.#filtruDownload = options?.filtruDownload || {}
     this.#clientPlatforma = options?.clientPlatforma || 1
     this.#testing = options?.testing || true
     //download files from edi provider
-    await this.#downloadFilesFromEdi()
+    await this.downloadFilesFromEdi()
     //store files in database
-    await this.#storeFilesInDatabase()
+    await this.storeFilesInDatabase()
   }
 
   //start scanning periodically for files from edi provider
@@ -888,13 +888,13 @@ class conectorEdinet {
   }
 
   //store files in database
-  async #storeFilesInDatabase() {
+  async storeFilesInDatabase() {
     let retailer = -1
     let EDIDOCTYPE = ''
     //get files from local folder
     //store in database
     //for every folder in downloadFromEdi (orders, recadv, retanns, etc), see options
-    for (const path of this.#downloadFromEdi) {
+    for (const path of this.downloadFromEdi) {
       const downloadPath = path.downloadPath
       const files = fs.readdirSync(downloadPath)
       for (const file of files) {
@@ -914,9 +914,9 @@ class conectorEdinet {
           //json will be stored in DB as string
           if (json) {
             //call getGLNFromJson
-            //const GLN = await this.#getGLNFromJson(json)
-            const { documentType, GLN } = await this.#getGLNFromJson(json)
-            retailer = GLN ? await this.#getTraderFromGLN(GLN) : -1
+            //const GLN = await this.getGLNFromJson(json)
+            const { documentType, GLN } = await this.getGLNFromJson(json)
+            retailer = GLN ? await this.getTraderFromGLN(GLN) : -1
             EDIDOCTYPE = documentType || ''
           }
           const d = {
@@ -937,7 +937,7 @@ class conectorEdinet {
   }
 
   //get endpointID from xml
-  async #getGLNFromJson(json) {
+  async getGLNFromJson(json) {
     //find BuyerParty[0].GLN[0] or BuyerParty[0].ILN[0] in json
     //return it
     var endpointID = null
@@ -963,7 +963,7 @@ class conectorEdinet {
     return { documentType: root, GLN: endpointID }
   }
 
-  async #getTraderFromGLN(GLN) {
+  async getTraderFromGLN(GLN) {
     //check trdr with getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
     //retailer = trdr
     var trdr = GLN
@@ -986,8 +986,8 @@ class conectorEdinet {
   }
 
   //connect to edi provider and return connection object
-  async #connectToEdi() {
-    const ediDetails = await this.#getEdinetConnectionDetails()
+  async connectToEdi() {
+    const ediDetails = await this.getEdinetConnectionDetails()
     if (ediDetails) {
       const ftp = new Client()
       const config = {
