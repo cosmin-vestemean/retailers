@@ -789,7 +789,7 @@ class conectorEdinet {
   testing = true
 
   //get connections details from CCCDATECONECTOR with ediProvider = 2 and TRDR_CLIENT = 1 in a private method
-  async #getEdinetConnectionDetails() {
+  async getEdinetConnectionDetails() {
     const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
       this.ediProvider
     } AND TRDR_CLIENT = ${this.clientPlatforma}`
@@ -987,7 +987,7 @@ class conectorEdinet {
 
   //connect to edi provider and return connection object
   async connectToEdi() {
-    const ediDetails = await this.#getEdinetConnectionDetails()
+    const ediDetails = await this.getEdinetConnectionDetails()
     if (ediDetails) {
       const ftp = new Client()
       const config = {
