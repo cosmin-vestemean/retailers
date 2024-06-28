@@ -783,223 +783,276 @@ app.use('retailer', new retailerServiceClass())
 class conectorEdinet {
   #ediProvider = 2
   #scaneazaLaIntervalDeMinute = 30
-  downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
+  #downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
   #filtruDownload = {}
   #clientPlatforma = -1 //1 = PetFactory
   #testing = true
 
   //get connections details from CCCDATECONECTOR with ediProvider = 2 and TRDR_CLIENT = 1 in a private method
-  async getEdinetConnectionDetails() {
-    const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
-      this.#ediProvider
-    } AND TRDR_CLIENT = ${this.#clientPlatforma}`
-    const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
-    return response.success
-      ? {
-          TRDR_CLIENT: response.TRDR_CLIENT,
-          EDIPROVIDER: response.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
-          URL: response.URL,
-          PORT: response.PORT,
-          USERNAME: response.USERNAME,
-          PASSPHRASE: response.PASSPHRASE,
-          T,
-          INITIALDIRIN: response.INITIALDIRIN,
-          INITIALDIROUT: response.INITIALDIROUT
-        }
-      : {}
+  #getEdinetConnectionDetails() {
+    return new Promise((resolve, reject) => {
+      const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
+        this.#ediProvider
+      } AND TRDR_CLIENT = ${this.#clientPlatforma}`
+      app.service('getDataset1')
+        .find({ query: { sqlQuery: ediQry } })
+        .then((response) => {
+          if (response.success) {
+            resolve({
+              TRDR_CLIENT: response.TRDR_CLIENT,
+              EDIPROVIDER: response.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
+              URL: response.URL,
+              PORT: response.PORT,
+              USERNAME: response.USERNAME,
+              PASSPHRASE: response.PASSPHRASE,
+              T,
+              INITIALDIRIN: response.INITIALDIRIN,
+              INITIALDIROUT: response.INITIALDIROUT
+            })
+          } else {
+            resolve({})
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
 
   //download files from edi provider depending on the options
   //edinet keeps files for download in a folder /orders, /recadv, /retanns, etc
   //and files are called 'DEDEMAN_14448777.xml or 'AUCHAN_14448743.xml etc
   //files are downloaded at scaneazaLaIntervalDeMinute but can be downloaded at any time by user
-  async downloadFilesFromEdi() {
-    const connection = await this.connectToEdi()
-    if (connection) {
-      const rootPath = this.downloadFromEdi
-      for (const path of rootPath) {
-        const ediPath = path.ediPath
-        const downloadPath = path.downloadPath
-        console.log('Downloading files from edi provider', ediPath)
+  #downloadFilesFromEdi() {
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.#connectToEdi();
+      if (connection) {
+        const rootPath = this.#downloadFromEdi;
+        for (const path of rootPath) {
+          const ediPath = path.ediPath;
+          const downloadPath = path.downloadPath;
+          console.log('Downloading files from edi provider', ediPath);
 
-        //download files to local folder
-        //first list files on edi server
-        //const files = await connection.list(ediPath)
-        //construct the filter for list for ssh2-sftp-client list function considering just the startsWith, endWith
-        const filter = this.#filtruDownload
-        const files = await connection.list(ediPath, (item) => {
-          return (
-            item.type === '-' && item.name.endsWith(filter.endWith) && item.name.startsWith(filter.startWith)
-          )
-        })
-        //if testing is true, download only one file
-        var limit = this.#testing ? 1 : 20000000
-        var count = 0
-        for (const item of files) {
-          if (count < limit) {
-            const filename = item.name
-            const localPath = downloadPath + '/' + filename
-            if (!fs.existsSync(downloadPath)) {
-              fs.mkdirSync(downloadPath)
+          //download files to local folder
+          //first list files on edi server
+          //const files = await connection.list(ediPath)
+          //construct the filter for list for ssh2-sftp-client list function considering just the startsWith, endWith
+          const filter = this.#filtruDownload;
+          const files = await connection.list(ediPath, (item) => {
+            return (
+              item.type === '-' && item.name.endsWith(filter.endWith) && item.name.startsWith(filter.startWith)
+            );
+          });
+          //if testing is true, download only one file
+          var limit = this.#testing ? 1 : 20000000;
+          var count = 0;
+          for (const item of files) {
+            if (count < limit) {
+              const filename = item.name;
+              const localPath = downloadPath + '/' + filename;
+              if (!fs.existsSync(downloadPath)) {
+                fs.mkdirSync(downloadPath);
+              }
+              const dst = fs.createWriteStream(localPath);
+              await connection.get(ediPath + '/' + filename, dst);
+              console.log(`File ${filename} downloaded successfully as ${dst.path}`);
+              dst.end();
+              count++;
             }
-            const dst = fs.createWriteStream(localPath)
-            await connection.get(ediPath + '/' + filename, dst)
-            console.log(`File ${filename} downloaded successfully as ${dst.path}`)
-            dst.end()
-            count++
           }
         }
+        resolve();
+      } else {
+        console.error('Error connecting to edi provider');
+        reject();
       }
-    } else {
-      console.error('Error connecting to edi provider')
-    }
+    });
   }
 
   //a function that download and store in database the files from edi provider, can be called at any time
-  async downloadAndStoreFilesFromEdi(options = {}) {
-    console.log('downloadAndStoreFilesFromEdi', options)
-    this.downloadFromEdi = options?.downloadFromEdi || []
-    console.log('downloadFromEdi', this.downloadFromEdi)
-    this.#filtruDownload = options?.filtruDownload || {}
-    this.#clientPlatforma = options?.clientPlatforma || 1
-    this.#testing = options?.testing || true
-    //download files from edi provider
-    await this.downloadFilesFromEdi()
-    //store files in database
-    await this.storeFilesInDatabase()
+  downloadAndStoreFilesFromEdi(options = {}) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log('downloadAndStoreFilesFromEdi', options);
+        this.#downloadFromEdi = options?.downloadFromEdi || [];
+        console.log('downloadFromEdi', this.#downloadFromEdi);
+        this.#filtruDownload = options?.filtruDownload || {};
+        this.#clientPlatforma = options?.clientPlatforma || 1;
+        this.#testing = options?.testing || true;
+        //download files from edi provider
+        await this.#downloadFilesFromEdi();
+        //store files in database
+        await this.#storeFilesInDatabase();
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   //start scanning periodically for files from edi provider
-  async startScanningPeriodically(options = {}, stop = false) {
-    this.#scaneazaLaIntervalDeMinute = options?.scaneazaLaIntervalDeMinute || 30
-    let intervalId = setInterval(async () => {
-      console.log(
-      'scanning for files from edi provider ' + this.#ediProvider + ' at interval of ',
-      this.#scaneazaLaIntervalDeMinute,
-      ' minutes, started at',
-      new Date()
-      )
-      await this.downloadAndStoreFilesFromEdi(options)
-    }, this.#scaneazaLaIntervalDeMinute * 60 * 1000)
+  startScanningPeriodically(options = {}, stop = false) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.#scaneazaLaIntervalDeMinute = options?.scaneazaLaIntervalDeMinute || 30;
+        let intervalId = setInterval(async () => {
+          console.log(
+            'scanning for files from edi provider ' + this.#ediProvider + ' at interval of ',
+            this.#scaneazaLaIntervalDeMinute,
+            ' minutes, started at',
+            new Date()
+          );
+          await this.downloadAndStoreFilesFromEdi(options);
+        }, this.#scaneazaLaIntervalDeMinute * 60 * 1000);
 
-    if (stop) {
-      clearInterval(intervalId)
-    }
+        if (stop) {
+          clearInterval(intervalId);
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   //store files in database
-  async storeFilesInDatabase() {
-    let retailer = -1
-    let EDIDOCTYPE = ''
-    //get files from local folder
-    //store in database
-    //for every folder in downloadFromEdi (orders, recadv, retanns, etc), see options
-    for (const path of this.downloadFromEdi) {
-      const downloadPath = path.downloadPath
-      const files = fs.readdirSync(downloadPath)
-      for (const file of files) {
-        const filename = file
-        if (filename.endsWith('.xml')) {
-          const localPath = downloadPath + '/' + filename
-          const xml = fs.readFileSync(localPath, 'utf8')
-          //remove xml declaration
-          let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
-          //remove unneeded characters from xml
-          xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
-          //parse xml to json
-          var json = null
-          parseString(xmlClean, function (err, result) {
-            json = result
-          })
-          //json will be stored in DB as string
-          if (json) {
-            //call getGLNFromJson
-            //const GLN = await this.getGLNFromJson(json)
-            const { documentType, GLN } = await this.getGLNFromJson(json)
-            retailer = GLN ? await this.getTraderFromGLN(GLN) : -1
-            EDIDOCTYPE = documentType || ''
-          }
-          const d = {
-            filename: filename,
-            xml: xmlClean,
-            json: JSON.stringify(json),
-            EDIDOCTYPE: EDIDOCTYPE
-          }
-          try {
-            const result = await app.service('storeXml').create(d, { query: { retailer: retailer } })
-            console.log('storeXml result', result)
-          } catch (err) {
-            console.error(err)
+  #storeFilesInDatabase() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let retailer = -1;
+        let EDIDOCTYPE = '';
+        //get files from local folder
+        //store in database
+        //for every folder in downloadFromEdi (orders, recadv, retanns, etc), see options
+        for (const path of this.#downloadFromEdi) {
+          const downloadPath = path.downloadPath;
+          const files = fs.readdirSync(downloadPath);
+          for (const file of files) {
+            const filename = file;
+            if (filename.endsWith('.xml')) {
+              const localPath = downloadPath + '/' + filename;
+              const xml = fs.readFileSync(localPath, 'utf8');
+              //remove xml declaration
+              let xmlClean = xml.replace(/<\?xml.*\?>/g, '');
+              //remove unneeded characters from xml
+              xmlClean = xmlClean.replace(/[\n\r\t]/g, '');
+              //parse xml to json
+              var json = null;
+              parseString(xmlClean, function (err, result) {
+                json = result;
+              });
+              //json will be stored in DB as string
+              if (json) {
+                //call getGLNFromJson
+                //const GLN = await this.#getGLNFromJson(json)
+                const { documentType, GLN } = await this.#getGLNFromJson(json);
+                retailer = GLN ? await this.#getTraderFromGLN(GLN) : -1;
+                EDIDOCTYPE = documentType || '';
+              }
+              const d = {
+                filename: filename,
+                xml: xmlClean,
+                json: JSON.stringify(json),
+                EDIDOCTYPE: EDIDOCTYPE
+              };
+              try {
+                const result = await app.service('storeXml').create(d, { query: { retailer: retailer } });
+                console.log('storeXml result', result);
+              } catch (err) {
+                console.error(err);
+              }
+            }
           }
         }
+        resolve();
+      } catch (error) {
+        reject(error);
       }
-    }
+    });
   }
 
   //get endpointID from xml
-  async getGLNFromJson(json) {
-    //find BuyerParty[0].GLN[0] or BuyerParty[0].ILN[0] in json
-    //return it
-    var endpointID = null
-    //get root element
-    let root = Object.keys(json)[0]
-    console.log('document type', root)
-    if (root === 'Document') {
-      //get next node
-      root = Object.keys(json[root])[0]
-    }
-    //3 sections: root + 'Header' and root + 'Party' and root +'Details'
-    //next node id root + 'Party'
-    const party = root + 'Party'
-    const BuyerParty = json[root][0][party][0].BuyerParty[0]
-    if (BuyerParty) {
-      const GLN = BuyerParty.GLN[0]
-      const ILN = BuyerParty.ILN[0]
-      endpointID = GLN || ILN
-    } else {
-      console.log('No BuyerParty found in json. so no GLN or ILN found in json')
-    }
+  #getGLNFromJson(json) {
+    return new Promise((resolve, reject) => {
+      try {
+        //find BuyerParty[0].GLN[0] or BuyerParty[0].ILN[0] in json
+        //return it
+        var endpointID = null;
+        //get root element
+        let root = Object.keys(json)[0];
+        console.log('document type', root);
+        if (root === 'Document') {
+          //get next node
+          root = Object.keys(json[root])[0];
+        }
+        //3 sections: root + 'Header' and root + 'Party' and root +'Details'
+        //next node id root + 'Party'
+        const party = root + 'Party';
+        const BuyerParty = json[root][0][party][0].BuyerParty[0];
+        if (BuyerParty) {
+          const GLN = BuyerParty.GLN[0];
+          const ILN = BuyerParty.ILN[0];
+          endpointID = GLN || ILN;
+        } else {
+          console.log('No BuyerParty found in json. so no GLN or ILN found in json');
+        }
 
-    return { documentType: root, GLN: endpointID }
+        resolve({ documentType: root, GLN: endpointID });
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
-  async getTraderFromGLN(GLN) {
-    //check trdr with getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
-    //retailer = trdr
-    var trdr = GLN
-      ? await app
-          .service('getDataset')
-          .find({
-            query: {
-              sqlQuery:
-                "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
-                endpointID +
-                "'"
-            }
-          })
-          .then((result) => {
-            console.log('GLN to trdr', result)
-            return result
-          })
-      : null
-    return trdr
+  #getTraderFromGLN(GLN) {
+    return new Promise((resolve, reject) => {
+      try {
+        //check trdr with getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
+        //retailer = trdr
+        var trdr = GLN
+          ? app
+              .service('getDataset')
+              .find({
+                query: {
+                  sqlQuery:
+                    "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
+                    endpointID +
+                    "'"
+                }
+              })
+              .then((result) => {
+                console.log('GLN to trdr', result);
+                return result;
+              })
+          : null;
+        resolve(trdr);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   //connect to edi provider and return connection object
-  async connectToEdi() {
-    const ediDetails = await this.getEdinetConnectionDetails()
-    if (ediDetails) {
-      const ftp = new Client()
-      const config = {
-        host: ediDetails.URL,
-        port: ediDetails.PORT,
-        username: ediDetails.USERNAME,
-        passphrase: ediDetails.PASSPHRASE,
-        readyTimeout: 99999
+  #connectToEdi() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ediDetails = await this.#getEdinetConnectionDetails();
+        if (ediDetails) {
+          const ftp = new Client();
+          const config = {
+            host: ediDetails.URL,
+            port: ediDetails.PORT,
+            username: ediDetails.USERNAME,
+            passphrase: ediDetails.PASSPHRASE,
+            readyTimeout: 99999
+          };
+          ftp.connect(config);
+          resolve(ftp);
+        }
+      } catch (error) {
+        reject(error);
       }
-      ftp.connect(config)
-      return ftp
-    }
+    });
   }
 }
 
