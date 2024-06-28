@@ -802,7 +802,6 @@ class conectorEdinet {
           PORT: response.PORT,
           USERNAME: response.USERNAME,
           PASSPHRASE: response.PASSPHRASE,
-          T,
           INITIALDIRIN: response.INITIALDIRIN,
           INITIALDIROUT: response.INITIALDIROUT
         }
