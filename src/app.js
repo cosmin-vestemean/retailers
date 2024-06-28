@@ -790,9 +790,7 @@ class conectorEdinet {
 
   //get connections details from CCCDATECONECTOR with ediProvider = 2 and TRDR_CLIENT = 1 in a private method
   async getEdinetConnectionDetails() {
-    const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
-      this.ediProvider
-    } AND TRDR_CLIENT = ${this.clientPlatforma}`
+    const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${this.ediProvider} AND TRDR_CLIENT = ${this.clientPlatforma}`
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
     return response.success
       ? {
@@ -986,34 +984,34 @@ class conectorEdinet {
   }
 
   //connect to edi provider and return connection object
-  connectToEdi() {
+  async connectToEdi() {
     return new Promise(async (resolve, reject) => {
-      try {
-        const ediDetails = await this.getEdinetConnectionDetails();
-        if (ediDetails) {
-          const ftp = new Client();
+      //evaluate response from promise this.getEdinetConnectionDetails and connect to edi provider; on ready resolve connection
+      await this.getEdinetConnectionDetails().then((response) => {
+        if (response) {
+          const sftp = new Client()
           const config = {
-            host: ediDetails.URL,
-            port: ediDetails.PORT,
-            username: ediDetails.USERNAME,
-            passphrase: ediDetails.PASSPHRASE,
-            readyTimeout: 99999
-          };
-          console.log('config for ftp', config);
-          ftp.on('ready', () => {
-            resolve(ftp);
-          });
-          ftp.on('error', (err) => {
-            reject(err);
-          });
-          ftp.connect(config);
+            host: response.URL,
+            port: response.PORT,
+            username: response.USERNAME,
+            passphrase: response.PASSPHRASE
+          }
+          sftp
+            .connect(config)
+            .then(() => {
+              console.log('connected to edi provider')
+              resolve(sftp)
+            })
+            .catch((err) => {
+              console.error(err)
+              reject(null)
+            })
         } else {
-          reject(new Error('Failed to get EDI connection details'));
+          console.error('Error getting connection details from database')
+          resolve(null)
         }
-      } catch (err) {
-        reject(err);
-      }
-    });
+      })
+    })
   }
 }
 
