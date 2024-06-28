@@ -781,7 +781,7 @@ class retailerServiceClass {
 app.use('retailer', new retailerServiceClass())
 
 class conectorEdinet {
-  constediProvider = 2
+  ediProvider = 2
   scaneazaLaIntervalDeMinute = 30
   downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
   filtruDownload = {}
