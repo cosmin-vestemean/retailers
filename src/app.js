@@ -988,14 +988,16 @@ class conectorEdinet {
     return new Promise(async (resolve, reject) => {
       //evaluate response from promise this.getEdinetConnectionDetails and connect to edi provider; on ready resolve connection
       await this.getEdinetConnectionDetails().then((response) => {
-        if (response) {
+        if (response.success) {
           const sftp = new Client()
+          const data = response.data
           const config = {
-            host: response.URL,
-            port: response.PORT,
-            username: response.USERNAME,
-            passphrase: response.PASSPHRASE
+            host: data.URL,
+            port: data.PORT,
+            username: data.USERNAME,
+            passphrase: data.PASSPHRASE
           }
+          console.log('connecting to edi provider', config)
           sftp
             .connect(config)
             .then(() => {
@@ -1010,6 +1012,9 @@ class conectorEdinet {
           console.error('Error getting connection details from database')
           resolve(null)
         }
+      }).catch((err) => {
+        console.error(err)
+        reject(null)
       })
     })
   }
