@@ -985,20 +985,33 @@ class conectorEdinet {
   }
 
   //connect to edi provider and return connection object
-  async connectToEdi() {
-    const ediDetails = await this.getEdinetConnectionDetails()
-    if (ediDetails) {
-      const ftp = new Client()
-      const config = {
-        host: ediDetails.URL,
-        port: ediDetails.PORT,
-        username: ediDetails.USERNAME,
-        passphrase: ediDetails.PASSPHRASE,
-        readyTimeout: 99999
+  connectToEdi() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const ediDetails = await this.getEdinetConnectionDetails();
+        if (ediDetails) {
+          const ftp = new Client();
+          const config = {
+            host: ediDetails.URL,
+            port: ediDetails.PORT,
+            username: ediDetails.USERNAME,
+            passphrase: ediDetails.PASSPHRASE,
+            readyTimeout: 99999
+          };
+          ftp.on('ready', () => {
+            resolve(ftp);
+          });
+          ftp.on('error', (err) => {
+            reject(err);
+          });
+          ftp.connect(config);
+        } else {
+          reject(new Error('Failed to get EDI connection details'));
+        }
+      } catch (err) {
+        reject(err);
       }
-      ftp.connect(config)
-      return ftp
-    }
+    });
   }
 }
 
