@@ -814,6 +814,7 @@ class conectorEdinet {
   //files are downloaded at scaneazaLaIntervalDeMinute but can be downloaded at any time by user
   async downloadFilesFromEdi() {
     const connection = await this.connectToEdi()
+    console.log('connection to edi provider details', connection)
     if (connection) {
       const rootPath = this.downloadFromEdi
       for (const path of rootPath) {
@@ -998,6 +999,7 @@ class conectorEdinet {
             passphrase: ediDetails.PASSPHRASE,
             readyTimeout: 99999
           };
+          console.log('config for ftp', config);
           ftp.on('ready', () => {
             resolve(ftp);
           });
