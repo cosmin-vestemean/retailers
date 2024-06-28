@@ -988,6 +988,7 @@ class conectorEdinet {
     return new Promise(async (resolve, reject) => {
       //evaluate response from promise this.getEdinetConnectionDetails and connect to edi provider; on ready resolve connection
       await this.getEdinetConnectionDetails().then((response) => {
+        console.log('getEdinetConnectionDetails', response)
         if (response.success) {
           const sftp = new Client()
           const resData = response.data
