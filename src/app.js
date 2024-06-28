@@ -857,7 +857,9 @@ class conectorEdinet {
 
   //a function that download and store in database the files from edi provider, can be called at any time
   async downloadAndStoreFilesFromEdi(options = {}) {
+    console.log('downloadAndStoreFilesFromEdi', options)
     this.#downloadFromEdi = options?.downloadFromEdi || []
+    console.log('downloadFromEdi', this.#downloadFromEdi)
     this.#filtruDownload = options?.filtruDownload || {}
     this.#clientPlatforma = options?.clientPlatforma || 1
     this.#testing = options?.testing || true
