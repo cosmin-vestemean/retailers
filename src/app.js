@@ -997,7 +997,7 @@ class conectorEdinet {
             username: data.USERNAME,
             passphrase: data.PASSPHRASE
           }
-          console.log('connecting to edi provider', config)
+          console.log('config for connection', config)
           sftp
             .connect(config)
             .then(() => {
