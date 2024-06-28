@@ -182,7 +182,7 @@ class SftpServiceClass {
     const xmlPath = rootPath + '/xml'
     const processedPath = xmlPath + '/processed'
     const errorPath = xmlPath + '/error'
-    console.log('storing xml in S1 DB for retailer', retailer)
+    console.log('storing xml in S1 DB for implicit retailer', retailer)
     const folderPath = xmlPath
     const files = fs.readdirSync(folderPath)
     var returnedData = []
@@ -421,14 +421,14 @@ class SftpServiceClass {
     setInterval(async () => {
       console.log('scanning for orders...')
       data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+      params = { query: { retailer: -1, rootPath: orderPath, startsWith: 'ORDERS_' } }
       await this.downloadXml(data, params)
       data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath } }
+      params = { query: { retailer: -1, rootPath: orderPath } }
       await this.storeXmlInDB(data, params)
       console.log('scanning for aperak...')
       data = {}
-      params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
+      params = { query: { retailer: -1, rootPath: aperakPath, startsWith: 'APERAK_' } }
       await this.downloadXml(data, params)
       data = {}
       params = { query: { rootPath: aperakPath } }
@@ -494,6 +494,7 @@ class storeXmlServiceClass {
       const xmlDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
       const xmlStatus = 'NEW'
       const xmlError = ''
+      const EDIDOCTYPE = data.EDIDOCTYPE || ''
 
       app
         .service('CCCSFTPXML')
@@ -519,7 +520,8 @@ class storeXmlServiceClass {
                 XMLDATE: xmlDate,
                 XMLSTATUS: xmlStatus,
                 XMLERROR: xmlError,
-                XMLFILENAME: filename
+                XMLFILENAME: filename,
+                EDIDOCTYPE: EDIDOCTYPE
               })
               .then((xmlInsert) => {
                 resolve({
@@ -741,7 +743,7 @@ app.use('getInvoiceDom', new getInvoiceDom())
 class retailerServiceClass {
   async find(params) {
     const retailer = params.query.retailer
-    const clientPlatforma = params.query.clientPlatforma
+    const clientPlatforma = params.query.clientPlatforma || 1
     const ediQry = `SELECT A.*, B.NAME EDIPROVIDERNAME, C.NAME CONNTYPE FROM CCCSFTP A 
       INNER JOIN CCCEDIPROVIDER B ON A.EDIPROVIDER = B.CCCEDIPROVIDER 
       INNER JOIN CCCCONNTYPE C ON B.CONNTYPE = C.CCCCONNTYPE WHERE A.TRDR_RETAILER = ${retailer}`
@@ -749,19 +751,17 @@ class retailerServiceClass {
     const ediDetails = response.success
       ? {
           TRDR_RETAILER: response.TRDR_RETAILER,
-          EDI: {
-            EDIPROVIDERID: response.EDIPROVIDER,
-            EDIPROVIDERNAME: response.EDIPROVIDERNAME,
-            CONNTYPE: response.CONNTYPE,
-            URL: response.URL,
-            PORT: response.PORT,
-            USERNAME: response.USERNAME,
-            PASSPHRASE: response.PASSPHRASE,
-            PRIVATEKEY: response.PRIVATEKEY,
-            FINGERPRINT: response.FINGERPRINT,
-            INITIALDIRIN: response.INITIALDIRIN,
-            INITIALDIROUT: response.INITIALDIROUT
-          }
+          EDIPROVIDERID: response.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
+          EDIPROVIDERNAME: response.EDIPROVIDERNAME,
+          CONNTYPENAME: response.CONNTYPE,
+          URL: response.URL,
+          PORT: response.PORT,
+          USERNAME: response.USERNAME,
+          PASSPHRASE: response.PASSPHRASE,
+          PRIVATEKEY: response.PRIVATEKEY,
+          FINGERPRINT: response.FINGERPRINT,
+          INITIALDIRIN: response.INITIALDIRIN,
+          INITIALDIROUT: response.INITIALDIROUT
         }
       : {}
 
@@ -773,17 +773,256 @@ class retailerServiceClass {
 
     const S1DocumentSeries = documentMappingsResponse.success ? documentMappingsResponse.data : []
 
-    return { success: response.success, edi: ediDetails, S1DocumentSeries: S1DocumentSeries }
+    return { success: response.success, data: { edi: ediDetails, S1DocumentSeries: S1DocumentSeries } }
   }
 }
 
 //register the service
 app.use('retailer', new retailerServiceClass())
 
-//test it with TRDR_CLIENT=1 and clientPlatforma=11654
+class conectorEdinet {
+  #ediProvider = 2
+  #scaneazaLaIntervalDeMinute = 30
+  #downloadFromEdi = [] // [{ediPath: '/orders', downloadPath: 'editnet/data/orders'}, {recadv}, {retanns} etc]
+  #filtruDownload = {}
+  #clientPlatforma = -1 //1 = PetFactory
+  #testing = true
+
+  //get connections details from CCCDATECONECTOR with ediProvider = 2 and TRDR_CLIENT = 1 in a private method
+  async #getEdinetConnectionDetails() {
+    const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${
+      this.#ediProvider
+    } AND TRDR_CLIENT = ${this.#clientPlatforma}`
+    const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
+    return response.success
+      ? {
+          TRDR_CLIENT: response.TRDR_CLIENT,
+          EDIPROVIDER: response.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
+          URL: response.URL,
+          PORT: response.PORT,
+          USERNAME: response.USERNAME,
+          PASSPHRASE: response.PASSPHRASE,
+          T,
+          INITIALDIRIN: response.INITIALDIRIN,
+          INITIALDIROUT: response.INITIALDIROUT
+        }
+      : {}
+  }
+
+  //download files from edi provider depending on the options
+  //edinet keeps files for download in a folder /orders, /recadv, /retanns, etc
+  //and files are called 'DEDEMAN_14448777.xml or 'AUCHAN_14448743.xml etc
+  //files are downloaded at scaneazaLaIntervalDeMinute but can be downloaded at any time by user
+  async #downloadFilesFromEdi() {
+    const connection = await this.#connectToEdi()
+    if (connection) {
+      const rootPath = this.#downloadFromEdi
+      for (const path of rootPath) {
+        const ediPath = path.ediPath
+        const downloadPath = path.downloadPath
+        console.log('Downloading files from edi provider', ediPath)
+
+        //download files to local folder
+        //first list files on edi server
+        //const files = await connection.list(ediPath)
+        //construct the filter for list for ssh2-sftp-client list function considering just the startsWith, endWith
+        const filter = this.#filtruDownload
+        const files = await connection.list(ediPath, (item) => {
+          return (
+            item.type === '-' && item.name.endsWith(filter.endWith) && item.name.startsWith(filter.startWith)
+          )
+        })
+        //if testing is true, download only one file
+        var limit = this.#testing ? 1 : 20000000
+        var count = 0
+        for (const item of files) {
+          if (count < limit) {
+            const filename = item.name
+            const localPath = downloadPath + '/' + filename
+            if (!fs.existsSync(downloadPath)) {
+              fs.mkdirSync(downloadPath)
+            }
+            const dst = fs.createWriteStream(localPath)
+            await connection.get(ediPath + '/' + filename, dst)
+            console.log(`File ${filename} downloaded successfully as ${dst.path}`)
+            dst.end()
+            count++
+          }
+        }
+      }
+    } else {
+      console.error('Error connecting to edi provider')
+    }
+  }
+
+  //a function that download and store in database the files from edi provider, can be called at any time
+  async downloadAndStoreFilesFromEdi(options = {}) {
+    this.#downloadFromEdi = options?.downloadFromEdi || []
+    this.#filtruDownload = options?.filtruDownload || {}
+    this.#clientPlatforma = options?.clientPlatforma || 1
+    this.#testing = options?.testing || true
+    //download files from edi provider
+    await this.#downloadFilesFromEdi()
+    //store files in database
+    await this.#storeFilesInDatabase()
+  }
+
+  //start scanning periodically for files from edi provider
+  async startScanningPeriodically(options = {}, stop = false) {
+    this.#scaneazaLaIntervalDeMinute = options?.scaneazaLaIntervalDeMinute || 30
+    let intervalId = setInterval(async () => {
+      console.log(
+      'scanning for files from edi provider ' + this.#ediProvider + ' at interval of ',
+      this.#scaneazaLaIntervalDeMinute,
+      ' minutes, started at',
+      new Date()
+      )
+      await this.downloadAndStoreFilesFromEdi(options)
+    }, this.#scaneazaLaIntervalDeMinute * 60 * 1000)
+
+    if (stop) {
+      clearInterval(intervalId)
+    }
+  }
+
+  //store files in database
+  async #storeFilesInDatabase() {
+    let retailer = -1
+    let EDIDOCTYPE = ''
+    //get files from local folder
+    //store in database
+    //for every folder in downloadFromEdi (orders, recadv, retanns, etc), see options
+    for (const path of this.#downloadFromEdi) {
+      const downloadPath = path.downloadPath
+      const files = fs.readdirSync(downloadPath)
+      for (const file of files) {
+        const filename = file
+        if (filename.endsWith('.xml')) {
+          const localPath = downloadPath + '/' + filename
+          const xml = fs.readFileSync(localPath, 'utf8')
+          //remove xml declaration
+          let xmlClean = xml.replace(/<\?xml.*\?>/g, '')
+          //remove unneeded characters from xml
+          xmlClean = xmlClean.replace(/[\n\r\t]/g, '')
+          //parse xml to json
+          var json = null
+          parseString(xmlClean, function (err, result) {
+            json = result
+          })
+          //json will be stored in DB as string
+          if (json) {
+            //call getGLNFromJson
+            //const GLN = await this.#getGLNFromJson(json)
+            const { documentType, GLN } = await this.#getGLNFromJson(json)
+            retailer = GLN ? await this.#getTraderFromGLN(GLN) : -1
+            EDIDOCTYPE = documentType || ''
+          }
+          const d = {
+            filename: filename,
+            xml: xmlClean,
+            json: JSON.stringify(json),
+            EDIDOCTYPE: EDIDOCTYPE
+          }
+          try {
+            const result = await app.service('storeXml').create(d, { query: { retailer: retailer } })
+            console.log('storeXml result', result)
+          } catch (err) {
+            console.error(err)
+          }
+        }
+      }
+    }
+  }
+
+  //get endpointID from xml
+  async #getGLNFromJson(json) {
+    //find BuyerParty[0].GLN[0] or BuyerParty[0].ILN[0] in json
+    //return it
+    var endpointID = null
+    //get root element
+    let root = Object.keys(json)[0]
+    console.log('document type', root)
+    if (root === 'Document') {
+      //get next node
+      root = Object.keys(json[root])[0]
+    }
+    //3 sections: root + 'Header' and root + 'Party' and root +'Details'
+    //next node id root + 'Party'
+    const party = root + 'Party'
+    const BuyerParty = json[root][0][party][0].BuyerParty[0]
+    if (BuyerParty) {
+      const GLN = BuyerParty.GLN[0]
+      const ILN = BuyerParty.ILN[0]
+      endpointID = GLN || ILN
+    } else {
+      console.log('No BuyerParty found in json. so no GLN or ILN found in json')
+    }
+
+    return { documentType: root, GLN: endpointID }
+  }
+
+  async #getTraderFromGLN(GLN) {
+    //check trdr with getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
+    //retailer = trdr
+    var trdr = GLN
+      ? await app
+          .service('getDataset')
+          .find({
+            query: {
+              sqlQuery:
+                "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
+                endpointID +
+                "'"
+            }
+          })
+          .then((result) => {
+            console.log('GLN to trdr', result)
+            return result
+          })
+      : null
+    return trdr
+  }
+
+  //connect to edi provider and return connection object
+  async #connectToEdi() {
+    const ediDetails = await this.#getEdinetConnectionDetails()
+    if (ediDetails) {
+      const ftp = new Client()
+      const config = {
+        host: ediDetails.URL,
+        port: ediDetails.PORT,
+        username: ediDetails.USERNAME,
+        passphrase: ediDetails.PASSPHRASE,
+        readyTimeout: 99999
+      }
+      ftp.connect(config)
+      return ftp
+    }
+  }
+}
+
+//register the service
+app.use('conectorEdinet', new conectorEdinet())
+
+//test it with clientPlatforma=1
+app.service('conectorEdinet').downloadAndStoreFilesFromEdi({
+  downloadFromEdi: [
+    { ediPath: '/orders/sent', downloadPath: 'editnet/data/orders' },
+    //{ ediPath: '/recadv', downloadPath: 'editnet/data/recadv' },
+    //{ ediPath: '/retanns', downloadPath: 'editnet/data/retanns' }
+  ],
+  filtruDownload: {
+    startWith: 'DEDEMAN_',
+    endWith: '.xml'
+  },
+  clientPlatforma: 1,
+  testing: true
+})
+
+//test it dedeman + PetFactory
 //app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
-//scanPeriodically run
+//scanPeriodically run; precursor la conceptul de conector; se va rescrie cu conectorDocProcess
 app.service('sftp').scanPeriodically({}, {})
 
 export { app }
@@ -794,4 +1033,48 @@ CREATE TABLE CCCEDIPROVIDER (
     NAME VARCHAR(50),
     CONNTYPE INT NOT NULL
 )
+
+CREATE TABLE CCCONNTYPE (
+    CCCONNTYPE INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    NAME VARCHAR(50)
+)
+
+CREATE TABLE CCCDATECONECTOR (
+    CCCDATECONECTOR INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    TRDR_CLIENT INT NOT NULL,
+    EDIPROVIDER INT NOT NULL,
+    URL VARCHAR(100),
+    PORT INT,
+    USERNAME VARCHAR(50),
+    PASSPHRASE VARCHAR(50),
+    PRIVATEKEY VARCHAR(MAX),
+    FINGERPRINT VARCHAR(MAX),
+    INITIALDIRIN VARCHAR(100),
+    INITIALDIROUT VARCHAR(100)
+)
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CCCSFTPXML](
+	[CCCSFTPXML] [int] IDENTITY(1,1) NOT NULL,
+	[TRDR_RETAILER] [int] NOT NULL,
+	[TRDR_CLIENT] [int] NOT NULL,
+	[XMLFILENAME] [varchar](max) NULL,
+	[XMLDATA] [xml] NULL,
+	[XMLDATE] [datetime] NULL,
+	[XMLSTATUS] [varchar](50) NULL,
+	[XMLERROR] [varchar](max) NULL,
+	[JSONDATA] [varchar](max) NULL,
+	[FINDOC] [int] NULL,
+	[EDIDOCTYPE] [varchar](50) NULL,
+ CONSTRAINT [PK_CCCSFTPXML] PRIMARY KEY CLUSTERED 
+(
+	[CCCSFTPXML] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CCCSFTPXML] ADD  CONSTRAINT [DEFAULT_CCCSFTPXML_EDIDOCTYPE]  DEFAULT ('ORDERS') FOR [EDIDOCTYPE]
+GO
 */

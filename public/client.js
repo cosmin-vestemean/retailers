@@ -298,9 +298,14 @@ export function getEmptyAperak() {
 }
 
 async function getRetailer() {
-  await client.service('retailer').find({ query: { retailer: trdrRetailerFromUrl, clientPlatforma: 1 } }).then((res) => {
-    console.log('res', res)
-  })
+  const res = await client
+    .service('retailer')
+    .find({ query: { retailer: trdrRetailerFromUrl, clientPlatforma: 1 } })
+  if (res.success) {
+    return res.data
+  } else {
+    return { data: { edi: {}, S1DocumentSeries: [] } }
+  }
 }
 
 export {
@@ -310,5 +315,5 @@ export {
   getNDisplayS1Docs,
   toggleComenziNetrimise,
   toggleFacturiNetrimise,
-  getRetailer,
+  getRetailer
 }
