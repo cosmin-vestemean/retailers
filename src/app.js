@@ -793,18 +793,21 @@ class conectorEdinet {
     const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${this.ediProvider} AND TRDR_CLIENT = ${this.clientPlatforma}`
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
     console.log('getEdinetConnectionDetails', response)
-    return response.success
-      ? {
-          TRDR_CLIENT: response.data.TRDR_CLIENT,
-          EDIPROVIDER: response.data.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
-          URL: response.data.URL,
-          PORT: response.data.PORT,
-          USERNAME: response.data.USERNAME,
-          PASSPHRASE: response.data.PASSPHRASE,
-          INITIALDIRIN: response.data.INITIALDIRIN,
-          INITIALDIROUT: response.data.INITIALDIROUT
-        }
-      : {}
+    let returnedData = {}
+    if (response.success) {
+      returnedData = {
+        URL: response.data[0].URL,
+        PORT: response.data[0].PORT,
+        USERNAME: response.data[0].USERNAME,
+        PASSPHRASE: response.data[0].PASSPHRASE,
+        PRIVATEKEY: response.data[0].PRIVATEKEY,
+        FINGERPRINT: response.data[0].FINGERPRINT
+      }
+    } else {
+      console.error('Error getting connection details from CCCDATECONECTOR')
+    }
+
+    return returnedData
   }
 
   //download files from edi provider depending on the options
