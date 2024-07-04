@@ -792,6 +792,7 @@ class conectorEdinet {
   async getEdinetConnectionDetails() {
     const ediQry = `SELECT * FROM CCCDATECONECTOR WHERE EDIPROVIDER = ${this.ediProvider} AND TRDR_CLIENT = ${this.clientPlatforma}`
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
+    console.log('getEdinetConnectionDetails', response)
     return response.success
       ? {
           TRDR_CLIENT: response.TRDR_CLIENT,
@@ -812,7 +813,7 @@ class conectorEdinet {
   //files are downloaded at scaneazaLaIntervalDeMinute but can be downloaded at any time by user
   async downloadFilesFromEdi() {
     const connection = await this.connectToEdi()
-    console.log('connection to edi provider details', connection)
+    console.log('connection to edi provider details in downloadFilesFromEdi', connection)
     if (connection) {
       const rootPath = this.downloadFromEdi
       for (const path of rootPath) {
@@ -987,22 +988,17 @@ class conectorEdinet {
   async connectToEdi() {
     return new Promise(async (resolve, reject) => {
       //evaluate response from promise this.getEdinetConnectionDetails and connect to edi provider; on ready resolve connection
-      await this.getEdinetConnectionDetails().then((response) => {
-        console.log('getEdinetConnectionDetails', response)
-        if (response.success) {
+       this.getEdinetConnectionDetails().then((response) => {
+        console.log('connectToEdi', response)
+        if (response) {
           const sftp = new Client()
-          const resData = response.data
-          if (resData.length > 1) {
-            console.error('Error getting connection details from database: too many entries')
-            resolve(null)
-          }
           const config = {
-            host: resData[0].URL,
-            port: resData[0].PORT,
-            username: resData[0].USERNAME,
-            passphrase: resData[0].PASSPHRASE
+            host: response.URL,
+            port: response.PORT,
+            username: response.USERNAME,
+            passphrase: response.PASSPHRASE
           }
-          console.log('config for connection', config)
+          console.log('config for new conn in connectToEdi', config)
           sftp
             .connect(config)
             .then(() => {
