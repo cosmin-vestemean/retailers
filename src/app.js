@@ -795,14 +795,14 @@ class conectorEdinet {
     console.log('getEdinetConnectionDetails', response)
     return response.success
       ? {
-          TRDR_CLIENT: response.TRDR_CLIENT,
-          EDIPROVIDER: response.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
-          URL: response.URL,
-          PORT: response.PORT,
-          USERNAME: response.USERNAME,
-          PASSPHRASE: response.PASSPHRASE,
-          INITIALDIRIN: response.INITIALDIRIN,
-          INITIALDIROUT: response.INITIALDIROUT
+          TRDR_CLIENT: response.data.TRDR_CLIENT,
+          EDIPROVIDER: response.data.EDIPROVIDER, //1.DocProcess, 2. Editnet => conectorul potrivit
+          URL: response.data.URL,
+          PORT: response.data.PORT,
+          USERNAME: response.data.USERNAME,
+          PASSPHRASE: response.data.PASSPHRASE,
+          INITIALDIRIN: response.data.INITIALDIRIN,
+          INITIALDIROUT: response.data.INITIALDIROUT
         }
       : {}
   }
