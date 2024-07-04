@@ -63,6 +63,7 @@
     "@feathersjs/socketio-client": "^5.0.23",
     "@feathersjs/transport-commons": "^5.0.5",
     "@feathersjs/typebox": "^5.0.5",
+    "advanced-ftp": "^5.1.6",
     "knex": "^2.4.2",
     "mssql": "^9.1.1",
     "node-fetch": "^3.3.2",

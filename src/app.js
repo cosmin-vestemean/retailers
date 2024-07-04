@@ -14,6 +14,9 @@ import { channels } from './channels.js'
 //ssh2-sftp-client
 import Client from 'ssh2-sftp-client'
 
+//import https://www.npmjs.com/package/advanced-ftp 
+import * as ftp from 'advanced-ftp'
+
 //fs
 import * as fs from 'fs'
 
@@ -999,19 +1002,22 @@ class conectorEdinet {
        this.getEdinetConnectionDetails().then((response) => {
         console.log('connectToEdi', response)
         if (response) {
-          const sftp = new Client()
-          const config = {
+          const ftps = new ftp.FTPMaster({
             host: response.URL,
-            port: response.PORT,
             username: response.USERNAME,
-            passphrase: response.PASSPHRASE
-          }
-          console.log('config for new conn in connectToEdi', config)
-          sftp
-            .connect(config)
+            password: response.PASSPHRASE,
+            protocol: 'sftp',
+            port: response.PORT,
+            privateKey: response.PRIVATEKEY,
+            privateKeyPassphrase: response.PASSPHRASE,
+            hosthash: response.FINGERPRINT
+          })
+          //connect to edi provider
+          ftps
+            .connect()
             .then(() => {
-              console.log('connected to edi provider')
-              resolve(sftp)
+              console.log('Connected to edi provider')
+              resolve(ftps)
             })
             .catch((err) => {
               console.error(err)
