@@ -795,13 +795,18 @@ class conectorEdinet {
     console.log('getEdinetConnectionDetails', response)
     let returnedData = {}
     if (response.success) {
+      const firstLine = response.data[0]
+      const totalNoOfLines = response.total
+      if (totalNoOfLines > 1) {
+        console.error('More than one line in CCCDATECONECTOR for EDIPROVIDER = '+this.ediProvider+' and TRDR_CLIENT = ' + this.clientPlatforma + '... taking the first line')
+      }
       returnedData = {
-        URL: response.data[0].URL,
-        PORT: response.data[0].PORT,
-        USERNAME: response.data[0].USERNAME,
-        PASSPHRASE: response.data[0].PASSPHRASE,
-        PRIVATEKEY: response.data[0].PRIVATEKEY,
-        FINGERPRINT: response.data[0].FINGERPRINT
+        URL: firstLine.URL,
+        PORT: firstLine.PORT,
+        USERNAME: firstLine.USERNAME,
+        PASSPHRASE: firstLine.PASSPHRASE,
+        PRIVATEKEY: firstLine.PRIVATEKEY,
+        FINGERPRINT: firstLine.FINGERPRINT
       }
     } else {
       console.error('Error getting connection details from CCCDATECONECTOR')
