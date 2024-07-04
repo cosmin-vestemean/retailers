@@ -311,7 +311,7 @@ async function getRetailer() {
 function testConectorEdinet() {
   client.service('conectorEdinet').downloadAndStoreFilesFromEdi({
     downloadFromEdi: [
-      { ediPath: '/orders/sent', downloadPath: 'editnet/data/orders' }
+      { ediPath: '/orders/sent', downloadPath: 'data/editnet/orders' }
     ],
     filtruDownload: {
       startWith: 'DEDEMAN_',

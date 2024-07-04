@@ -1017,9 +1017,9 @@ class conectorEdinet {
           config.secureOptions = {
             secureProtocol: 'TLSv1_2_method',
             secureOptions: 'SSL_OP_NO_SSLv3',
-            pfx: fs.readFileSync('../data/edinet/config/edinet.p12'),
+            pfx: fs.readFileSync('data/edinet/config/edinet.p12'),
             passphrase: 'infinite2015',
-            ca: fs.readFileSync('../data/edinet/config/edinet-edinet-u-86669807 2015-03-18 192254.cer'),
+            ca: fs.readFileSync('data/edinet/config/edinet-edinet-u-86669807 2015-03-18 192254.cer'),
             rejectUnauthorized: false
           }
           console.log('config for ftps Edinet', config)
