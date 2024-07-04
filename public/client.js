@@ -308,6 +308,20 @@ async function getRetailer() {
   }
 }
 
+function testConectorEdinet() {
+  client.service('conectorEdinet').downloadAndStoreFilesFromEdi({
+    downloadFromEdi: [
+      { ediPath: '/orders/sent', downloadPath: 'editnet/data/orders' }
+    ],
+    filtruDownload: {
+      startWith: 'DEDEMAN_',
+      endWith: '.xml'
+    },
+    clientPlatforma: 1,
+    testing: true
+  })
+}
+
 export {
   openTab,
   getRemoteXmlListToErp,
@@ -315,5 +329,6 @@ export {
   getNDisplayS1Docs,
   toggleComenziNetrimise,
   toggleFacturiNetrimise,
-  getRetailer
+  getRetailer,
+  testConectorEdinet
 }
