@@ -70,7 +70,7 @@ client.service('sftp').on('uploadResult', (data) => {
   console.log('uploadResult', data)
 })
 
-client.use('conectorEdinet', new conectorEdinet(), {
+client.use('conectorEdinet', socketClient.service('conectorEdinet'), {
   methods: ['downloadAndStoreFilesFromEdi', 'startScanningPeriodically']
 })
 
