@@ -14,8 +14,8 @@ import { channels } from './channels.js'
 //ssh2-sftp-client
 import Client from 'ssh2-sftp-client'
 
-//import https://www.npmjs.com/package/advanced-ftp 
-import * as ftp from 'advanced-ftp'
+//import https://github.com/patrickjuchli/basic-ftp
+import { Client as FTPClient } from 'basic-ftp'
 
 //fs
 import * as fs from 'fs'
@@ -999,30 +999,37 @@ class conectorEdinet {
   async connectToEdi() {
     return new Promise(async (resolve, reject) => {
       //evaluate response from promise this.getEdinetConnectionDetails and connect to edi provider; on ready resolve connection
-       this.getEdinetConnectionDetails().then((response) => {
+       this.getEdinetConnectionDetails().then(async (response) => {
         console.log('connectToEdi', response)
         if (response) {
-          const ftps = new ftp.FTPMaster({
+          //https://github.com/patrickjuchli/basic-ftp
+          const client = new FTPClient()
+          client.ftp.verbose = true
+          client.ftp.log = console.log
+          const config ={
             host: response.URL,
-            username: response.USERNAME,
-            password: response.PASSPHRASE,
-            protocol: 'sftp',
             port: response.PORT,
-            privateKey: response.PRIVATEKEY,
-            privateKeyPassphrase: response.PASSPHRASE,
-            hosthash: response.FINGERPRINT
-          })
-          //connect to edi provider
-          ftps
-            .connect()
-            .then(() => {
-              console.log('Connected to edi provider')
-              resolve(ftps)
-            })
-            .catch((err) => {
-              console.error(err)
-              reject(null)
-            })
+            user: response.USERNAME,
+            password: response.PASSPHRASE,
+            secure: true
+          }
+          //data/edinet/config > p12 file and cer file
+          config.secureOptions = {
+            secureProtocol: 'TLSv1_2_method',
+            secureOptions: 'SSL_OP_NO_SSLv3',
+            pfx: fs.readFileSync('data/edinet/config/cert.p12'),
+            passphrase: 'infinite2015',
+            ca: fs.readFileSync('data/edinet/config/edinet-edinet-u-86669807 2015-03-18 192254.cer'),
+            rejectUnauthorized: false
+          }
+          console.log('config for ftps Edinet', config)
+          try {
+            await client.access(config)
+            resolve(client)
+          } catch (err) {
+            console.error(err)
+            reject(null)
+          }
         } else {
           console.error('Error getting connection details from database')
           resolve(null)
@@ -1041,7 +1048,7 @@ app.use('conectorEdinet', new conectorEdinet(), {
 })
 
 //test it with clientPlatforma=1
-app.service('conectorEdinet').downloadAndStoreFilesFromEdi({
+/* app.service('conectorEdinet').downloadAndStoreFilesFromEdi({
   downloadFromEdi: [
     { ediPath: '/orders/sent', downloadPath: 'editnet/data/orders' }
     //{ ediPath: '/recadv', downloadPath: 'editnet/data/recadv' },
@@ -1053,7 +1060,7 @@ app.service('conectorEdinet').downloadAndStoreFilesFromEdi({
   },
   clientPlatforma: 1,
   testing: true
-})
+}) */
 
 //test it dedeman + PetFactory
 //app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
