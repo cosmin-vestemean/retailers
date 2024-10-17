@@ -11,6 +11,8 @@ export const retailers = [
     'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png', 'Carrefour'
   ),
   new Retailer('11654', 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg', 'Dedeman'),
+  //11920 = Metro
+  new Retailer(11920, 'https://logowik.com/content/uploads/images/855_metro.jpg', 'Metro'),
 ]
 
 export async function drawRetailers() {
