@@ -11,7 +11,7 @@ export class Retailer {
   #nrComenziDeTrimis
   #name
   
-  constructor(trdr, logo, name = '') {
+  constructor(trdr, logo, name = '', underConstruction = false) {
     this.#trdr = trdr
     this.#logo = logo
     this.#nrFacturiDeTrimis = 0
