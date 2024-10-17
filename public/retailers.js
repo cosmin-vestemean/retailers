@@ -25,13 +25,11 @@ export async function drawRetailers() {
     for (var j = i; j < i + 3; j++) {
       if (j < retailers.length) {
         const retailer = retailers[j]
-        //console.log('retailer', retailer)
-        retailer.setNrComenziDeTrimis()
-        await retailer.setNrFacturiDeTrimis()
-        await retailer.setEnumFacturiDeTrimis()
         const card = retailer.getCardHtml()
-        //console.log('card', card)
         row.innerHTML += card
+
+        // Call async methods after the card is displayed
+        retailer.updateDataAsync()
       }
     }
   }

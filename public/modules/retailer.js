@@ -163,4 +163,11 @@ export class Retailer {
                   </div>
                 </div>`
   }
+
+  async updateDataAsync() {
+    await this.setNrComenziDeTrimis()
+    await this.setNrFacturiDeTrimis()
+    await this.setEnumFacturiDeTrimis()
+    // Optionally, you can update the card's HTML here if needed
+  }
 }
