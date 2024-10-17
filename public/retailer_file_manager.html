@@ -130,7 +130,7 @@
 
     async function loadComenziPage(page) {
       try {
-        const res = await getXmlLstFromErp(trdrRetailerFromUrl, page, rowsPerPage);
+        const res = await getXmlListFromErp(trdrRetailerFromUrl, page, rowsPerPage);
         const tableBody = document.getElementById('xmlTableBody');
         tableBody.innerHTML = '';
         res.data.forEach(item => {
