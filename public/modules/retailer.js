@@ -127,7 +127,7 @@ export class Retailer {
     const cardId = `card-${this.#trdr}`;
     return `
                 <div class="column coumn-is-third" id="${cardId}">
-                  <div class="card">
+                  <div class="card" style="position: relative;">
                     <div class="card-image">
                         <figure class="image is-128x128">
                             <img
@@ -138,7 +138,7 @@ export class Retailer {
                     </div>
                     <div class="card-content">
                       <div class="content">
-                        ${this.#underConstruction ? '<p class="has-text-danger">Under Construction</p>' : ''}
+                        ${this.#underConstruction ? '<p class="has-text-danger" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 5px;">Under Construction</p>' : ''}
                         <table class="table is-narrow is-small">
                           <tr>
                             <td>Comenzi de trimis:</td><td>
