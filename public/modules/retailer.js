@@ -10,6 +10,7 @@ export class Retailer {
   #enumFacturiDeTrimis
   #nrComenziDeTrimis
   #name
+  #underConstruction
   
   constructor(trdr, logo, name = '', underConstruction = false) {
     this.#trdr = trdr
@@ -18,6 +19,7 @@ export class Retailer {
     this.#enumFacturiDeTrimis = ''
     this.#nrComenziDeTrimis = 0
     this.#name = name
+    this.#underConstruction = underConstruction
   }
 
   async getName() {
@@ -136,6 +138,7 @@ export class Retailer {
                     </div>
                     <div class="card-content">
                       <div class="content">
+                        ${this.#underConstruction ? '<p class="has-text-danger">Under Construction</p>' : ''}
                         <table class="table is-narrow is-small">
                           <tr>
                             <td>Comenzi de trimis:</td><td>
@@ -191,6 +194,7 @@ export class Retailer {
           </div>
           <div class="card-content">
             <div class="content">
+              ${this.#underConstruction ? '<p class="has-text-danger">Under Construction</p>' : ''}
               <table class="table is-narrow is-small">
                 <tr>
                   <td>Comenzi de trimis:</td><td>
