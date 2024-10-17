@@ -15,14 +15,15 @@ var url = new URL(window.location.href)
 export const trdrRetailerFromUrl = parseInt(url.searchParams.get('trdr'))
 export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
-async function getXmlListFromErp(retailer) {
+async function getXmlListFromErp(retailer, page = 1, limit = 10) {
   return new Promise((resolve, reject) => {
     client
       .service('CCCSFTPXML')
       .find({
         query: {
           TRDR_RETAILER: retailer,
-          $limit: 50,
+          $limit: limit,
+          $skip: (page - 1) * limit,
           $sort: {
             XMLDATE: -1
           }
@@ -30,6 +31,9 @@ async function getXmlListFromErp(retailer) {
       })
       .then((res) => {
         resolve(res)
+      })
+      .catch((err) => {
+        reject(err)
       })
   })
 }
