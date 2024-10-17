@@ -22,7 +22,7 @@ async function getXmlListFromErp(retailer) {
       .find({
         query: {
           TRDR_RETAILER: retailer,
-          $limit: 30,
+          $limit: 50,
           $sort: {
             XMLDATE: -1
           }
