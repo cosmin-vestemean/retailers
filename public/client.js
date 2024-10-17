@@ -22,7 +22,7 @@ async function getXmlListFromErp(retailer) {
       .find({
         query: {
           TRDR_RETAILER: retailer,
-          $limit: 200,
+          $limit: 100,
           $sort: {
             XMLDATE: -1
           }
@@ -243,7 +243,7 @@ export function getEmptyAperak() {
       query: {
         FINDOC: -1,
         TRDR_RETAILER: -1,
-        $limit: 200,
+        $limit: 100,
         $sort: {
           MESSAGEDATE: -1,
           MESSAGETIME: -1
