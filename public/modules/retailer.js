@@ -150,7 +150,7 @@ export class Retailer {
                       <div class="content">
                         ${
                           this.#underConstruction
-                            ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
+                            ? '<p class="has-text-danger title is-4">Under construction</p>'
                             : '<p class="title is-4">' + this.#name + '</p>'
                         }
                         <table class="table is-narrow is-small">
@@ -217,7 +217,7 @@ export class Retailer {
             <div class="content">
               ${
                 this.#underConstruction
-                  ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
+                  ? '<p class="has-text-danger title is-4">Under construction</p>'
                   : '<p class="title is-4">' + this.#name + '</p>'
               }
               <table class="table is-narrow is-small">
