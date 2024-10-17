@@ -29,20 +29,26 @@ export class Retailer {
   }
 
   async setNrComenziDeTrimis() {
-    let res = 0
-    let params = {}
-    params['query'] = {}
+    let res = 0;
+    let params = {};
+    params['query'] = {};
     params['query']['sqlQuery'] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${
       this.#trdr
-    } AND COALESCE(FINDOC, 0) = 0 and year(XMLDATE) = year(getdate())`
-    let responseObj1 = await client.service('getDataset').find(params)
-    if (responseObj1.data) {
-      res = responseObj1.data || 0
-    } else {
-      res = 0
-    }
+    } AND COALESCE(FINDOC, 0) = 0 and year(XMLDATE) = year(getdate())`;
 
-    this.#nrComenziDeTrimis = res
+    client.service('getDataset').find(params)
+      .then(responseObj1 => {
+      if (responseObj1.data) {
+        res = responseObj1.data || 0;
+      } else {
+        res = 0;
+      }
+      this.#nrComenziDeTrimis = res;
+      })
+      .catch(error => {
+      console.error('Error fetching data:', error);
+      this.#nrComenziDeTrimis = 0;
+      });
   }
 
   async getNrFacturiDeTrimis() {

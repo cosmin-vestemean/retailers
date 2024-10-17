@@ -26,7 +26,7 @@ export async function drawRetailers() {
       if (j < retailers.length) {
         const retailer = retailers[j]
         //console.log('retailer', retailer)
-        await retailer.setNrComenziDeTrimis()
+        retailer.setNrComenziDeTrimis()
         await retailer.setNrFacturiDeTrimis()
         await retailer.setEnumFacturiDeTrimis()
         const card = retailer.getCardHtml()
