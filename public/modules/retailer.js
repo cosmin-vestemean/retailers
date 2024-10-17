@@ -11,7 +11,7 @@ export class Retailer {
   #nrComenziDeTrimis
   #name
   #underConstruction
-  
+
   constructor(trdr, logo, name = '', underConstruction = false) {
     this.#trdr = trdr
     this.#logo = logo
@@ -31,27 +31,29 @@ export class Retailer {
   }
 
   async setNrComenziDeTrimis() {
-    let res = 0;
-    let params = {};
-    params['query'] = {};
+    let res = 0
+    let params = {}
+    params['query'] = {}
     params['query']['sqlQuery'] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${
       this.#trdr
-    } AND COALESCE(FINDOC, 0) = 0 and year(XMLDATE) = year(getdate())`;
+    } AND COALESCE(FINDOC, 0) = 0 and year(XMLDATE) = year(getdate())`
 
-    client.service('getDataset').find(params)
-      .then(responseObj1 => {
-      if (responseObj1.data) {
-        res = responseObj1.data || 0;
-      } else {
-        res = 0;
-      }
-      this.#nrComenziDeTrimis = res;
-      this.updateCardHtml();
+    client
+      .service('getDataset')
+      .find(params)
+      .then((responseObj1) => {
+        if (responseObj1.data) {
+          res = responseObj1.data || 0
+        } else {
+          res = 0
+        }
+        this.#nrComenziDeTrimis = res
+        this.updateCardHtml()
       })
-      .catch(error => {
-      console.error('Error fetching data:', error);
-      this.#nrComenziDeTrimis = 0;
-      });
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+        this.#nrComenziDeTrimis = 0
+      })
   }
 
   async getNrFacturiDeTrimis() {
@@ -60,27 +62,31 @@ export class Retailer {
 
   async setNrFacturiDeTrimis() {
     //select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=this.#trdr AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0
-    let res = 0;
-    let params = {};
-    params['query'] = {};
-    params['query']['sqlQuery'] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
+    let res = 0
+    let params = {}
+    params['query'] = {}
+    params['query'][
+      'sqlQuery'
+    ] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
       this.#trdr
-    } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`;
+    } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
 
-    await client.service('getDataset').find(params)
-      .then(responseObj1 => {
-      if (responseObj1.data) {
-        res = responseObj1.data || 0;
-      } else {
-        res = 0;
-      }
-      this.#nrFacturiDeTrimis = res;
-      this.updateCardHtml();
+    await client
+      .service('getDataset')
+      .find(params)
+      .then((responseObj1) => {
+        if (responseObj1.data) {
+          res = responseObj1.data || 0
+        } else {
+          res = 0
+        }
+        this.#nrFacturiDeTrimis = res
+        this.updateCardHtml()
       })
-      .catch(error => {
-      console.error('Error fetching data:', error);
-      this.#nrFacturiDeTrimis = 0;
-      });
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+        this.#nrFacturiDeTrimis = 0
+      })
   }
 
   async setEnumFacturiDeTrimis() {
@@ -88,29 +94,33 @@ export class Retailer {
     let res = ''
     let params = {}
     params['query'] = {
-      'sqlQuery': `select fincode, 
+      sqlQuery: `select fincode, 
       format(trndate, 'dd.MM.yyyy') trndate 
-      from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+      from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
+        this.#trdr
+      } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
     }
 
-    client.service('getDataset1').find(params)
-      .then(responseObj1 => {
-      console.log('responseObj1', responseObj1)
-      if (responseObj1.success) {
-        //[{fincode:'fac1', trndate: '20240611'}, ...]
-        for (let i = 0; i < responseObj1.data.length; i++) {
-        let item = responseObj1.data[i]
-        res += item.fincode + ' ' + item.trndate + '; '
+    client
+      .service('getDataset1')
+      .find(params)
+      .then((responseObj1) => {
+        console.log('responseObj1', responseObj1)
+        if (responseObj1.success) {
+          //[{fincode:'fac1', trndate: '20240611'}, ...]
+          for (let i = 0; i < responseObj1.data.length; i++) {
+            let item = responseObj1.data[i]
+            res += item.fincode + ' ' + item.trndate + '; '
+          }
+        } else {
+          res = ''
         }
-      } else {
-        res = ''
-      }
-      this.#enumFacturiDeTrimis = res
-      this.updateCardHtml();
+        this.#enumFacturiDeTrimis = res
+        this.updateCardHtml()
       })
-      .catch(error => {
-      console.error('Error fetching data:', error)
-      this.#enumFacturiDeTrimis = ''
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+        this.#enumFacturiDeTrimis = ''
       })
   }
 
@@ -124,7 +134,7 @@ export class Retailer {
 
   //class method: getHtml
   getCardHtml() {
-    const cardId = `card-${this.#trdr}`;
+    const cardId = `card-${this.#trdr}`
     return `
                 <div class="column coumn-is-third" id="${cardId}">
                   <div class="card">
@@ -138,7 +148,11 @@ export class Retailer {
                     </div>
                     <div class="card-content">
                       <div class="content">
-                        ${this.#underConstruction ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>' : ''}
+                        ${
+                          this.#underConstruction
+                            ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
+                            : '<p>' + this.#name + '</p>'
+                        }
                         <table class="table is-narrow is-small">
                           <tr>
                             <td>Comenzi de trimis:</td><td>
@@ -153,8 +167,11 @@ export class Retailer {
                             <td>Facturi de trimis:</td><td>
                             ${
                               this.#nrFacturiDeTrimis > 0
-                                ? 
-                                '<span class="tag is-danger is-clickable" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrFacturiDeTrimis + '</span>'
+                                ? '<span class="tag is-danger is-clickable" onclick="alert(\'' +
+                                  this.#enumFacturiDeTrimis +
+                                  '\')">' +
+                                  this.#nrFacturiDeTrimis +
+                                  '</span>'
                                 : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                             }
                             </td>
@@ -164,8 +181,12 @@ export class Retailer {
                     </div>
                     <footer class="card-footer">
                       <a href="#" class="card-footer-item">Statistici</a>
-                      <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
-                      <a href="retailer_config.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">Configureaza</a>
+                      <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${
+      this.#logo
+    }'" class="card-footer-item eMag">File manager</a>
+                      <a href="retailer_config.html?trdr=${this.#trdr}&logo='${
+      this.#logo
+    }'" class="card-footer-item eMag">Configureaza</a>
                     </footer>
                   </div>
                 </div>`
@@ -179,8 +200,8 @@ export class Retailer {
   }
 
   updateCardHtml() {
-    const cardId = `card-${this.#trdr}`;
-    const cardElement = document.getElementById(cardId);
+    const cardId = `card-${this.#trdr}`
+    const cardElement = document.getElementById(cardId)
     if (cardElement) {
       cardElement.innerHTML = `
         <div class="card">
@@ -194,7 +215,11 @@ export class Retailer {
           </div>
           <div class="card-content">
             <div class="content">
-              ${this.#underConstruction ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>' : ''}
+              ${
+                this.#underConstruction
+                  ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
+                  : '<p>' + this.#name + '</p>'
+              }
               <table class="table is-narrow is-small">
                 <tr>
                   <td>Comenzi de trimis:</td><td>
@@ -209,8 +234,11 @@ export class Retailer {
                   <td>Facturi de trimis:</td><td>
                   ${
                     this.#nrFacturiDeTrimis > 0
-                      ? 
-                      '<span class="tag is-danger is-clickable" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrFacturiDeTrimis + '</span>'
+                      ? '<span class="tag is-danger is-clickable" onclick="alert(\'' +
+                        this.#enumFacturiDeTrimis +
+                        '\')">' +
+                        this.#nrFacturiDeTrimis +
+                        '</span>'
                       : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
                   }
                   </td>
@@ -220,10 +248,14 @@ export class Retailer {
           </div>
           <footer class="card-footer">
             <a href="#" class="card-footer-item">Statistici</a>
-            <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
-            <a href="retailer_config.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">Configureaza</a>
+            <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${
+        this.#logo
+      }'" class="card-footer-item eMag">File manager</a>
+            <a href="retailer_config.html?trdr=${this.#trdr}&logo='${
+        this.#logo
+      }'" class="card-footer-item eMag">Configureaza</a>
           </footer>
-        </div>`;
+        </div>`
     }
   }
 }
