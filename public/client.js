@@ -241,7 +241,7 @@ export function getEmptyAperak() {
       query: {
         FINDOC: -1,
         TRDR_RETAILER: -1,
-        $limit: 100,
+        $limit: 50,
         $sort: {
           MESSAGEDATE: -1,
           MESSAGETIME: -1
