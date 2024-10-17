@@ -108,7 +108,7 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
   }
   //console.log('trdr', trdr)
   //Open tab facturi
-  document.getElementById('facturi_link').click()
+  //document.getElementById('facturi_link').click()
   var daysOlder = document.getElementById('daysOlder').value
   client
     .service('getS1SqlData')
