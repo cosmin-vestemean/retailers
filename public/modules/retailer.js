@@ -83,25 +83,30 @@ export class Retailer {
     //getDataset1
     let res = ''
     let params = {}
-    params['query'] = {}
     params['query'] = {
       'sqlQuery': `select fincode, 
       format(trndate, 'dd.MM.yyyy') trndate 
       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${this.#trdr} AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
     }
-    let responseObj1 = await client.service('getDataset1').find(params)
-    console.log('responseObj1', responseObj1)
-    if (responseObj1.success) {
-      //[{fincode:'fac1', trndate: '20240611'}, ...]
-      for (let i = 0; i < responseObj1.data.length; i++) {
+
+    client.service('getDataset1').find(params)
+      .then(responseObj1 => {
+      console.log('responseObj1', responseObj1)
+      if (responseObj1.success) {
+        //[{fincode:'fac1', trndate: '20240611'}, ...]
+        for (let i = 0; i < responseObj1.data.length; i++) {
         let item = responseObj1.data[i]
         res += item.fincode + ' ' + item.trndate + '; '
+        }
+      } else {
+        res = ''
       }
-    } else {
-      res = ''
-    }
-
-    this.#enumFacturiDeTrimis = res
+      this.#enumFacturiDeTrimis = res
+      })
+      .catch(error => {
+      console.error('Error fetching data:', error)
+      this.#enumFacturiDeTrimis = ''
+      })
   }
 
   async getTrdr() {
