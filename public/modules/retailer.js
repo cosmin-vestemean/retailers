@@ -44,6 +44,7 @@ export class Retailer {
         res = 0;
       }
       this.#nrComenziDeTrimis = res;
+      this.updateCardHtml();
       })
       .catch(error => {
       console.error('Error fetching data:', error);
@@ -72,6 +73,7 @@ export class Retailer {
         res = 0;
       }
       this.#nrFacturiDeTrimis = res;
+      this.updateCardHtml();
       })
       .catch(error => {
       console.error('Error fetching data:', error);
@@ -102,6 +104,7 @@ export class Retailer {
         res = ''
       }
       this.#enumFacturiDeTrimis = res
+      this.updateCardHtml();
       })
       .catch(error => {
       console.error('Error fetching data:', error)
@@ -119,8 +122,9 @@ export class Retailer {
 
   //class method: getHtml
   getCardHtml() {
+    const cardId = `card-${this.#trdr}`;
     return `
-                <div class="column coumn-is-third">
+                <div class="column coumn-is-third" id="${cardId}">
                   <div class="card">
                     <div class="card-image">
                         <figure class="image is-128x128">
@@ -169,5 +173,53 @@ export class Retailer {
     await this.setNrFacturiDeTrimis()
     await this.setEnumFacturiDeTrimis()
     // Optionally, you can update the card's HTML here if needed
+  }
+
+  updateCardHtml() {
+    const cardId = `card-${this.#trdr}`;
+    const cardElement = document.getElementById(cardId);
+    if (cardElement) {
+      cardElement.innerHTML = `
+        <div class="card">
+          <div class="card-image">
+              <figure class="image is-128x128">
+                  <img
+                      src="${this.#logo}"
+                      alt="Placeholder image"
+                  />
+              </figure>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <table class="table is-narrow is-small">
+                <tr>
+                  <td>Comenzi de trimis:</td><td>
+                  ${
+                    this.#nrComenziDeTrimis > 0
+                      ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
+                      : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
+                  }</section><section>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Facturi de trimis:</td><td>
+                  ${
+                    this.#nrFacturiDeTrimis > 0
+                      ? 
+                      '<span class="tag is-danger is-clickable" onclick="alert(\'' + this.#enumFacturiDeTrimis + '\')">' + this.#nrFacturiDeTrimis + '</span>'
+                      : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
+                  }
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">Statistici</a>
+            <a href="retailer_file_manager.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">File manager</a>
+            <a href="retailer_config.html?trdr=${this.#trdr}&logo='${this.#logo}'" class="card-footer-item eMag">Configureaza</a>
+          </footer>
+        </div>`;
+    }
   }
 }
