@@ -107,8 +107,6 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
     return
   }
   //console.log('trdr', trdr)
-  //Open tab comenzi
-  document.getElementById('defaultOpen').click()
   var daysOlder = document.getElementById('daysOlder').value
   client
     .service('getS1SqlData')
