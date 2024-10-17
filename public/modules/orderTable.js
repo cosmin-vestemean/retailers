@@ -4,242 +4,302 @@ import client from './feathersjs-client.js'
 const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'
 
 export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
-  const xmlTableBody = document.getElementById(tableBodyId);
-  xmlTableBody.innerHTML = '';
-
-  const batchSize = 5;
-  let currentIndex = 0;
-
-  async function loadBatch() {
-    const batch = data.data.slice(currentIndex, currentIndex + batchSize);
-    for (const xml of batch) {
-      var row = xmlTableBody.insertRow();
-      var cccsftpxml = row.insertCell();
-      cccsftpxml.innerHTML = xml.CCCSFTPXML;
-      cccsftpxml.style.display = 'none';
-      var humanDate = new Date(xml.XMLDATE).toLocaleString();
-      row.insertCell().innerHTML = humanDate;
-      var filenameCell = row.insertCell();
-      filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : '';
-      var xmlDataCell = row.insertCell();
-      xmlDataCell.innerHTML = '<textarea class="textarea is-small is-info" rows="5" cols="50">' + xml.XMLDATA + '</textarea>';
-      xmlDataCell.spellcheck = false;
-      var parser = new DOMParser();
-      var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml');
-      var partyName = xmlDoc.getElementsByTagName('AccountingCustomerParty')[0]
-        ? xmlDoc.getElementsByTagName('AccountingCustomerParty')[0].getElementsByTagName('PartyName')[0]
-        : null;
-      var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0];
-      if (orderId) {
-        filenameCell.innerHTML += '<br><span class="tag is-info is-light">' + orderId + '</span>';
+  //get the table body
+  const xmlTableBody = document.getElementById(tableBodyId)
+  //empty the table body
+  xmlTableBody.innerHTML = ''
+  //loop through the data
+  data.data.forEach(async (xml) => {
+    //create a new row
+    var row = xmlTableBody.insertRow()
+    //insert the cells
+    //insert hidden xml.CCCSFTPXML
+    var cccsftpxml = row.insertCell()
+    cccsftpxml.innerHTML = xml.CCCSFTPXML
+    cccsftpxml.style.display = 'none'
+    var humanDate = new Date(xml.XMLDATE).toLocaleString()
+    row.insertCell().innerHTML = humanDate
+    //row.insertCell().innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
+    var filenameCell = row.insertCell()
+    filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
+    var xmlDataCell = row.insertCell()
+    xmlDataCell.innerHTML =
+      '<textarea class="textarea is-small is-info" rows="5" cols="50">' + xml.XMLDATA + '</textarea>'
+    //spellcheck="false"
+    xmlDataCell.spellcheck = false
+    var parser = new DOMParser()
+    var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
+    //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
+    var partyName = xmlDoc.getElementsByTagName('AccountingCustomerParty')[0]
+      ? xmlDoc.getElementsByTagName('AccountingCustomerParty')[0].getElementsByTagName('PartyName')[0]
+      : null
+    //get /Order/ID value
+    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+    //if exists append to cell xmlfilename
+    if (orderId) {
+      filenameCell.innerHTML += '<br><span class="tag is-info is-light">' + orderId + '</span>'
+    }
+    //row.insertCell().innerHTML = partyName ? partyName.innerHTML : ''
+    //create the actions cell
+    var actionsCell = row.insertCell()
+    //create the buttons
+    var saveButton = document.createElement('button')
+    saveButton.innerHTML = 'Save'
+    saveButton.className = 'button is-small is-info ml-2'
+    saveButton.onclick = function () {
+      //save the xml to file
+      var xmlBlob = new Blob([xml.XMLDATA], { type: 'text/xml' })
+      var xmlURL = window.URL.createObjectURL(xmlBlob)
+      var tempLink = document.createElement('a')
+      tempLink.href = xmlURL
+      tempLink.setAttribute('download', xml.XMLFILENAME)
+      tempLink.click()
+    }
+    var copyButton = document.createElement('button')
+    copyButton.innerHTML = 'Copy'
+    copyButton.className = 'button is-small is-primary ml-2'
+    copyButton.onclick = function () {
+      //copy the xml to clipboard
+      navigator.clipboard.writeText(xml.XMLDATA).then(
+        function () {
+          alert('copied')
+        },
+        function (err) {
+          console.error('Async: Could not copy text: ', err)
+        }
+      )
+    }
+    var deleteButton = document.createElement('button')
+    deleteButton.innerHTML = 'Delete'
+    deleteButton.className = 'button is-small is-danger ml-2'
+    var deleteModal = document.getElementById('deleteModal')
+    var h1deletedRow = document.getElementById('deletedRow')
+    h1deletedRow.innerHTML = `Row with filename: ${xml.XMLFILENAME} and date: ${humanDate} will be deleted.<br><br>Are you sure?`
+    deleteButton.onclick = function () {
+      //ask for confirmation
+      //on click on id="deleteYes" remove the xml from the table
+      document.getElementById('deleteYes').onclick = function () {
+        //delete the xml from the table
+        const CCCSFTPXML = xml.CCCSFTPXML
+        client
+          .service('CCCSFTPXML')
+          .remove(CCCSFTPXML)
+          .then((res) => {
+            //console.log('CCCSFTPXML remove', res)
+            //refresh xml table
+            row.remove()
+            //close the modal by removing the class is-active
+            deleteModal.classList.remove('is-active')
+          })
+          .catch((err) => {
+            console.error('CCCSFTPXML remove', err)
+          })
       }
-      var actionsCell = row.insertCell();
-      var saveButton = document.createElement('button');
-      saveButton.innerHTML = 'Save';
-      saveButton.className = 'button is-small is-info ml-2';
-      saveButton.onclick = function () {
-        var xmlBlob = new Blob([xml.XMLDATA], { type: 'text/xml' });
-        var xmlURL = window.URL.createObjectURL(xmlBlob);
-        var tempLink = document.createElement('a');
-        tempLink.href = xmlURL;
-        tempLink.setAttribute('download', xml.XMLFILENAME);
-        tempLink.click();
-      };
-      var copyButton = document.createElement('button');
-      copyButton.innerHTML = 'Copy';
-      copyButton.className = 'button is-small is-primary ml-2';
-      copyButton.onclick = function () {
-        navigator.clipboard.writeText(xml.XMLDATA).then(
-          function () {
-            alert('copied');
-          },
-          function (err) {
-            console.error('Async: Could not copy text: ', err);
-          }
-        );
-      };
-      var deleteButton = document.createElement('button');
-      deleteButton.innerHTML = 'Delete';
-      deleteButton.className = 'button is-small is-danger ml-2';
-      var deleteModal = document.getElementById('deleteModal');
-      var h1deletedRow = document.getElementById('deletedRow');
-      h1deletedRow.innerHTML = `Row with filename: ${xml.XMLFILENAME} and date: ${humanDate} will be deleted.<br><br>Are you sure?`;
-      deleteButton.onclick = function () {
-        document.getElementById('deleteYes').onclick = function () {
-          const CCCSFTPXML = xml.CCCSFTPXML;
-          client
-            .service('CCCSFTPXML')
-            .remove(CCCSFTPXML)
-            .then((res) => {
-              row.remove();
-              deleteModal.classList.remove('is-active');
-            })
-            .catch((err) => {
-              console.error('CCCSFTPXML remove', err);
-            });
-        };
-        document.getElementById('deleteNo').onclick = function () {
-          deleteModal.classList.remove('is-active');
-        };
-        deleteModal.classList.add('is-active');
-      };
-      var sendOrderButton = document.createElement('button');
-      sendOrderButton.innerHTML = xml.FINDOC ? 'Order sent' : 'Send order';
-      sendOrderButton.className = 'button is-small is-success ml-2';
-      sendOrderButton.onclick = async function () {
-        if (!xml.FINDOC) {
-          sendOrderButton.disabled = true;
-          sendOrderButton.innerHTML = 'Sending...';
-          var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer);
-          if (Object.keys(response).includes('success') && response.success == false) {
-            var errorMsg = '';
-            errorMsg += 'Errors: ' + response.errors.length + '\n\n';
-            for (var i = 0; i < response.errors.length; i++) {
-              var error = response.errors[i];
-              if (error.sql.indexOf('from trdbranch') > -1) {
-                error.title = 'Sucursala';
-              }
-              errorMsg += i + 1 + '.' + error.title + '\n';
-              for (var j = 0; j < error.title.length; j++) {
-                errorMsg += '-';
-              }
-              errorMsg += '\n';
-              errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
-                error.sql
-              },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`;
-              sendOrderButton.innerHTML = 'See errors';
-              var textarea = document.createElement('textarea');
-              textarea.rows = 5;
-              textarea.cols = 50;
-              textarea.innerHTML = errorMsg;
-              actionsCell.appendChild(textarea);
-              textarea.spellcheck = false;
-              textarea.className = 'textarea is-small is-danger';
+      //deleteNo
+      document.getElementById('deleteNo').onclick = function () {
+        //close the modal by removing the class is-active
+        deleteModal.classList.remove('is-active')
+      }
+
+      //add class is-active to show the modal
+      deleteModal.classList.add('is-active')
+    }
+    //send order
+    var sendOrderButton = document.createElement('button')
+    sendOrderButton.innerHTML = xml.FINDOC ? 'Order sent' : 'Send order'
+    sendOrderButton.className = 'button is-small is-success ml-2'
+    sendOrderButton.onclick = async function () {
+      //daca am findoc nu mai trimit
+      if (!xml.FINDOC) {
+        //disable the button
+        sendOrderButton.disabled = true
+        sendOrderButton.innerHTML = 'Sending...'
+        var response = await sendOrder(xml.XMLDATA, xml.XMLFILENAME, xml.XMLDATE, retailer)
+        console.log('sendOrder', response)
+        //if (response.success == false) {
+        //check if response obj has a key named success and key success is false
+        if (Object.keys(response).includes('success') && response.success == false) {
+          //show no of errors
+          var errorMsg = ''
+          errorMsg += 'Errors: ' + response.errors.length + '\n\n'
+          for (var i = 0; i < response.errors.length; i++) {
+            var error = response.errors[i]
+            //{ key: key, value: item[key].value, sql: item[key].SQL, xpath: xpath, nodes: nodes }
+            //if error.sql contains "from trdbranch" then the title of error is Sucursala
+            if (error.sql.indexOf('from trdbranch') > -1) {
+              error.title = 'Sucursala'
             }
-            return;
-          } else {
-            sendOrderButton.innerHTML = 'Order sent';
-            sendOrderButton.disabled = false;
-            var input = document.createElement('input');
-            input.type = 'checkbox';
-            input.name = xml.XMLFILENAME;
-            input.id = xml.XMLFILENAME;
-            input.className = 'checkbox is-small ml-2 trimisCheckbox';
-            input.checked = true;
-            input.disabled = true;
-            actionsCell.appendChild(input);
-            var label = document.createElement('label');
-            label.htmlFor = xml.XMLFILENAME;
-            label.appendChild(document.createTextNode(response.message));
-            actionsCell.appendChild(label);
-            var detailsIcon = document.createElement('i');
-            detailsIcon.className = 'fas fa-xl fa-info-circle ml-2';
-            detailsIcon.style.cursor = 'pointer';
-            detailsIcon.style.color = 'blue';
-            detailsIcon.title = 'Details';
-            detailsIcon.onclick = async function () {
-              detailsIcon.remove();
-              var { orderId, res } = await getFindocForOrder(orderId, xml);
-              var details = document.createElement('div');
-              var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`;
-              details.innerHTML = detailsText;
-              details.className = 'is-info is-small';
-              actionsCell.appendChild(details);
-            };
+            //display title
+            errorMsg += i + 1 + '.' + error.title + '\n'
+            //count title characters and add dashes under it
+            for (var j = 0; j < error.title.length; j++) {
+              errorMsg += '-'
+            }
+            errorMsg += '\n'
+            errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
+              error.sql
+            },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+            sendOrderButton.innerHTML = 'See errors'
+            //add text area with errors beneath the buttons
+            var textarea = document.createElement('textarea')
+            textarea.rows = 5
+            textarea.cols = 50
+            textarea.innerHTML = errorMsg
+            actionsCell.appendChild(textarea)
+            //no spellcheck
+            textarea.spellcheck = false
+            //class
+            textarea.className = 'textarea is-small is-danger'
           }
+          return
         } else {
-          alert('Already sent');
+          sendOrderButton.innerHTML = 'Order sent'
+          //enable the button
+          sendOrderButton.disabled = false
+          //creaza un checkbox cu findoc si onclick sa afiseze detalii
+          //append the checkbox to the cell
+          var input = document.createElement('input')
+          input.type = 'checkbox'
+          input.name = xml.XMLFILENAME
+          input.id = xml.XMLFILENAME
+          input.className = 'checkbox is-small ml-2 trimisCheckbox'
+          input.checked = true
+          input.disabled = true
+          actionsCell.appendChild(input)
+          //add label
+          var label = document.createElement('label')
+          label.htmlFor = xml.XMLFILENAME
+          label.appendChild(document.createTextNode(response.message))
+          actionsCell.appendChild(label)
+          //add details icon
+          var detailsIcon = document.createElement('i')
+          detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+          //style
+          detailsIcon.style.cursor = 'pointer'
+          detailsIcon.style.color = 'blue'
+          detailsIcon.title = 'Details'
+          detailsIcon.onclick = async function () {
+            //delete detailsIcon
+            detailsIcon.remove()
+            var { orderId, res } = await getFindocForOrder(orderId, xml)
+            //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
+            var details = document.createElement('div')
+            var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
+            details.innerHTML = detailsText
+            //add class to details
+            details.className = 'is-info is-small'
+            actionsCell.appendChild(details)
+          }
         }
-      };
-      actionsCell.appendChild(saveButton);
-      actionsCell.appendChild(copyButton);
-      actionsCell.appendChild(deleteButton);
-      actionsCell.appendChild(sendOrderButton);
-      var findoc = row.insertCell();
-      findoc.className = 'findoc';
-      if (xml.FINDOC) {
-        var input = document.createElement('input');
-        input.type = 'checkbox';
-        input.name = xml.XMLFILENAME;
-        input.id = xml.XMLFILENAME;
-        input.className = 'checkbox is-small ml-2 trimisCheckbox';
-        input.checked = true;
-        input.disabled = true;
-        findoc.appendChild(input);
-        var label = document.createElement('label');
-        label.htmlFor = xml.XMLFILENAME;
-        label.appendChild(document.createTextNode(xml.FINDOC));
-        findoc.appendChild(label);
-        var detailsIcon = document.createElement('i');
-        detailsIcon.className = 'fas fa-xl fa-info-circle ml-2';
-        detailsIcon.style.cursor = 'pointer';
-        detailsIcon.style.color = 'blue';
-        detailsIcon.title = 'Details';
-        detailsIcon.onclick = async function () {
-          detailsIcon.remove();
-          var { orderId, res } = await getFindocForOrder(orderId, xml);
-          var details = document.createElement('div');
-          var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`;
-          details.innerHTML = detailsText;
-          details.className = 'is-info is-small';
-          findoc.appendChild(details);
-        };
-        findoc.appendChild(detailsIcon);
       } else {
-        var { orderId, res } = await getFindocForOrder(orderId, xml);
-        if (res.success == true && res.data.length > 0) {
-          client
-            .service('CCCSFTPXML')
-            .patch(
-              null,
-              { FINDOC: parseInt(res.data[0].FINDOC) },
-              { query: { XMLFILENAME: xml.XMLFILENAME, TRDR_RETAILER: retailer } }
-            )
-            .then((res) => {
-              var label = document.createElement('label');
-              label.htmlFor = xml.XMLFILENAME;
-              label.appendChild(document.createTextNode(res[0].FINDOC));
-              findoc.appendChild(label);
-              var input = document.createElement('input');
-              input.type = 'checkbox';
-              input.name = xml.XMLFILENAME;
-              input.id = xml.XMLFILENAME;
-              input.className = 'checkbox is-small ml-2 trimisCheckbox';
-              input.checked = true;
-              input.disabled = true;
-              findoc.appendChild(input);
-            });
-          sendOrderButton.innerHTML = 'Order sent';
-        } else {
-          var input = document.createElement('input');
-          input.type = 'checkbox';
-          input.name = xml.XMLFILENAME;
-          input.id = xml.XMLFILENAME;
-          input.className = 'checkbox is-small ml-2 trimisCheckbox';
-          input.style.display = 'none';
-          findoc.appendChild(input);
-        }
+        alert('Already sent')
       }
     }
-    currentIndex += batchSize;
-    if (currentIndex < data.data.length) {
-      setTimeout(loadBatch, 100);
-    }
-  }
+    //append the buttons to the actions cell
+    actionsCell.appendChild(saveButton)
+    actionsCell.appendChild(copyButton)
+    actionsCell.appendChild(deleteButton)
+    actionsCell.appendChild(sendOrderButton)
 
-  loadBatch();
+    //add cell for findoc
+    var findoc = row.insertCell()
+    //add class for findoc
+    findoc.className = 'findoc'
+    //verify if order was sent but not confirmed
+    //get Order > ID value from XMLDATA and search in SALDOC table by processSqlAsDataset
+
+    if (xml.FINDOC) {
+      var input = document.createElement('input')
+      input.type = 'checkbox'
+      input.name = xml.XMLFILENAME
+      input.id = xml.XMLFILENAME
+      input.className = 'checkbox is-small ml-2 trimisCheckbox'
+      input.checked = true
+      input.disabled = true
+      findoc.appendChild(input)
+      //add label
+      var label = document.createElement('label')
+      label.htmlFor = xml.XMLFILENAME
+      label.appendChild(document.createTextNode(xml.FINDOC))
+      findoc.appendChild(label)
+      //add details icon
+      var detailsIcon = document.createElement('i')
+      detailsIcon.className = 'fas fa-xl fa-info-circle ml-2'
+      //style
+      detailsIcon.style.cursor = 'pointer'
+      detailsIcon.style.color = 'blue'
+      detailsIcon.title = 'Details'
+      detailsIcon.onclick = async function () {
+        //delete detailsIcon
+        detailsIcon.remove()
+        var { orderId, res } = await getFindocForOrder(orderId, xml)
+        //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
+        var details = document.createElement('div')
+        var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
+        details.innerHTML = detailsText
+        //add class to details
+        details.className = 'is-info is-small'
+        findoc.appendChild(details)
+      }
+      findoc.appendChild(detailsIcon)
+    } else {
+      var { orderId, res } = await getFindocForOrder(orderId, xml)
+      //console.log('getDataset1', res)
+      if (res.success == true && res.data.length > 0) {
+        //update CCCSFTPXML with order internal number as findoc
+        client
+          .service('CCCSFTPXML')
+          .patch(
+            null,
+            { FINDOC: parseInt(res.data[0].FINDOC) },
+            { query: { XMLFILENAME: xml.XMLFILENAME, TRDR_RETAILER: retailer } }
+          )
+          .then((res) => {
+            console.log('CCCSFTPXML patch', res)
+            var label = document.createElement('label')
+            label.htmlFor = xml.XMLFILENAME
+            label.appendChild(document.createTextNode(res[0].FINDOC))
+            findoc.appendChild(label)
+            //checkbox checked
+            var input = document.createElement('input')
+            input.type = 'checkbox'
+            input.name = xml.XMLFILENAME
+            input.id = xml.XMLFILENAME
+            input.className = 'checkbox is-small ml-2 trimisCheckbox'
+            input.checked = true
+            input.disabled = true
+            findoc.appendChild(input)
+          })
+        //button text
+        sendOrderButton.innerHTML = 'Order sent'
+      } else {
+        //findoc.innerHTML = '<i class="fas fa-xl fa-times-circle has-text-danger"></i>'
+        //add a checkbox to FINDOC cell
+        var input = document.createElement('input')
+        input.type = 'checkbox'
+        input.name = xml.XMLFILENAME
+        input.id = xml.XMLFILENAME
+        input.className = 'checkbox is-small ml-2 trimisCheckbox'
+        //hide
+        input.style.display = 'none'
+        findoc.appendChild(input)
+      }
+    }
+  })
 
   async function getFindocForOrder(orderId, xml) {
-    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0];
-    var params = {};
-    params['query'] = {};
+    var orderId = getValFromXML(xml.XMLDATA, '/Order/ID')[0]
+    //console.log('orderId', orderId)
+    //get order from SALDOC
+    var params = {}
+    params['query'] = {}
     params['query'][
       'sqlQuery'
     ] = `select a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc a inner join salfprms b on a.fprms=b.fprms where a.sosource=1351 and a.trdr=${retailer} and a.num04='${orderId}'
     and a.TRNDATE > DATEADD(day, -30, GETDATE()) and b.tfprms=201
-    `;
-    var res = await client.service('getDataset1').find(params);
-    return { orderId, res };
+    `
+    var res = await client.service('getDataset1').find(params)
+    return { orderId, res }
   }
 }
 
