@@ -305,6 +305,5 @@ export {
   getNDisplayOrders,
   getNDisplayS1Docs,
   toggleComenziNetrimise,
-  toggleFacturiNetrimise,
-  getXmlListFromErp
+  toggleFacturiNetrimise
 }

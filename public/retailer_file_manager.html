@@ -1,214 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Retailer File Manager</title>
-  <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/sandstone/bulmaswatch.min.css">
-  <script src="//unpkg.com/@feathersjs/client@^5.0.0/dist/feathers.js"></script>
-  <script src="//unpkg.com/socket.io-client@^4.0.0/dist/socket.io.js"></script>
-  <script src="client.js"></script>
-</head>
-<body>
-  <section class="section">
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+  <head>
+    <title>monitor retailer</title>
+    <meta name="description" content="integrating Pet Factory S1 with various retailers" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+    <!--load font awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- Bulma Responsive Tables -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css"
+    />
+    <!--load feathers-->
+    <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
+    <!--load socket.io-->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <style>
+      @media screen and (max-width: 800px) {
+        /*responsive table: 1. every tr is displayed like a card with margin 2. every td will stacked vertically to be scrolled*/
+        .is-responsive {
+          display: block;
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          -ms-overflow-style: -ms-autohiding-scrollbar;
+          border-collapse: collapse;
+          border-spacing: 0;
+          border: none;
+        }
+        .is-responsive th,
+        .is-responsive td {
+          min-width: 140px;
+          width: 100%;
+          display: block;
+          text-align: left;
+          padding: 0.5em 1em;
+          border: none;
+        }
+        .is-responsive th {
+          font-weight: bold;
+        }
+        .is-responsive tr {
+          margin-bottom: 2em;
+          border-bottom: 1px solid #ddd;
+          display: flex;
+          flex-direction: column;
+          box-shadow: rgba(10, 10, 10, 0.1) 0px 8px 16px -2px, rgba(10, 10, 10, 0.02) 0px 0px 0px 1px;
+          box-sizing: border-box;
+          border-radius: 0.5em;
+          width: 100%;
+        }
+        .is-responsive thead {
+          display: none;
+        }
+      }
+      .message-header {
+        /*font normal*/
+        font-weight: normal;
+        /*cursor*/
+        cursor: pointer;
+      }
+      .operatii {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      <a class="navbar-item" href="./"
+            ><i class="fa fa-arrow-left" aria-hidden="true"></i>Retailers list
+          </a>
+         <div id="retailerName" class="navbar-item title"></div> 
+         <a class="button is-danger" href="./"> Logout </a>
+         create Bulma navbar
+    -->
+    <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
+      <a class="navbar-item is-info" href="./"
+        ><i class="fa fa-arrow-left" aria-hidden="true"></i> Retailers list
+      </a>
       <div class="navbar-brand">
-        <a class="navbar-item" href="#">
-          <h1 class="title">Retailer File Manager</h1>
+        <a class="navbar-item">
+          <h1 id="retailerName" class="title is-info">Retailers Integration</h1>
         </a>
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarBasicExample"
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">More</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item">About</a>
+              <a class="navbar-item">Contact</a>
+              <hr class="navbar-divider" />
+              <a class="navbar-item">Report an issue</a>
+            </div>
+          </div>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-primary">Log out</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </nav>
-  </section>
 
-  <div class="tabs">
-    <ul>
-      <li><a id="facturi_link" href="#">Facturi</a></li>
-      <li><a id="comenzi_link" href="#">Comenzi</a></li>
-      <!-- Add other tabs here -->
-    </ul>
-  </div>
-
-  <div id="comenzi" class="content-tab">
-    <buttons class="buttons operatii">
-      <button id="trimiteComenzileNetrimise" class="button is-success is-small">
-        Trimite comenzile in Softone
-      </button>
-      <label class="checkbox tag">
-        <input id="comenziTrimise" type="checkbox" />
-        Netrimise
-      </label>
-    </buttons>
-    <div class="table-container">
-      <table
-        id="xmlTable"
-        class="table is-bordered is-striped is-narrow is-hoaverable is-fullwidth is-small is-responsive"
-      >
-        <thead>
-          <tr>
-            <th>XMLDATE</th>
-            <th width="20%">XMLFILENAME</th>
-            <th>XML</th>
-            <!--<th>Partener</th>-->
-            <th>Actions</th>
-            <th>Stare</th>
-          </tr>
-        </thead>
-        <tbody id="xmlTableBody" class="is-size-7"></tbody>
-      </table>
+    <div class="tabs is-boxed p-2">
+      <ul>
+        <li id="defaultOpen" class="tab is-active">
+          <a>Comenzi</a>
+        </li>
+        <li id="facturi_link" class="tab">
+          <a>Facturi</a>
+        </li>
+      </ul>
     </div>
-    <div class="pagination-controls">
-      <button id="prevPageComenzi" class="button is-small">Previous</button>
-      <span id="pageInfoComenzi"></span>
-      <button id="nextPageComenzi" class="button is-small">Next</button>
+    <div id="comenzi" class="content-tab">
+      <buttons class="buttons operatii">
+        <button id="trimiteComenzileNetrimise" class="button is-success is-small">
+          Trimite comenzile in Softone
+        </button>
+        <label class="checkbox tag">
+          <input id="comenziTrimise" type="checkbox" />
+          Netrimise
+        </label>
+      </buttons>
+      <div class="table-container">
+        <table
+          id="xmlTable"
+          class="table is-bordered is-striped is-narrow is-hoaverable is-fullwidth is-small is-responsive"
+        >
+          <thead>
+            <tr>
+              <th>XMLDATE</th>
+              <th width="20%">XMLFILENAME</th>
+              <th>XML</th>
+              <!--<th>Partener</th>-->
+              <th>Actions</th>
+              <th>Stare</th>
+            </tr>
+          </thead>
+          <tbody id="xmlTableBody" class="is-size-7"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-
-  <div id="facturi" class="content-tab">
-    <buttons class="buttons operatii">
-      <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
-        Preluare din Softone
-        <input
-          id="daysOlder"
-          class="input is-small is-info p-1 mx-1"
-          type="number"
-          value="7"
-          min="1"
-          max="30"
-        />
-        zile
-      </button>
-      <button id="sendAllFacturi" class="button is-success is-small mx-1">
-        Trimite facturile spre retailer
-      </button>
-      <label class="checkbox tag">
-        <input id="facturiTrimise" type="checkbox" />
-        Netrimise
-      </label>
-    </buttons>
-    <div class="table-container">
-      <table
-        id="facturiTable"
-        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
-      >
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Document</th>
-            <th>Suma</th>
-            <th>Actions</th>
-            <th>Stare</th>
-            <!--<th class="has-text-info">XML</th>-->
-            <th class="has-text-info" colspan="2">Raspuns</th>
-            <th>XML</th>
-          </tr>
-        </thead>
-        <tbody id="facturiTableBody" class="is-size-7"></tbody>
-      </table>
+    <div id="facturi" class="content-tab">
+      <buttons class="buttons operatii">
+        <button id="preluareFacturiBtn" class="button mx-1 is-small is-primary">
+          Preluare din Softone
+          <input
+            id="daysOlder"
+            class="input is-small is-info p-1 mx-1"
+            type="number"
+            value="7"
+            min="1"
+            max="30"
+          />
+          zile
+        </button>
+        <button id="sendAllFacturi" class="button is-success is-small mx-1">
+          Trimite facturile spre retailer
+        </button>
+        <label class="checkbox tag">
+          <input id="facturiTrimise" type="checkbox" />
+          Netrimise
+        </label>
+      </buttons>
+      <div class="table-container">
+        <table
+          id="facturiTable"
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small is-responsive"
+        >
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Document</th>
+              <th>Suma</th>
+              <th>Actions</th>
+              <th>Stare</th>
+              <!--<th class="has-text-info">XML</th>-->
+              <th class="has-text-info" colspan="2">Raspuns</th>
+              <th>XML</th>
+            </tr>
+          </thead>
+          <tbody id="facturiTableBody" class="is-size-7"></tbody>
+        </table>
+      </div>
     </div>
-    <div class="pagination-controls">
-      <button id="prevPageFacturi" class="button is-small">Previous</button>
-      <span id="pageInfoFacturi"></span>
-      <button id="nextPageFacturi" class="button is-small">Next</button>
+    <script type="module">
+      import {
+        openTab,
+        getNDisplayS1Docs,
+        getNDisplayOrders,
+        toggleComenziNetrimise,
+        toggleFacturiNetrimise,
+        urlLogoRetailerFromUrl,
+        trdrRetailerFromUrl
+      } from './client.js'
+      import { sendAllFacturi } from './modules/invoiceTable.js'
+      import { trimiteComenzileNetrimise } from './modules/orderTable.js'
+      import { retailers } from './retailers.js'
+      //console.log('urlLogoRetailerFromUrl', urlLogoRetailerFromUrl)
+      //console.log('trdrRetailerFromUrl', trdrRetailerFromUrl)
+      //preluareFacturiBtn
+      document.getElementById('preluareFacturiBtn').addEventListener('click', function () {
+        getNDisplayS1Docs(1351, 712, 7121)
+      })
+      //add onclick to defaultOpen
+      document.getElementById('defaultOpen').addEventListener('click', function () {
+        openTab(event, 'comenzi')
+      })
+        //Open tab comenzi
+      document.getElementById('defaultOpen').click()
+      //add onclick to facturi_link
+      document.getElementById('facturi_link').addEventListener('click', function () {
+        openTab(event, 'facturi')
+      })
+      //comenziTrimise
+      document.getElementById('comenziTrimise').addEventListener('click', function () {
+        toggleComenziNetrimise()
+      })
+      //facturiTrimise
+      document.getElementById('facturiTrimise').addEventListener('click', function () {
+        toggleFacturiNetrimise()
+      })
+      //sendAllFacturi
+      document.getElementById('sendAllFacturi').addEventListener('click', async function () {
+        await sendAllFacturi()
+      })
+      //trimiteComenzileNetrimise
+      document.getElementById('trimiteComenzileNetrimise').addEventListener('click', async function () {
+        await trimiteComenzileNetrimise()
+      })
+      //defaultOpen
+      //document.getElementById('defaultOpen').click()
+      //document.getElementById('retailerLogo').src = urlLogoRetailerFromUrl
+      getNDisplayOrders(trdrRetailerFromUrl)
+      getNDisplayS1Docs(1351, 712, 7121)
+      // //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
+      // for (let i = 0; i < retailers.length; i++) {
+      //   var trdr = await retailers[i].getTrdr()
+      //   if (trdr == trdrRetailerFromUrl) {
+      //     const retailer = retailers[i]
+      //     console.log('retailer', retailer)
+      //     //document.getElementById('retailerName').textContent = retailer.name
+      //     retailer.setNrComenziDeTrimis()
+      //     retailer.setNrFacturiDeTrimis()
+      //     const nrComenziDeTrimis = await retailer.getNrComenziDeTrimis()
+      //     const nrFacturiDeTrimis = await retailer.getNrFacturiDeTrimis()
+      //     document.getElementById(
+      //       'trimiteComenzileNetrimise'
+      //     ).textContent = `Trimite toate (${nrComenziDeTrimis})`
+      //     document.getElementById('sendAllFacturi').textContent = `Trimite toate (${nrFacturiDeTrimis})`
+      //     /*           //if 0 de trimis, disable buttons
+      //     if (nrComenziDeTrimis == 0) {
+      //       document.getElementById('trimiteComenzileNetrimise').disabled = true
+      //     }
+      //     if (nrFacturiDeTrimis == 0) {
+      //       document.getElementById('sendAllFacturi').disabled = true
+      //     } */
+      //     break
+      //   }
+      // }
+    </script>
+    <!--//scary bulma modal for deleting a row-->
+    <div id="deleteModal" class="modal modal-fx-superScaled">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <h1 id="deletedRow" class="p-5">Are you sure you want to delete this row?</h1>
+          <button id="deleteYes" class="button is-danger">Yes</button>
+          <button id="deleteNo" class="button is-success">No</button>
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
     </div>
-  </div>
-
-  <script type="module">
-    import {
-      openTab,
-      getXmlListFromErp,
-      trdrRetailerFromUrl
-    } from './client.js'
-
-    let currentPageComenzi = 1;
-    let currentPageFacturi = 1;
-    const rowsPerPage = 10;
-
-    async function loadComenziPage(page) {
-      try {
-        const res = await getXmlListFromErp(trdrRetailerFromUrl, page, rowsPerPage);
-        const tableBody = document.getElementById('xmlTableBody');
-        tableBody.innerHTML = '';
-        res.data.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${item.XMLDATE}</td>
-            <td>${item.XMLFILENAME}</td>
-            <td>${item.XML}</td>
-            <td>${item.Actions}</td>
-            <td>${item.Stare}</td>
-          `;
-          tableBody.appendChild(row);
-        });
-        updatePaginationControls('pageInfoComenzi', 'prevPageComenzi', 'nextPageComenzi', page, res.total);
-      } catch (error) {
-        console.error('Error loading comenzi:', error);
-      }
-    }
-
-    async function loadFacturiPage(page) {
-      try {
-        const res = await getXmlListFromErp(trdrRetailerFromUrl, page, rowsPerPage);
-        const tableBody = document.getElementById('facturiTableBody');
-        tableBody.innerHTML = '';
-        res.data.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${item.Data}</td>
-            <td>${item.Document}</td>
-            <td>${item.Suma}</td>
-            <td>${item.Actions}</td>
-            <td>${item.Stare}</td>
-            <td>${item.Raspuns}</td>
-            <td>${item.XML}</td>
-          `;
-          tableBody.appendChild(row);
-        });
-        updatePaginationControls('pageInfoFacturi', 'prevPageFacturi', 'nextPageFacturi', page, res.total);
-      } catch (error) {
-        console.error('Error loading facturi:', error);
-      }
-    }
-
-    function updatePaginationControls(pageInfoId, prevButtonId, nextButtonId, page, totalItems) {
-      const totalPages = Math.ceil(totalItems / rowsPerPage);
-      document.getElementById(pageInfoId).textContent = `Page ${page} of ${totalPages}`;
-      document.getElementById(prevButtonId).disabled = page === 1;
-      document.getElementById(nextButtonId).disabled = page === totalPages;
-    }
-
-    document.getElementById('prevPageComenzi').addEventListener('click', () => {
-      if (currentPageComenzi > 1) {
-        currentPageComenzi--;
-        loadComenziPage(currentPageComenzi);
-      }
-    });
-
-    document.getElementById('nextPageComenzi').addEventListener('click', () => {
-      currentPageComenzi++;
-      loadComenziPage(currentPageComenzi);
-    });
-
-    document.getElementById('prevPageFacturi').addEventListener('click', () => {
-      if (currentPageFacturi > 1) {
-        currentPageFacturi--;
-        loadFacturiPage(currentPageFacturi);
-      }
-    });
-
-    document.getElementById('nextPageFacturi').addEventListener('click', () => {
-      currentPageFacturi++;
-      loadFacturiPage(currentPageFacturi);
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadComenziPage(currentPageComenzi);
-      loadFacturiPage(currentPageFacturi);
-    });
-  </script>
-</body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"
+    ></script>
+  </body>
 </html>
