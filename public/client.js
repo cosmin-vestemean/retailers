@@ -95,10 +95,48 @@ async function getNDisplayOrders(retailer) {
   //font 20px
   td.style.fontSize = '20px'
   td.colSpan = 5
-  await getXmlListFromErp(retailer).then(async (data) => {
-    //console.log('getXmlListFromErp', data)
-    await displayOrdersForRetailers(data, retailer, 'xmlTableBody')
-  })
+  let currentPage = 1;
+  const limit = 10;
+
+  async function loadPage(page) {
+    currentPage = page;
+    xmlTableBody.innerHTML = ''; // Clear the table body
+    var tr = xmlTableBody.insertRow();
+    var td = tr.insertCell();
+    td.innerHTML = 'Loading...';
+    td.className = 'has-text-primary has-text-centered has-text-weight-bold';
+    td.style.fontSize = '20px';
+    td.colSpan = 5;
+
+    await getXmlListFromErp(retailer, page, limit).then(async (data) => {
+      //console.log('getXmlListFromErp', data)
+      await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
+    });
+
+    // Update pagination controls
+    updatePaginationControls();
+  }
+
+  function updatePaginationControls() {
+    const paginationControls = document.getElementById('paginationControls');
+    paginationControls.innerHTML = ''; // Clear existing controls
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = 'Previous';
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => loadPage(currentPage - 1);
+    paginationControls.appendChild(prevButton);
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = 'Next';
+    nextButton.onclick = () => loadPage(currentPage + 1);
+    paginationControls.appendChild(nextButton);
+  }
+
+  // Initial load
+  await loadPage(currentPage);
 }
 
 async function getNDisplayS1Docs(sosource, fprms, series) {
