@@ -151,7 +151,7 @@ export class Retailer {
                         ${
                           this.#underConstruction
                             ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
-                            : '<p>' + this.#name + '</p>'
+                            : '<p class="title is-4">' + this.#name + '</p>'
                         }
                         <table class="table is-narrow is-small">
                           <tr>
@@ -218,7 +218,7 @@ export class Retailer {
               ${
                 this.#underConstruction
                   ? '<p class="has-text-danger">UNDER CONSTRUCTION</p>'
-                  : '<p>' + this.#name + '</p>'
+                  : '<p class="title is-4">' + this.#name + '</p>'
               }
               <table class="table is-narrow is-small">
                 <tr>
