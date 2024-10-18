@@ -34,9 +34,11 @@ export class Retailer {
     let res = 0
     let params = {}
     params['query'] = {}
+    //XMLDATE is in format 2023-08-31 11:31:07.000
+     //I want to display only last 30 days
     params['query']['sqlQuery'] = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${
       this.#trdr
-    } AND COALESCE(FINDOC, 0) = 0 and year(XMLDATE) = year(getdate())`
+    } AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())`
 
     client
       .service('getDataset')
@@ -69,7 +71,7 @@ export class Retailer {
       'sqlQuery'
     ] = `select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
       this.#trdr
-    } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+    } AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())`
 
     await client
       .service('getDataset')
@@ -98,7 +100,7 @@ export class Retailer {
       format(trndate, 'dd.MM.yyyy') trndate 
       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=${
         this.#trdr
-      } AND m.CCCXMLSendDate is null and f.fiscprd=year(getdate()) and f.iscancel=0`
+      } AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())`,
     }
 
     client
