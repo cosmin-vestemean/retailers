@@ -1,5 +1,5 @@
 //const socket = io('https://retailers-ac9953f6caca.herokuapp.com')
-const socket = io('https://retailers1-0691020d207c.herokuapp.com/')
+const socket = io('https://retailers1-0691020d207c.herokuapp.com')
 ////const socket = io('www.retailers.acct.ro')
 const client = feathers()
 const socketClient = feathers.socketio(socket)
