@@ -541,6 +541,8 @@ class SftpServiceClass {
       xmlJson = result
     })
 
+    console.log('xmlJson', xmlJson)
+
     // Add data to DATA object
     CCCXMLS1MAPPINGS.forEach((item) => {
       let xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
@@ -631,6 +633,7 @@ class SftpServiceClass {
     for (let i = 0; i < xmlNodes.length; i++) {
       val = val[xmlNodes[i]]
     }
+    console.log('val', val, xmlNode)
     return val
   }
 
