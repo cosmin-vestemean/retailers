@@ -66,6 +66,7 @@ app.hooks({
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
+const retailersArr = [11639, 12349, 13249, 78631, 11322, 12664, 38804, 11654]
 
 //create a class as feathersjs service
 class SftpServiceClass {
@@ -433,7 +434,264 @@ class SftpServiceClass {
       data = {}
       params = { query: { rootPath: aperakPath } }
       await this.storeAperakInErpMessages(data, params)
+      //await this.createOrders({}, {})
     }, period)
+  }
+
+  async createOrders(data, params) {
+    const strRetailers = retailersArr.join(',')
+    //const daysOld = 30
+    const daysOld = 170
+    //getDataset1
+    const res = await app.service('getDataset1').find({
+      query: {
+        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, - ${daysOld}, GETDATE()) ) SELECT top 1 * FROM ( SELECT f.findoc findoc1 ,* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
+      }
+    })
+
+    console.log('res', res)
+
+    if (res.success) {
+      for (const item of res.data) {
+        const xml = item.XMLDATA
+        const sosource = 1351
+        const fprms = 701
+        const series = 7012
+        const retailer = item.TRDR_RETAILER
+        const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
+        console.log('jsonOrder', resOrder.jsonOrder)
+        if (resOrder.success) {
+          const jsonOrder = resOrder.jsonOrder
+          //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME)
+          //for testing we will not send the order to S1 but return fabricated response
+          const resCreateOrder = { success: true, message: 'Order created successfully' }
+          console.log('resCreateOrder', resCreateOrder)
+          if (resCreateOrder.success) {
+            console.log('Order created successfully')
+          } else {
+            console.error('Error creating order:', resCreateOrder.message)
+          }
+        } else {
+          console.error('Error creating order JSON:', resOrder.errors)
+        }
+      }
+    } else {
+      console.error('Error fetching data:', res.error)
+    }
+  }
+
+  async createOrderJSON(xml, sosource, fprms, series, retailer) {
+    // Get a token for S1 connection
+    const resClient = await app.service('CCCRETAILERSCLIENTS').find({
+      query: { TRDR_CLIENT: 1 }
+    })
+    const url = resClient.data[0].WSURL
+    const username = resClient.data[0].WSUSER
+    const password = resClient.data[0].WSPASS
+
+    // Connect to S1
+    const resConnect = await app.service('connectToS1').find({
+      query: { url: url, username: username, password: password }
+    })
+    const token = resConnect.token
+
+    // Get CCCDOCUMENTES1MAPPINGS
+    const resDocMappings = await app.service('CCCDOCUMENTES1MAPPINGS').find({
+      query: {
+        SOSOURCE: sosource,
+        FPRMS: fprms,
+        SERIES: series,
+        TRDR_RETAILER: retailer
+      }
+    })
+    const CCCDOCUMENTES1MAPPINGS = resDocMappings.data[0].CCCDOCUMENTES1MAPPINGS
+
+    // Get CCCXMLS1MAPPINGS
+    const resXmlMappings = await app.service('CCCXMLS1MAPPINGS').find({
+      query: { CCCDOCUMENTES1MAPPINGS: CCCDOCUMENTES1MAPPINGS }
+    })
+    const CCCXMLS1MAPPINGS = resXmlMappings.data
+
+    // Create JSON order
+    let jsonOrder = {
+      service: 'setData',
+      clientID: token,
+      appId: 1001,
+      OBJECT: 'SALDOC',
+      FORM: 'EFIntegrareRetailers'
+    }
+
+    // Group data by distinct S1TABLE1
+    let distinctS1TABLE1 = []
+    CCCXMLS1MAPPINGS.forEach((item) => {
+      if (!distinctS1TABLE1.includes(item.S1TABLE1)) {
+        distinctS1TABLE1.push(item.S1TABLE1)
+      }
+    })
+
+    // Initialize DATA object
+    let DATA = {}
+    distinctS1TABLE1.forEach((item) => {
+      DATA[item] = []
+    })
+
+    //convert xml to json
+    var xmlJson = null
+    parseString(xml, function (err, result) {
+      xmlJson = result
+    })
+
+    // Add data to DATA object
+    CCCXMLS1MAPPINGS.forEach((item) => {
+      let xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
+      xmlVals.forEach((xmlVal) => {
+        let obj = {}
+        obj[item.S1FIELD1] = xmlVal
+        DATA[item].push(obj)
+      })
+    })
+
+    jsonOrder['DATA'] = DATA
+
+    // Process objects requiring SQL queries
+    let errors = []
+    for (let key in jsonOrder['DATA']) {
+      let dataArray = jsonOrder['DATA'][key]
+      for (let item of dataArray) {
+        for (let field in item) {
+          if (typeof item[field] === 'object' && item[field].SQL) {
+            let sqlQuery = item[field].SQL.replace('{value}', item[field].value)
+            try {
+              let resSQL = await app.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
+              if (resSQL.data) {
+                item[field] = resSQL.data
+              } else {
+                errors.push({
+                  message: 'Error fetching data from SQL query',
+                  sqlQuery: sqlQuery,
+                  field: field,
+                  value: item[field].value
+                })
+              }
+            } catch (error) {
+              errors.push(error.message)
+            }
+          }
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      return { success: false, errors: errors }
+    }
+
+    // Process ITELINES array
+    let itelines = jsonOrder['DATA']['ITELINES']
+    let fieldNames = []
+    itelines.forEach((item) => {
+      for (let key in item) {
+        if (!fieldNames.includes(key)) {
+          fieldNames.push(key)
+        }
+      }
+    })
+
+    let arrays = {}
+    fieldNames.forEach((item) => {
+      arrays[item] = []
+    })
+
+    itelines.forEach((item) => {
+      for (let key in item) {
+        arrays[key].push(item[key])
+      }
+    })
+
+    // Reconstruct ITELINES array
+    itelines = []
+    for (let i = 0; i < arrays[fieldNames[0]].length; i++) {
+      let obj = {}
+      for (let j = 0; j < fieldNames.length; j++) {
+        obj[fieldNames[j]] = arrays[fieldNames[j]][i]
+      }
+      itelines.push(obj)
+    }
+    jsonOrder['DATA']['ITELINES'] = itelines
+
+    // Add additional data to SALDOC
+    jsonOrder['DATA']['SALDOC'][0]['SERIES'] = series
+    jsonOrder['DATA']['SALDOC'][0]['TRDR'] = parseInt(retailer)
+
+    return { success: true, jsonOrder: jsonOrder }
+  }
+
+  async getValFromXML(jsonObj, xmlNode) {
+    let xmlNodes = xmlNode.split('/')
+    let val = jsonObj
+    for (let i = 0; i < xmlNodes.length; i++) {
+      val = val[xmlNodes[i]]
+    }
+    return val
+  }
+
+  async sendOrderToServer(jsonOrder, xmlFilename) {
+    try {
+      // Get connection details for S1
+      const res = await app.service('CCCRETAILERSCLIENTS').find({
+        query: {
+          TRDR_CLIENT: 1
+        }
+      })
+      const url = res.data[0].WSURL
+      const username = res.data[0].WSUSER
+      const password = res.data[0].WSPASS
+
+      // Connect to S1
+      const connectToS1Res = await app.service('connectToS1').find({
+        query: {
+          url: url,
+          username: username,
+          password: password
+        }
+      })
+
+      jsonOrder['clientID'] = connectToS1Res.token
+      console.log('jsonOrder', jsonOrder)
+
+      // Send document to S1
+      const setDocumentRes = await app.service('setDocument').create(jsonOrder)
+      console.log('setDocument', setDocumentRes)
+
+      if (setDocumentRes.success === true) {
+        // Update CCCSFTPXML set FINDOC=setDocumentRes.id where XMLFILENAME=xmlFilename
+        await app.service('CCCSFTPXML').patch(
+          null,
+          {
+            FINDOC: setDocumentRes.id
+          },
+          {
+            query: {
+              XMLFILENAME: xmlFilename
+            }
+          }
+        )
+        return {
+          success: true,
+          message: 'Order sent to S1, order internal number: ' + setDocumentRes.id
+        }
+      } else {
+        return {
+          success: false,
+          message: setDocumentRes.error
+        }
+      }
+    } catch (error) {
+      console.error('Error sending order to server:', error)
+      return {
+        success: false,
+        message: 'Error sending order to server'
+      }
+    }
   }
 
   async uploadXml(data, params) {
@@ -480,7 +738,14 @@ class SftpServiceClass {
 
 //register the service
 app.use('sftp', new SftpServiceClass(), {
-  methods: ['downloadXml', 'storeXmlInDB', 'storeAperakInErpMessages', 'uploadXml'],
+  methods: [
+    'downloadXml',
+    'storeXmlInDB',
+    'storeAperakInErpMessages',
+    'uploadXml',
+    'scanPeriodically',
+    'createOrders'
+  ],
   events: ['uploadResult']
 })
 
@@ -793,3 +1058,6 @@ CREATE TABLE CCCEDIPROVIDER (
     CONNTYPE INT NOT NULL
 )
 */
+
+//test sftp.createOrders
+app.service('sftp').createOrders({}, {})
