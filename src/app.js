@@ -545,7 +545,7 @@ class SftpServiceClass {
 
     // Add data to DATA object
     CCCXMLS1MAPPINGS.forEach((item) => {
-      var xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
+      var xmlVals = await this.getValFromXML(xmlJson, item.XMLNODE)
       console.log('xmlVals', xmlVals)
       xmlVals.forEach((xmlVal) => {
         var val = 0
@@ -813,27 +813,27 @@ class SftpServiceClass {
 
       */
 
-  getValFromXML(jsonObj, xmlNode) {
-    jsonObj = JSON.parse(JSON.stringify(jsonObj))
-    const nodes = xmlNode.split('/')
-    let results = []
+async getValFromXML(jsonObj, xmlNode) {
+  // Split the xmlNode path
+  const nodes = xmlNode.split('/').filter(Boolean);
 
-    function recursiveSearch(obj, index) {
-      if (index >= nodes.length || !obj) {
-        results.push(obj)
-        return
-      }
-      const node = nodes[index]
-      if (node === '') {
-        recursiveSearch(obj, index + 1)
-      } else {
-        if (Array.isArray(obj)) {
-          obj.forEach((item) => recursiveSearch(item, index))
-        } else if (obj.hasOwnProperty(node)) {
-          recursiveSearch(obj[node], index + 1)
-        }
-      }
+  let current = jsonObj;
+  for (const node of nodes) {
+    if (current && current[node]) {
+      current = current[node];
+    } else {
+      // Node not found
+      return [];
     }
+  }
+
+  // Return the found value(s)
+  if (Array.isArray(current)) {
+    return current;
+  } else {
+    return [current];
+  }
+}
 
     recursiveSearch(jsonObj, 0)
     return results
