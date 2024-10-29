@@ -636,11 +636,12 @@ class SftpServiceClass {
 
   getValFromXML(jsonObj, xmlNode) {
     let xmlNodes = xmlNode.split('/')
+    console.log('xmlNode', xmlNode,'xmlNodes', xmlNodes)
     let val = jsonObj
     for (let i = 0; i < xmlNodes.length; i++) {
       val = val[xmlNodes[i]]
     }
-    console.log('val', val, 'xmlNode', xmlNode)
+    console.log('val', val)
     return val
   }
 
