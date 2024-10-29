@@ -1,6 +1,6 @@
 {
   "name": "retailers",
-  "description": "integrating Pet Factory S1 with various retailers",
+  "description": "Integrating Pet Factory S1 with various retailers",
   "version": "0.0.0",
   "homepage": "",
   "private": true,
@@ -15,7 +15,7 @@
   "contributors": [],
   "bugs": {},
   "engines": {
-    "node": ">= 20.2.0"
+    "node": "22.10.0"
   },
   "feathers": {
     "language": "js",
