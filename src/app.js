@@ -634,8 +634,7 @@ class SftpServiceClass {
     return { success: true, jsonOrder: jsonOrder }
   }
 
-  getValFromXML(jsonObj, xmlNode) {
-      /*
+  /*
       {
     "Order": {
         "$": {
@@ -814,21 +813,29 @@ class SftpServiceClass {
 
       */
 
-    let xmlVals = []
-    let keys = xmlNode.split('/')
-    let obj = jsonObj
-    for (let key of keys) {
-      obj = obj[key]
-    }
-    if (Array.isArray(obj)) {
-      obj.forEach((item) => {
-        xmlVals.push(item)
-      })
-    } else {
-      xmlVals.push(obj)
+  getValFromXML(jsonObj, xmlNode) {
+    const nodes = xmlNode.split('/')
+    let results = []
+
+    function recursiveSearch(obj, index) {
+      if (index >= nodes.length || !obj) {
+        results.push(obj)
+        return
+      }
+      const node = nodes[index]
+      if (node === '') {
+        recursiveSearch(obj, index + 1)
+      } else {
+        if (Array.isArray(obj)) {
+          obj.forEach((item) => recursiveSearch(item, index))
+        } else if (obj.hasOwnProperty(node)) {
+          recursiveSearch(obj[node], index + 1)
+        }
+      }
     }
 
-    return xmlVals
+    recursiveSearch(jsonObj, 0)
+    return results
   }
 
   async sendOrderToServer(jsonOrder, xmlFilename) {
