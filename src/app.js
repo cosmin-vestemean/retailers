@@ -640,6 +640,7 @@ class SftpServiceClass {
     let val = jsonObj
     for (let i = 0; i < xmlNodes.length; i++) {
       val = val[xmlNodes[i]]
+      console.log('val', val, 'xmlNodes[i]', xmlNodes[i])
     }
     console.log('val', val)
     return val
