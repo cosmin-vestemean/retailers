@@ -814,6 +814,7 @@ class SftpServiceClass {
       */
 
   getValFromXML(jsonObj, xmlNode) {
+    jsonObj = JSON.parse(JSON.stringify(jsonObj))
     const nodes = xmlNode.split('/')
     let results = []
 
