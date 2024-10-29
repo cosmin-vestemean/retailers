@@ -635,10 +635,6 @@ class SftpServiceClass {
   }
 
   getValFromXML(jsonObj, xmlNode) {
-    let xmlNodes = xmlNode.split('/')
-    console.log('xmlNode', xmlNode,'xmlNodes', xmlNodes)
-    let val = jsonObj
-    for (let i = 0; i < xmlNodes.length; i++) {
       /*
       {
     "Order": {
@@ -818,38 +814,21 @@ class SftpServiceClass {
 
       */
 
-      if (val[xmlNodes[i]]) {
-        val = val[xmlNodes[i]]
-      } else {
-        val = null
-        break
-      }
-
-      if (i === xmlNodes.length - 1) {
-        if (Array.isArray(val)) {
-          return val
-        } else {
-          return [val]
-        }
-      }
-
-      if (Array.isArray(val)) {
-        let temp = []
-        val.forEach((item) => {
-          if (item[xmlNodes[i + 1]]) {
-            temp.push(item[xmlNodes[i + 1]])
-          }
-        })
-        val = temp
-      }
-
-      if (!val) {
-        break
-      }
-
+    let xmlVals = []
+    let keys = xmlNode.split('/')
+    let obj = jsonObj
+    for (let key of keys) {
+      obj = obj[key]
+    }
+    if (Array.isArray(obj)) {
+      obj.forEach((item) => {
+        xmlVals.push(item)
+      })
+    } else {
+      xmlVals.push(obj)
     }
 
-    return val
+    return xmlVals
   }
 
   async sendOrderToServer(jsonOrder, xmlFilename) {
