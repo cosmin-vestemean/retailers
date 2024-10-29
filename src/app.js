@@ -634,8 +634,6 @@ class SftpServiceClass {
     return { success: true, jsonOrder: jsonOrder }
   }
 
-
-
   async sendOrderToServer(jsonOrder, xmlFilename) {
     try {
       // Get connection details for S1
@@ -697,28 +695,32 @@ class SftpServiceClass {
   }
 
   getValFromXML(jsonObj, xmlNode) {
-    const nodes = xmlNode.split('/').filter(Boolean);
-    let results = [];
-  
+    const nodes = xmlNode.split('/').filter(Boolean)
+    let results = []
+
     function traverse(currentObj, nodeIndex) {
       if (nodeIndex >= nodes.length) {
-        results.push(currentObj);
-        return;
+        if (Array.isArray(currentObj)) {
+          results.push(...currentObj)
+        } else {
+          results.push(currentObj)
+        }
+        return
       }
-      const currentNode = nodes[nodeIndex];
+      const currentNode = nodes[nodeIndex]
       if (Array.isArray(currentObj)) {
-        currentObj.forEach(item => {
+        currentObj.forEach((item) => {
           if (item && item.hasOwnProperty(currentNode)) {
-            traverse(item[currentNode], nodeIndex + 1);
+            traverse(item[currentNode], nodeIndex + 1)
           }
-        });
+        })
       } else if (currentObj && currentObj.hasOwnProperty(currentNode)) {
-        traverse(currentObj[currentNode], nodeIndex + 1);
+        traverse(currentObj[currentNode], nodeIndex + 1)
       }
     }
-  
-    traverse(jsonObj, 0);
-    return results;
+
+    traverse(jsonObj, 0)
+    return results
   }
 
   async uploadXml(data, params) {
