@@ -639,10 +639,216 @@ class SftpServiceClass {
     console.log('xmlNode', xmlNode,'xmlNodes', xmlNodes)
     let val = jsonObj
     for (let i = 0; i < xmlNodes.length; i++) {
-      val = val[xmlNodes[i]]
-      console.log('val', val, 'xmlNodes[i]', xmlNodes[i])
+      /*
+      {
+    "Order": {
+        "$": {
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xsi:noNamespaceSchemaLocation": "file:///C:/Users/ddescultescu/Desktop/Comanda%20UBL%20la%20XML%20DX2/docxchange-order-dx2.xsd"
+        },
+        "UBLExtension": ["Original"],
+        "UBLVersionID": ["2.1"],
+        "CustomizationID": ["ver2.0"],
+        "ProfileID": ["RO11607939_RO25190857"],
+        "ID": ["2405008125485"],
+        "CopyIndicator": ["true"],
+        "UUID": ["DX01_144_20240521_01004562"],
+        "IssueDate": ["2024-05-21"],
+        "OrderTypeCode": ["220"],
+        "Note": ["680731A1"],
+        "LineCountNumeric": ["2"],
+        "RequestedDeliveryPeriod": [{
+                "StartDate": ["2024-05-27"],
+                "StartTime": ["04:00:00"],
+                "EndDate": ["2024-05-27"],
+                "EndTime": ["04:00:00"],
+                "Description": [""]
+            }
+        ],
+        "BuyerCustomerParty": [{
+                "EndpointID": ["5948688999993"],
+                "PartyName": ["PROFI ROM FOOD SRL"],
+                "PostalAddress": [{
+                        "StreetName": ["Aleea Amicitiei, "],
+                        "AdditionalStreetName": [""],
+                        "CityName": ["Timisoara"],
+                        "PostalZone": ["300288"],
+                        "AddressLine": ["Aleea Amicitiei,   Nr. 1 Timisoara 300288"],
+                        "Country": ["RO"]
+                    }
+                ]
+            }
+        ],
+        "SellerSupplierParty": [{
+                "CustomerAssignedAccountID": ["6807"],
+                "EndpointID": ["5940475754006"],
+                "PartyName": ["PET FACTORY SRL"],
+                "PostalAddress": [{
+                        "StreetName": ["Sos. Giurgiului"],
+                        "AdditionalStreetName": ["Bl. 12, Ap. 130"],
+                        "CityName": ["Bucuresti, Sector 4"],
+                        "PostalZone": ["40676"],
+                        "AddressLine": ["Sos. Giurgiului Bl. 12, Ap. 130 Nr.118 Bucuresti, Sector 4 40676"],
+                        "Country": ["RO"]
+                    }
+                ]
+            }
+        ],
+        "AccountingCustomerParty": [{
+                "EndpointID": ["5948688999993"],
+                "PartyName": ["PROFI ROM FOOD SRL"],
+                "PostalAddress": [{
+                        "StreetName": ["Aleea Amicitiei, "],
+                        "AdditionalStreetName": [""],
+                        "CityName": ["Timisoara"],
+                        "PostalZone": ["300288"],
+                        "AddressLine": ["Aleea Amicitiei,   Nr. 1 Timisoara 300288"],
+                        "Country": ["RO"]
+                    }
+                ]
+            }
+        ],
+        "DeliveryParty": [{
+                "EndpointID": ["5948688998224"],
+                "PartyName": ["703 DEPOZIT PLOIESTI"],
+                "PostalAddress": [{
+                        "StreetName": ["703 DEPOZIT PLOIESTI"],
+                        "AdditionalStreetName": [""],
+                        "CityName": ["Ploiesti"],
+                        "PostalZone": [""],
+                        "AddressLine": ["703 DEPOZIT PLOIESTI  Dn72 Km 8 Ploiesti "],
+                        "Country": ["RO"]
+                    }
+                ]
+            }
+        ],
+        "Delivery": [{
+                "Quantity": [{
+                        "Amount": ["6406"]
+                    }
+                ]
+            }
+        ],
+        "AnticipatedMonetaryTotal": [{
+                "TaxExclusiveAmount": [{
+                        "$": {
+                            "CurrencyID": "RON"
+                        },
+                        "Amount": ["52916.02"]
+                    }
+                ]
+            }
+        ],
+        "OrderLine": [{
+                "ID": ["1"],
+                "Price": [{
+                        "$": {
+                            "CurrencyID": "RON"
+                        },
+                        "Amount": ["8.95"]
+                    }
+                ],
+                "Quantity": [{
+                        "$": {
+                            "UnitCode": "PCE"
+                        },
+                        "Amount": ["4510"]
+                    }
+                ],
+                "ReturnableMaterialIndicator": ["false"],
+                "PalletSpaceMeasurementDimension": [{
+                        "Measure": [{
+                                "Amount": ["25.056"]
+                            }
+                        ],
+                        "MaximumMeasure": [{
+                                "Amount": ["180"]
+                            }
+                        ]
+                    }
+                ],
+                "Item": [{
+                        "Description": ["GOODIES RECOMPENSA CATEL OS CU PUI 120G"],
+                        "PackQuantity": ["451"],
+                        "PackSizeNumeric": ["10"],
+                        "BuyersItemIdentification": ["095201-0"],
+                        "StandardItemIdentification": ["5949060222524"]
+                    }
+                ]
+            }, {
+                "ID": ["2"],
+                "Price": [{
+                        "$": {
+                            "CurrencyID": "RON"
+                        },
+                        "Amount": ["6.62"]
+                    }
+                ],
+                "Quantity": [{
+                        "$": {
+                            "UnitCode": "PCE"
+                        },
+                        "Amount": ["1896"]
+                    }
+                ],
+                "ReturnableMaterialIndicator": ["false"],
+                "PalletSpaceMeasurementDimension": [{
+                        "Measure": [{
+                                "Amount": ["7.9"]
+                            }
+                        ],
+                        "MaximumMeasure": [{
+                                "Amount": ["240"]
+                            }
+                        ]
+                    }
+                ],
+                "Item": [{
+                        "Description": ["GOODIES RECOMPENSA CATEL FASII CU P UI 100G"],
+                        "PackQuantity": ["158"],
+                        "PackSizeNumeric": ["12"],
+                        "BuyersItemIdentification": ["095202-0"],
+                        "StandardItemIdentification": ["5949060207774"]
+                    }
+                ]
+            }
+        ]
     }
-    console.log('val', val)
+}
+
+      */
+
+      if (val[xmlNodes[i]]) {
+        val = val[xmlNodes[i]]
+      } else {
+        val = null
+        break
+      }
+
+      if (i === xmlNodes.length - 1) {
+        if (Array.isArray(val)) {
+          return val
+        } else {
+          return [val]
+        }
+      }
+
+      if (Array.isArray(val)) {
+        let temp = []
+        val.forEach((item) => {
+          if (item[xmlNodes[i + 1]]) {
+            temp.push(item[xmlNodes[i + 1]])
+          }
+        })
+        val = temp
+      }
+
+      if (!val) {
+        break
+      }
+
+    }
+
     return val
   }
 
