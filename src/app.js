@@ -545,7 +545,7 @@ class SftpServiceClass {
 
     // Add data to DATA object
     CCCXMLS1MAPPINGS.forEach((item) => {
-      var xmlVals = await this.getValFromXML(xmlJson, item.XMLNODE)
+      var xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
       console.log('xmlVals', xmlVals)
       xmlVals.forEach((xmlVal) => {
         var val = 0
@@ -696,7 +696,7 @@ class SftpServiceClass {
     }
   }
 
-  async getValFromXML(jsonObj, xmlNode) {
+  getValFromXML(jsonObj, xmlNode) {
     const nodes = xmlNode.split('/').filter(Boolean);
     let results = [];
   
