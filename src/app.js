@@ -640,7 +640,7 @@ class SftpServiceClass {
     for (let i = 0; i < xmlNodes.length; i++) {
       val = val[xmlNodes[i]]
     }
-    console.log('val', val, xmlNode)
+    console.log('val', val, 'xmlNode', xmlNode)
     return val
   }
 
