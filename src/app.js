@@ -574,12 +574,10 @@ class SftpServiceClass {
         for (let field in item) {
           if (typeof item[field] === 'object' && item[field].SQL) {
             let sqlQuery = item[field].SQL.replace('{value}', item[field].value)
-            console.log('sqlQuery', sqlQuery)
             try {
               let resSQL = await app.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
-              console.log('resSQL', resSQL)
               if (resSQL.data) {
-                item[field] = resSQL.data[0][field]
+                item[field] = resSQL.data
               } else {
                 errors.push({
                   message: 'Error fetching data from SQL query',
