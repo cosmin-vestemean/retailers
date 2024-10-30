@@ -546,9 +546,9 @@ class SftpServiceClass {
     console.log('xmlJson', JSON.stringify(xmlJson))
 
     // Add data to DATA object
-    CCCXMLS1MAPPINGS.forEach((item) => {
+    CCCXMLS1MAPPINGS.forEach(async (item) => {
       console.log('item', item)
-      var xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
+      var xmlVals = await this.getValFromXML(xmlJson, item.XMLNODE)
       console.log('xmlVals', xmlVals)
       xmlVals.forEach((xmlVal) => {
         var val = 0
@@ -697,11 +697,11 @@ class SftpServiceClass {
     }
   }
 
-  getValFromXML(jsonObj, xmlNode) {
+  async getValFromXML(jsonObj, xmlNode) {
     const nodes = xmlNode.split('/').filter(Boolean)
     let results = []
 
-    function traverse(currentObj, nodeIndex) {
+    async function traverse(currentObj, nodeIndex) {
       if (nodeIndex >= nodes.length) {
         if (Array.isArray(currentObj)) {
           results.push(...currentObj)
@@ -712,17 +712,17 @@ class SftpServiceClass {
       }
       const currentNode = nodes[nodeIndex]
       if (Array.isArray(currentObj)) {
-        currentObj.forEach((item) => {
+        for (const item of currentObj) {
           if (item && item.hasOwnProperty(currentNode)) {
-            traverse(item[currentNode], nodeIndex + 1)
+            await traverse(item[currentNode], nodeIndex + 1)
           }
-        })
+        }
       } else if (currentObj && currentObj.hasOwnProperty(currentNode)) {
-        traverse(currentObj[currentNode], nodeIndex + 1)
+        await traverse(currentObj[currentNode], nodeIndex + 1)
       }
     }
 
-    traverse(jsonObj, 0)
+    await traverse(jsonObj, 0)
     return results
   }
 
