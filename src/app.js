@@ -698,6 +698,8 @@ class SftpServiceClass {
   }
 
   async getValFromXML(jsonObj, xmlNode) {
+    //add /Order/ to xmlNode
+    xmlNode = '/Order/' + xmlNode
     const nodes = xmlNode.split('/').filter(Boolean)
     let results = []
 
