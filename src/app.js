@@ -459,7 +459,7 @@ class SftpServiceClass {
         const series = 7012
         const retailer = item.TRDR_RETAILER
         const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
-        console.log('jsonOrder', resOrder.jsonOrder)
+        console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
         if (resOrder.success) {
           const jsonOrder = resOrder.jsonOrder
           //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME)
