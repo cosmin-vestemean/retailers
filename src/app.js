@@ -597,7 +597,7 @@ class SftpServiceClass {
       return { success: false, errors: errors }
     }
 
-    console.log('jsonOrder', JSON.stringify(jsonOrder))
+    //console.log('jsonOrder', JSON.stringify(jsonOrder))
 
     // Process ITELINES array
     let itelines = jsonOrder['DATA']['ITELINES']
