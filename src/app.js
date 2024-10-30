@@ -575,6 +575,7 @@ class SftpServiceClass {
             let sqlQuery = item[field].SQL.replace('{value}', item[field].value)
             try {
               let resSQL = await app.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
+              console.log('sqlQuery', sqlQuery, 'resSQL', resSQL)
               if (resSQL.data) {
                 item[field] = resSQL.data
               } else {
