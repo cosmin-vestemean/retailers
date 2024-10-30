@@ -549,7 +549,6 @@ class SftpServiceClass {
     CCCXMLS1MAPPINGS.forEach(async (item) => {
       console.log('item', item)
       var xmlVals = await this.getValFromXML(xmlJson, item.XMLNODE)
-      console.log('xmlVals', xmlVals)
       xmlVals.forEach((xmlVal) => {
         var val = 0
         if (item.SQL) {
@@ -596,6 +595,8 @@ class SftpServiceClass {
     if (errors.length > 0) {
       return { success: false, errors: errors }
     }
+
+    console.log('jsonOrder', jsonOrder)
 
     // Process ITELINES array
     let itelines = jsonOrder['DATA']['ITELINES']
