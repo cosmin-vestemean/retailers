@@ -393,7 +393,7 @@ export async function trimiteComenzileNetrimise() {
   getNDisplayOrders(trdrRetailerFromUrl)
 }
 
-async function createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
+async function createOrderJSON(xml, sosource, fprms, series, retailer) {
   //use await instead of promises
   //get a token for s1 connection
   var res = await client.service('CCCRETAILERSCLIENTS').find({
