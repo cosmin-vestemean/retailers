@@ -548,7 +548,7 @@ class SftpServiceClass {
     for (const item of CCCXMLS1MAPPINGS) {
       console.log('item', item)
       const xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
-      console.log('xmlVals', xmlVals)
+      //console.log('xmlVals', xmlVals)
       for (const xmlVal of xmlVals) {
         let val = 0
         if (item.SQL) {
@@ -558,7 +558,7 @@ class SftpServiceClass {
         }
         const obj = {}
         obj[item.S1FIELD1] = val
-        console.log('obj', obj)
+        //console.log('obj', obj)
         DATA[item.S1TABLE1].push(obj)
       }
     }
