@@ -558,6 +558,7 @@ class SftpServiceClass {
         }
         var obj = {}
         obj[item.S1FIELD1] = val
+        console.log('obj', obj)
         DATA[item.S1TABLE1].push(obj)
       })
     })
