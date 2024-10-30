@@ -22,7 +22,6 @@ import fetch from 'node-fetch'
 //xml2js
 import { parseString } from 'xml2js'
 
-
 const app = koa(feathers())
 
 // Load our app configuration (see config/ folder)
