@@ -480,7 +480,7 @@ class SftpServiceClass {
     }
   }
 
-  async createOrderJSON(xml, sosource, fprms, series, retailer) {
+  async createOrderJSON(xml, sosource, fprms, series, xmlFilename, xmlDate, retailer) {
     // Get a token for S1 connection
     const resClient = await app.service('CCCRETAILERSCLIENTS').find({
       query: { TRDR_CLIENT: 1 }
@@ -535,7 +535,7 @@ class SftpServiceClass {
       DATA[item] = []
     })
 
-    //convert xml to json
+    // Convert XML to JSON
     const xmlJson = await new Promise((resolve, reject) =>
       parseString(xml, { explicitArray: false }, (err, result) => {
         if (err) reject(err)
@@ -546,22 +546,22 @@ class SftpServiceClass {
     console.log('xmlJson', JSON.stringify(xmlJson))
 
     // Add data to DATA object
-    CCCXMLS1MAPPINGS.forEach(async (item) => {
+    for (const item of CCCXMLS1MAPPINGS) {
       console.log('item', item)
-      var xmlVals = await this.getValFromXML(xmlJson, item.XMLNODE)
-      xmlVals.forEach((xmlVal) => {
-        var val = 0
+      const xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
+      for (const xmlVal of xmlVals) {
+        let val = 0
         if (item.SQL) {
           val = { SQL: item.SQL, value: xmlVal }
         } else {
           val = xmlVal
         }
-        var obj = {}
+        const obj = {}
         obj[item.S1FIELD1] = val
         console.log('obj', obj)
         DATA[item.S1TABLE1].push(obj)
-      })
-    })
+      }
+    }
 
     jsonOrder['DATA'] = DATA
 
@@ -573,11 +573,12 @@ class SftpServiceClass {
         for (let field in item) {
           if (typeof item[field] === 'object' && item[field].SQL) {
             let sqlQuery = item[field].SQL.replace('{value}', item[field].value)
+            console.log('sqlQuery', sqlQuery)
             try {
               let resSQL = await app.service('getDataset').find({ query: { sqlQuery: sqlQuery } })
-              console.log('sqlQuery', sqlQuery, 'resSQL', resSQL)
+              console.log('resSQL', resSQL)
               if (resSQL.data) {
-                item[field] = resSQL.data
+                item[field] = resSQL.data[0][field]
               } else {
                 errors.push({
                   message: 'Error fetching data from SQL query',
@@ -640,73 +641,11 @@ class SftpServiceClass {
     return { success: true, jsonOrder: jsonOrder }
   }
 
-  async sendOrderToServer(jsonOrder, xmlFilename) {
-    try {
-      // Get connection details for S1
-      const res = await app.service('CCCRETAILERSCLIENTS').find({
-        query: {
-          TRDR_CLIENT: 1
-        }
-      })
-      const url = res.data[0].WSURL
-      const username = res.data[0].WSUSER
-      const password = res.data[0].WSPASS
-
-      // Connect to S1
-      const connectToS1Res = await app.service('connectToS1').find({
-        query: {
-          url: url,
-          username: username,
-          password: password
-        }
-      })
-
-      jsonOrder['clientID'] = connectToS1Res.token
-      console.log('jsonOrder', jsonOrder)
-
-      // Send document to S1
-      const setDocumentRes = await app.service('setDocument').create(jsonOrder)
-      console.log('setDocument', setDocumentRes)
-
-      if (setDocumentRes.success === true) {
-        // Update CCCSFTPXML set FINDOC=setDocumentRes.id where XMLFILENAME=xmlFilename
-        await app.service('CCCSFTPXML').patch(
-          null,
-          {
-            FINDOC: setDocumentRes.id
-          },
-          {
-            query: {
-              XMLFILENAME: xmlFilename
-            }
-          }
-        )
-        return {
-          success: true,
-          message: 'Order sent to S1, order internal number: ' + setDocumentRes.id
-        }
-      } else {
-        return {
-          success: false,
-          message: setDocumentRes.error
-        }
-      }
-    } catch (error) {
-      console.error('Error sending order to server:', error)
-      return {
-        success: false,
-        message: 'Error sending order to server'
-      }
-    }
-  }
-
-  async getValFromXML(jsonObj, xmlNode) {
-    //add /Order/ to xmlNode
-    xmlNode = '/Order/' + xmlNode
+  getValFromXML(jsonObj, xmlNode) {
     const nodes = xmlNode.split('/').filter(Boolean)
     let results = []
 
-    async function traverse(currentObj, nodeIndex) {
+    function traverse(currentObj, nodeIndex) {
       if (nodeIndex >= nodes.length) {
         if (Array.isArray(currentObj)) {
           results.push(...currentObj)
@@ -717,17 +656,17 @@ class SftpServiceClass {
       }
       const currentNode = nodes[nodeIndex]
       if (Array.isArray(currentObj)) {
-        for (const item of currentObj) {
+        currentObj.forEach((item) => {
           if (item && item.hasOwnProperty(currentNode)) {
-            await traverse(item[currentNode], nodeIndex + 1)
+            traverse(item[currentNode], nodeIndex + 1)
           }
-        }
+        })
       } else if (currentObj && currentObj.hasOwnProperty(currentNode)) {
-        await traverse(currentObj[currentNode], nodeIndex + 1)
+        traverse(currentObj[currentNode], nodeIndex + 1)
       }
     }
 
-    await traverse(jsonObj, 0)
+    traverse(jsonObj, 0)
     return results
   }
 
