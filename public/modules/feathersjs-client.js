@@ -7,7 +7,7 @@ const socketClient = feathers.socketio(socket)
 client.configure(socketClient)
 
 client.use('sftp', socketClient.service('sftp'), {
-    methods: ['downloadXml', 'storeXmlInDB', 'uploadXml', 'storeAperakInErpMessages'],
+    methods: ['downloadXml', 'storeXmlInDB', 'uploadXml', 'storeAperakInErpMessages', 'scanPeriodically', 'createOrders'],
     events: ['uploadResult']
   })
 

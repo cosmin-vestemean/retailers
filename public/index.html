@@ -45,8 +45,11 @@
             <a class="navbar-link"> Actions </a>
             <div class="navbar-dropdown">
               <a class="navbar-item" id="preluareComenziBtn">Preluare documente</a>
+              <div class="dropdown-divider"></div>
               <a class="navbar-item" id="preluareAperakBtn">Preluare raspunsuri</a>
-              <a class="navbar-item" id="openAperakBtn">Raspunsuri neprelucrate</a>
+              <a class="navbar-item" id="openAperakBtn">Vizualizare raspunsuri neprelucrate</a>
+              <div class="dropdown-divider"></div>
+              <a class="navbar-item" id="createOrders"> Trimite comenzile noi </a>
             </div>
           </div>
     
@@ -70,7 +73,7 @@
       </script>
     </div>
     <script type="module">
-      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak } from './client.js'
+      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -83,6 +86,11 @@
       document.getElementById('openAperakBtn').addEventListener('click', function () {
         getEmptyAperak()
       })
+      //createOrders on click
+      document.getElementById('createOrders').addEventListener('click', function () {
+        createNewOrders()
+      })
+
     </script>
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">

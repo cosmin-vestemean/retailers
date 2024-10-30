@@ -233,6 +233,12 @@ function hideRows(chkName, tbodyName, className) {
   }
 }
 
+export function createNewOrders() {
+  client.service('sftp').createOrders({}, {}).then((res) => {
+    console.log('createNewOrders', res)
+  })
+}
+
 export function getEmptyAperak() {
   //get * from cccaperak with findoc=-1
   client
