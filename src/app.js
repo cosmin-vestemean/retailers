@@ -464,7 +464,7 @@ class SftpServiceClass {
           //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME)
           //for testing we will not send the order to S1 but return fabricated response
           const resCreateOrder = { success: true, message: 'Order created successfully' }
-          console.log('resCreateOrder', resCreateOrder)
+          //console.log('resCreateOrder', resCreateOrder)
           if (resCreateOrder.success) {
             console.log('Order created successfully')
           } else {
