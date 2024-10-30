@@ -22,6 +22,7 @@ import fetch from 'node-fetch'
 //xml2js
 import { parseString } from 'xml2js'
 
+
 const app = koa(feathers())
 
 // Load our app configuration (see config/ folder)
@@ -536,10 +537,12 @@ class SftpServiceClass {
     })
 
     //convert xml to json
-    var xmlJson = null
-    parseString(xml, function (err, result) {
-      xmlJson = result
-    })
+    const xmlJson = await new Promise((resolve, reject) =>
+      parseString(xml, { explicitArray: false }, (err, result) => {
+        if (err) reject(err)
+        else resolve(result)
+      })
+    )
 
     console.log('xmlJson', JSON.stringify(xmlJson))
 
