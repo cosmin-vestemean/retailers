@@ -549,6 +549,7 @@ class SftpServiceClass {
     for (const item of CCCXMLS1MAPPINGS) {
       console.log('item', item)
       const xmlVals = this.getValFromXML(xmlJson, item.XMLNODE)
+      console.log('xmlVals', xmlVals)
       for (const xmlVal of xmlVals) {
         let val = 0
         if (item.SQL) {
