@@ -612,6 +612,8 @@ class SftpServiceClass {
       }
     })
 
+    console.log('fieldNames', fieldNames)
+
     let arrays = {}
     fieldNames.forEach((item) => {
       arrays[item] = []
@@ -622,6 +624,8 @@ class SftpServiceClass {
         arrays[key].push(item[key])
       }
     })
+
+    console.log('arrays', arrays)
 
     // Reconstruct ITELINES array
     itelines = []
