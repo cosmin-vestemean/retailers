@@ -455,7 +455,7 @@ class SftpServiceClass {
       for (const item of res.data) {
         count++
         console.log('Data fetched successfully, processing order ' + item.OrderId + ' for retailer ' + item.TRDR_RETAILER)
-        console.log(count + ' from ' + res.total + ' orders')
+        console.log('Progress', count + ' / ' + res.total)
         const xml = item.XMLDATA
         const sosource = 1351
         const fprms = 701
