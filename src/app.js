@@ -449,7 +449,7 @@ class SftpServiceClass {
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
-        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT ${top} findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE, CCCSFTPXML FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
+        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT ${top} findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, FORMAT(XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, CCCSFTPXML FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
       }
     })
 
@@ -490,19 +490,19 @@ class SftpServiceClass {
             item.CCCSFTPXML
           )
           //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
-          try {
-            await app.service('CCCORDERSLOG').create({
-              TRDR_CLIENT: 1,
-              TRDR_RETAILER: retailer,
-              ORDERID: item.OrderId,
-              CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: JSON.stringify(resOrder.jsonOrder)
-            })
-          } catch (error) {
-            console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
-          }
           if (resOrder.success) {
             const jsonOrder = resOrder.jsonOrder
+            try {
+              await app.service('CCCORDERSLOG').create({
+                TRDR_CLIENT: 1,
+                TRDR_RETAILER: retailer,
+                ORDERID: item.OrderId,
+                CCCSFTPXML: item.CCCSFTPXML,
+                MESSAGETEXT: JSON.stringify(jsonOrder)
+              })
+            } catch (error) {
+              console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
+            }
             //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId)
             //for testing we will not send the order to S1 but return fabricated response
             const resCreateOrder = { success: true, message: 'Order created successfully' }
@@ -709,7 +709,7 @@ class SftpServiceClass {
                   const index = BuyersItemIdentifications.indexOf(item[field].value)
                   const BuyersItemIdentification = BuyersItemIdentifications[index]
                   const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
-                  const message = `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description}`
+                  const message = `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
                   errors.push({
                     message: message,
                     sqlQuery: sqlQuery,
@@ -722,7 +722,7 @@ class SftpServiceClass {
                       TRDR_RETAILER: retailer,
                       ORDERID: OrderId,
                       CCCSFTPXML: CCCSFTPXML,
-                      MESSAGETEXT: `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} with SQL ${sqlQuery} for field ${field} with value ${item[field].value}`
+                      MESSAGETEXT: message
                     })
                   } catch (error) {
                     console.error('Error inserting into CCCORDERSLOG:', error)
