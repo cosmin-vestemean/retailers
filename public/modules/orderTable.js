@@ -329,7 +329,7 @@ export function getValFromXML(xml, node) {
 
 async function sendOrder(xml, xmlFilename, xmlDate, retailer) {
   try {
-    const response = await createOrderJSON(xml, 1351, 701, 7012, xmlFilename, xmlDate, retailer)
+    const response = await createOrderJSON(xml, 1351, 701, 7012, retailer)
     console.log('createOrderJSON', response)
     if (response.success) {
       const res = await sendOrderToServer(response.jsonOrder, xmlFilename, xmlDate, retailer)
