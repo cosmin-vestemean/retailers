@@ -188,11 +188,9 @@ async function loadOrdersLog() {
   response.data.forEach(order => {
     const row = ordersLogTable.insertRow()
     row.insertCell(0).innerText = order.MESSAGEDATE
-    //row.insertCell(1).innerText = order.TRDR_CLIENT
-    row.insertCell(2).innerText = order.TRDR_RETAILER
-    row.insertCell(3).innerText = order.ORDERID
-    row.insertCell(4).innerText = order.CCCSFTPXML
-    row.insertCell(5).innerText = order.MESSAGETEXT
+    row.insertCell(1).innerText = order.TRDR_RETAILER
+    row.insertCell(2).innerText = order.ORDERID
+    row.insertCell(3).innerText = order.MESSAGETEXT
   })
 }
 
