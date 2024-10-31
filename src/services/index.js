@@ -1,3 +1,5 @@
+import { cccorderslog } from './CCCORDERSLOG/CCCORDERSLOG.js'
+
 import { cccaperak } from './CCCAPERAK/CCCAPERAK.js'
 
 import { cccretailersclients } from './CCCRETAILERSCLIENTS/CCCRETAILERSCLIENTS.js'
@@ -11,6 +13,8 @@ import { cccsftpxml } from './CCCSFTPXML/CCCSFTPXML.js'
 import { cccsftp } from './CCCSFTP/CCCSFTP.js'
 
 export const services = (app) => {
+  app.configure(cccorderslog)
+
   app.configure(cccaperak)
 
   app.configure(cccretailersclients)

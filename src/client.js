@@ -1,6 +1,8 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/client.html
 import { feathers } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
+import { cccorderslogClient } from './services/CCCORDERSLOG/CCCORDERSLOG.shared.js'
+
 import { cccaperakClient } from './services/CCCAPERAK/CCCAPERAK.shared.js'
 
 import { cccaperakClient } from './services/CCCAPERAK/CCCAPERAK.shared.js'
@@ -43,6 +45,8 @@ export const createClient = (connection, authenticationOptions = {}) => {
   client.configure(cccaperakClient)
 
   client.configure(cccaperakClient)
+
+  client.configure(cccorderslogClient)
 
   return client
 }

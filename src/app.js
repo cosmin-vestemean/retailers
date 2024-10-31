@@ -449,7 +449,7 @@ class SftpServiceClass {
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
-        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT ${top} findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
+        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT ${top} findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE, CCCSFTPXML FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
       }
     })
 
@@ -457,22 +457,62 @@ class SftpServiceClass {
       if (res.total > 0) {
         const nowIts = new Date().toLocaleString()
         console.log(`Found ${res.total} orders to create, ${nowIts}`)
+        //Insert into CCCORDERSLOG, FINDOC will come later
+        try {
+          app.service('CCCORDERSLOG').create({
+            TRDR_CLIENT: 1,
+            TRDR_RETAILER: item.TRDR_RETAILER,
+            ORDERID: item.OrderId,
+            CCCSFTPXML: item.CCCSFTPXML,
+            MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            MESSAGETEXT: `Found ${res.total} orders to create, ${nowIts}`
+          })
+        } catch (error) {
+          console.error('Error inserting into CCCORDERSLOG:', error)
+        }
+        for (const item of res.data) {
+        }
         let count = 0
         for (const item of res.data) {
           count++
           console.log(
             `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
           )
+          //insert into CCCORDERSLOG
+          try {
+            app.service('CCCORDERSLOG').create({
+              TRDR_CLIENT: 1,
+              TRDR_RETAILER: item.TRDR_RETAILER,
+              ORDERID: item.OrderId,
+              CCCSFTPXML: item.CCCSFTPXML,
+              MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+              MESSAGETEXT: `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
+            })
+          } catch (error) {
+            console.error('Error inserting into CCCORDERSLOG:', error)
+          }
           const xml = item.XMLDATA
           const sosource = 1351
           const fprms = 701
           const series = 7012
           const retailer = item.TRDR_RETAILER
           const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
-          console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
+          //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
+          try {
+            await app.service('CCCORDERSLOG').create({
+              TRDR_CLIENT: 1,
+              TRDR_RETAILER: retailer,
+              ORDERID: item.OrderId,
+              CCCSFTPXML: item.CCCSFTPXML,
+              MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+              MESSAGETEXT: JSON.stringify(resOrder.jsonOrder),
+            });
+          } catch (error) {
+            console.error('Error inserting jsonOrder into CCCORDERSLOG:', error);
+          }
           if (resOrder.success) {
             const jsonOrder = resOrder.jsonOrder
-            //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
+            //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId)
             //for testing we will not send the order to S1 but return fabricated response
             const resCreateOrder = { success: true, message: 'Order created successfully' }
             //console.log('resCreateOrder', resCreateOrder)
@@ -497,7 +537,7 @@ class SftpServiceClass {
     }
   }
 
-  async sendOrderToServer(jsonOrder, xmlFilename, retailer) {
+  async sendOrderToServer(jsonOrder, xmlFilename, retailer, OrderId) {
     try {
       // Retrieve connection details
       const resClient = await app.service('CCCRETAILERSCLIENTS').find({
@@ -521,6 +561,31 @@ class SftpServiceClass {
       console.log('setDocument', setDocumentRes)
 
       if (setDocumentRes.success == true) {
+        console.log(
+          'Document created successfully:',
+          setDocumentRes.id,
+          'retailer:',
+          retailer,
+          'xmlFilename:',
+          xmlFilename,
+          'OrderId:',
+          OrderId
+        )
+        
+        // Insert into CCCORDERSLOG
+        try {
+          await app.service('CCCORDERSLOG').create({
+            TRDR_CLIENT: 1,
+            TRDR_RETAILER: retailer,
+            ORDERID: OrderId,
+            CCCSFTPXML: xmlFilename,
+            MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
+          });
+        } catch (error) {
+          console.error('Error inserting into CCCORDERSLOG:', error);
+        }
+
         // Update the CCCSFTPXML record with the FINDOC
         const patchRes = await app
           .service('CCCSFTPXML')
@@ -661,6 +726,18 @@ class SftpServiceClass {
                     field: field,
                     value: item[field].value
                   })
+                  try {
+                    await app.service('CCCORDERSLOG').create({
+                      TRDR_CLIENT: 1,
+                      TRDR_RETAILER: retailer,
+                      ORDERID: item.OrderId,
+                      CCCSFTPXML: item.CCCSFTPXML,
+                      MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                      MESSAGETEXT: `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} with SQL ${sqlQuery} for field ${field} with value ${item[field].value}`
+                    });
+                  } catch (error) {
+                    console.error('Error inserting into CCCORDERSLOG:', error);
+                  }
                 } else {
                   errors.push({
                     message: 'Error fetching data for field ' + field + ' with value ' + item[field].value,
@@ -668,6 +745,18 @@ class SftpServiceClass {
                     field: field,
                     value: item[field].value
                   })
+                  try {
+                    await app.service('CCCORDERSLOG').create({
+                      TRDR_CLIENT: 1,
+                      TRDR_RETAILER: retailer,
+                      ORDERID: item.OrderId,
+                      CCCSFTPXML: item.CCCSFTPXML,
+                      MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                      MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
+                    });
+                  } catch (error) {
+                    console.error('Error inserting into CCCORDERSLOG:', error);
+                  }
                 }
               }
             } catch (error) {
