@@ -94,7 +94,7 @@
       </table>
     </div>
     <script type="module">
-      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders } from './client.js'
+      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders, loadOrdersLog } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -120,6 +120,7 @@
           ordersLogContainer.style.display = 'block'
           cardsContainer.style.display = 'none'
           toggleLogsBtn.innerHTML = 'Show Cards'
+          loadOrdersLog()
         } else {
           ordersLogContainer.style.display = 'none'
           cardsContainer.style.display = 'block'

@@ -148,38 +148,6 @@ document.addEventListener('keydown', function (event) {
   }
 })
 
-async function getOrdersLog() {
-  const ordersLogTable = document.getElementById('ordersLogTable')
-  ordersLogTable.innerHTML = '<tr><td colspan="6" class="has-text-centered">Loading...</td></tr>'
-
-  try {
-    const res = await client.service('CCCORDERSLOG').find({
-      query: {
-        $limit: 50,
-        $sort: { MESSAGEDATE: -1 }
-      }
-    })
-
-    ordersLogTable.innerHTML = ''
-    res.data.forEach((log) => {
-      const tr = document.createElement('tr')
-      tr.innerHTML = `
-        <td>${log.MESSAGEDATE}</td>
-        <td>${log.TRDR_CLIENT}</td>
-        <td>${log.TRDR_RETAILER}</td>
-        <td>${log.ORDERID}</td>
-        <td>${log.CCCSFTPXML}</td>
-        <td>${log.MESSAGETEXT}</td>
-      `
-      ordersLogTable.appendChild(tr)
-    })
-  } catch (error) {
-    console.error('Error fetching orders log:', error)
-    ordersLogTable.innerHTML =
-      '<tr><td colspan="6" class="has-text-centered has-text-danger">Error loading data</td></tr>'
-  }
-}
-
 window.onload = function () {
   if (trdrRetailerFromUrl) {
     getRetailerName(trdrRetailerFromUrl)
@@ -187,7 +155,6 @@ window.onload = function () {
   //add font to body
   document.body.style.fontFamily =
     'Inter, BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif'
-  getOrdersLog()
 }
 
 function getRetailerName(trdr) {
@@ -205,6 +172,28 @@ function getRetailerName(trdr) {
         retailerName.innerHTML = res.data
       }
     })
+}
+
+export async function loadOrdersLog() {
+  const ordersLogTable = document.getElementById('ordersLogTable')
+  ordersLogTable.innerHTML = '' // Clear existing rows
+
+  const response = await client.service('CCCORDERSLOG').find({
+    query: {
+      $limit: 50,
+      $sort: { MESSAGEDATE: -1 }
+    }
+  })
+
+  response.data.forEach(order => {
+    const row = ordersLogTable.insertRow()
+    row.insertCell(0).innerText = order.MESSAGEDATE
+    //row.insertCell(1).innerText = order.TRDR_CLIENT
+    row.insertCell(2).innerText = order.TRDR_RETAILER
+    row.insertCell(3).innerText = order.ORDERID
+    row.insertCell(4).innerText = order.CCCSFTPXML
+    row.insertCell(5).innerText = order.MESSAGETEXT
+  })
 }
 
 async function openTab(evt, tabName) {
@@ -267,42 +256,12 @@ function hideRows(chkName, tbodyName, className) {
 }
 
 export function createNewOrders() {
-  client
-    .service('CCCORDERSLOG')
-    .find({
-      query: {
-        $limit: 50,
-        $sort: { MESSAGEDATE: -1 }
-      }
-    })
-    .then((res) => {
-      //console.log('res', res)
-      var table = document.getElementById('ordersLogTable')
-      table.innerHTML = ''
-      for (var i = 0; i < res.data.length; i++) {
-        var tr = document.createElement('tr')
-        var td = document.createElement('td')
-        td.innerHTML = res.data[i].MESSAGEDATE
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.innerHTML = res.data[i].TRDR_CLIENT
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.innerHTML = res.data[i].TRDR_RETAILER
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.innerHTML = res.data[i].ORDERID
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.innerHTML = res.data[i].CCCSFTPXML
-        tr.appendChild(td)
-        td = document.createElement('td')
-        td.innerHTML = res.data[i].MESSAGETEXT
-        tr.appendChild(td)
-        table.appendChild(tr)
-      }
-    })
+  client.service('sftp').createOrders({}, {}).then((res) => {
+    console.log('createNewOrders', res)
+  })
 }
+
+
 
 export function getEmptyAperak() {
   //get * from cccaperak with findoc=-1
@@ -372,5 +331,6 @@ export {
   getNDisplayOrders,
   getNDisplayS1Docs,
   toggleComenziNetrimise,
-  toggleFacturiNetrimise
+  toggleFacturiNetrimise,
+  loadOrdersLog
 }
