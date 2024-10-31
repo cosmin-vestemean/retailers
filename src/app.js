@@ -444,18 +444,17 @@ class SftpServiceClass {
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
-        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT findoc1, OrderId, TRDR_RETAILER, XMLFILENAME, XMLDATA, XMLDATE FROM ( SELECT f.findoc findoc1 ,x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
+        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE FROM ( SELECT f.findoc findoc1 ,x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
       }
     })
 
-    console.log('Processing orders...')
-
+    const nowIts = new Date().toLocaleString()
+    console.log(`Found ${res.total} orders to create, ${nowIts}`)
     if (res.success) {
       let count = 0
       for (const item of res.data) {
         count++
-        console.log('Data fetched successfully, processing order ' + item.OrderId + ' for retailer ' + item.TRDR_RETAILER)
-        console.log('Progress', count + ' / ' + res.total)
+        console.log(`Processing order ${item.OrderId} from ${item.Client}, ${count}/res.total`)
         const xml = item.XMLDATA
         const sosource = 1351
         const fprms = 701
@@ -465,9 +464,9 @@ class SftpServiceClass {
         console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
         if (resOrder.success) {
           const jsonOrder = resOrder.jsonOrder
-          const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
+          //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
           //for testing we will not send the order to S1 but return fabricated response
-          //const resCreateOrder = { success: true, message: 'Order created successfully' }
+          const resCreateOrder = { success: true, message: 'Order created successfully' }
           //console.log('resCreateOrder', resCreateOrder)
           if (resCreateOrder.success) {
             console.log('Order created successfully')
@@ -488,46 +487,48 @@ class SftpServiceClass {
       // Retrieve connection details
       const resClient = await app.service('CCCRETAILERSCLIENTS').find({
         query: { TRDR_CLIENT: 1 }
-      });
-      const url = resClient.data[0].WSURL;
-      const username = resClient.data[0].WSUSER;
-      const password = resClient.data[0].WSPASS;
+      })
+      const url = resClient.data[0].WSURL
+      const username = resClient.data[0].WSUSER
+      const password = resClient.data[0].WSPASS
 
       // Connect to S1
       const resConnect = await app.service('connectToS1').find({
         query: { url: url, username: username, password: password }
-      });
+      })
 
       // Update jsonOrder with the clientID (token)
-      jsonOrder['clientID'] = resConnect.token;
-      console.log('jsonOrder', jsonOrder);
+      jsonOrder['clientID'] = resConnect.token
+      console.log('jsonOrder', jsonOrder)
 
       // Send the order to the server
-      const setDocumentRes = await app.service('setDocument').create(jsonOrder);
-      console.log('setDocument', setDocumentRes);
+      const setDocumentRes = await app.service('setDocument').create(jsonOrder)
+      console.log('setDocument', setDocumentRes)
 
       if (setDocumentRes.success == true) {
         // Update the CCCSFTPXML record with the FINDOC
-        const patchRes = await app.service('CCCSFTPXML').patch(
-          null,
-          { FINDOC: parseInt(setDocumentRes.id) },
-          { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
-        );
-        console.log('CCCSFTPXML patch', patchRes);
+        const patchRes = await app
+          .service('CCCSFTPXML')
+          .patch(
+            null,
+            { FINDOC: parseInt(setDocumentRes.id) },
+            { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
+          )
+        console.log('CCCSFTPXML patch', patchRes)
 
         const response = {
           success: true,
           message: 'Marked as sent: ' + patchRes[0].CCCSFTPXML + ' ' + patchRes[0].FINDOC
-        };
-        console.log('CCCSFTPXML', response);
-        return response;
+        }
+        console.log('CCCSFTPXML', response)
+        return response
       } else {
-        console.error('Error:', setDocumentRes.errors);
-        return { success: false, errors: setDocumentRes.errors };
+        console.error('Error:', setDocumentRes.errors)
+        return { success: false, errors: setDocumentRes.errors }
       }
     } catch (error) {
-      console.error('Error:', error);
-      return { success: false, errors: [error.message] };
+      console.error('Error:', error)
+      return { success: false, errors: [error.message] }
     }
   }
 
@@ -594,7 +595,7 @@ class SftpServiceClass {
       })
     )
 
-    console.log('xmlJson', JSON.stringify(xmlJson))
+    //console.log('xmlJson', JSON.stringify(xmlJson))
 
     // Add data to DATA object
     for (const item of CCCXMLS1MAPPINGS) {
@@ -630,12 +631,29 @@ class SftpServiceClass {
               if (resSQL.data) {
                 item[field] = resSQL.data
               } else {
-                errors.push({
-                  message: 'Error fetching data from SQL query',
-                  sqlQuery: sqlQuery,
-                  field: field,
-                  value: item[field].value
-                })
+                if (key === 'ITELINES') {
+                  const BuyersItemIdentifications = this.getValFromXML(
+                    xmlJson,
+                    'OrderLine/Item/BuyersItemIdentification'
+                  )
+                  const index = BuyersItemIdentifications.indexOf(item[field].value)
+                  const BuyersItemIdentification = BuyersItemIdentifications[index]
+                  const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
+                  const message = `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description}`
+                  errors.push({
+                    message: message,
+                    sqlQuery: sqlQuery,
+                    field: field,
+                    value: item[field].value
+                  })
+                } else {
+                  errors.push({
+                    message: 'Error fetching data for field ' + field + ' with value ' + item[field].value,
+                    sqlQuery: sqlQuery,
+                    field: field,
+                    value: item[field].value
+                  })
+                }
               }
             } catch (error) {
               errors.push(error.message)
