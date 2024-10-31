@@ -441,11 +441,11 @@ class SftpServiceClass {
   async createOrders(data, params) {
     const strRetailers = retailersArr.join(',')
     //test:
-    //const daysOld = 170
-    //const top = 'top 1'
+    const daysOld = 170
+    const top = 'top 1'
     //real:
-    const daysOld = 30
-    const top = ''
+    //const daysOld = 30
+    //const top = ''
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
@@ -461,7 +461,7 @@ class SftpServiceClass {
         for (const item of res.data) {
           count++
           console.log(
-            `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
+            `Processing order <span class="badge badge-primary">${item.OrderId}</span> ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
           )
           //insert into CCCORDERSLOG
           try {
@@ -709,7 +709,7 @@ class SftpServiceClass {
                   const index = BuyersItemIdentifications.indexOf(item[field].value)
                   const BuyersItemIdentification = BuyersItemIdentifications[index]
                   const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
-                  const message = `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
+                  const message = `Error fetching data for BuyersItemIdentification <span class="badge badge-danger">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} with value ${item[field].value} with SQL <pre><code>${sqlQuery}</code></pre>`
                   errors.push({
                     message: message,
                     sqlQuery: sqlQuery,
