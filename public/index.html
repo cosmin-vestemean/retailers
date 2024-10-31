@@ -72,7 +72,7 @@
         drawRetailers(retailers)
       </script>
     </div>
-    <div id="ordersLogContainer" class="container">
+    <div id="ordersLogContainer" class="container" style="display: none;">
       <h2 class="title is-4">Orders Log</h2>
       <table class="table table-sm table-info table-hover table-striped table-bordered">
         <thead>
@@ -88,6 +88,7 @@
         <tbody id="ordersLogTable"></tbody>
       </table>
     </div>
+    <button id="toggleLogsBtn" class="button is-info">Show Logs</button>
     <script type="module">
       import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders } from './client.js'
       //add onclick to preluareComenziBtn button id
@@ -106,7 +107,21 @@
       document.getElementById('createOrders').addEventListener('click', function () {
         createNewOrders()
       })
-
+      //toggle logs on click
+      document.getElementById('toggleLogsBtn').addEventListener('click', function () {
+        const cardsContainer = document.getElementById('cardsContainer')
+        const ordersLogContainer = document.getElementById('ordersLogContainer')
+        const toggleLogsBtn = document.getElementById('toggleLogsBtn')
+        if (ordersLogContainer.style.display === 'none') {
+          ordersLogContainer.style.display = 'block'
+          cardsContainer.style.display = 'none'
+          toggleLogsBtn.innerHTML = 'Show Cards'
+        } else {
+          ordersLogContainer.style.display = 'none'
+          cardsContainer.style.display = 'block'
+          toggleLogsBtn.innerHTML = 'Show Logs'
+        }
+      })
     </script>
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">
