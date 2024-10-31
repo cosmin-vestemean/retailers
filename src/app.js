@@ -470,7 +470,7 @@ class SftpServiceClass {
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: `Processing order <span class="tag is-primary">${item.OrderId}</span> ${item.XMLDATE} from <span class="tag is-light">${item.Client}</span>, ${count}/${res.total}`
+              MESSAGETEXT: `Processing order <span class="tag is-primary">${item.OrderId}</span> ${item.XMLDATE} from <span class="tag is-primary is-light">${item.Client}</span>, <span class="tag is-success">${count}/${res.total}</span>`
             })
           } catch (error) {
             console.error('Error inserting into CCCORDERSLOG:', error)
