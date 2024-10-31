@@ -415,6 +415,7 @@ async function createOrderJSON(xml, sosource, fprms, series, retailer) {
   //console.log('connectToS1', res)
   var token = res.token
   //get CCCDOCUMENTES1MAPPINGS for sourcCCCDOCUMENTES1MAPPINGSe, fprms, series
+  console.log(typeof retailer, retailer)
   var res = await client.service('CCCDOCUMENTES1MAPPINGS').find({
     query: {
       SOSOURCE: sosource,
