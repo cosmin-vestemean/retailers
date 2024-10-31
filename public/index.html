@@ -72,6 +72,22 @@
         drawRetailers(retailers)
       </script>
     </div>
+    <div id="ordersLogContainer" class="container">
+      <h2 class="title is-4">Orders Log</h2>
+      <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small">
+        <thead>
+          <tr>
+            <th>MESSAGEDATE</th>
+            <th>TRDR_CLIENT</th>
+            <th>TRDR_RETAILER</th>
+            <th>ORDERID</th>
+            <th>CCCSFTPXML</th>
+            <th>MESSAGETEXT</th>
+          </tr>
+        </thead>
+        <tbody id="ordersLogTable"></tbody>
+      </table>
+    </div>
     <script type="module">
       import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders } from './client.js'
       //add onclick to preluareComenziBtn button id
