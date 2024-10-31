@@ -465,7 +465,7 @@ class SftpServiceClass {
         console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
         if (resOrder.success) {
           const jsonOrder = resOrder.jsonOrder
-          const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME)
+          const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
           //for testing we will not send the order to S1 but return fabricated response
           //const resCreateOrder = { success: true, message: 'Order created successfully' }
           //console.log('resCreateOrder', resCreateOrder)
@@ -480,6 +480,54 @@ class SftpServiceClass {
       }
     } else {
       console.error('Error fetching data:', res.error)
+    }
+  }
+
+  async sendOrderToServer(jsonOrder, xmlFilename, retailer) {
+    try {
+      // Retrieve connection details
+      const resClient = await app.service('CCCRETAILERSCLIENTS').find({
+        query: { TRDR_CLIENT: 1 }
+      });
+      const url = resClient.data[0].WSURL;
+      const username = resClient.data[0].WSUSER;
+      const password = resClient.data[0].WSPASS;
+
+      // Connect to S1
+      const resConnect = await app.service('connectToS1').find({
+        query: { url: url, username: username, password: password }
+      });
+
+      // Update jsonOrder with the clientID (token)
+      jsonOrder['clientID'] = resConnect.token;
+      console.log('jsonOrder', jsonOrder);
+
+      // Send the order to the server
+      const setDocumentRes = await app.service('setDocument').create(jsonOrder);
+      console.log('setDocument', setDocumentRes);
+
+      if (setDocumentRes.success == true) {
+        // Update the CCCSFTPXML record with the FINDOC
+        const patchRes = await app.service('CCCSFTPXML').patch(
+          null,
+          { FINDOC: parseInt(setDocumentRes.id) },
+          { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
+        );
+        console.log('CCCSFTPXML patch', patchRes);
+
+        const response = {
+          success: true,
+          message: 'Marked as sent: ' + patchRes[0].CCCSFTPXML + ' ' + patchRes[0].FINDOC
+        };
+        console.log('CCCSFTPXML', response);
+        return response;
+      } else {
+        console.error('Error:', setDocumentRes.errors);
+        return { success: false, errors: setDocumentRes.errors };
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return { success: false, errors: [error.message] };
     }
   }
 
