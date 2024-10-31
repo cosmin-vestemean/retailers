@@ -709,7 +709,7 @@ class SftpServiceClass {
                   const index = BuyersItemIdentifications.indexOf(item[field].value)
                   const BuyersItemIdentification = BuyersItemIdentifications[index]
                   const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
-                  const message = `Error fetching data for BuyersItemIdentification <span class="tag is-danger">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} with value ${item[field].value} with SQL <pre><code>${sqlQuery}</code></pre>`
+                  const message = `Error fetching data for BuyersItemIdentification <span class="tag is-danger">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} with value ${item[field].value}<pre><code>${sqlQuery}</code></pre>`
                   errors.push({
                     message: message,
                     sqlQuery: sqlQuery,
