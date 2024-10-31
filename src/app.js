@@ -461,7 +461,7 @@ class SftpServiceClass {
         for (const item of res.data) {
           count++
           console.log(
-            `Processing order <span class="badge badge-primary">${item.OrderId}</span> ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
+            `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
           )
           //insert into CCCORDERSLOG
           try {
@@ -470,7 +470,7 @@ class SftpServiceClass {
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
+              MESSAGETEXT: `Processing order <span class="badge badge-primary">${item.OrderId}</span> ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
             })
           } catch (error) {
             console.error('Error inserting into CCCORDERSLOG:', error)
