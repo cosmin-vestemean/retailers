@@ -460,7 +460,9 @@ class SftpServiceClass {
         let count = 0
         for (const item of res.data) {
           count++
-          console.log(`Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`)
+          console.log(
+            `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
+          )
           const xml = item.XMLDATA
           const sosource = 1351
           const fprms = 701
@@ -487,7 +489,11 @@ class SftpServiceClass {
         console.log('No orders to create')
       }
     } else {
-      console.error('Error fetching data:', res.error)
+      console.error('Error fetching data:', {
+        success: res.success,
+        errorcode: res.errorcode,
+        message: res.message
+      })
     }
   }
 
