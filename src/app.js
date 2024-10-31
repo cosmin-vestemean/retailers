@@ -460,7 +460,7 @@ class SftpServiceClass {
         let count = 0
         for (const item of res.data) {
           count++
-          console.log(`Processing order ${item.OrderId} from ${item.Client}, ${count}/res.total`)
+          console.log(`Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`)
           const xml = item.XMLDATA
           const sosource = 1351
           const fprms = 701
