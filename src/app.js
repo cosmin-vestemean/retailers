@@ -449,38 +449,42 @@ class SftpServiceClass {
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
-        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE FROM ( SELECT ${top} f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
+        sqlQuery: `WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (${strRetailers}) AND a.xmldate > DATEADD(day, -${daysOld}, GETDATE()) ) SELECT ${top} findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, XMLDATE FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC`
       }
     })
 
-    const nowIts = new Date().toLocaleString()
-    console.log(`Found ${res.total} orders to create, ${nowIts}`)
     if (res.success) {
-      let count = 0
-      for (const item of res.data) {
-        count++
-        console.log(`Processing order ${item.OrderId} from ${item.Client}, ${count}/res.total`)
-        const xml = item.XMLDATA
-        const sosource = 1351
-        const fprms = 701
-        const series = 7012
-        const retailer = item.TRDR_RETAILER
-        const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
-        console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
-        if (resOrder.success) {
-          const jsonOrder = resOrder.jsonOrder
-          //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
-          //for testing we will not send the order to S1 but return fabricated response
-          const resCreateOrder = { success: true, message: 'Order created successfully' }
-          //console.log('resCreateOrder', resCreateOrder)
-          if (resCreateOrder.success) {
-            console.log('Order created successfully')
+      if (res.total > 0) {
+        const nowIts = new Date().toLocaleString()
+        console.log(`Found ${res.total} orders to create, ${nowIts}`)
+        let count = 0
+        for (const item of res.data) {
+          count++
+          console.log(`Processing order ${item.OrderId} from ${item.Client}, ${count}/res.total`)
+          const xml = item.XMLDATA
+          const sosource = 1351
+          const fprms = 701
+          const series = 7012
+          const retailer = item.TRDR_RETAILER
+          const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
+          console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
+          if (resOrder.success) {
+            const jsonOrder = resOrder.jsonOrder
+            //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer)
+            //for testing we will not send the order to S1 but return fabricated response
+            const resCreateOrder = { success: true, message: 'Order created successfully' }
+            //console.log('resCreateOrder', resCreateOrder)
+            if (resCreateOrder.success) {
+              console.log('Order created successfully')
+            } else {
+              console.error('Error creating order:', resCreateOrder.message)
+            }
           } else {
-            console.error('Error creating order:', resCreateOrder.message)
+            console.error('Error creating order JSON:', resOrder.errors)
           }
-        } else {
-          console.error('Error creating order JSON:', resOrder.errors)
         }
+      } else {
+        console.log('No orders to create')
       }
     } else {
       console.error('Error fetching data:', res.error)
