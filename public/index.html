@@ -63,6 +63,11 @@
             </div>
           </div>
         </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <button id="toggleLogsBtn" class="button is-info">Show Logs</button>
+          </div>
+        </div>
       </div>
     </nav>
     <!-- begin list of cards -->
@@ -88,7 +93,6 @@
         <tbody id="ordersLogTable"></tbody>
       </table>
     </div>
-    <button id="toggleLogsBtn" class="button is-info">Show Logs</button>
     <script type="module">
       import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders } from './client.js'
       //add onclick to preluareComenziBtn button id
