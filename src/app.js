@@ -464,7 +464,6 @@ class SftpServiceClass {
             TRDR_RETAILER: item.TRDR_RETAILER,
             ORDERID: item.OrderId,
             CCCSFTPXML: item.CCCSFTPXML,
-            MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
             MESSAGETEXT: `Found ${res.total} orders to create, ${nowIts}`
           })
         } catch (error) {
@@ -485,7 +484,6 @@ class SftpServiceClass {
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
               MESSAGETEXT: `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
             })
           } catch (error) {
@@ -504,7 +502,6 @@ class SftpServiceClass {
               TRDR_RETAILER: retailer,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
               MESSAGETEXT: JSON.stringify(resOrder.jsonOrder),
             });
           } catch (error) {
@@ -579,7 +576,6 @@ class SftpServiceClass {
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
             CCCSFTPXML: xmlFilename,
-            MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
           });
         } catch (error) {
@@ -732,7 +728,6 @@ class SftpServiceClass {
                       TRDR_RETAILER: retailer,
                       ORDERID: item.OrderId,
                       CCCSFTPXML: item.CCCSFTPXML,
-                      MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
                       MESSAGETEXT: `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} with SQL ${sqlQuery} for field ${field} with value ${item[field].value}`
                     });
                   } catch (error) {
@@ -751,7 +746,6 @@ class SftpServiceClass {
                       TRDR_RETAILER: retailer,
                       ORDERID: item.OrderId,
                       CCCSFTPXML: item.CCCSFTPXML,
-                      MESSAGEDATE: new Date().toISOString().slice(0, 19).replace('T', ' '),
                       MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
                     });
                   } catch (error) {

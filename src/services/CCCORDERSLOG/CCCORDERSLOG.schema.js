@@ -10,8 +10,8 @@ export const cccorderslogSchema = Type.Object(
     TRDR_CLIENT: Type.Number(),
     TRDR_RETAILER: Type.Number(),
     ORDERID: Type.String(),
-    CCCSFTPXML: Type.String(),
-    MESSAGEDATE: Type.Date(),
+    CCCSFTPXML: Type.Number(),
+    MESSAGEDATE: Type.String(),
     MESSAGETEXT: Type.String()
   },
   { $id: 'Cccorderslog', additionalProperties: false }
@@ -45,8 +45,8 @@ export const cccorderslogQuerySchema = Type.Intersect(
       TRDR_CLIENT: Type.Number(),
       TRDR_RETAILER: Type.Number(),
       ORDERID: Type.String(),
-      CCCSFTPXML: Type.String(),
-      MESSAGEDATE: Type.Date(),
+      CCCSFTPXML: Type.Number(),
+      MESSAGEDATE: Type.String(),
       MESSAGETEXT: Type.String()
     }, { additionalProperties: false })
   ],
