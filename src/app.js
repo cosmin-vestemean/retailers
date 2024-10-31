@@ -494,7 +494,7 @@ class SftpServiceClass {
           const fprms = 701
           const series = 7012
           const retailer = item.TRDR_RETAILER
-          const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer)
+          const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer, item.OrderId, item.CCCSFTPXML)
           //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
           try {
             await app.service('CCCORDERSLOG').create({
@@ -608,7 +608,7 @@ class SftpServiceClass {
     }
   }
 
-  async createOrderJSON(xml, sosource, fprms, series, retailer) {
+  async createOrderJSON(xml, sosource, fprms, series, retailer, OrderId, CCCSFTPXML) {
     // Get a token for S1 connection
     const resClient = await app.service('CCCRETAILERSCLIENTS').find({
       query: { TRDR_CLIENT: 1 }
@@ -726,8 +726,8 @@ class SftpServiceClass {
                     await app.service('CCCORDERSLOG').create({
                       TRDR_CLIENT: 1,
                       TRDR_RETAILER: retailer,
-                      ORDERID: item.OrderId,
-                      CCCSFTPXML: item.CCCSFTPXML,
+                      ORDERID: OrderId,
+                      CCCSFTPXML: CCCSFTPXML,
                       MESSAGETEXT: `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} with SQL ${sqlQuery} for field ${field} with value ${item[field].value}`
                     });
                   } catch (error) {
@@ -744,8 +744,8 @@ class SftpServiceClass {
                     await app.service('CCCORDERSLOG').create({
                       TRDR_CLIENT: 1,
                       TRDR_RETAILER: retailer,
-                      ORDERID: item.OrderId,
-                      CCCSFTPXML: item.CCCSFTPXML,
+                      ORDERID: OrderId,
+                      CCCSFTPXML: CCCSFTPXML,
                       MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
                     });
                   } catch (error) {
