@@ -11,7 +11,7 @@ export const cccorderslogSchema = Type.Object(
     TRDR_RETAILER: Type.Number(),
     ORDERID: Type.String(),
     CCCSFTPXML: Type.Number(),
-    MESSAGEDATE: Type.String(),
+    MESSAGEDATE: Type.Optional(Type.String()),
     MESSAGETEXT: Type.String()
   },
   { $id: 'Cccorderslog', additionalProperties: false }
