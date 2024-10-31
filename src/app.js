@@ -441,11 +441,11 @@ class SftpServiceClass {
   async createOrders(data, params) {
     const strRetailers = retailersArr.join(',')
     //test:
-    const daysOld = 170
-    const top = 'top 1'
+    //const daysOld = 170
+    //const top = 'top 1'
     //real:
-    //const daysOld = 30
-    //const top = ''
+    const daysOld = 30
+    const top = ''
     //getDataset1
     const res = await app.service('getDataset1').find({
       query: {
