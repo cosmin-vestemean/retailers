@@ -149,8 +149,8 @@ document.addEventListener('keydown', function (event) {
 })
 
 async function getOrdersLog() {
-  const ordersLogTable = document.getElementById('ordersLogTable');
-  ordersLogTable.innerHTML = '<tr><td colspan="6" class="has-text-centered">Loading...</td></tr>';
+  const ordersLogTable = document.getElementById('ordersLogTable')
+  ordersLogTable.innerHTML = '<tr><td colspan="6" class="has-text-centered">Loading...</td></tr>'
 
   try {
     const res = await client.service('CCCORDERSLOG').find({
@@ -158,11 +158,11 @@ async function getOrdersLog() {
         $limit: 50,
         $sort: { MESSAGEDATE: -1 }
       }
-    });
+    })
 
-    ordersLogTable.innerHTML = '';
+    ordersLogTable.innerHTML = ''
     res.data.forEach((log) => {
-      const tr = document.createElement('tr');
+      const tr = document.createElement('tr')
       tr.innerHTML = `
         <td>${log.MESSAGEDATE}</td>
         <td>${log.TRDR_CLIENT}</td>
@@ -170,12 +170,13 @@ async function getOrdersLog() {
         <td>${log.ORDERID}</td>
         <td>${log.CCCSFTPXML}</td>
         <td>${log.MESSAGETEXT}</td>
-      `;
-      ordersLogTable.appendChild(tr);
-    });
+      `
+      ordersLogTable.appendChild(tr)
+    })
   } catch (error) {
-    console.error('Error fetching orders log:', error);
-    ordersLogTable.innerHTML = '<tr><td colspan="6" class="has-text-centered has-text-danger">Error loading data</td></tr>';
+    console.error('Error fetching orders log:', error)
+    ordersLogTable.innerHTML =
+      '<tr><td colspan="6" class="has-text-centered has-text-danger">Error loading data</td></tr>'
   }
 }
 
@@ -186,7 +187,7 @@ window.onload = function () {
   //add font to body
   document.body.style.fontFamily =
     'Inter, BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif'
-  getOrdersLog();
+  getOrdersLog()
 }
 
 function getRetailerName(trdr) {
@@ -266,38 +267,41 @@ function hideRows(chkName, tbodyName, className) {
 }
 
 export function createNewOrders() {
-  client.service('CCCORDERSLOG').find({
-    query: {
-      $limit: 50,
-      $sort: { MESSAGEDATE: -1 }
-    }
-  }).then((res) => {
-    //console.log('res', res)
-    var table = document.getElementById('ordersLogTable')
-    table.innerHTML = ''
-    for (var i = 0; i < res.data.length; i++) {
-      var tr = document.createElement('tr')
-      var td = document.createElement('td')
-      td.innerHTML = res.data[i].MESSAGEDATE
-      tr.appendChild(td)
-      td = document.createElement('td')
-      td.innerHTML = res.data[i].TRDR_CLIENT
-      tr.appendChild(td)
-      td = document.createElement('td')
-      td.innerHTML = res.data[i].TRDR_RETAILER
-      tr.appendChild(td)
-      td = document.createElement('td')
-      td.innerHTML = res.data[i].ORDERID
-      tr.appendChild(td)
-      td = document.createElement('td')
-      td.innerHTML = res.data[i].CCCSFTPXML
-      tr.appendChild(td)
-      td = document.createElement('td')
-      td.innerHTML = res.data[i].MESSAGETEXT
-      tr.appendChild(td)
-      table.appendChild(tr)
-    }
-  })
+  client
+    .service('CCCORDERSLOG')
+    .find({
+      query: {
+        $limit: 50,
+        $sort: { MESSAGEDATE: -1 }
+      }
+    })
+    .then((res) => {
+      //console.log('res', res)
+      var table = document.getElementById('ordersLogTable')
+      table.innerHTML = ''
+      for (var i = 0; i < res.data.length; i++) {
+        var tr = document.createElement('tr')
+        var td = document.createElement('td')
+        td.innerHTML = res.data[i].MESSAGEDATE
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].TRDR_CLIENT
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].TRDR_RETAILER
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].ORDERID
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].CCCSFTPXML
+        tr.appendChild(td)
+        td = document.createElement('td')
+        td.innerHTML = res.data[i].MESSAGETEXT
+        tr.appendChild(td)
+        table.appendChild(tr)
+      }
+    })
 }
 
 export function getEmptyAperak() {
