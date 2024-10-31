@@ -457,20 +457,6 @@ class SftpServiceClass {
       if (res.total > 0) {
         const nowIts = new Date().toLocaleString()
         console.log(`Found ${res.total} orders to create, ${nowIts}`)
-        //Insert into CCCORDERSLOG, FINDOC will come later
-        try {
-          app.service('CCCORDERSLOG').create({
-            TRDR_CLIENT: 1,
-            TRDR_RETAILER: item.TRDR_RETAILER,
-            ORDERID: item.OrderId,
-            CCCSFTPXML: item.CCCSFTPXML,
-            MESSAGETEXT: `Found ${res.total} orders to create, ${nowIts}`
-          })
-        } catch (error) {
-          console.error('Error inserting into CCCORDERSLOG:', error)
-        }
-        for (const item of res.data) {
-        }
         let count = 0
         for (const item of res.data) {
           count++
@@ -494,7 +480,15 @@ class SftpServiceClass {
           const fprms = 701
           const series = 7012
           const retailer = item.TRDR_RETAILER
-          const resOrder = await this.createOrderJSON(xml, sosource, fprms, series, retailer, item.OrderId, item.CCCSFTPXML)
+          const resOrder = await this.createOrderJSON(
+            xml,
+            sosource,
+            fprms,
+            series,
+            retailer,
+            item.OrderId,
+            item.CCCSFTPXML
+          )
           //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
           try {
             await app.service('CCCORDERSLOG').create({
@@ -502,10 +496,10 @@ class SftpServiceClass {
               TRDR_RETAILER: retailer,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: JSON.stringify(resOrder.jsonOrder),
-            });
+              MESSAGETEXT: JSON.stringify(resOrder.jsonOrder)
+            })
           } catch (error) {
-            console.error('Error inserting jsonOrder into CCCORDERSLOG:', error);
+            console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
           }
           if (resOrder.success) {
             const jsonOrder = resOrder.jsonOrder
@@ -568,7 +562,7 @@ class SftpServiceClass {
           'OrderId:',
           OrderId
         )
-        
+
         // Insert into CCCORDERSLOG
         try {
           await app.service('CCCORDERSLOG').create({
@@ -577,9 +571,9 @@ class SftpServiceClass {
             ORDERID: OrderId,
             CCCSFTPXML: xmlFilename,
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
-          });
+          })
         } catch (error) {
-          console.error('Error inserting into CCCORDERSLOG:', error);
+          console.error('Error inserting into CCCORDERSLOG:', error)
         }
 
         // Update the CCCSFTPXML record with the FINDOC
@@ -729,9 +723,9 @@ class SftpServiceClass {
                       ORDERID: OrderId,
                       CCCSFTPXML: CCCSFTPXML,
                       MESSAGETEXT: `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} with SQL ${sqlQuery} for field ${field} with value ${item[field].value}`
-                    });
+                    })
                   } catch (error) {
-                    console.error('Error inserting into CCCORDERSLOG:', error);
+                    console.error('Error inserting into CCCORDERSLOG:', error)
                   }
                 } else {
                   errors.push({
@@ -747,9 +741,9 @@ class SftpServiceClass {
                       ORDERID: OrderId,
                       CCCSFTPXML: CCCSFTPXML,
                       MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
-                    });
+                    })
                   } catch (error) {
-                    console.error('Error inserting into CCCORDERSLOG:', error);
+                    console.error('Error inserting into CCCORDERSLOG:', error)
                   }
                 }
               }
