@@ -174,7 +174,7 @@ function getRetailerName(trdr) {
     })
 }
 
-export async function loadOrdersLog() {
+async function loadOrdersLog() {
   const ordersLogTable = document.getElementById('ordersLogTable')
   ordersLogTable.innerHTML = '' // Clear existing rows
 
