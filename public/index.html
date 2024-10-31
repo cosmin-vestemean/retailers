@@ -7,8 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css">
+    <script
+      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css"
+    />
   </head>
   <body>
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
@@ -22,24 +29,25 @@
           <!--add title-->
           <h1 class="title is-info">Retailers Integration</h1>
         </a>
-    
+
+        <!-- Burger menu -->
         <a
           role="button"
           class="navbar-burger"
           aria-label="menu"
           aria-expanded="false"
-          data-target="navbarBasicExample"
+          data-target="navbarMenu"
         >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
-    
+
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item"> Documentation </a>
-    
+
           <!-- Moved Actions dropdown here -->
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link"> Actions </a>
@@ -52,7 +60,7 @@
               <a class="navbar-item" id="createOrders"> Trimite comenzile noi </a>
             </div>
           </div>
-    
+
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link"> More </a>
             <div class="navbar-dropdown">
@@ -77,9 +85,12 @@
         drawRetailers(retailers)
       </script>
     </div>
-    <div id="ordersLogContainer" class="container" style="display: none;">
+    <div id="ordersLogContainer" class="container" style="display: none">
       <h2 class="title is-4">Orders Log</h2>
-      <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small" style="width: 100%;font-size: 0.8em;">
+      <table
+        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
+        style="width: 100%; font-size: 0.8em"
+      >
         <thead>
           <tr>
             <th>MESSAGEDATE</th>
@@ -91,7 +102,13 @@
       </table>
     </div>
     <script type="module">
-      import { getRemoteXmlListToErp, getRemoteAperakXmlListToErp, getEmptyAperak, createNewOrders, loadOrdersLog } from './client.js'
+      import {
+        getRemoteXmlListToErp,
+        getRemoteAperakXmlListToErp,
+        getEmptyAperak,
+        createNewOrders,
+        loadOrdersLog
+      } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -128,34 +145,43 @@
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">
       <div class="modal-content modal-card">
-          <header class="modal-card-head">
-              <p class="modal-card-title">APERAK</p>
-              <button class="modal-button-close delete" aria-label="close"></button>
-          </header>
-          <section class="modal-card-body">
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small" style="width: 100%;font-size: 0.8em;">
-              <thead>
-                <tr>
-                  <th>MESSAGEDATE</th>
-                  <th>MESSAGETIME</th>
-                  <th>MESSAGEORIGIN</th>
-                  <th>DOCUMENTREFERENCE</th>
-                  <th>DOCUMENTUID</th>
-                  <th>SUPPLIERRECEIVERCODE</th>
-                  <th>DOCUMENTRESPONSE</th>
-                  <th>DOCUMENTDETAIL</th>
-                </tr>
-              </thead>
-              <tbody id="aperakTable"></tbody>
-            </table>
-          </section>
-          <footer class="modal-card-foot">
-              <button class="modal-button-close button is-success">Save changes</button>
-              <button class="modal-button-close button">Cancel</button>
-          </footer>
+        <header class="modal-card-head">
+          <p class="modal-card-title">APERAK</p>
+          <button class="modal-button-close delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <table
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth is-small"
+            style="width: 100%; font-size: 0.8em"
+          >
+            <thead>
+              <tr>
+                <th>MESSAGEDATE</th>
+                <th>MESSAGETIME</th>
+                <th>MESSAGEORIGIN</th>
+                <th>DOCUMENTREFERENCE</th>
+                <th>DOCUMENTUID</th>
+                <th>SUPPLIERRECEIVERCODE</th>
+                <th>DOCUMENTRESPONSE</th>
+                <th>DOCUMENTDETAIL</th>
+              </tr>
+            </thead>
+            <tbody id="aperakTable"></tbody>
+          </table>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="modal-button-close button is-success">Save changes</button>
+          <button class="modal-button-close button">Cancel</button>
+        </footer>
       </div>
-  </div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"></script>
+    </div>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"
+    ></script>
   </body>
 </html>
