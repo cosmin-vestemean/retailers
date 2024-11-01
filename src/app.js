@@ -503,7 +503,7 @@ class SftpServiceClass {
             } catch (error) {
               console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
             }*/
-            const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId)
+            const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId,item.CCCSFTPXML)
             //for testing we will not send the order to S1 but return fabricated response
             //const resCreateOrder = { success: true, message: 'Order created successfully' }
             //console.log('resCreateOrder', resCreateOrder)
@@ -528,7 +528,7 @@ class SftpServiceClass {
     }
   }
 
-  async sendOrderToServer(jsonOrder, xmlFilename, retailer, OrderId) {
+  async sendOrderToServer(jsonOrder, xmlFilename, retailer, OrderId, CCCSFTPXML) {
     try {
       // Retrieve connection details
       const resClient = await app.service('CCCRETAILERSCLIENTS').find({
@@ -569,7 +569,7 @@ class SftpServiceClass {
             TRDR_CLIENT: 1,
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
-            CCCSFTPXML: xmlFilename,
+            CCCSFTPXML: CCCSFTPXML,
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
           })
         } catch (error) {
