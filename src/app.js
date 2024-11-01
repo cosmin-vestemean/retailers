@@ -415,7 +415,7 @@ class SftpServiceClass {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
-    const min = 30
+    const min = 40
     const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
     const orderPath = 'data/order'
@@ -434,7 +434,7 @@ class SftpServiceClass {
       data = {}
       params = { query: { rootPath: aperakPath } }
       await this.storeAperakInErpMessages(data, params)
-      //await this.createOrders({}, {})
+      await this.createOrders({}, {})
     }, period)
   }
 
