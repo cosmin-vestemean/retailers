@@ -492,7 +492,7 @@ class SftpServiceClass {
           //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
           if (resOrder.success) {
             const jsonOrder = resOrder.jsonOrder
-            try {
+            /*try {
               await app.service('CCCORDERSLOG').create({
                 TRDR_CLIENT: 1,
                 TRDR_RETAILER: retailer,
@@ -502,7 +502,7 @@ class SftpServiceClass {
               })
             } catch (error) {
               console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
-            }
+            }*/
             const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId)
             //for testing we will not send the order to S1 but return fabricated response
             //const resCreateOrder = { success: true, message: 'Order created successfully' }
