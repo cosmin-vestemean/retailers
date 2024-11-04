@@ -198,23 +198,39 @@
       })
       document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
-        const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0)
+        const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'))
+        // Get all "navbar-item" elements inside the navbar menu
+        const navbarItems = Array.from(document.querySelectorAll('.navbar-menu .navbar-item'))
 
         // Check if there are any navbar burgers
         if (navbarBurgers.length > 0) {
-          // Add a click event on each of them
+          // Add a click event to each burger
           navbarBurgers.forEach(burger => {
             burger.addEventListener('click', () => {
               // Get the target from the "data-target" attribute
               const targetId = burger.dataset.target
               const target = document.getElementById(targetId)
-
               // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
               burger.classList.toggle('is-active')
               target.classList.toggle('is-active')
             })
           })
         }
+
+        // Add a click event to each navbar item
+        navbarItems.forEach(item => {
+          item.addEventListener('click', () => {
+            // Check if the burger menu is active
+            const navbarBurger = document.querySelector('.navbar-burger')
+            const navbarMenu = document.querySelector('.navbar-menu')
+
+            if (navbarBurger.classList.contains('is-active')) {
+              // Remove the "is-active" class from both the "navbar-burger" and the "navbar-menu"
+              navbarBurger.classList.remove('is-active')
+              navbarMenu.classList.remove('is-active')
+            }
+          })
+        })
       })
     </script>
     <!--modal for displaying the CCCAPERAK with findoc=-1-->
