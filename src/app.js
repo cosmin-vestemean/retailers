@@ -415,7 +415,7 @@ class SftpServiceClass {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
-    const min = 30
+    const min = 40
     const period = min * 60 * 1000
     const aperakPath = 'data/aperak'
     const orderPath = 'data/order'
@@ -434,7 +434,7 @@ class SftpServiceClass {
       data = {}
       params = { query: { rootPath: aperakPath } }
       await this.storeAperakInErpMessages(data, params)
-      //await this.createOrders({}, {})
+      await this.createOrders({}, {})
     }, period)
   }
 
@@ -492,7 +492,7 @@ class SftpServiceClass {
           //console.log('jsonOrder', JSON.stringify(resOrder.jsonOrder))
           if (resOrder.success) {
             const jsonOrder = resOrder.jsonOrder
-            try {
+            /*try {
               await app.service('CCCORDERSLOG').create({
                 TRDR_CLIENT: 1,
                 TRDR_RETAILER: retailer,
@@ -502,10 +502,10 @@ class SftpServiceClass {
               })
             } catch (error) {
               console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
-            }
-            //const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId)
+            }*/
+            const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId,item.CCCSFTPXML)
             //for testing we will not send the order to S1 but return fabricated response
-            const resCreateOrder = { success: true, message: 'Order created successfully' }
+            //const resCreateOrder = { success: true, message: 'Order created successfully' }
             //console.log('resCreateOrder', resCreateOrder)
             if (resCreateOrder.success) {
               console.log('Order created successfully')
@@ -528,7 +528,7 @@ class SftpServiceClass {
     }
   }
 
-  async sendOrderToServer(jsonOrder, xmlFilename, retailer, OrderId) {
+  async sendOrderToServer(jsonOrder, xmlFilename, retailer, OrderId, CCCSFTPXML) {
     try {
       // Retrieve connection details
       const resClient = await app.service('CCCRETAILERSCLIENTS').find({
@@ -569,7 +569,7 @@ class SftpServiceClass {
             TRDR_CLIENT: 1,
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
-            CCCSFTPXML: xmlFilename,
+            CCCSFTPXML: CCCSFTPXML,
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
           })
         } catch (error) {
