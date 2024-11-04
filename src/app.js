@@ -570,7 +570,7 @@ class SftpServiceClass {
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
             CCCSFTPXML: CCCSFTPXML,
-            MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename} , order id ${OrderId}`
+            MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename}`
           })
         } catch (error) {
           console.error('Error inserting into CCCORDERSLOG:', error)
