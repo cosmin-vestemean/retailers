@@ -548,12 +548,24 @@ class SftpServiceClass {
         }
       } else {
         console.log('No orders to create')
+        await app.service('CCCORDERSLOG').create({
+          TRDR_CLIENT: 1,
+          TRDR_RETAILER: -1,
+          ORDERID: 'n/a',
+          MESSAGETEXT: 'No orders to create'
+        })
       }
     } else {
       console.error('Error fetching data:', {
         success: res.success,
         errorcode: res.errorcode,
         message: res.message
+      })
+      await app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: -1,
+        ORDERID: 'n/a',
+        MESSAGETEXT: 'Error fetching data: ' + JSON.stringify(res)
       })
     }
   }
