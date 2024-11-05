@@ -430,6 +430,7 @@ class SftpServiceClass {
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: 'n/a',
+        CCCSFTPXML: -1,
         MESSAGETEXT: 'Scanning for orders and aperak files...'
       })
       data = {}
@@ -439,6 +440,7 @@ class SftpServiceClass {
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: 'n/a',
+        CCCSFTPXML: -1,
         MESSAGETEXT: 'Downloaded orders: ' + JSON.stringify(dwlRes)
       })
       data = {}
@@ -448,6 +450,7 @@ class SftpServiceClass {
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: 'n/a',
+        CCCSFTPXML: -1,
         MESSAGETEXT: 'Stored orders in DB: ' + JSON.stringify(storeRes)
       })
       console.log('Creating orders...')
@@ -552,6 +555,7 @@ class SftpServiceClass {
           TRDR_CLIENT: 1,
           TRDR_RETAILER: -1,
           ORDERID: 'n/a',
+          CCCSFTPXML: -1,
           MESSAGETEXT: 'No orders to create'
         })
       }
@@ -565,6 +569,7 @@ class SftpServiceClass {
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: 'n/a',
+        CCCSFTPXML: -1,
         MESSAGETEXT: 'Error fetching data: ' + JSON.stringify(res)
       })
     }
