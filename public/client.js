@@ -261,6 +261,14 @@ export function createNewOrders() {
   })
 }
 
+export function scanAndSend() {
+  document.getElementById('scanNow').innerHTML = 'Please wait...'
+  client.service('sftp').scanNow({}, {}).then((res) => {
+    console.log('scanAndSend', res)
+    document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
+  })
+}
+
 
 
 export function getEmptyAperak() {

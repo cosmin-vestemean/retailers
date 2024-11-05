@@ -164,7 +164,8 @@
         getRemoteAperakXmlListToErp,
         getEmptyAperak,
         createNewOrders,
-        loadOrdersLog
+        loadOrdersLog,
+        scanAndSend,
       } from './client.js'
       //add onclick to preluareComenziBtn button id
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
@@ -186,7 +187,7 @@
       document.getElementById('scanNow').addEventListener('click', async function () {
         //change caption to 'Please wait...'
         document.getElementById('scanNow').innerHTML = 'Please wait...'
-        await client.service('sftp').scanNow({}, {})
+        scanAndSend()
         //change caption to 'Preluare si trimitere'
         document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
       })
