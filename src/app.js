@@ -416,6 +416,49 @@ class SftpServiceClass {
     return returnedData
   }
 
+  async scanNow(data, params) {
+    const aperakPath = 'data/aperak'
+    const orderPath = 'data/order'
+
+    console.log('scanning for orders...')
+    await app.service('CCCORDERSLOG').create({
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: -1,
+      ORDERID: 'n/a',
+      CCCSFTPXML: -1,
+      MESSAGETEXT: 'Scanning for orders and aperak files...'
+    })
+    let data = {}
+    let params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+    const dwlRes = await this.downloadXml(data, params)
+    await app.service('CCCORDERSLOG').create({
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: -1,
+      ORDERID: 'n/a',
+      CCCSFTPXML: -1,
+      MESSAGETEXT: 'Downloaded orders: ' + JSON.stringify(dwlRes)
+    })
+    data = {}
+    params = { query: { retailer: 11639, rootPath: orderPath } }
+    const storeRes = await this.storeXmlInDB(data, params)
+    await app.service('CCCORDERSLOG').create({
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: -1,
+      ORDERID: 'n/a',
+      CCCSFTPXML: -1,
+      MESSAGETEXT: 'Stored orders in DB: ' + JSON.stringify(storeRes)
+    })
+    console.log('Creating orders...')
+    await this.createOrders({}, {})
+    console.log('scanning for aperak...')
+    data = {}
+    params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
+    await this.downloadXml(data, params)
+    data = {}
+    params = { query: { rootPath: aperakPath } }
+    await this.storeAperakInErpMessages(data, params)
+  }
+
   async scanPeriodically(data, params) {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
@@ -933,7 +976,8 @@ app.use('sftp', new SftpServiceClass(), {
     'storeAperakInErpMessages',
     'uploadXml',
     'scanPeriodically',
-    'createOrders'
+    'createOrders',
+    'scanNow'
   ],
   events: ['uploadResult']
 })
