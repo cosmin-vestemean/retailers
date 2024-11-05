@@ -19,25 +19,24 @@ function convertDatasetToArray(dataset) {
 }
 
 function processSqlAsDataset1(obj) {
-  var ds, err;
-  if (!obj.sqlQuery)
-    return { success: false, error: "No sql query transmited." };
+  var ds
+  if (!obj.sqlQuery) return { success: false, error: 'No sql query transmited.' }
   try {
-    ds = X.GETSQLDATASET(obj.sqlQuery, null);
+    ds = X.GETSQLDATASET(obj.sqlQuery, null)
   } catch (e) {
-    err = e.message;
+    return { success: false, error: e.message }
   }
   if (ds.RECORDCOUNT > 0) {
     return {
       success: true,
       data: convertDatasetToArray(ds),
-      total: ds.RECORDCOUNT,
-    };
+      total: ds.RECORDCOUNT
+    }
   } else {
     return {
-      success: false,
-      error: err,
-    };
+      success: true,
+      message: 'No orders to process.'
+    }
   }
 }
 
@@ -50,41 +49,40 @@ function processSqlAsDataset1(obj) {
  */
 function var_dump(obj, t) {
   // define tab spacing
-  var tab = t || "";
+  var tab = t || ''
 
   // check if it's array
-  var isArr =
-    Object.prototype.toString.call(obj) === "[object Array]" ? true : false;
+  var isArr = Object.prototype.toString.call(obj) === '[object Array]' ? true : false
 
   // use {} for object, [] for array
-  var str = isArr ? "Array\n" + tab + "[\n" : "Object\n" + tab + "{\n";
+  var str = isArr ? 'Array\n' + tab + '[\n' : 'Object\n' + tab + '{\n'
 
   // walk through it's properties
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) {
-      var val1 = obj[prop];
-      var val2 = "";
-      var type = Object.prototype.toString.call(val1);
+      var val1 = obj[prop]
+      var val2 = ''
+      var type = Object.prototype.toString.call(val1)
       switch (type) {
         // recursive if object/array
-        case "[object Array]":
-        case "[object Object]":
-          val2 = var_dump(val1, tab + "\t");
-          break;
+        case '[object Array]':
+        case '[object Object]':
+          val2 = var_dump(val1, tab + '\t')
+          break
 
-        case "[object String]":
-          val2 = "'" + val1 + "'";
-          break;
+        case '[object String]':
+          val2 = "'" + val1 + "'"
+          break
 
         default:
-          val2 = val1;
+          val2 = val1
       }
-      str += tab + "\t" + prop + " => " + val2 + ",\n";
+      str += tab + '\t' + prop + ' => ' + val2 + ',\n'
     }
   }
 
   // remove extra comma for last property
-  str = str.substring(0, str.length - 2) + "\n" + tab;
+  str = str.substring(0, str.length - 2) + '\n' + tab
 
-  return isArr ? str + "]" : str + "}";
+  return isArr ? str + ']' : str + '}'
 }

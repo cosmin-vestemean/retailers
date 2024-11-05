@@ -255,7 +255,9 @@ function hideRows(chkName, tbodyName, className) {
 
 export function createNewOrders() {
   client.service('sftp').createOrders({}, {}).then((res) => {
+    document.getElementById('createOrders').innerHTML = 'Please wait...'
     console.log('createNewOrders', res)
+    document.getElementById('createOrders').innerHTML = 'Trimite comenzile noi'
   })
 }
 
