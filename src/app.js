@@ -432,6 +432,8 @@ class SftpServiceClass {
       data = {}
       params = { query: { retailer: 11639, rootPath: orderPath } }
       await this.storeXmlInDB(data, params)
+      console.log('Creating orders...')
+      await this.createOrders({}, {})
       console.log('scanning for aperak...')
       data = {}
       params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
@@ -439,7 +441,6 @@ class SftpServiceClass {
       data = {}
       params = { query: { rootPath: aperakPath } }
       await this.storeAperakInErpMessages(data, params)
-      await this.createOrders({}, {})
     }, period)
   }
 
