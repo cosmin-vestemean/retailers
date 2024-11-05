@@ -426,12 +426,30 @@ class SftpServiceClass {
     const orderPath = 'data/order'
     setInterval(async () => {
       console.log('scanning for orders...')
+      await app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: -1,
+        ORDERID: 'n/a',
+        MESSAGETEXT: 'Scanning for orders and aperak files...'
+      })
       data = {}
       params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
-      await this.downloadXml(data, params)
+      const dwlRes = await this.downloadXml(data, params)
+      await app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: -1,
+        ORDERID: 'n/a',
+        MESSAGETEXT: 'Downloaded orders: ' + JSON.stringify(dwlRes)
+      })
       data = {}
       params = { query: { retailer: 11639, rootPath: orderPath } }
-      await this.storeXmlInDB(data, params)
+      const storeRes = await this.storeXmlInDB(data, params)
+      await app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: -1,
+        ORDERID: 'n/a',
+        MESSAGETEXT: 'Stored orders in DB: ' + JSON.stringify(storeRes)
+      })
       console.log('Creating orders...')
       await this.createOrders({}, {})
       console.log('scanning for aperak...')
