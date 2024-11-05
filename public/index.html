@@ -185,7 +185,7 @@
       document.getElementById('scanAndSend').addEventListener('click', async function () {
         //change caption of the button
         this.innerHTML = 'Please wait...'
-        await client.service('sftp').scanAndSend()
+        await client.service('sftp').scanAndSend({}, {})
         //change caption of the button
         this.innerHTML = 'Preluare si trimitere'
       })

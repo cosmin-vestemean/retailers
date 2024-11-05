@@ -425,7 +425,7 @@ class SftpServiceClass {
     setInterval(scanAndSend, period)
   }
 
-  async scanAndSend() {
+  async scanAndSend(data, params) {
     const aperakPath = 'data/aperak'
     const orderPath = 'data/order'
     console.log('scanning for orders...')
