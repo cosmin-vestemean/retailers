@@ -421,13 +421,6 @@ class SftpServiceClass {
     const orderPath = 'data/order'
 
     console.log('scanning for orders...')
-    await app.service('CCCORDERSLOG').create({
-      TRDR_CLIENT: 1,
-      TRDR_RETAILER: -1,
-      ORDERID: 'n/a',
-      CCCSFTPXML: -1,
-      MESSAGETEXT: 'Scanning for orders and aperak files...'
-    })
     data = {}
     params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
     const dwlRes = await this.downloadXml(data, params)
