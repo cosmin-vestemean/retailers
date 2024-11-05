@@ -314,10 +314,15 @@ class SftpServiceClass {
         var DocumentDetail = json.DXMessage.DocumentDetail
         /*- - ID document: DX01_099_20240313_01005264 Nume fisier: INVOIC_19868_VAT_RO25190857.xml Status: Primit de DX Mesaj: Documentul a fost receptionat de platforma DocXchange The document has been received by DocXchange platform. */
         //search for Nume fisier: INVOIC_19868_VAT_RO25190857.xml in messagedetail and try to recup 19868 part
-        var possibleDocumentReference = DocumentDetail.split('Nume fisier: ')[1].split('.xml')[0]
-        if (DocumentReference === 'Necunoscut' && possibleDocumentReference.includes('INVOIC_')) {
-          DocumentReference = possibleDocumentReference.split('_')[1]
-          console.log('DocumentReference', DocumentReference)
+        var possibleDocumentReference = ''
+        try {
+          possibleDocumentReference = DocumentDetail.split('Nume fisier: ')[1].split('.xml')[0]
+          if (DocumentReference === 'Necunoscut' && possibleDocumentReference.includes('INVOIC_')) {
+            DocumentReference = possibleDocumentReference.split('_')[1]
+            console.log('DocumentReference', DocumentReference)
+          }
+        } catch (error) {
+          console.error('Error in parsing DocumentReference:', error)
         }
         //getDataset1 returns success, data, total or success, error
         const response = await app.service('getDataset1').find({
@@ -503,7 +508,13 @@ class SftpServiceClass {
             } catch (error) {
               console.error('Error inserting jsonOrder into CCCORDERSLOG:', error)
             }*/
-            const resCreateOrder = await this.sendOrderToServer(jsonOrder, item.XMLFILENAME, retailer, item.OrderId,item.CCCSFTPXML)
+            const resCreateOrder = await this.sendOrderToServer(
+              jsonOrder,
+              item.XMLFILENAME,
+              retailer,
+              item.OrderId,
+              item.CCCSFTPXML
+            )
             //for testing we will not send the order to S1 but return fabricated response
             //const resCreateOrder = { success: true, message: 'Order created successfully' }
             //console.log('resCreateOrder', resCreateOrder)
