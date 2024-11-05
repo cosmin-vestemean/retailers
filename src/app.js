@@ -437,13 +437,21 @@ class SftpServiceClass {
     data = {}
     params = { query: { retailer: 11639, rootPath: orderPath } }
     const storeRes = await this.storeXmlInDB(data, params)
-    await app.service('CCCORDERSLOG').create({
-      TRDR_CLIENT: 1,
-      TRDR_RETAILER: -1,
-      ORDERID: 'n/a',
-      CCCSFTPXML: -1,
-      MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
-    })
+    if (
+      dwlRes.length === 1 &&
+      dwlRes[0].message === 'No files on server' &&
+      storeRes.length === 1 &&
+      storeRes[0].message === 'No files inserted'
+    ) {
+    } else {
+      await app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: -1,
+        ORDERID: 'n/a',
+        CCCSFTPXML: -1,
+        MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
+      })
+    }
     console.log('Creating orders...')
     await this.createOrders({}, {})
     console.log('scanning for aperak...')
