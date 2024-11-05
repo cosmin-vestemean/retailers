@@ -109,7 +109,7 @@ class SftpServiceClass {
       if (files.length === 0) {
         console.log('No files on server')
         sftp.end()
-        returnedData.push({ filename: '', success: false, error: 'No files on server' })
+        returnedData.push({ filename: '', success: true, message: 'No files on server' })
       }
 
       files.forEach((item) => {
@@ -260,11 +260,11 @@ class SftpServiceClass {
           }
         } catch (err) {
           console.error(err)
-          returnedData.push({ filename: filename, success: false, error: err })
+          returnedData.push({ filename: filename, success: false, error: err.message })
         }
       } else {
-        console.log('not an xml file')
-        returnedData.push({ filename: filename, success: false, error: 'not an xml file' })
+        console.log('not an xml file', filename)
+        //returnedData.push({ filename: filename, success: false, error: 'not an xml file' })
       }
     }
 
