@@ -464,7 +464,7 @@ class SftpServiceClass {
   }
 
   async scanNow(data, params) {
-    this.scanAndSend()
+    await this.scanAndSend()
   }
 
   async scanPeriodically(data, params) {
