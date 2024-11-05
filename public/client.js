@@ -253,17 +253,17 @@ function hideRows(chkName, tbodyName, className) {
   }
 }
 
-export function createNewOrders() {
+export async function createNewOrders() {
   document.getElementById('createOrders').innerHTML = 'Please wait...'
-  client.service('sftp').createOrders({}, {}).then((res) => {
+  await client.service('sftp').createOrders({}, {}).then((res) => {
     console.log('createNewOrders', res)
     document.getElementById('createOrders').innerHTML = 'Trimite comenzile noi'
   })
 }
 
-export function scanAndSend() {
+export async function scanAndSend() {
   document.getElementById('scanNow').innerHTML = 'Please wait...'
-  client.service('sftp').scanNow({}, {}).then((res) => {
+  await client.service('sftp').scanNow({}, {}).then((res) => {
     console.log('scanAndSend', res)
     document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
   })

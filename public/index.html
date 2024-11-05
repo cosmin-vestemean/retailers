@@ -183,13 +183,8 @@
       document.getElementById('createOrders').addEventListener('click', async function () {
         await createNewOrders()
       })
-      //scanNow on click
       document.getElementById('scanNow').addEventListener('click', async function () {
-        //change caption to 'Please wait...'
-        document.getElementById('scanNow').innerHTML = 'Please wait...'
-        scanAndSend()
-        //change caption to 'Preluare si trimitere'
-        document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
+        await scanAndSend()
       })
 
       //toggle logs on click
