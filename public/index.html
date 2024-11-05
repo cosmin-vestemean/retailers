@@ -113,7 +113,6 @@
               <a class="navbar-item" id="openAperakBtn">Vizualizare raspunsuri neprelucrate</a>
               <div class="dropdown-divider"></div>
               <a class="navbar-item" id="createOrders"> Trimite comenzile noi </a>
-              <a class="navbar-item" id="scanAndSend"> Preluare si trimitere </a>
             </div>
           </div>
 
@@ -182,14 +181,6 @@
       document.getElementById('createOrders').addEventListener('click', async function () {
         await createNewOrders()
       })
-      document.getElementById('scanAndSend').addEventListener('click', async function () {
-        //change caption of the button
-        this.innerHTML = 'Please wait...'
-        await client.service('sftp').scanAndSend()
-        //change caption of the button
-        this.innerHTML = 'Preluare si trimitere'
-      })
-
       //toggle logs on click
       document.getElementById('toggleLogsBtn').addEventListener('click', function () {
         const cardsContainer = document.getElementById('cardsContainer')
