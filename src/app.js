@@ -419,13 +419,13 @@ class SftpServiceClass {
     return returnedData
   }
 
-  async scanNow(data, params) {
+  async scanAndSend() {
     const aperakPath = 'data/aperak'
     const orderPath = 'data/order'
 
     console.log('scanning for orders...')
-    data = {}
-    params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+    let data = {}
+    let params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
     const dwlRes = await this.downloadXml(data, params)
     await app.service('CCCORDERSLOG').create({
       TRDR_CLIENT: 1,
@@ -463,54 +463,17 @@ class SftpServiceClass {
     await this.storeAperakInErpMessages(data, params)
   }
 
+  async scanNow(data, params) {
+    this.scanAndSend()
+  }
+
   async scanPeriodically(data, params) {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
     const min = 40
     const period = min * 60 * 1000
-    const aperakPath = 'data/aperak'
-    const orderPath = 'data/order'
-    setInterval(async () => {
-      console.log('scanning for orders...')
-      data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
-      const dwlRes = await this.downloadXml(data, params)
-      await app.service('CCCORDERSLOG').create({
-        TRDR_CLIENT: 1,
-        TRDR_RETAILER: -1,
-        ORDERID: 'n/a',
-        CCCSFTPXML: -1,
-        MESSAGETEXT: 'Downloaded orders: <pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
-      })
-      data = {}
-      params = { query: { retailer: 11639, rootPath: orderPath } }
-      const storeRes = await this.storeXmlInDB(data, params)
-      if (
-        dwlRes.length === 1 &&
-        dwlRes[0].message === 'No files on server' &&
-        storeRes.length === 1 &&
-        storeRes[0].message === 'No files inserted'
-      ) {
-      } else {
-        await app.service('CCCORDERSLOG').create({
-          TRDR_CLIENT: 1,
-          TRDR_RETAILER: -1,
-          ORDERID: 'n/a',
-          CCCSFTPXML: -1,
-          MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
-        })
-      }
-      console.log('Creating orders...')
-      await this.createOrders({}, {})
-      console.log('scanning for aperak...')
-      data = {}
-      params = { query: { retailer: 11639, rootPath: aperakPath, startsWith: 'APERAK_' } }
-      await this.downloadXml(data, params)
-      data = {}
-      params = { query: { rootPath: aperakPath } }
-      await this.storeAperakInErpMessages(data, params)
-    }, period)
+    setInterval(this.scanAndSend, period)
   }
 
   async createOrders(data, params) {
