@@ -428,8 +428,8 @@ class SftpServiceClass {
       CCCSFTPXML: -1,
       MESSAGETEXT: 'Scanning for orders and aperak files...'
     })
-    let data = {}
-    let params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
+    data = {}
+    params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
     const dwlRes = await this.downloadXml(data, params)
     await app.service('CCCORDERSLOG').create({
       TRDR_CLIENT: 1,
