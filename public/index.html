@@ -178,8 +178,12 @@
         getEmptyAperak()
       })
       //createOrders on click
-      document.getElementById('createOrders').addEventListener('click', function () {
-        createNewOrders()
+      document.getElementById('createOrders').addEventListener('click', async function () {
+        //disable button
+        this.disabled = true
+        await createNewOrders()
+        //enable button
+        this.disabled = false
       })
       //toggle logs on click
       document.getElementById('toggleLogsBtn').addEventListener('click', function () {
