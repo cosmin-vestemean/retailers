@@ -81,6 +81,10 @@ class SftpServiceClass {
   7. if not found push in filesToBeProcessed array only the files that are not in database
   8. save each file in database table CCCSFTPXML(TRDR_CLIENT, TRDR_RETAILER, XML, XMLDATE, XMLSTATUS, XMLERROR)
   */
+  constructor() {
+    this.scanAndSend = this.scanAndSend.bind(this)
+  }
+
   async downloadXml(data, params) {
     const rootPath = params.query.rootPath
     const xmlPath = rootPath + '/xml'
