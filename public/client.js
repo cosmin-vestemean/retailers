@@ -180,7 +180,7 @@ async function loadOrdersLog() {
 
   const response = await client.service('CCCORDERSLOG').find({
     query: {
-      $limit: 100,
+      $limit: 200,
       $sort: { MESSAGEDATE: -1 }
     }
   })
