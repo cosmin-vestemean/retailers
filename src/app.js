@@ -109,7 +109,7 @@ class SftpServiceClass {
       if (files.length === 0) {
         console.log('No files on server')
         sftp.end()
-        returnedData.push({ filename: '', success: true, message: 'No files on server' })
+        returnedData.push({ success: true, message: 'No files on server' })
       }
 
       files.forEach((item) => {
@@ -269,6 +269,9 @@ class SftpServiceClass {
     }
 
     console.log('List of inserted files', returnedData)
+    if (returnedData.length === 0) {
+      returnedData.push({ success: true, message: 'No files inserted' })
+    }
     return returnedData
   }
 
