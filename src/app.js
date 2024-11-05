@@ -475,7 +475,7 @@ class SftpServiceClass {
     //downloadXml({}, { query: { retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
     //storeAperakInErpMessages({}, { query: { rootPath: aperakPath } })
     //scan periodically (30') for aperak files
-    const min = 10
+    const min = 40
     const period = min * 60 * 1000
     setInterval(this.scanAndSend, period)
   }
