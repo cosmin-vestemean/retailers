@@ -430,7 +430,7 @@ class SftpServiceClass {
     await app.service('CCCORDERSLOG').create({
       TRDR_CLIENT: 1,
       TRDR_RETAILER: -1,
-      ORDERID: 'n/a',
+      ORDERID: 'system',
       CCCSFTPXML: -1,
       MESSAGETEXT: 'Downloaded orders: <pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
     })
@@ -447,7 +447,7 @@ class SftpServiceClass {
       await app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'n/a',
+        ORDERID: 'system',
         CCCSFTPXML: -1,
         MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
       })
@@ -565,7 +565,7 @@ class SftpServiceClass {
         await app.service('CCCORDERSLOG').create({
           TRDR_CLIENT: 1,
           TRDR_RETAILER: -1,
-          ORDERID: 'n/a',
+          ORDERID: 'system',
           CCCSFTPXML: -1,
           MESSAGETEXT: 'No orders to create'
         })
@@ -579,7 +579,7 @@ class SftpServiceClass {
       await app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'n/a',
+        ORDERID: 'system',
         CCCSFTPXML: -1,
         MESSAGETEXT: 'Error fetching data: ' + JSON.stringify(res)
       })
