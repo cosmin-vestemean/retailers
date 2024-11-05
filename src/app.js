@@ -429,7 +429,7 @@ class SftpServiceClass {
       TRDR_RETAILER: -1,
       ORDERID: 'n/a',
       CCCSFTPXML: -1,
-      MESSAGETEXT: 'Downloaded orders: ' + JSON.stringify(dwlRes)
+      MESSAGETEXT: 'Downloaded orders: <pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
     })
     data = {}
     params = { query: { retailer: 11639, rootPath: orderPath } }
@@ -439,7 +439,7 @@ class SftpServiceClass {
       TRDR_RETAILER: -1,
       ORDERID: 'n/a',
       CCCSFTPXML: -1,
-      MESSAGETEXT: 'Stored orders in DB: ' + JSON.stringify(storeRes)
+      MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
     })
     console.log('Creating orders...')
     await this.createOrders({}, {})
