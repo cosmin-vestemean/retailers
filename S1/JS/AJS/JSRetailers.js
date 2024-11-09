@@ -35,7 +35,7 @@ function processSqlAsDataset1(obj) {
   } else {
     return {
       success: true,
-      message: 'No orders to process.'
+      message: 'Nothing to process.'
     }
   }
 }
@@ -85,4 +85,30 @@ function var_dump(obj, t) {
   str = str.substring(0, str.length - 2) + '\n' + tab
 
   return isArr ? str + ']' : str + '}'
+}
+
+function sendEmail(params) {
+  var strTO = params.to || ''
+  var strCC = params.cc || ''
+  var strBCC = params.bcc || ''
+  var strSubject = params.subject || ''
+  var strBodyPlain = params.bodyPlain || ''
+  var strBodyHTML = params.bodyHTML || ''
+  var strAttachment = params.attachment || ''
+  var strFromName = params.fromName || ''
+  //if there is no subject, to or body, return false
+  if (!strSubject || !strTO || (!strBodyPlain && !strBodyHTML)) {
+    return { success: false, message: 'Missing required parameters' }
+  }
+  return X.EXEC(
+    'CODE:SysRequest.doSendMail3',
+    strTO,
+    strCC,
+    strBCC,
+    strSubject,
+    strBodyPlain,
+    strBodyHTML,
+    strAttachment,
+    strFromName
+  )
 }

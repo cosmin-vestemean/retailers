@@ -434,9 +434,9 @@ class SftpServiceClass {
     await app.service('CCCORDERSLOG').create({
       TRDR_CLIENT: 1,
       TRDR_RETAILER: -1,
-      ORDERID: 'system',
+      ORDERID: 'downloadXml',
       CCCSFTPXML: -1,
-      MESSAGETEXT: 'Downloaded orders: <pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
+      MESSAGETEXT: '<pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
     })
     data = {}
     params = { query: { retailer: 11639, rootPath: orderPath } }
@@ -451,9 +451,9 @@ class SftpServiceClass {
       await app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'system',
+        ORDERID: 'storeXmlInDB',
         CCCSFTPXML: -1,
-        MESSAGETEXT: 'Stored orders in DB: <pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
+        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
       })
     }
     console.log('Creating orders...')
