@@ -569,7 +569,7 @@ class SftpServiceClass {
         await app.service('CCCORDERSLOG').create({
           TRDR_CLIENT: 1,
           TRDR_RETAILER: -1,
-          ORDERID: 'system',
+          ORDERID: 'createOrders',
           CCCSFTPXML: -1,
           MESSAGETEXT: 'No orders to create'
         })
