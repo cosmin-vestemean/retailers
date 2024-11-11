@@ -819,10 +819,13 @@ class SftpServiceClass {
 
     if (errors.length > 0) {
       //send errors by email to sorin.fliundra@petfactory.ro
+      const to = 'cosmin.ve@gmail.com'
       const message = errors.map((item) => item.message).join('<br>')
       const subject = 'Errors creating order ' + OrderId + ' for retailer ' + retailer
-      const email = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
-      const sendEmRes = await app.service('sendEmail').create({ email: email, subject: subject })
+      const bodyPlain = 'Urmatoarele erori au fost intalnite la crearea comenzii:\n\n' + message + '\n'
+      const bodyHTML = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
+      const fromName = 'Comenzi EDI - PetFactory'
+      const sendEmRes = await app.service('sendEmail').create({ to, subject, bodyPlain, bodyHTML })
       //returns 'True' or 'False'
       let retMessage = sendEmRes === 'True' ? 'Errors sent by email' : 'Errors not sent by email'
       return { success: false, errors: errors, message: retMessage }
