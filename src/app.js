@@ -819,13 +819,14 @@ class SftpServiceClass {
 
     if (errors.length > 0) {
       //send errors by email to sorin.fliundra@petfactory.ro
-      const to = 'cosmin.ve@gmail.com'
+      const to = 'sorin.fliundra@petfactory.ro'
+      const cc = 'cosmin.ve@gmail.com'
       const message = errors.map((item) => item.message).join('<br>')
-      const subject = 'Errors creating order ' + OrderId + ' for retailer ' + retailer
+      const subject = 'Erori procesare xml comanda EDI ' + OrderId + ' for retailer ' + retailer
       const bodyPlain = 'Urmatoarele erori au fost intalnite la crearea comenzii:\n\n' + message + '\n'
       const bodyHTML = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
       const fromName = 'Comenzi EDI - PetFactory'
-      const sendEmRes = await app.service('sendEmail').create({ to, subject, bodyPlain, bodyHTML, fromName })
+      const sendEmRes = await app.service('sendEmail').create({ to, cc, subject, bodyPlain, bodyHTML, fromName })
       //add to CCCORDERSLOG
       app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
