@@ -818,7 +818,14 @@ class SftpServiceClass {
     }
 
     if (errors.length > 0) {
-      return { success: false, errors: errors }
+      //send errors by email to sorin.fliundra@petfactory.ro
+      const message = errors.map((item) => item.message).join('<br>')
+      const subject = 'Errors creating order ' + OrderId + ' for retailer ' + retailer
+      const email = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
+      const sendEmRes = await app.service('sendEmail').create({ email: email, subject: subject })
+      //returns 'True' or 'False'
+      let retMessage = sendEmRes === 'True' ? 'Errors sent by email' : 'Errors not sent by email'
+      return { success: false, errors: errors, message: retMessage }
     }
 
     //console.log('jsonOrder', JSON.stringify(jsonOrder))
@@ -1118,6 +1125,22 @@ class getDataset1ServiceClass {
 
 //register the service
 app.use('getDataset1', new getDataset1ServiceClass())
+
+//create a service to connect to S1: JS/JSRetailers/sendEmail(paramsObj)
+class sendEmailServiceClass {
+  async create(data, params) {
+    const url = mainURL + '/JS/JSRetailers/sendEmail'
+    const method = 'POST'
+    const body = data
+    const response = await fetch(url, { method: method, body: JSON.stringify(body) })
+    const json = await response.json()
+    console.log(json)
+    return json
+  }
+}
+
+//register the service
+app.use('sendEmail', new sendEmailServiceClass())
 
 class getS1ObjData {
   async find(params) {

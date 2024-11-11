@@ -69,4 +69,9 @@ client.use('sftp', socketClient.service('sftp'), {
     console.log('uploadResult', data)
   })
 
+//app.use('sendEmail', new sendEmailServiceClass())
+  client.use('sendEmail', socketClient.service('sendEmail'), {
+    methods: ['create']
+  })
+
 export default client

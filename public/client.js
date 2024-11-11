@@ -269,8 +269,6 @@ export async function scanAndSend() {
   })
 }
 
-
-
 export function getEmptyAperak() {
   //get * from cccaperak with findoc=-1
   client

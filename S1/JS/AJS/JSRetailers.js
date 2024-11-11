@@ -96,6 +96,7 @@ function sendEmail(params) {
   var strBodyHTML = params.bodyHTML || ''
   var strAttachment = params.attachment || ''
   var strFromName = params.fromName || ''
+  var eMailAccount = 200;
   //if there is no subject, to or body, return false
   if (!strSubject || !strTO || (!strBodyPlain && !strBodyHTML)) {
     return { success: false, message: 'Missing required parameters' }
@@ -109,6 +110,7 @@ function sendEmail(params) {
     strBodyPlain,
     strBodyHTML,
     strAttachment,
-    strFromName
+    strFromName,
+    eMailAccount
   )
 }
