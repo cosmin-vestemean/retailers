@@ -825,7 +825,15 @@ class SftpServiceClass {
       const bodyPlain = 'Urmatoarele erori au fost intalnite la crearea comenzii:\n\n' + message + '\n'
       const bodyHTML = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
       const fromName = 'Comenzi EDI - PetFactory'
-      const sendEmRes = await app.service('sendEmail').create({ to, subject, bodyPlain, bodyHTML })
+      const sendEmRes = await app.service('sendEmail').create({ to, subject, bodyPlain, bodyHTML, fromName })
+      //add to CCCORDERSLOG
+      app.service('CCCORDERSLOG').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: retailer,
+        ORDERID: OrderId,
+        CCCSFTPXML: CCCSFTPXML,
+        MESSAGETEXT: 'Errors sent by email' + JSON.stringify(sendEmRes)
+      })
       //returns 'True' or 'False'
       let retMessage = sendEmRes === 'True' ? 'Errors sent by email' : 'Errors not sent by email'
       return { success: false, errors: errors, message: retMessage }
