@@ -197,7 +197,7 @@ async function loadOrdersLog() {
       var div = document.createElement('div')
       div.className = 'content is-small is-info'
       div.style.height = '100px' // Set a fixed height
-      div.style.width = 'auto' // Set a fixed width
+      div.style.width = '1200px' // Set a fixed width
       div.style.overflowY = 'scroll' // Enable vertical scrolling
       div.style.overflowX = 'auto' // Enable horizontal scrolling if needed
       div.style.whiteSpace = 'pre-wrap' // Preserve whitespace and wrap text
