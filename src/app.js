@@ -454,13 +454,13 @@ class SftpServiceClass {
       storeRes[0].message === 'No files inserted'
     ) {
     } else {
-      const orderId = JSON.parse(storeRes.response.JSONDATA).Order.ID || 'storeXmlInDB'
+      const orderId = JSON.parse(storeRes[0].response.JSONDATA).Order.ID || 'storeXmlInDB'
       await app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: orderId,
         CCCSFTPXML: -1,
-        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
+        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes[0].response.message) + '</code></pre>'
       })
     }
     console.log('Creating orders...')
