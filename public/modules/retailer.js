@@ -160,8 +160,8 @@ export class Retailer {
                             <td>Comenzi de trimis:</td><td>
                             ${
                               this.#nrComenziDeTrimis > 0
-                                ? '<span class="tag is-danger" data-tooltip="30 zile">' + this.#nrComenziDeTrimis + '</span>'
-                                : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
+                                ? '<span class="tag is-danger is-light" data-tooltip="30 zile">' + this.#nrComenziDeTrimis + '</span>'
+                                : '<span class="tag is-success is-light">' + this.#nrComenziDeTrimis + '</span>'
                             }</section><section>
                             </td>
                           </tr>
@@ -169,12 +169,12 @@ export class Retailer {
                             <td>Facturi de trimis:</td><td>
                             ${
                               this.#nrFacturiDeTrimis > 0
-                                ? '<span class="tag is-danger is-clickable" data-tooltip="30 zile" onclick="alert(\'' +
+                                ? '<span class="tag is-danger is-light is-clickable" data-tooltip="30 zile" onclick="alert(\'' +
                                   this.#enumFacturiDeTrimis +
                                   '\')">' +
                                   this.#nrFacturiDeTrimis +
                                   '</span>'
-                                : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
+                                : '<span class="tag is-success is-light">' + this.#nrFacturiDeTrimis + '</span>'
                             }
                             </td>
                           </tr>
@@ -227,8 +227,8 @@ export class Retailer {
                   <td>Comenzi de trimis:</td><td>
                   ${
                     this.#nrComenziDeTrimis > 0
-                      ? '<span class="tag is-danger">' + this.#nrComenziDeTrimis + '</span>'
-                      : '<span class="tag is-success">' + this.#nrComenziDeTrimis + '</span>'
+                      ? '<span class="tag is-danger is-light">' + this.#nrComenziDeTrimis + '</span>'
+                      : '<span class="tag is-success is-light">' + this.#nrComenziDeTrimis + '</span>'
                   }</section><section>
                   </td>
                 </tr>
@@ -236,12 +236,12 @@ export class Retailer {
                   <td>Facturi de trimis:</td><td>
                   ${
                     this.#nrFacturiDeTrimis > 0
-                      ? '<span class="tag is-danger is-clickable" onclick="alert(\'' +
+                      ? '<span class="tag is-danger is-light is-clickable" onclick="alert(\'' +
                         this.#enumFacturiDeTrimis +
                         '\')">' +
                         this.#nrFacturiDeTrimis +
                         '</span>'
-                      : '<span class="tag is-success">' + this.#nrFacturiDeTrimis + '</span>'
+                      : '<span class="tag is-success is-light">' + this.#nrFacturiDeTrimis + '</span>'
                   }
                   </td>
                 </tr>

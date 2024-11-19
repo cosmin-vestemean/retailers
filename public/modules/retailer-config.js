@@ -1029,15 +1029,15 @@ function addTableHeader(table) {
   cell1 = document.createElement('th')
   row.appendChild(cell1)
   cell1.colSpan = 10
-  cell1.innerHTML = `<button id="hideUnselectedRows" class="button is-small is-info" onclick="hideUnselectedRows()">Show/Hide unselected rows</button>`
+  cell1.innerHTML = `<button id="hideUnselectedRows" class="button is-small is-info is-light" onclick="hideUnselectedRows()">Show/Hide unselected rows</button>`
   //add 4 buttons on the same row; on click hide/show cells: 1. S1 Table 2, S1 Field 2, 2. Value, 3. Observatii
-  cell1.innerHTML += `<button id="hideS1Table2S1Field2" class="button is-small is-info ml-2" onclick="showHideCell(['S1 Table 2', 'S1 Field 2'], document.getElementById('xmlAsTable'))">Show/Hide Table 2</button>`
-  cell1.innerHTML += `<button id="hideValue" class="button is-small is-info ml-2" onclick="showHideCell(['Value'], document.getElementById('xmlAsTable'))">Show/Hide Value</button>`
-  cell1.innerHTML += `<button id="hideObservatii" class="button is-small is-info ml-2" onclick="showHideCell(['Observatii'], document.getElementById('xmlAsTable'))">Show/Hide Observatii</button>`
+  cell1.innerHTML += `<button id="hideS1Table2S1Field2" class="button is-small is-info is-light ml-2" onclick="showHideCell(['S1 Table 2', 'S1 Field 2'], document.getElementById('xmlAsTable'))">Show/Hide Table 2</button>`
+  cell1.innerHTML += `<button id="hideValue" class="button is-small is-info is-light ml-2" onclick="showHideCell(['Value'], document.getElementById('xmlAsTable'))">Show/Hide Value</button>`
+  cell1.innerHTML += `<button id="hideObservatii" class="button is-small is-info is-light ml-2" onclick="showHideCell(['Observatii'], document.getElementById('xmlAsTable'))">Show/Hide Observatii</button>`
   //hide/show all the above buttons
-  cell1.innerHTML += `<button id="hideShowAll" class="button is-small is-info ml-2" onclick="showHideCell(['S1 Table 2', 'S1 Field 2', 'Value', 'Observatii'], document.getElementById('xmlAsTable'))">Hide all</button>`
+  cell1.innerHTML += `<button id="hideShowAll" class="button is-small is-info is-light ml-2" onclick="showHideCell(['S1 Table 2', 'S1 Field 2', 'Value', 'Observatii'], document.getElementById('xmlAsTable'))">Hide all</button>`
   //add saveMapping button on the same row
-  cell1.innerHTML += `<button class="button is-small is-success ml-2" onclick="saveMapping()">Save mapping</button>`
+  cell1.innerHTML += `<button class="button is-small is-success is-light ml-2" onclick="saveMapping()">Save mapping</button>`
 }
 
 function addTableBody(table, data) {
@@ -1606,8 +1606,8 @@ export async function addRow() {
   cell5.style.display = 'none'
   //add actions column
   var cell6 = row.insertCell()
-  cell6.innerHTML += `<button class="button is-small is-danger m-2" onclick="deleteRow()">Delete</button>`
-  cell6.innerHTML += `<button class="button is-small is-info m-2" onclick="()">Load</button>`
+  cell6.innerHTML += `<button class="button is-small is-danger is-light m-2" onclick="deleteRow()">Delete</button>`
+  cell6.innerHTML += `<button class="button is-small is-info is-light m-2" onclick="()">Load</button>`
   //add class is-selected to current row
   row.className = 'is-selected'
   //add onclick event to row
@@ -2165,11 +2165,11 @@ export async function loadListaDocumente() {
         cell2.innerHTML = `<input id = "SERIES${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="SERIES" value="${item.SERIES}" />`
         cell3.innerHTML = `<input id = "INITIALDIRIN${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIRIN" value="${item.INITIALDIRIN}" />`
         cell4.innerHTML = `<input id = "INITIALDIROUT${item.CCCDOCUMENTES1MAPPINGS}" class="input" type="text" placeholder="INITIALDIROUT" value="${item.INITIALDIROUT}" />`
-        cell5.innerHTML = `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-danger is-small deleteMapping">Delete</button>`
+        cell5.innerHTML = `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-danger is-light is-small deleteMapping">Delete</button>`
         //button for loading xml mappings for current document
-        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 loadMapping")">Load</button>`
+        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-light is-small ml-2 loadMapping")">Load</button>`
         //add button for loading from another document from table documente
-        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-small ml-2 copyFromAnotherDocument")">Clone</button>`
+        cell5.innerHTML += `<button id="${item.CCCDOCUMENTES1MAPPINGS}" class="button is-info is-light is-small ml-2 copyFromAnotherDocument")">Clone</button>`
         //cell6 hidden CCCDOCUMENTES1MAPPINGS, no input
         cell6.innerHTML = item.CCCDOCUMENTES1MAPPINGS
         //hide cell6

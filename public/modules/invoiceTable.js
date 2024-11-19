@@ -55,7 +55,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     var actions = tr.insertCell()
     //create xml button
     var button2 = document.createElement('button')
-    button2.className = 'button is-small is-info ml-2'
+    button2.className = 'button is-small is-info is-light ml-2'
     button2.innerHTML = 'Create XML'
     button2.onclick = async function () {
       /* var domObj = await createXML(row.findoc, trdr, sosource, fprms, series)
@@ -88,7 +88,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     actions.appendChild(button2)
     //save xml button
     var button3 = document.createElement('button')
-    button3.className = 'button is-small is-primary ml-2'
+    button3.className = 'button is-small is-primary is-light ml-2'
     button3.innerHTML = 'Save XML'
     button3.onclick = async function () {
       //const xml = await createXML(row.findoc, trdr, sosource, fprms, series)
@@ -110,7 +110,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
     }
     actions.appendChild(button3)
     var button = document.createElement('button')
-    button.className = 'button is-small is-success ml-2'
+    button.className = 'button is-small is-success is-light ml-2'
     //set id
     button.id = row.findoc + '_sendInvoice'
     button.innerHTML = 'Send Invoice'
@@ -142,7 +142,7 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var div = document.createElement('div')
       var resend = document.createElement('a')
       resend.innerHTML = 'Resend'
-      resend.className = 'is-small is-danger ml-2'
+      resend.className = 'is-small is-danger is-light ml-2'
       resend.onclick = async function () {
         //ask if sure
         var r = confirm('Resend invoice?')
@@ -204,8 +204,8 @@ export async function displayDocsForRetailers(jsonData, trdr, sosource, fprms, s
       var responseColor =
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'acceptat' ||
         aperakRes.data[0].DOCUMENTRESPONSE.toLowerCase() == 'receptionat'
-          ? 'is-success'
-          : 'is-danger'
+          ? 'is-success is-light'
+          : 'is-danger is-light'
       //article specific tags. header contains DOCUMENTREFERENCE, DOCUMENTUID, DOCUMENTRESPONSE. body contains DOCUMENTDETAIL in a narrow column
       var article = document.createElement('article')
       article.className = 'message is-small ' + responseColor

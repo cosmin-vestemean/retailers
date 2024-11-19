@@ -24,7 +24,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
     var xmlDataCell = row.insertCell()
     xmlDataCell.innerHTML =
-      '<textarea class="textarea is-small is-info" rows="5" cols="50">' + xml.XMLDATA + '</textarea>'
+      '<textarea class="textarea is-small is-info is-light" rows="5" cols="50">' + xml.XMLDATA + '</textarea>'
     //spellcheck="false"
     xmlDataCell.spellcheck = false
     var parser = new DOMParser()
@@ -45,7 +45,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     //create the buttons
     var saveButton = document.createElement('button')
     saveButton.innerHTML = 'Save'
-    saveButton.className = 'button is-small is-info ml-2'
+    saveButton.className = 'button is-small is-info is-light ml-2'
     saveButton.onclick = function () {
       //save the xml to file
       var xmlBlob = new Blob([xml.XMLDATA], { type: 'text/xml' })
@@ -57,7 +57,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     }
     var copyButton = document.createElement('button')
     copyButton.innerHTML = 'Copy'
-    copyButton.className = 'button is-small is-primary ml-2'
+    copyButton.className = 'button is-small is-primary is-light ml-2'
     copyButton.onclick = function () {
       //copy the xml to clipboard
       navigator.clipboard.writeText(xml.XMLDATA).then(
@@ -71,7 +71,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     }
     var deleteButton = document.createElement('button')
     deleteButton.innerHTML = 'Delete'
-    deleteButton.className = 'button is-small is-danger ml-2'
+    deleteButton.className = 'button is-small is-danger is-light ml-2'
     var deleteModal = document.getElementById('deleteModal')
     var h1deletedRow = document.getElementById('deletedRow')
     h1deletedRow.innerHTML = `Row with filename: ${xml.XMLFILENAME} and date: ${humanDate} will be deleted.<br><br>Are you sure?`
@@ -107,7 +107,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     //send order
     var sendOrderButton = document.createElement('button')
     sendOrderButton.innerHTML = xml.FINDOC ? 'Order sent' : 'Send order'
-    sendOrderButton.className = 'button is-small is-success ml-2'
+    sendOrderButton.className = 'button is-small is-success is-light ml-2'
     sendOrderButton.onclick = async function () {
       //daca am findoc nu mai trimit
       if (!xml.FINDOC) {
@@ -149,7 +149,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             //no spellcheck
             textarea.spellcheck = false
             //class
-            textarea.className = 'textarea is-small is-danger'
+            textarea.className = 'textarea is-small is-danger is-light'
           }
           return
         } else {
@@ -187,7 +187,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
             details.innerHTML = detailsText
             //add class to details
-            details.className = 'is-info is-small'
+            details.className = 'is-info is-light is-small'
             actionsCell.appendChild(details)
           }
         }
@@ -238,7 +238,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
         details.innerHTML = detailsText
         //add class to details
-        details.className = 'is-info is-small'
+        details.className = 'is-info is-light is-small'
         findoc.appendChild(details)
       }
       findoc.appendChild(detailsIcon)

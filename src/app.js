@@ -518,7 +518,7 @@ class SftpServiceClass {
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: `Processing order <span class="tag is-primary">${item.OrderId}</span> ${item.XMLDATE} from <span class="tag is-primary is-light">${item.Client}</span>, <span class="tag is-success">${count}/${res.total}</span>`
+              MESSAGETEXT: `Processing order <span class="tag is-primary is-light">${item.OrderId}</span> ${item.XMLDATE} from <span class="tag is-primary is-light">${item.Client}</span>, <span class="tag is-success is-light">${count}/${res.total}</span>`
             })
           } catch (error) {
             console.error('Error inserting into CCCORDERSLOG:', error)
@@ -777,7 +777,7 @@ class SftpServiceClass {
                   const index = BuyersItemIdentifications.indexOf(item[field].value)
                   const BuyersItemIdentification = BuyersItemIdentifications[index]
                   const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
-                  const message = `Error fetching data for BuyersItemIdentification <span class="tag is-danger">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} <pre><code>${sqlQuery}</code></pre>`
+                  const message = `Error fetching data for BuyersItemIdentification <span class="tag is-danger is-light">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} <pre><code>${sqlQuery}</code></pre>`
                   errors.push({
                     message: message,
                     sqlQuery: sqlQuery,
