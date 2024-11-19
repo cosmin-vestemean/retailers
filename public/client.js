@@ -194,16 +194,19 @@ async function loadOrdersLog() {
     //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
     var td = row.insertCell(3)
     if (order.MESSAGETEXT.length > 300) {
-      var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small is-info'
-      textarea.rows = 5
-      textarea.cols = 50
-      //read only
-      textarea.readOnly = true
-      //spellcheck off
-      textarea.spellcheck = false
-      textarea.innerHTML = order.MESSAGETEXT
-      td.appendChild(textarea)
+      var div = document.createElement('div')
+      div.className = 'content is-small is-info'
+      div.style.height = '100px' // Set a fixed height
+      div.style.width = '300px' // Set a fixed width
+      div.style.overflowY = 'scroll' // Enable vertical scrolling
+      div.style.overflowX = 'auto' // Enable horizontal scrolling if needed
+      div.style.whiteSpace = 'pre-wrap' // Preserve whitespace and wrap text
+      div.style.border = '1px solid #ccc' // Optional: Add a border for better visibility
+      div.style.padding = '5px' // Optional: Add padding for better readability
+
+      // Set innerHTML to render HTML tags
+      div.innerHTML = order.MESSAGETEXT
+      td.appendChild(div)
     } else {
       td.innerHTML = order.MESSAGETEXT
     }
@@ -271,18 +274,24 @@ function hideRows(chkName, tbodyName, className) {
 
 export async function createNewOrders() {
   document.getElementById('createOrders').innerHTML = 'Please wait...'
-  await client.service('sftp').createOrders({}, {}).then((res) => {
-    console.log('createNewOrders', res)
-    document.getElementById('createOrders').innerHTML = 'Trimite comenzile noi'
-  })
+  await client
+    .service('sftp')
+    .createOrders({}, {})
+    .then((res) => {
+      console.log('createNewOrders', res)
+      document.getElementById('createOrders').innerHTML = 'Trimite comenzile noi'
+    })
 }
 
 export async function scanAndSend() {
   document.getElementById('scanNow').innerHTML = 'Please wait...'
-  await client.service('sftp').scanNow({}, {}).then((res) => {
-    console.log('scanAndSend', res)
-    document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
-  })
+  await client
+    .service('sftp')
+    .scanNow({}, {})
+    .then((res) => {
+      console.log('scanAndSend', res)
+      document.getElementById('scanNow').innerHTML = 'Preluare si trimitere'
+    })
 }
 
 export function getEmptyAperak() {
