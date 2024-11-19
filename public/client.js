@@ -190,7 +190,19 @@ async function loadOrdersLog() {
     row.insertCell(0).innerHTML = index + 1 // Row number
     row.insertCell(1).innerHTML = order.MESSAGEDATE
     row.insertCell(2).innerHTML = order.ORDERID
-    row.insertCell(3).innerHTML = order.MESSAGETEXT
+    //row.insertCell(3).innerHTML = order.MESSAGETEXT
+    //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
+    var td = row.insertCell(3)
+    if (order.MESSAGETEXT.length > 200) {
+      var textarea = document.createElement('textarea')
+      textarea.className = 'textarea is-small is-info'
+      textarea.rows = 5
+      textarea.cols = 50
+      textarea.innerHTML = order.MESSAGETEXT
+      td.appendChild(textarea)
+    } else {
+      td.innerHTML = order.MESSAGETEXT
+    }
   })
 }
 
