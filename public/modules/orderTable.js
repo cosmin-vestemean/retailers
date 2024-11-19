@@ -24,7 +24,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
     var xmlDataCell = row.insertCell()
     xmlDataCell.innerHTML =
-      '<textarea class="textarea is-small is-info" rows="5" cols="50">' + xml.XMLDATA + '</textarea>'
+      '<textarea class="textarea is-small is-info" rows="5">' + xml.XMLDATA + '</textarea>'
     //spellcheck="false"
     xmlDataCell.spellcheck = false
     var parser = new DOMParser()

@@ -197,7 +197,7 @@ async function loadOrdersLog() {
       var textarea = document.createElement('textarea')
       textarea.className = 'textarea is-small'
       textarea.rows = 5
-      textarea.cols = 100
+      //textarea.cols = 100
       //read only
       textarea.readOnly = true
       //spellcheck off
