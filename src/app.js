@@ -213,6 +213,12 @@ class SftpServiceClass {
         parseString(xmlClean, function (err, result) {
           json = result
         })
+        const json1 = await new Promise((resolve, reject) =>
+          parseString(xmlClean, { explicitArray: false }, (err, result) => {
+            if (err) reject(err)
+            else resolve(result)
+          })
+        )
         var endpointID = json.Order.DeliveryParty[0].EndpointID[0]
         console.log('endpointID', endpointID)
         //getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
@@ -241,7 +247,7 @@ class SftpServiceClass {
         const d = {
           filename: filename,
           xml: xmlClean,
-          json: JSON.stringify(json)
+          json: JSON.stringify(json1),
         }
         console.log('data', d)
         try {
@@ -448,10 +454,11 @@ class SftpServiceClass {
       storeRes[0].message === 'No files inserted'
     ) {
     } else {
+      const orderId = JSON.parse(storeRes.response.JSONDATA).Order.ID || 'storeXmlInDB'
       await app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'storeXmlInDB',
+        ORDERID: orderId,
         CCCSFTPXML: -1,
         MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
       })
