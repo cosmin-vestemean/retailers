@@ -197,12 +197,14 @@ async function loadOrdersLog() {
       var div = document.createElement('div')
       div.className = 'content is-small is-info'
       div.style.height = '100px' // Set a fixed height
-      div.style.width = '300px' // Set a fixed width
+      div.style.width = 'auto' // Set a fixed width
       div.style.overflowY = 'scroll' // Enable vertical scrolling
       div.style.overflowX = 'auto' // Enable horizontal scrolling if needed
       div.style.whiteSpace = 'pre-wrap' // Preserve whitespace and wrap text
       div.style.border = '1px solid #ccc' // Optional: Add a border for better visibility
       div.style.padding = '5px' // Optional: Add padding for better readability
+      //add text wrap
+      div.style.whiteSpace = 'pre-wrap'
 
       // Set innerHTML to render HTML tags
       div.innerHTML = order.MESSAGETEXT
