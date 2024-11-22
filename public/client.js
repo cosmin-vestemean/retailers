@@ -195,7 +195,7 @@ async function loadOrdersLog() {
     var td = row.insertCell(3)
     if (order.MESSAGETEXT.length > 250) {
       var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small'
+      textarea.className = 'textarea is-small form-control'
       textarea.rows = 5
       //textarea.cols = 100
       //read only
