@@ -824,11 +824,16 @@ class SftpServiceClass {
     }
 
     if (errors.length > 0) {
+      //get name from trdr
+      const resTrdr = await app.service('getDataset').find({
+        query: { sqlQuery: `SELECT NAME FROM TRDR WHERE TRDR = ${retailer}` }
+      })
+      const retailerName = resTrdr.data || retailer
       //send errors by email to sorin.fliundra@petfactory.ro
-      const to = 'sorin.fliundra@petfactory.ro'
-      const cc = 'cosmin.ve@gmail.com'
+      const to = 'comenzi@petfactory.ro'
+      const cc = 'sorin.fliundra@petfactory.ro'
       const message = errors.map((item) => item.message).join('<br>')
-      const subject = 'Erori procesare xml comanda EDI ' + OrderId + ' for retailer ' + retailer
+      const subject = 'Erori procesare xml comanda EDI ' + OrderId + ' pentru ' + retailerName
       const bodyPlain = 'Urmatoarele erori au fost intalnite la crearea comenzii:\n\n' + message + '\n'
       const bodyHTML = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
       const fromName = 'Comenzi EDI - PetFactory'
