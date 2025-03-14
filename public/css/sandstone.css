@@ -9834,3 +9834,90 @@ label.panel-block:hover {
   background-color: #e6e1d7;
 }
 /*# sourceMappingURL=bulmaswatch.min.css.map */
+
+/* Enhance ordersLogTable styling */
+#ordersLogTable {
+  width: 100%;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 
+              0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+#ordersLogTable tr {
+  background-color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+#ordersLogTable tr:hover {
+  background-color: #f8f9fa;
+}
+
+#ordersLogTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f3f5;
+  vertical-align: middle;
+}
+
+/* Message styling */
+#ordersLogTable textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 1px solid #e6e1d7;
+  border-radius: 6px;
+  background-color: #f8f5f0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* Status indicators */
+#ordersLogTable .tag {
+  font-weight: 500;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+}
+
+#ordersLogTable .tag.is-success {
+  background-color: #93c54b;
+  color: white;
+}
+
+#ordersLogTable .tag.is-warning {
+  background-color: #f47c3c;
+  color: white;
+}
+
+#ordersLogTable .tag.is-danger {
+  background-color: #d9534f;
+  color: white;
+}
+
+/* Date column */
+#ordersLogTable td:nth-child(2) {
+  white-space: nowrap;
+  color: #8e8c84;
+}
+
+/* Order ID column */
+#ordersLogTable td:nth-child(3) {
+  font-weight: 600;
+  color: #325d88;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  #ordersLogTable {
+    font-size: 0.9rem;
+  }
+  
+  #ordersLogTable td {
+    padding: 0.75rem;
+  }
+  
+  #ordersLogTable textarea {
+    min-height: 80px;
+  }
+}
