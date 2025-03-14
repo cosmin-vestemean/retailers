@@ -187,26 +187,44 @@ async function loadOrdersLog() {
 
   response.data.forEach((order, index) => {
     const row = ordersLogTable.insertRow()
-    row.insertCell(0).innerHTML = index + 1 // Row number
-    row.insertCell(1).innerHTML = order.MESSAGEDATE
-    row.insertCell(2).innerHTML = order.ORDERID
-    //row.insertCell(3).innerHTML = order.MESSAGETEXT
-    //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
-    var td = row.insertCell(3)
+    
+    // Create and append cells
+    const cellNumber = document.createElement('td')
+    cellNumber.textContent = index + 1
+    row.appendChild(cellNumber)
+    
+    const cellDate = document.createElement('td')
+    cellDate.textContent = order.MESSAGEDATE
+    row.appendChild(cellDate)
+    
+    const cellOrderId = document.createElement('td')
+    cellOrderId.textContent = order.ORDERID
+    row.appendChild(cellOrderId)
+    
+    const cellMessage = document.createElement('td')
     if (order.MESSAGETEXT.length > 250) {
       let messageText = order.MESSAGETEXT
-      //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
-      messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
-      td.innerHTML = `
-        <div class="xml-display">
-          <pre class="line-numbers"><code class="language-xml"></code></pre>
-        </div>
-      `
-      // Pass the specific container element
-      displayXML(messageText, td.querySelector('.xml-display'))
+        .replace('<pre><code>', '')
+        .replace('</code></pre>', '')
+      
+      const xmlDisplay = document.createElement('div')
+      xmlDisplay.className = 'xml-display'
+      
+      const pre = document.createElement('pre')
+      pre.className = 'line-numbers'
+      
+      const code = document.createElement('code')
+      code.className = 'language-xml'
+      
+      pre.appendChild(code)
+      xmlDisplay.appendChild(pre)
+      cellMessage.appendChild(xmlDisplay)
+      
+      displayXML(messageText, xmlDisplay)
     } else {
-      td.innerHTML = order.MESSAGETEXT
+      cellMessage.textContent = order.MESSAGETEXT
     }
+    row.appendChild(cellMessage)
   })
 }
 
