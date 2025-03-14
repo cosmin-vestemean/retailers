@@ -222,7 +222,7 @@ if (order.MESSAGETEXT.length > 250) {
   })
 }
 
-function displayXML(xmlString) {
+export function displayXML(xmlString) {
   // Format XML string
   const formatted = formatXML(xmlString);
   
