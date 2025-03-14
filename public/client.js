@@ -201,9 +201,10 @@ async function loadOrdersLog() {
       
       td.innerHTML = `
       <div class="xml-display">
-        <pre class="line-numbers"><code class="language-xml">${messageText}</code></pre>
+        <pre class="line-numbers"><code class="language-xml"></code></pre>
       </div>
       `
+      displayXML(messageText)
     } else {
       td.innerHTML = order.MESSAGETEXT
     }
