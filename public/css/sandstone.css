@@ -6165,16 +6165,6 @@ a.list-item {
   border-radius: 6px;
 }
 
-.card .tag.is-danger {
-  background: #ff5b5b;
-  color: white;
-}
-
-.card .tag.is-success {
-  background: #00d1b2;
-  color: white;
-}
-
 .card-footer {
   border-top: 1px solid #f1f3f5;
   background: #fafbfc;
