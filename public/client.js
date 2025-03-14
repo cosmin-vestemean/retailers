@@ -194,19 +194,15 @@ async function loadOrdersLog() {
     //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
     var td = row.insertCell(3)
     if (order.MESSAGETEXT.length > 250) {
-      var textarea = document.createElement('textarea')
-      textarea.className = 'textarea is-small'
-      textarea.rows = 5
-      //textarea.cols = 100
-      //read only
-      textarea.readOnly = true
-      //spellcheck off
-      textarea.spellcheck = false
       let messageText = order.MESSAGETEXT
       //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
       messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
-      textarea.innerHTML = messageText
-      td.appendChild(textarea)
+      
+      td.innerHTML = `
+      <div class="xml-display">
+        <pre class="line-numbers"><code class="language-xml">${messageText}</code></pre>
+      </div>
+      `
     } else {
       td.innerHTML = order.MESSAGETEXT
     }
