@@ -5105,11 +5105,11 @@ fieldset[disabled] .radio {
   content: '\0227B';
 }
 .card {
-  background-color: #fff;
-  box-shadow: 0 2px 3px rgba(62, 63, 58, 0.1), 0 0 0 1px rgba(62, 63, 58, 0.1);
-  color: #3e3f3a;
-  max-width: 100%;
-  position: relative;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
 }
 .card-header {
   background-color: transparent;
@@ -5136,15 +5136,17 @@ fieldset[disabled] .radio {
   padding: 0.75rem 1rem;
 }
 .card-image {
-  display: block;
-  position: relative;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .card-content,
 .card-footer {
   background-color: transparent;
 }
 .card-content {
-  padding: 1.5rem;
+  padding: 2rem;
 }
 .card-footer {
   border-top: 1px solid #ededed;
