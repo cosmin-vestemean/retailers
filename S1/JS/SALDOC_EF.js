@@ -1301,6 +1301,12 @@ function ON_DELETE() {
   }
 
   objABC.D()
+
+  //update findoc to null in cccsftpxml table daca gasesti findoc-ul
+  var findoc = SALDOC.FINDOC
+  if (findoc > 0) {
+    X.RUNSQL('update cccsftpxml set findoc = null where findoc = ' + findoc, null)
+  }
 }
 
 function ON_SALDOC_ISCANCEL() {
@@ -1324,6 +1330,14 @@ function ON_SALDOC_ISCANCEL() {
   }
 
   if (SALDOC.ISCANCEL == 1) objABC.D()
+
+  //update findoc to null in cccsftpxml table daca gasesti findoc-ul
+  var findoc = SALDOC.FINDOC
+  if (SALDOC.ISCANCEL == 1) {
+    if (findoc > 0) {
+      X.RUNSQL('update cccsftpxml set findoc = null where findoc = ' + findoc, null)
+    }
+  }
 }
 
 //Export XML Cora factura tur si factura retur
