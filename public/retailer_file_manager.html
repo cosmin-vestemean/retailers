@@ -13,20 +13,14 @@
       href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css"
     />
     <link rel="stylesheet" href="/css/sandstone.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@creativebulma/bulma-tooltip@1.2.0/dist/bulma-tooltip.min.css">
     <!--load feathers-->
     <script src="https://cdn.jsdelivr.net/npm/@feathersjs/client@5.0.24/dist/feathers.min.js"></script>
     <!--load socket.io-->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <!-- Add PrismJS CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
     <style>
       @media screen and (max-width: 800px) {
         /*responsive table: 1. every tr is displayed like a card with margin 2. every td will stacked vertically to be scrolled*/
@@ -78,45 +72,45 @@
         margin-bottom: 1em;
       }
       /* XML display container */
-      .xml-display {
-        position: relative;
-        margin: 1em 0;
-        background: #f8f9fa;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      }
+        .xml-display {
+            position: relative;
+            margin: 1em 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
-      /* Code block styling */
-      pre[class*='language-'] {
-        margin: 0;
-        padding: 1.5em;
-        max-height: 400px;
-        overflow: auto;
-        background: #fff;
-        font-size: 0.9em;
-        line-height: 1.6;
-        border-radius: 6px;
-      }
+        /* Code block styling */
+        pre[class*="language-"] {
+            margin: 0;
+            padding: 1.5em;
+            max-height: 400px;
+            overflow: auto;
+            background: #fff;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border-radius: 6px;
+        }
 
-      /* Line numbers */
-      .line-numbers .line-numbers-rows {
-        border-right: 2px solid #e9ecef;
-        padding: 1em 0;
-      }
+        /* Line numbers */
+        .line-numbers .line-numbers-rows {
+            border-right: 2px solid #e9ecef;
+            padding: 1em 0;
+        }
 
-      /* XML tag colors */
-      .token.tag {
-        color: #2f6f9f;
-      }
-      .token.attr-name {
-        color: #4f9fcf;
-      }
-      .token.attr-value {
-        color: #d44950;
-      }
-      .token.string {
-        color: #42b983;
-      }
+        /* XML tag colors */
+        .token.tag {
+            color: #2f6f9f;
+        }
+        .token.attr-name {
+            color: #4f9fcf;
+        }
+        .token.attr-value {
+            color: #d44950;
+        }
+        .token.string {
+            color: #42b983;
+        }
     </style>
   </head>
   <body>
@@ -260,8 +254,7 @@
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
         urlLogoRetailerFromUrl,
-        trdrRetailerFromUrl,
-        displayXML,
+        trdrRetailerFromUrl
       } from './client.js'
       import { sendAllFacturi } from './modules/invoiceTable.js'
       import { trimiteComenzileNetrimise } from './modules/orderTable.js'
@@ -276,7 +269,7 @@
       document.getElementById('defaultOpen').addEventListener('click', function () {
         openTab(event, 'comenzi')
       })
-      //Open tab comenzi
+        //Open tab comenzi
       document.getElementById('defaultOpen').click()
       //add onclick to facturi_link
       document.getElementById('facturi_link').addEventListener('click', function () {
@@ -349,9 +342,9 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"
     ></script>
-    <!-- Before closing body tag -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+      <!-- Before closing body tag -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
   </body>
 </html>
