@@ -198,7 +198,8 @@ async function loadOrdersLog() {
       let messageText = order.MESSAGETEXT
       //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
       messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
-      
+      //replace <Order xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" *SOMETHING*> with <Order>
+      messageText = messageText.replace(/<Order xmlns:xsi=\"http:\/\/www.w3.org\/2001\/XMLSchema-instance\".*?>/g, '<Order>')
       td.innerHTML = `
       <div class="xml-display">
         <pre class="line-numbers"><code class="language-xml"></code></pre>

@@ -459,7 +459,7 @@ class SftpServiceClass {
         TRDR_RETAILER: -1,
         ORDERID: 'storeXmlInDB',
         CCCSFTPXML: -1,
-        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes) + '</code></pre>'
+        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes.XMLDATA) + '</code></pre>'
       })
     }
     console.log('Creating orders...')
