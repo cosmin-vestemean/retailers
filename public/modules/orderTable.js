@@ -3,6 +3,25 @@ import client from './feathersjs-client.js'
 
 const testUrl = 'https://dev-petfactory.oncloud.gr/s1services'
 
+function formatXML(xml) {
+  // Create a temporary document
+  const parser = new DOMParser()
+  const xmlDoc = parser.parseFromString(xml, 'text/xml')
+  
+  // Format with indentation
+  const serializer = new XMLSerializer()
+  const formatted = serializer.serializeToString(xmlDoc)
+    .replace(/></g, '>\n<') // Add newlines between tags
+    .replace(/\n{2,}/g, '\n') // Remove extra newlines
+    
+  return formatted
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
 export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
   //get the table body
   const xmlTableBody = document.getElementById(tableBodyId)
@@ -23,10 +42,10 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     var filenameCell = row.insertCell()
     filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
     var xmlDataCell = row.insertCell()
-    xmlDataCell.innerHTML =
-      '<textarea class="textarea is-small" rows="5" cols="60">' + xml.XMLDATA + '</textarea>'
-    //spellcheck="false"
-    xmlDataCell.spellcheck = false
+    xmlDataCell.innerHTML = `
+      <div class="xml-display">
+        <pre class="line-numbers language-xml"><code class="language-xml">${formatXML(xml.XMLDATA)}</code></pre>
+      </div>`
     var parser = new DOMParser()
     var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
     //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
@@ -136,9 +155,8 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
               errorMsg += '-'
             }
             errorMsg += '\n'
-            errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
-              error.sql
-            },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+            errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql
+              },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
             sendOrderButton.innerHTML = 'See errors'
             //add text area with errors beneath the buttons
             var textarea = document.createElement('textarea')

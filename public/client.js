@@ -191,15 +191,12 @@ async function loadOrdersLog() {
     row.insertCell(1).innerHTML = order.MESSAGEDATE
     row.insertCell(2).innerHTML = order.ORDERID
     //row.insertCell(3).innerHTML = order.MESSAGETEXT
-    console.log('order.MESSAGETEXT', order.MESSAGETEXT)
     //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
     var td = row.insertCell(3)
     if (order.MESSAGETEXT.length > 250) {
       let messageText = order.MESSAGETEXT
       //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
       messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
-      //replace <Order xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" *SOMETHING*> with <Order>
-      messageText = messageText.replace(/<Order xmlns:xsi="[^"]*"[^>]*>/, '<Order>')
       td.innerHTML = `
         <div class="xml-display">
           <pre class="line-numbers"><code class="language-xml"></code></pre>
