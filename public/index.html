@@ -22,6 +22,8 @@
     />
     <!--add local /css/cerulean.css-->
     <link rel="stylesheet" href="/css/sandstone.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
     <style>
       @media screen and (max-width: 800px) {
         /*responsive table: 1. every tr is displayed like a card with margin 2. every td will stacked vertically to be scrolled*/
@@ -78,6 +80,46 @@
         border-radius: 0.3em;
         white-space: pre-wrap;
         color: #333;
+      }
+      /* XML display container */
+      .xml-display {
+        position: relative;
+        margin: 1em 0;
+        background: #f8f9fa;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+
+      /* Code block styling */
+      pre[class*="language-"] {
+        margin: 0;
+        padding: 1.5em;
+        max-height: 400px;
+        overflow: auto;
+        background: #fff;
+        font-size: 0.9em;
+        line-height: 1.6;
+        border-radius: 6px;
+      }
+
+      /* Line numbers */
+      .line-numbers .line-numbers-rows {
+        border-right: 2px solid #e9ecef;
+        padding: 1em 0;
+      }
+
+      /* XML tag colors */
+      .token.tag {
+        color: #2f6f9f;
+      }
+      .token.attr-name {
+        color: #4f9fcf;
+      }
+      .token.attr-value {
+        color: #d44950;
+      }
+      .token.string {
+        color: #42b983;
       }
     </style>
   </head>
@@ -249,7 +291,6 @@
         })
       })
     </script>
-    <!--modal for displaying the CCCAPERAK with findoc=-1-->
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">
       <div class="modal-content modal-card">
         <header class="modal-card-head">
@@ -290,5 +331,8 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/js/modal-fx.min.js"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
   </body>
 </html>
