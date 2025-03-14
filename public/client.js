@@ -156,48 +156,6 @@ async function getNDisplayS1Docs(sosource, fprms, series) {
   }
 }
 
-async function getNDisplayS1Docs(sosource, fprms, series) {
-  var trdr
-  try {
-    trdr = parseInt(trdrRetailerFromUrl)
-  } catch (err) {
-    alert('Please select a retailer')
-    console.log('Please select a retailer')
-    return
-  }
-  //console.log('trdr', trdr)
-  var daysOlder = document.getElementById('daysOlder').value
-  client
-    .service('getS1SqlData')
-    .find({
-      query: {
-        clientID: await client
-          .service('connectToS1')
-          .find()
-          .then((result) => {
-            return result.token
-          }),
-        appID: '1001',
-        SqlName: 'Retailers_Index_Docs',
-        trdr: trdr,
-        sosource: sosource,
-        fprms: fprms,
-        series: series,
-        daysOlder: daysOlder
-      }
-    })
-    .then(async (result) => {
-      console.debug(JSON.stringify(result, null, 2))
-      await displayDocsForRetailers(result, trdr, sosource, fprms, series, 'facturiTableBody')
-      //check id comenziTrimise
-      //document.getElementById('comenziTrimise').checked = true
-      //toggleComenziNetrimise()
-      //facturiTrimise
-      //document.getElementById('facturiTrimise').checked = true
-      //toggleFacturiNetrimise()
-    })
-}
-
 //create function to close bulma modal on escape key
 //from bulma docs: To activate the modal, just add the is-active modifier on the .modal container.
 document.addEventListener('keydown', function (event) {
