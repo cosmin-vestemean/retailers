@@ -6098,6 +6098,107 @@ a.list-item {
   background-color: #87ba3c;
   color: #fff;
 }
+
+/* Card enhancements */
+.card {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 25px -6px rgba(0, 0, 0, 0.1), 0 8px 20px -4px rgba(0, 0, 0, 0.06);
+}
+
+.card-content {
+  padding: 2rem;
+}
+
+.card-image {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+}
+
+.card-image figure {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-image img {
+  max-width: 120px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.card .content {
+  padding: 0.5rem 0;
+}
+
+.card .title {
+  color: #2a2a26;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.card table {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.card table td {
+  padding: 0.5rem;
+  vertical-align: middle;
+}
+
+.card .tag {
+  font-weight: 500;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+}
+
+.card .tag.is-danger {
+  background: #ff5b5b;
+  color: white;
+}
+
+.card .tag.is-success {
+  background: #00d1b2;
+  color: white;
+}
+
+.card-footer {
+  border-top: 1px solid #f1f3f5;
+  background: #fafbfc;
+}
+
+.card-footer-item {
+  padding: 1rem;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.2s ease;
+}
+
+.card-footer-item:hover {
+  background: #f8f9fa;
+  color: #2d3748;
+}
+
+.card-footer-item.eMag {
+  color: #325d88;
+}
+
+.card-footer-item.eMag:hover {
+  background: #edf2f7;
+  color: #2a4f74;
+}
 .navbar.is-success .navbar-brand .navbar-link::after {
   border-color: #fff;
 }
