@@ -201,27 +201,28 @@ async function loadOrdersLog() {
       //replace <Order xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" *SOMETHING*> with <Order>
       messageText = messageText.replace(/<Order xmlns:xsi="[^"]*"[^>]*>/, '<Order>')
       td.innerHTML = `
-      <div class="xml-display">
-        <pre class="line-numbers"><code class="language-xml"></code></pre>
-      </div>
+        <div class="xml-display">
+          <pre class="line-numbers"><code class="language-xml"></code></pre>
+        </div>
       `
-      displayXML(messageText)
+      // Pass the specific container element
+      displayXML(messageText, td.querySelector('.xml-display'))
     } else {
       td.innerHTML = order.MESSAGETEXT
     }
   })
 }
 
-function displayXML(xmlString) {
+function displayXML(xmlString, container) {
   // Format XML string
   const formatted = formatXML(xmlString);
-  
-  // Get the code element
-  const codeElement = document.querySelector('.xml-display code');
-  
+
+  // Get the code element from the specific container
+  const codeElement = container.querySelector('code');
+
   // Set the formatted XML as content
   codeElement.textContent = formatted;
-  
+
   // Highlight syntax
   Prism.highlightElement(codeElement);
 }
@@ -230,17 +231,17 @@ function formatXML(xml) {
   // Simple XML formatting function
   let formatted = '';
   let indent = '';
-  
-  xml.split(/>\s*</).forEach(function(node) {
-      if (node.match(/^\/\w/)) {
-          indent = indent.substring(2);
-      }
-      formatted += indent + '<' + node + '>\r\n';
-      if (node.match(/^<?\w[^>]*[^\/]$/)) {
-          indent += '  ';
-      }
+
+  xml.split(/>\s*</).forEach(function (node) {
+    if (node.match(/^\/\w/)) {
+      indent = indent.substring(2);
+    }
+    formatted += indent + '<' + node + '>\r\n';
+    if (node.match(/^<?\w[^>]*[^\/]$/)) {
+      indent += '  ';
+    }
   });
-  
+
   return formatted.substring(1, formatted.length - 3);
 }
 
