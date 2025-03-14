@@ -239,7 +239,7 @@ async function loadOrdersLog() {
 
       displayXML(messageText, xmlDisplay)
     } else {
-      cellMessage.textContent = order.MESSAGETEXT
+      cellMessage.innerHTML = order.MESSAGETEXT
     }
     row.appendChild(cellMessage)
   })
