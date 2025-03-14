@@ -187,39 +187,39 @@ async function loadOrdersLog() {
 
   response.data.forEach((order, index) => {
     const row = ordersLogTable.insertRow()
-    
+
     // Create and append cells
     const cellNumber = document.createElement('td')
     cellNumber.textContent = index + 1
     row.appendChild(cellNumber)
-    
+
     const cellDate = document.createElement('td')
     cellDate.textContent = order.MESSAGEDATE
     row.appendChild(cellDate)
-    
+
     const cellOrderId = document.createElement('td')
     cellOrderId.textContent = order.ORDERID
     row.appendChild(cellOrderId)
-    
+
     const cellMessage = document.createElement('td')
     if (order.MESSAGETEXT.length > 250) {
       let messageText = order.MESSAGETEXT
         .replace('<pre><code>', '')
         .replace('</code></pre>', '')
-      
+
       const xmlDisplay = document.createElement('div')
       xmlDisplay.className = 'xml-display'
-      
+
       const pre = document.createElement('pre')
       pre.className = 'line-numbers'
-      
+
       const code = document.createElement('code')
       code.className = 'language-xml'
-      
+
       pre.appendChild(code)
       xmlDisplay.appendChild(pre)
       cellMessage.appendChild(xmlDisplay)
-      
+
       displayXML(messageText, xmlDisplay)
     } else {
       cellMessage.textContent = order.MESSAGETEXT

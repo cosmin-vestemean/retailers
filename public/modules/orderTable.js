@@ -42,10 +42,13 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     var filenameCell = row.insertCell()
     filenameCell.innerHTML = xml.XMLFILENAME ? xml.XMLFILENAME : ''
     var xmlDataCell = row.insertCell()
-    xmlDataCell.innerHTML = `
-      <div class="xml-display">
-        <pre class="line-numbers language-xml"><code class="language-xml">${formatXML(xml.XMLDATA)}</code></pre>
-      </div>`
+    xmlDataCell.innerHTML =
+      '<textarea class="textarea is-small" rows="5" cols="60">' + formatXML(xml.XMLDATA) + '</textarea>'
+    //spellcheck="false"
+    xmlDataCell.spellcheck = false
+    //read only
+    xmlDataCell.readOnly = true
+    //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
     var parser = new DOMParser()
     var xmlDoc = parser.parseFromString(xml.XMLDATA, 'text/xml')
     //parse xml to dom and find <AccountingCustomerParty> something <PartyName> node
@@ -155,8 +158,9 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
               errorMsg += '-'
             }
             errorMsg += '\n'
-            errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${error.sql
-              },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+            errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
+              error.sql
+            },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
             sendOrderButton.innerHTML = 'See errors'
             //add text area with errors beneath the buttons
             var textarea = document.createElement('textarea')
