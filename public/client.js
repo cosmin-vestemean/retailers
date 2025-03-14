@@ -193,33 +193,29 @@ async function loadOrdersLog() {
     //row.insertCell(3).innerHTML = order.MESSAGETEXT
     //if order.MESSAGETEXT is too long, create a textarea class="textarea is-small is-info" rows="5" cols="50"
     var td = row.insertCell(3)
-    if (order.MESSAGETEXT.length > 250) {
-      let messageText = order.MESSAGETEXT
-      //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
-      messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
-      
-      td.innerHTML = `
+    let messageText = order.MESSAGETEXT
+    //it has a <pre><code> at the beginning and </code></pre> at the end; remove them
+    messageText = messageText.replace('<pre><code>', '').replace('</code></pre>', '')
+
+    td.innerHTML = `
       <div class="xml-display">
       <pre class="line-numbers"><code class="language-xml"></code></pre>
       </div>
       `
-      displayXML(messageText)
-    } else {
-      td.innerHTML = order.MESSAGETEXT
-    }
+    displayXML(messageText)
   })
 }
 
 function displayXML(xmlString) {
   // Format XML string
   const formatted = formatXML(xmlString);
-  
+
   // Get the code element
   const codeElement = document.querySelector('.xml-display code');
-  
+
   // Set the formatted XML as content
   codeElement.textContent = formatted;
-  
+
   // Highlight syntax
   Prism.highlightElement(codeElement);
 }
@@ -228,17 +224,17 @@ function formatXML(xml) {
   // Simple XML formatting function
   let formatted = '';
   let indent = '';
-  
-  xml.split(/>\s*</).forEach(function(node) {
-      if (node.match(/^\/\w/)) {
-          indent = indent.substring(2);
-      }
-      formatted += indent + '<' + node + '>\r\n';
-      if (node.match(/^<?\w[^>]*[^\/]$/)) {
-          indent += '  ';
-      }
+
+  xml.split(/>\s*</).forEach(function (node) {
+    if (node.match(/^\/\w/)) {
+      indent = indent.substring(2);
+    }
+    formatted += indent + '<' + node + '>\r\n';
+    if (node.match(/^<?\w[^>]*[^\/]$/)) {
+      indent += '  ';
+    }
   });
-  
+
   return formatted.substring(1, formatted.length - 3);
 }
 
