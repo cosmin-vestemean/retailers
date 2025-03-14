@@ -9835,6 +9835,107 @@ label.panel-block:hover {
 }
 /*# sourceMappingURL=bulmaswatch.min.css.map */
 
+/* Enhanced Navbar Styling */
+.navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 
+              0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 1rem;
+}
+
+/* Navbar Brand/Logo */
+.navbar-brand {
+  align-items: center;
+}
+
+.navbar-brand img {
+  max-height: 2.5rem;
+  margin-right: 0.5rem;
+}
+
+.navbar-brand .title {
+  color: #325d88;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+/* Navbar Items */
+.navbar-item {
+  color: #3e3f3a;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.navbar-item:hover {
+  color: #325d88;
+  background-color: #f8f5f0;
+}
+
+/* Active State */
+.navbar-item.is-active {
+  color: #325d88;
+  background-color: transparent;
+  border-bottom: 2px solid #325d88;
+}
+
+/* Navbar Buttons */
+.navbar .button {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.navbar .button.is-info {
+  background-color: #3298dc;
+  border: none;
+}
+
+.navbar .button.is-info:hover {
+  background-color: #2793da;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Burger Menu */
+.navbar-burger {
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.navbar-burger:hover {
+  background-color: #f8f5f0;
+}
+
+.navbar-burger span {
+  height: 2px;
+  width: 16px;
+  background-color: #3e3f3a;
+}
+
+/* Responsive Dropdown Menu */
+@media screen and (max-width: 1023px) {
+  .navbar-menu {
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  .navbar-item {
+    padding: 0.75rem 1rem;
+  }
+  
+  .navbar-item.is-active {
+    border-bottom: none;
+    background-color: #f8f5f0;
+  }
+}
+
 /* Enhance ordersLogTable styling */
 #ordersLogTable {
   width: 100%;
