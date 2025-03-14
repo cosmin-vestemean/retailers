@@ -108,6 +108,129 @@
       .navbar {
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
+
+      /* Enhanced table styling */
+      .table {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .table thead th {
+        background-color: #f5f7fa;
+        border-bottom: 2px solid #dee2e6;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+      }
+
+      .table tbody tr {
+        transition: background-color 0.2s;
+      }
+
+      .table tbody tr:hover {
+        background-color: rgba(0, 140, 255, 0.05) !important;
+      }
+
+      .table-container {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+        background: white;
+      }
+
+      /* Action buttons in tables */
+      .table .button {
+        margin: 2px;
+        border-radius: 4px;
+      }
+
+      /* Status indicators */
+      .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+
+      .status-success {
+        background-color: #23d160;
+      }
+
+      .status-warning {
+        background-color: #ffdd57;
+      }
+
+      .status-danger {
+        background-color: #ff3860;
+      }
+
+      /* Card-like containers */
+      .custom-card {
+        border-radius: 6px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+      }
+
+      .custom-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Tabs styling */
+      .tabs.is-boxed li.is-active a {
+        background-color: white;
+        border-radius: 6px 6px 0 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .tabs.is-boxed li a {
+        transition: background-color 0.2s, color 0.2s;
+        padding: 0.75em 1.5em;
+        font-weight: 500;
+      }
+
+      /* Buttons with icons animation */
+      .button .icon {
+        transition: transform 0.2s;
+      }
+
+      .button:hover .icon {
+        transform: translateX(2px);
+      }
+
+      /* Loading animation */
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      .is-loading-row {
+        animation: pulse 1.5s infinite;
+      }
+
+      /* Dark mode table adjustments */
+      @media (prefers-color-scheme: dark) {
+        .table thead th {
+          background-color: #2c3e50;
+          color: #ecf0f1;
+        }
+        
+        .table {
+          color: #ecf0f1;
+          background-color: #34495e;
+        }
+        
+        .table tbody tr:hover {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -372,5 +495,101 @@
         tab.style.transition = 'opacity 0.3s ease-in-out'
       })
     </script>
+
+    <!-- Enhanced Modal for displaying document details -->
+    <div id="commonsDigging" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Document Details</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <div id="commonsDiggingContent"></div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-info close-modal">Close</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="modal">
+      <div class="modal-background has-background-white-ter" style="opacity: 0.7;"></div>
+      <div class="modal-content has-text-centered">
+        <div class="box p-6">
+          <span class="icon is-large">
+            <i class="fas fa-spinner fa-pulse fa-3x"></i>
+          </span>
+          <p class="mt-3 is-size-5">Processing...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notification system -->
+    <div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+
+    <script>
+      // Modal handling code
+      document.querySelectorAll('.modal-background, .delete, .close-modal').forEach(element => {
+        element.addEventListener('click', () => {
+          document.querySelectorAll('.modal.is-active').forEach(modal => {
+            modal.classList.remove('is-active');
+          });
+        });
+      });
+      
+      // Show loading overlay
+      function showLoading() {
+        document.getElementById('loadingOverlay').classList.add('is-active');
+      }
+      
+      // Hide loading overlay
+      function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('is-active');
+      }
+      
+      // Show toast notification
+      function showNotification(message, type = 'is-info') {
+        const container = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type} is-light`;
+        notification.innerHTML = `
+          <button class="delete"></button>
+          ${message}
+        `;
+        
+        container.appendChild(notification);
+        
+        // Add delete button functionality
+        notification.querySelector('.delete').addEventListener('click', () => {
+          notification.remove();
+        });
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => notification.remove(), 500);
+        }, 5000);
+        
+        // Add transition style
+        notification.style.transition = 'opacity 0.5s';
+        notification.style.marginBottom = '10px';
+      }
+      
+      // Table row hover enhancement
+      document.querySelectorAll('.table tbody tr').forEach(row => {
+        row.style.transition = 'transform 0.15s ease-in-out';
+        row.addEventListener('mouseover', () => {
+          row.style.transform = 'scale(1.005)';
+        });
+        row.addEventListener('mouseout', () => {
+          row.style.transform = 'scale(1)';
+        });
+      });
+    </script>
+
+    <!-- Add FontAwesome Kit for better icon support -->
+    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
   </body>
 </html>

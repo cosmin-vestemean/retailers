@@ -80,21 +80,80 @@ export async function getRemoteAperakXmlListToErp() {
   document.getElementById('preluareAperakBtn').innerHTML = 'Preluare APERAK'
 }
 
+// Modified getNDisplayOrders function
 async function getNDisplayOrders(retailer) {
   //get table body
-  let xmlTableBody = document.getElementById('xmlTableBody')
+  let xmlTableBody = document.getElementById('xmlTableBody');
   //add a message to table: loading...
-  var tr = xmlTableBody.insertRow()
-  var td = tr.insertCell()
-  td.innerHTML = 'Loading...'
-  td.className = 'has-text-primary has-text-centered has-text-weight-bold'
+  var tr = xmlTableBody.insertRow();
+  var td = tr.insertCell();
+  td.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading orders...';
+  td.className = 'has-text-primary has-text-centered has-text-weight-bold is-loading-row';
   //font 20px
-  td.style.fontSize = '20px'
-  td.colSpan = 5
-  await getXmlListFromErp(retailer).then(async (data) => {
-    //console.log('getXmlListFromErp', data)
-    await displayOrdersForRetailers(data, retailer, 'xmlTableBody')
-  })
+  td.style.fontSize = '20px';
+  td.colSpan = 5;
+  
+  showLoading(); // Show loading overlay
+  
+  try {
+    await getXmlListFromErp(retailer).then(async (data) => {
+      //console.log('getXmlListFromErp', data);
+      await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
+      showNotification('Orders loaded successfully', 'is-success');
+    });
+  } catch (error) {
+    console.error('Error loading orders:', error);
+    showNotification('Failed to load orders: ' + error.message, 'is-danger');
+  } finally {
+    hideLoading(); // Hide loading overlay
+  }
+}
+
+// Modified getNDisplayS1Docs function
+async function getNDisplayS1Docs(sosource, fprms, series) {
+  var trdr;
+  try {
+    trdr = parseInt(trdrRetailerFromUrl);
+  } catch (err) {
+    showNotification('Please select a retailer', 'is-warning');
+    console.log('Please select a retailer');
+    return;
+  }
+  
+  var daysOlder = document.getElementById('daysOlder').value;
+  
+  showLoading(); // Show loading overlay
+  
+  try {
+    const clientID = await client
+      .service('connectToS1')
+      .find()
+      .then((result) => result.token);
+      
+    const result = await client
+      .service('getS1SqlData')
+      .find({
+        query: {
+          clientID: clientID,
+          appID: '1001',
+          SqlName: 'Retailers_Index_Docs',
+          trdr: trdr,
+          sosource: sosource,
+          fprms: fprms,
+          series: series,
+          daysOlder: daysOlder
+        }
+      });
+      
+    console.debug(JSON.stringify(result, null, 2));
+    await displayDocsForRetailers(result, trdr, sosource, fprms, series, 'facturiTableBody');
+    showNotification('Invoices loaded successfully', 'is-success');
+  } catch (error) {
+    console.error('Error loading invoices:', error);
+    showNotification('Failed to load invoices: ' + error.message, 'is-danger');
+  } finally {
+    hideLoading(); // Hide loading overlay
+  }
 }
 
 async function getNDisplayS1Docs(sosource, fprms, series) {
