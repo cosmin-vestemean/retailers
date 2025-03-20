@@ -411,36 +411,9 @@
       document.getElementById('trimiteComenzileNetrimise').addEventListener('click', async function () {
         await trimiteComenzileNetrimise()
       })
-      //defaultOpen
-      //document.getElementById('defaultOpen').click()
-      //document.getElementById('retailerLogo').src = urlLogoRetailerFromUrl
+      
       getNDisplayOrders(trdrRetailerFromUrl)
       getNDisplayS1Docs(1351, 712, 7121)
-      // //retailers.getTrdr = trdrRetailerFromUrl => retailer.nrComenziDeTrimis and retailer.nrFacturiDeTrimis > btn caption for trimiteComenzileNetrimise and sendAllFacturi
-      // for (let i = 0; i < retailers.length; i++) {
-      //   var trdr = await retailers[i].getTrdr()
-      //   if (trdr == trdrRetailerFromUrl) {
-      //     const retailer = retailers[i]
-      //     console.log('retailer', retailer)
-      //     //document.getElementById('retailerName').textContent = retailer.name
-      //     retailer.setNrComenziDeTrimis()
-      //     retailer.setNrFacturiDeTrimis()
-      //     const nrComenziDeTrimis = await retailer.getNrComenziDeTrimis()
-      //     const nrFacturiDeTrimis = await retailer.getNrFacturiDeTrimis()
-      //     document.getElementById(
-      //       'trimiteComenzileNetrimise'
-      //     ).textContent = `Trimite toate (${nrComenziDeTrimis})`
-      //     document.getElementById('sendAllFacturi').textContent = `Trimite toate (${nrFacturiDeTrimis})`
-      //     /*           //if 0 de trimis, disable buttons
-      //     if (nrComenziDeTrimis == 0) {
-      //       document.getElementById('trimiteComenzileNetrimise').disabled = true
-      //     }
-      //     if (nrFacturiDeTrimis == 0) {
-      //       document.getElementById('sendAllFacturi').disabled = true
-      //     } */
-      //     break
-      //   }
-      // }
     </script>
     <!--//scary bulma modal for deleting a row-->
     <div id="deleteModal" class="modal modal-fx-superScaled">

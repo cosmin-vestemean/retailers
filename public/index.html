@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Retailers Integration</title>
+    <title>Pet Factory Integration Portal</title>
     <meta name="description" content="Integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
@@ -20,13 +20,11 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma-responsive-tables@1.2.5/css/main.min.css"
     />
-    <!--add local /css/cerulean.css-->
     <link rel="stylesheet" href="/css/sandstone.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
     <style>
       @media screen and (max-width: 800px) {
-        /*responsive table: 1. every tr is displayed like a card with margin 2. every td will stacked vertically to be scrolled*/
         .is-responsive {
           display: block;
           width: 100%;
@@ -64,9 +62,7 @@
         }
       }
       .message-header {
-        /*font normal*/
         font-weight: normal;
-        /*cursor*/
         cursor: pointer;
       }
       .operatii {
@@ -81,7 +77,6 @@
         white-space: pre-wrap;
         color: #333;
       }
-      /* XML display container */
       .xml-display {
         position: relative;
         margin: 1em 0;
@@ -90,7 +85,6 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       }
 
-      /* Code block styling */
       pre[class*="language-"] {
         margin: 0;
         padding: 1.5em;
@@ -102,13 +96,11 @@
         border-radius: 6px;
       }
 
-      /* Line numbers */
       .line-numbers .line-numbers-rows {
         border-right: 2px solid #e9ecef;
         padding: 1em 0;
       }
 
-      /* XML tag colors */
       .token.tag {
         color: #2f6f9f;
       }
@@ -121,6 +113,44 @@
       .token.string {
         color: #42b983;
       }
+      
+      /* Card styles */
+      .card-selection {
+        padding: 2rem 0;
+      }
+      
+      .app-card {
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .app-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      
+      .card-image {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .back-button {
+        margin-bottom: 1.5rem;
+      }
+      
+      .construction-container {
+        text-align: center;
+        padding: 3rem 1.5rem;
+      }
+      
+      .construction-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #ffdd57;
+      }
     </style>
   </head>
   <body>
@@ -132,11 +162,9 @@
             width="90"
             height="28"
           />
-          <!--add title "Retailers Integration"-->
-          <span class="title is-4">Retailers Integration</span>
+          <span class="title is-4">Integration Portal</span>
         </a>
 
-        <!-- Burger menu -->
         <a
           role="button"
           class="navbar-burger"
@@ -154,7 +182,6 @@
         <div class="navbar-start">
           <a class="navbar-item"> Documentation </a>
 
-          <!-- Moved Actions dropdown here -->
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link"> Actions </a>
             <div class="navbar-dropdown">
@@ -185,30 +212,117 @@
         </div>
       </div>
     </nav>
-    <!-- begin list of cards -->
-    <div id="cardsContainer" class="container has-background-white">
-      <script type="module">
-        import { retailers, drawRetailers } from './retailers.js'
-        drawRetailers(retailers)
-      </script>
+    
+    <!-- Main card selection screen -->
+    <div id="cardSelectionScreen" class="section card-selection">
+      <div class="container">
+        <h1 class="title is-3 has-text-centered mb-5">Select Application</h1>
+        
+        <div class="columns is-centered">
+          <!-- Retailers Card -->
+          <div class="column is-one-third">
+            <div class="card app-card" id="retailersAppCard">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png" alt="Retailers logo">
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content has-text-centered">
+                  <h3 class="title is-4">Retailers</h3>
+                  <p>Manage retailer integrations and document exchange</p>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a class="card-footer-item">Open Application</a>
+              </footer>
+            </div>
+          </div>
+          
+          <!-- ABC Card -->
+          <div class="column is-one-third">
+            <div class="card app-card" id="abcAppCard">
+              <div class="card-image">
+                <figure class="image is-128x128">
+                  <img src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png" alt="ABC logo">
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content has-text-centered">
+                  <h3 class="title is-4">ABC</h3>
+                  <p>ABC management and configuration</p>
+                </div>
+              </div>
+              <footer class="card-footer">
+                <a class="card-footer-item">Open Application</a>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="ordersLogContainer" class="table-container" style="display: none">
-      <h2 class="title is-4">Orders Log</h2>
-      <table
-        class="table is-bordered is-hoverable is-fullwidth is-small is-responsive"
-        style="font-size: 0.8em"
-      >
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>MESSAGEDATE</th>
-            <th>ORDERID</th>
-            <th>MESSAGETEXT</th>
-          </tr>
-        </thead>
-        <tbody id="ordersLogTable"></tbody>
-      </table>
+    
+    <!-- Retailers Section -->
+    <div id="retailersSection" class="section" style="display: none;">
+      <div class="container">
+        <button id="backToCardsBtn" class="button is-light back-button">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Applications</span>
+        </button>
+        
+        <!-- Original retailers content -->
+        <div id="cardsContainer" class="container has-background-white">
+          <script type="module">
+            import { retailers, drawRetailers } from './retailers.js'
+            drawRetailers(retailers)
+          </script>
+        </div>
+        <div id="ordersLogContainer" class="table-container" style="display: none">
+          <h2 class="title is-4">Orders Log</h2>
+          <table
+            class="table is-bordered is-hoverable is-fullwidth is-small is-responsive"
+            style="font-size: 0.8em"
+          >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>MESSAGEDATE</th>
+                <th>ORDERID</th>
+                <th>MESSAGETEXT</th>
+              </tr>
+            </thead>
+            <tbody id="ordersLogTable"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
+    
+    <!-- ABC Section -->
+    <div id="abcSection" class="section" style="display: none;">
+      <div class="container">
+        <button id="backToCardsFromAbcBtn" class="button is-light back-button">
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Back to Applications</span>
+        </button>
+        
+        <!-- ABC Under Construction Message -->
+        <div class="construction-container">
+          <div class="construction-icon">
+            <i class="fas fa-hard-hat"></i>
+          </div>
+          <h2 class="title is-3">Under Construction</h2>
+          <p class="subtitle is-5">The ABC module is currently being developed and will be available soon.</p>
+          <div class="notification is-warning mt-4">
+            <p>We're working hard to bring you new features. Please check back later!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <script type="module">
       import {
         getRemoteXmlListToErp,
@@ -218,27 +332,23 @@
         loadOrdersLog,
         scanAndSend,
       } from './client.js'
-      //add onclick to preluareComenziBtn button id
+      
+      // Add event listeners for existing functionality
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
       })
-      //add onclick to preluareAperakBtn button id
       document.getElementById('preluareAperakBtn').addEventListener('click', function () {
         getRemoteAperakXmlListToErp()
       })
-      //aperakModal on click
       document.getElementById('openAperakBtn').addEventListener('click', function () {
         getEmptyAperak()
       })
-      //createOrders on click
       document.getElementById('createOrders').addEventListener('click', async function () {
         await createNewOrders()
       })
       document.getElementById('scanNow').addEventListener('click', async function () {
         await scanAndSend()
       })
-
-      //toggle logs on click
       document.getElementById('toggleLogsBtn').addEventListener('click', function () {
         const cardsContainer = document.getElementById('cardsContainer')
         const ordersLogContainer = document.getElementById('ordersLogContainer')
@@ -254,6 +364,28 @@
           toggleLogsBtn.innerHTML = 'Show Logs'
         }
       })
+      
+      // Navigation between sections
+      document.getElementById('retailersAppCard').addEventListener('click', function() {
+        document.getElementById('cardSelectionScreen').style.display = 'none';
+        document.getElementById('retailersSection').style.display = 'block';
+      });
+      
+      document.getElementById('abcAppCard').addEventListener('click', function() {
+        document.getElementById('cardSelectionScreen').style.display = 'none';
+        document.getElementById('abcSection').style.display = 'block';
+      });
+      
+      document.getElementById('backToCardsBtn').addEventListener('click', function() {
+        document.getElementById('retailersSection').style.display = 'none';
+        document.getElementById('cardSelectionScreen').style.display = 'block';
+      });
+      
+      document.getElementById('backToCardsFromAbcBtn').addEventListener('click', function() {
+        document.getElementById('abcSection').style.display = 'none';
+        document.getElementById('cardSelectionScreen').style.display = 'block';
+      });
+      
       document.addEventListener('DOMContentLoaded', () => {
         // Get all "navbar-burger" elements
         const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'))
@@ -291,6 +423,7 @@
         })
       })
     </script>
+    
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">
       <div class="modal-content modal-card">
         <header class="modal-card-head">
@@ -323,6 +456,7 @@
         </footer>
       </div>
     </div>
+    
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma-modal-fx@1.1.1/dist/css/modal-fx.min.css"
@@ -334,5 +468,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
   </body>
 </html>
