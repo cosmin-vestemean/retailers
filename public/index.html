@@ -478,6 +478,7 @@
                 <li data-report="pareto"><a>Pareto Analysis</a></li>
                 <li data-report="costStructure"><a>Cost Structure</a></li>
                 <li data-report="employeeComparison"><a>Employee Comparison</a></li>
+                <li data-report="reportDetails"><a>Report Details</a></li>
               </ul>
             </div>
             
@@ -748,50 +749,55 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <!-- Data Table -->
-                <div class="box mt-4">
-                  <div class="level">
-                    <div class="level-left">
-                      <h3 class="title is-5">ABC Report Details</h3>
-                    </div>
-                    <div class="level-right">
-                      <div class="field has-addons">
-                        <div class="control">
-                          <input id="tableSearchInput" class="input" type="text" placeholder="Search...">
+                  
+                  <!-- Report Details Tab -->
+                  <div id="reportDetailsReport" class="report-content" style="display: none;">
+                    <div class="box">
+                      <div class="level">
+                        <div class="level-left">
+                          <h3 class="title is-5">ABC Report Details</h3>
                         </div>
-                        <div class="control">
-                          <button class="button is-info">
-                            <span class="icon is-small">
-                              <i class="fas fa-search"></i>
-                            </span>
-                          </button>
+                        <div class="level-right">
+                          <div class="field has-addons">
+                            <div class="control">
+                              <input id="tableSearchInput" class="input" type="text" placeholder="Search...">
+                            </div>
+                            <div class="control">
+                              <button class="button is-info">
+                                <span class="icon is-small">
+                                  <i class="fas fa-search"></i>
+                                </span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
+                      </div>
+                      
+                      <div class="table-container">
+                        <table class="table is-striped is-hoverable is-fullwidth">
+                          <thead>
+                            <tr>
+                              <th>Employee</th>
+                              <th>Transaction Type</th>
+                              <th>Category</th>
+                              <th>Subcategory</th>
+                              <th>Cost</th>
+                              <th>% of Total</th>
+                              <th>Cumulative %</th>
+                              <th>Class</th>
+                            </tr>
+                          </thead>
+                          <tbody id="abcReportTableBody">
+                            <!-- Table data will be loaded here -->
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
-                  
-                  <div class="table-container">
-                    <table class="table is-striped is-hoverable is-fullwidth">
-                      <thead>
-                        <tr>
-                          <th>Employee</th>
-                          <th>Transaction Type</th>
-                          <th>Category</th>
-                          <th>Subcategory</th>
-                          <th>Cost</th>
-                          <th>% of Total</th>
-                          <th>Cumulative %</th>
-                          <th>Class</th>
-                        </tr>
-                      </thead>
-                      <tbody id="abcReportTableBody">
-                        <!-- Table data will be loaded here -->
-                      </tbody>
-                    </table>
-                  </div>
                 </div>
+                
+                <!-- Remove the old table section, since we moved it to its own tab -->
+                <!-- Note: We're removing this box and its content -->
               </div>
             </div>
           </div>

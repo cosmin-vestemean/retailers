@@ -77,6 +77,7 @@ function updateDashboard(data) {
 
   updateKPIs(data);
   updateReportView(currentReportView);
+  // Always update the table data for when user switches to the table tab
   updateTable(data);
 }
 
@@ -104,6 +105,10 @@ function updateReportView(reportType) {
       break;
     case 'employeeComparison':
       updateEmployeeComparisonCharts();
+      break;
+    case 'reportDetails':
+      // Just make sure the table is updated
+      updateTable(abcReportData);
       break;
     default:
       updateOverviewCharts(abcReportData);
@@ -1168,6 +1173,8 @@ function updateEmployeeCategoryChart(data, selectedEmployees) {
 // Update the data table
 function updateTable(data) {
   const tableBody = document.getElementById('abcReportTableBody');
+  if (!tableBody) return; // Safety check
+  
   tableBody.innerHTML = '';
   
   data.forEach(item => {
