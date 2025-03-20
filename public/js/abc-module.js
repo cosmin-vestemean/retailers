@@ -50,6 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
       button.parentNode.style.display = 'none';
     });
   });
+
+  // Add reset form handler
+  document.getElementById('resetEmployeeForm').addEventListener('click', () => {
+    document.getElementById('employeeForm').reset();
+    document.getElementById('abcst').value = '';
+    document.getElementById('employeeFormTitle').textContent = 'Register New Employee';
+  });
+  
+  // Also reset the form title when the form's reset button is clicked
+  document.getElementById('employeeForm').addEventListener('reset', () => {
+    document.getElementById('employeeFormTitle').textContent = 'Register New Employee';
+  });
 });
 
 // Initialize the ABC module data
@@ -334,6 +346,9 @@ function editEmployee(abcst) {
   document.getElementById('code').value = employee.abccode || '';
   document.getElementById('name').value = employee.abcname || '';
   document.getElementById('isactive').checked = employee.abcisactive;
+  
+  // Update form title to indicate editing mode
+  document.getElementById('employeeFormTitle').textContent = 'Edit Employee';
   
   // Scroll to form
   document.getElementById('employeeForm').scrollIntoView({ behavior: 'smooth' });

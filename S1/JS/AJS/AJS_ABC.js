@@ -19,11 +19,11 @@ function getABCEmployees(o) {
     if (abcname) where.push("a.name='" + abcname + "'");
     if (abcisactive) where.push("a.isactive='" + abcisactive + "'");
     if (prsncode) where.push("b.code='" + prsncode + "'");
-    if (prsnname) where.push("b.name2='" + prsnname + "'");
+    if (prsnname) where.push("b.name='" + prsnname + "'");
     if (prsnisactive) where.push("b.isactive='" + prsnisactive + "'");
 
     var qry = 'select a.company, a.dimension, a.abcst, a.code abccode, a.name abcname, a.isactive abcisactive, a.acnmsk, a.cccidcontextual, a.sohcode, b.code prsncode, ' +
-        'b.name2 prsnname, b.isactive prsnisactive, b.branch, b.depart, b.email,b.insdate  from abcst a ' +
+        'b.name prsnname, b.name2, b.isactive prsnisactive, b.branch, b.depart, b.email,b.insdate  from abcst a ' +
         'left join prsn b on (b.prsn=a.cccidcontextual and a.company=b.company) ' +
         'where a.dimension=4' + (where.length > 0 ? ' and ' + where.join(' and ') : '') +
         ' order by b.name, a.name';
