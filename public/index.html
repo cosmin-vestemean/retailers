@@ -598,6 +598,29 @@
                       <canvas id="employeesChart"></canvas>
                     </div>
                   </div>
+                </div>
+                
+                <!-- Data Table -->
+                <div class="box mt-4">
+                  <div class="level">
+                    <div class="level-left">
+                      <h3 class="title is-5">ABC Report Details</h3>
+                    </div>
+                    <div class="level-right">
+                      <div class="field has-addons">
+                        <div class="control">
+                          <input id="tableSearchInput" class="input" type="text" placeholder="Search...">
+                        </div>
+                        <div class="control">
+                          <button class="button is-info">
+                            <span class="icon is-small">
+                              <i class="fas fa-search"></i>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   
                   <div class="table-container">
                     <table class="table is-striped is-hoverable is-fullwidth">
@@ -628,6 +651,9 @@
           <button class="delete" onclick="this.parentElement.style.display='none'"></button>
           <span id="notificationMessage"></span>
         </div>
+        
+        <!-- Add notification container for BI module -->
+        <div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
       </div>
     </div>
     

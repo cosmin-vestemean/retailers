@@ -11,9 +11,16 @@ function initDashboard() {
   document.getElementById('fiscalYearSelector').value = currentDate.getFullYear();
   document.getElementById('periodSelector').value = currentDate.getMonth() + 1;
   
-  // Add event listeners
-  document.getElementById('applyFiltersBtn').addEventListener('click', fetchAndDisplayData);
-  document.getElementById('tableSearchInput').addEventListener('keyup', filterTable);
+  // Add event listeners only if elements exist
+  const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', fetchAndDisplayData);
+  }
+  
+  const tableSearchInput = document.getElementById('tableSearchInput');
+  if (tableSearchInput) {
+    tableSearchInput.addEventListener('keyup', filterTable);
+  }
   
   // Initial data load
   fetchAndDisplayData();
@@ -29,18 +36,33 @@ async function fetchAndDisplayData() {
   const period = document.getElementById('periodSelector').value;
   
   try {
-    const response = await fetch(`/abcHelper/getEmployeesReport?fiscprd=${fiscprd}&period=${period}`);
+    // Use POST method instead of GET
+    const response = await fetch('/abcHelper/getEmployeesReport', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        fiscprd: fiscprd, 
+        period: period 
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
     const result = await response.json();
     
     if (result.success) {
       abcReportData = result.data;
       updateDashboard(abcReportData);
     } else {
-      showError(result.message || 'Failed to load ABC report data');
+      showErrorMessage(result.message || 'Failed to load ABC report data');
     }
   } catch (error) {
     console.error('Error fetching ABC report data:', error);
-    showError('Network error when loading data');
+    showErrorMessage('Error loading data: ' + error.message);
   } finally {
     hideLoadingState();
   }
@@ -48,6 +70,11 @@ async function fetchAndDisplayData() {
 
 // Update all dashboard elements with new data
 function updateDashboard(data) {
+  if (!data || data.length === 0) {
+    showErrorMessage('No data available for the selected period');
+    return;
+  }
+
   updateKPIs(data);
   updateCharts(data);
   updateTable(data);
@@ -462,42 +489,79 @@ function formatCurrency(value, shortFormat = false) {
 function showLoadingState() {
   // Add loading class to charts
   document.querySelectorAll('.box canvas').forEach(canvas => {
-    canvas.closest('.box').classList.add('is-loading');
+    const boxElement = canvas.closest('.box');
+    if (boxElement) {
+      boxElement.classList.add('is-loading');
+    }
   });
-  
-  // Add loading spinner or animation here if needed
 }
 
 // Hide loading state
 function hideLoadingState() {
   // Remove loading class from charts
   document.querySelectorAll('.box canvas').forEach(canvas => {
-    canvas.closest('.box').classList.remove('is-loading');
+    const boxElement = canvas.closest('.box');
+    if (boxElement) {
+      boxElement.classList.remove('is-loading');
+    }
   });
 }
 
 // Show error message
 function showError(message) {
-  // Show error notification
-  const notification = document.createElement('div');
-  notification.className = 'notification is-danger';
-  notification.innerHTML = `
-    <button class="delete"></button>
-    <p><strong>Error:</strong> ${message}</p>
-  `;
+  showErrorMessage(message);
+}
+
+// Safer error message display
+function showErrorMessage(message) {
+  console.warn('Error message:', message);
   
-  // Add delete button functionality
-  notification.querySelector('.delete').addEventListener('click', () => {
-    notification.remove();
-  });
+  // Try to use notification element if it exists
+  const notification = document.getElementById('notification');
+  if (notification) {
+    const notificationMessage = document.getElementById('notificationMessage');
+    if (notificationMessage) {
+      notificationMessage.textContent = message;
+      notification.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 5000);
+      return;
+    }
+  }
   
-  // Add to notification container
-  document.getElementById('notification-container').appendChild(notification);
-  
-  // Auto-remove after 5 seconds
-  setTimeout(() => {
-    notification.remove();
-  }, 5000);
+  // Try to use notification container if it exists
+  const container = document.getElementById('notification-container');
+  if (container) {
+    const notificationElement = document.createElement('div');
+    notificationElement.className = 'notification is-danger';
+    notificationElement.innerHTML = `
+      <button class="delete"></button>
+      <p><strong>Error:</strong> ${message}</p>
+    `;
+    
+    // Add delete button functionality
+    const deleteButton = notificationElement.querySelector('.delete');
+    if (deleteButton) {
+      deleteButton.addEventListener('click', () => {
+        notificationElement.remove();
+      });
+    }
+    
+    container.appendChild(notificationElement);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+      if (notificationElement.parentNode) {
+        notificationElement.remove();
+      }
+    }, 5000);
+  } else {
+    // Fallback to alert if no notification elements exist
+    alert(message);
+  }
 }
 
 // Export functions for external use
