@@ -345,11 +345,14 @@ function updateParetoChart(data) {
 function updateEmployeesChart(data) {
   // Group data by employee
   const employees = data.reduce((acc, item) => {
-    const employee = item.codAngajat || 'Unknown';
-    if (!acc[employee]) {
-      acc[employee] = 0;
+    const employeeId = item.codAngajat || 'Unknown';
+    const employeeName = item.numeAngajat || 'Unknown';
+    const employeeLabel = `${employeeName} (${employeeId})`;
+    
+    if (!acc[employeeLabel]) {
+      acc[employeeLabel] = 0;
     }
-    acc[employee] += item.sumaCost;
+    acc[employeeLabel] += item.sumaCost;
     return acc;
   }, {});
   
@@ -428,7 +431,7 @@ function updateTable(data) {
     }
     
     row.innerHTML = `
-      <td>${item.codAngajat}</td>
+      <td>${item.numeAngajat || ''} (${item.codAngajat})</td>
       <td>${item.numeCategoriePrincipala || '-'}</td>
       <td>${item.numeSubcategorie || '-'}</td>
       <td>${formatCurrency(item.sumaCost)}</td>

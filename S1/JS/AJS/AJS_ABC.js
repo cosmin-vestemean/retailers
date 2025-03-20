@@ -182,27 +182,30 @@ function getABCEmployeesReport(o) {
     
     var qry = 'WITH CosturiAngajati AS (' +
         'SELECT ' +
-            'D4 AS CodAngajat, ' +
-            'tprms, ' +
-            'fiscprd, ' +
-            'period, ' +
-            'articol, ' +
-            'treapta1 AS CategoriePrincipala, ' +
-            'treapta2 AS Subcategorie, ' +
-            'treapta3 AS ElementSpecific, ' +
+            'm.D4 AS CodAngajat, ' +
+            'p.name2 AS NumeAngajat, ' +  // Added employee name
+            'm.tprms, ' +
+            'm.fiscprd, ' +
+            'm.period, ' +
+            'm.articol, ' +
+            'm.treapta1 AS CategoriePrincipala, ' +
+            'm.treapta2 AS Subcategorie, ' +
+            'm.treapta3 AS ElementSpecific, ' +
             'c1.name AS NumeCategoriePrincipala, ' +
             'c2.name AS NumeSubcategorie, ' +
             'c3.name AS NumeElementSpecific, ' +
-            'SUM(amnt) AS SumaCost ' +
+            'SUM(m.amnt) AS SumaCost ' +
         'FROM CCCABCTRNLINESMANAGV m ' +
         'LEFT JOIN ccccateg1 c1 ON m.treapta1 = c1.ccccateg1 ' +
         'LEFT JOIN ccccateg2 c2 ON m.treapta2 = c2.ccccateg2 ' +
         'LEFT JOIN ccccateg3 c3 ON m.treapta3 = c3.ccccateg3 ' +
-        'WHERE D4 IS NOT NULL ' +
-          'AND D4 <> \'\' ' +
-          'AND fiscprd = ' + fiscprd + ' ' +
-          'AND period = ' + period + ' ' +
-        'GROUP BY D4, tprms, fiscprd, period, articol, treapta1, treapta2, treapta3, c1.name, c2.name, c3.name ' +
+        'LEFT JOIN abcst a ON m.D4 = a.abcst ' +  // Join with abcst table
+        'LEFT JOIN prsn p ON a.cccidcontextual = p.prsn ' +  // Join with prsn table, using cccidcontextual
+        'WHERE m.D4 IS NOT NULL ' +
+          'AND m.D4 <> \'\' ' +
+          'AND m.fiscprd = ' + fiscprd + ' ' +
+          'AND m.period = ' + period + ' ' +
+        'GROUP BY m.D4, p.name2, m.tprms, m.fiscprd, m.period, m.articol, m.treapta1, m.treapta2, m.treapta3, c1.name, c2.name, c3.name ' +
     '), ' +
     'TotalCosturi AS ( ' +
         'SELECT ' +
@@ -215,6 +218,7 @@ function getABCEmployeesReport(o) {
     'RankAngajati AS ( ' +
         'SELECT ' +
             'ca.CodAngajat, ' +
+            'ca.NumeAngajat, ' +  // Added employee name
             'ca.fiscprd, ' +
             'ca.period, ' +
             'ca.tprms, ' +
@@ -239,6 +243,7 @@ function getABCEmployeesReport(o) {
     ') ' +
     'SELECT ' +
         'CodAngajat, ' +
+        'NumeAngajat, ' +  // Added employee name to final result
         'fiscprd, ' +
         'period, ' +
         'tprms, ' +
@@ -270,6 +275,7 @@ function getABCEmployeesReport(o) {
             data.push({
                 titluRaport: result.TitluRaport,
                 codAngajat: result.CodAngajat,
+                numeAngajat: result.NumeAngajat, // Added employee name
                 fiscprd: result.fiscprd,
                 period: result.period,
                 tprms: result.tprms,
