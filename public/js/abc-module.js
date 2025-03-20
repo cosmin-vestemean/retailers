@@ -410,7 +410,9 @@ async function handleEmployeeSubmit(event) {
     const result = await client.service('abcHelper').saveEmployee(employeeData);
     
     if (result.success) {
-      showNotification('Employee saved successfully', 'is-success');
+      // Change the message based on whether it's a new or existing employee
+      const actionType = abcst ? 'updated' : 'registered';
+      showNotification(`Employee ${actionType} successfully`, 'is-success');
       form.reset();
       form.abcst.value = '';
       
