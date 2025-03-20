@@ -39,10 +39,12 @@ async function fetchAndDisplayData() {
   const period = document.getElementById('periodSelector').value;
   
   try {
-    // Use Feathers client instead of fetch
-    const result = await client.service('abcHelper').getEmployeesReport({
-      fiscprd: fiscprd,
-      period: period
+    // Make sure to pass the query parameters correctly 
+    const result = await client.service('abcHelper').getEmployeesReport({}, {
+      query: {
+        fiscprd: fiscprd,
+        period: period
+      }
     });
     
     if (result.success) {
