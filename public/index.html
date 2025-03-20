@@ -151,6 +151,13 @@
         margin-bottom: 1rem;
         color: #ffdd57;
       }
+      
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
     </style>
   </head>
   <body>
@@ -203,11 +210,6 @@
               <hr class="navbar-divider" />
               <a class="navbar-item"> Report an issue </a>
             </div>
-          </div>
-        </div>
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <button id="toggleLogsBtn" class="button is-info">Show Logs</button>
           </div>
         </div>
       </div>
@@ -265,12 +267,22 @@
     <!-- Retailers Section -->
     <div id="retailersSection" class="section" style="display: none;">
       <div class="container">
-        <button id="backToCardsBtn" class="button is-light back-button">
-          <span class="icon">
-            <i class="fas fa-arrow-left"></i>
-          </span>
-          <span>Back to Applications</span>
-        </button>
+        <!-- Section header with back button and logs toggle -->
+        <div class="section-header">
+          <button id="backToCardsBtn" class="button is-light back-button">
+            <span class="icon">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span>Back to Applications</span>
+          </button>
+          
+          <button id="toggleLogsBtn" class="button is-info">
+            <span class="icon">
+              <i class="fas fa-list"></i>
+            </span>
+            <span>Show Logs</span>
+          </button>
+        </div>
         
         <!-- Original retailers content -->
         <div id="cardsContainer" class="container has-background-white">
@@ -356,12 +368,12 @@
         if (ordersLogContainer.style.display === 'none') {
           ordersLogContainer.style.display = 'block'
           cardsContainer.style.display = 'none'
-          toggleLogsBtn.innerHTML = 'Show Cards'
+          toggleLogsBtn.innerHTML = '<span class="icon"><i class="fas fa-th"></i></span><span>Show Cards</span>'
           loadOrdersLog()
         } else {
           ordersLogContainer.style.display = 'none'
           cardsContainer.style.display = 'block'
-          toggleLogsBtn.innerHTML = 'Show Logs'
+          toggleLogsBtn.innerHTML = '<span class="icon"><i class="fas fa-list"></i></span><span>Show Logs</span>'
         }
       })
       
@@ -379,6 +391,17 @@
       document.getElementById('backToCardsBtn').addEventListener('click', function() {
         document.getElementById('retailersSection').style.display = 'none';
         document.getElementById('cardSelectionScreen').style.display = 'block';
+        
+        // Reset toggle logs button state if needed
+        const ordersLogContainer = document.getElementById('ordersLogContainer');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const toggleLogsBtn = document.getElementById('toggleLogsBtn');
+        
+        if (ordersLogContainer.style.display === 'block') {
+          ordersLogContainer.style.display = 'none';
+          cardsContainer.style.display = 'block';
+          toggleLogsBtn.innerHTML = '<span class="icon"><i class="fas fa-list"></i></span><span>Show Logs</span>';
+        }
       });
       
       document.getElementById('backToCardsFromAbcBtn').addEventListener('click', function() {
