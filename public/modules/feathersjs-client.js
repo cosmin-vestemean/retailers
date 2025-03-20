@@ -74,4 +74,14 @@ client.use('sftp', socketClient.service('sftp'), {
     methods: ['create']
   })
 
+// Add these lines to your existing client setup
+
+client.use('abc', socketClient.service('abc'), {
+  methods: ['getEmployees', 'setEmployee', 'getPrsnList']
+});
+
+client.use('abcHelper', socketClient.service('abcHelper'), {
+  methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons'] 
+});
+
 export default client

@@ -335,16 +335,150 @@
           <span>Back to Applications</span>
         </button>
         
-        <!-- ABC Under Construction Message -->
-        <div class="construction-container">
-          <div class="construction-icon">
-            <i class="fas fa-hard-hat"></i>
+        <!-- ABC Tabs Navigation -->
+        <div class="tabs is-boxed mb-4">
+          <ul id="abcTabs">
+            <li class="is-active" data-tab="configuration"><a>Configuration</a></li>
+            <li data-tab="bi"><a>Business Intelligence</a></li>
+          </ul>
+        </div>
+        
+        <!-- Configuration Tab Content -->
+        <div id="configurationTab" class="tab-content">
+          <div class="columns">
+            <div class="column is-4">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    Employee Management
+                  </p>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    <form id="employeeForm">
+                      <input type="hidden" id="abcst" name="abcst">
+                      
+                      <div class="field">
+                        <label class="label">Person</label>
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select id="prsn" name="prsn" required>
+                              <option value="">Select a person</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="field">
+                        <label class="label">Code</label>
+                        <div class="control">
+                          <input class="input" type="text" id="code" name="code" placeholder="Employee code">
+                        </div>
+                        <p class="help">Optional - will use person code if empty</p>
+                      </div>
+                      
+                      <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control">
+                          <input class="input" type="text" id="name" name="name" placeholder="Employee name">
+                        </div>
+                        <p class="help">Optional - will use person name if empty</p>
+                      </div>
+                      
+                      <div class="field">
+                        <label class="label">Status</label>
+                        <div class="control">
+                          <label class="checkbox">
+                            <input type="checkbox" id="isactive" name="isactive" checked>
+                            Is active
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <div class="field is-grouped mt-4">
+                        <div class="control">
+                          <button type="submit" class="button is-primary">Save</button>
+                        </div>
+                        <div class="control">
+                          <button type="reset" class="button is-light">Reset</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="column is-8">
+              <div class="card">
+                <header class="card-header">
+                  <p class="card-header-title">
+                    Registered Employees
+                  </p>
+                  <div class="card-header-icon">
+                    <button id="refreshEmployees" class="button is-small is-info">
+                      <span class="icon">
+                        <i class="fas fa-sync-alt"></i>
+                      </span>
+                    </button>
+                  </div>
+                </header>
+                <div class="card-content">
+                  <div class="content">
+                    <div class="field">
+                      <div class="control has-icons-left">
+                        <input class="input" type="text" id="employeeSearch" placeholder="Search employees...">
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-search"></i>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="table-container">
+                      <table class="table is-striped is-fullwidth is-hoverable">
+                        <thead>
+                          <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Person</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody id="employeeTableBody">
+                          <!-- Employee data will be loaded here -->
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    <div id="employeePagination" class="pagination is-centered" role="navigation" aria-label="pagination">
+                      <!-- Pagination will be added here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h2 class="title is-3">Under Construction</h2>
-          <p class="subtitle is-5">The ABC module is currently being developed and will be available soon.</p>
-          <div class="notification is-warning mt-4">
-            <p>We're working hard to bring you new features. Please check back later!</p>
+        </div>
+        
+        <!-- BI Tab Content -->
+        <div id="biTab" class="tab-content" style="display: none;">
+          <div class="construction-container">
+            <div class="construction-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h2 class="title is-3">Business Intelligence</h2>
+            <p class="subtitle is-5">The BI module is currently being developed and will be available soon.</p>
+            <div class="notification is-info mt-4">
+              <p>Advanced analytics and reporting features will be added in an upcoming release.</p>
+            </div>
           </div>
+        </div>
+        
+        <!-- Success/Error Notification -->
+        <div id="notification" class="notification" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1000;">
+          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+          <span id="notificationMessage"></span>
         </div>
       </div>
     </div>
@@ -542,5 +676,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <!-- FontAwesome for icons -->
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <script type="module" src="/js/abc-module.js"></script>
   </body>
 </html>

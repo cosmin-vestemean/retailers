@@ -1294,6 +1294,180 @@ class retailerServiceClass {
 //register the service
 app.use('retailer', new retailerServiceClass())
 
+// ABC API Service
+class ABCServiceClass {
+  constructor() {
+    this.baseUrl = mainURL + '/JS/ABC'
+  }
+
+  async getEmployees(data, params) {
+    const url = this.baseUrl + '/getABCEmployees'
+    const method = 'POST'
+    
+    // Prepare filter criteria
+    const filterCriteria = params.query || {}
+    
+    try {
+      const response = await fetch(url, { 
+        method: method, 
+        body: JSON.stringify(filterCriteria),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      
+      const json = await response.json()
+      console.log('ABC Employees response:', json)
+      return json
+    } catch (error) {
+      console.error('Error fetching ABC employees:', error)
+      return {
+        success: false,
+        message: 'Error fetching employees: ' + error.message
+      }
+    }
+  }
+
+  async setEmployee(data, params) {
+    const url = this.baseUrl + '/setEmployee'
+    const method = 'POST'
+    
+    try {
+      const response = await fetch(url, { 
+        method: method, 
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      
+      const json = await response.json()
+      console.log('Set Employee response:', json)
+      return json
+    } catch (error) {
+      console.error('Error saving employee:', error)
+      return {
+        success: false,
+        message: 'Error saving employee: ' + error.message
+      }
+    }
+  }
+
+  async getPrsnList(data, params) {
+    const url = this.baseUrl + '/getPrsnList'
+    const method = 'POST'
+    
+    // Prepare filter criteria
+    const filterCriteria = params.query || {}
+    
+    try {
+      const response = await fetch(url, { 
+        method: method, 
+        body: JSON.stringify(filterCriteria),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      
+      const json = await response.json()
+      console.log('Person List response:', json)
+      return json
+    } catch (error) {
+      console.error('Error fetching person list:', error)
+      return {
+        success: false,
+        message: 'Error fetching person list: ' + error.message
+      }
+    }
+  }
+}
+
+// Register the ABC service
+app.use('abc', new ABCServiceClass(), {
+  methods: ['getEmployees', 'setEmployee', 'getPrsnList']
+})
+
+// Helper service to manage the connection between the two systems
+class ABCHelperServiceClass {
+  async getEmployeesWithDetails(data, params) {
+    try {
+      // Get employees with optional filtering
+      const employees = await app.service('abc').getEmployees({}, params)
+      
+      if (!employees.success) {
+        return employees
+      }
+      
+      // Enhance the response with additional information if needed
+      return {
+        ...employees,
+        timestamp: new Date().toISOString(),
+        source: 'Pet Factory Integration Portal'
+      }
+    } catch (error) {
+      console.error('Error in getEmployeesWithDetails:', error)
+      return {
+        success: false,
+        message: 'Error processing request: ' + error.message
+      }
+    }
+  }
+  
+  async saveEmployee(data, params) {
+    try {
+      // Validate required fields
+      if (!data.prsn) {
+        return {
+          success: false,
+          message: 'Person ID (prsn) is required'
+        }
+      }
+      
+      // Save the employee
+      const result = await app.service('abc').setEmployee(data, {})
+      
+      if (result.success) {
+        // Log the successful operation
+        console.log(`Employee saved successfully: ${data.prsn} - ${data.name || 'unnamed'}`)
+      }
+      
+      return result
+    } catch (error) {
+      console.error('Error in saveEmployee:', error)
+      return {
+        success: false,
+        message: 'Error saving employee: ' + error.message
+      }
+    }
+  }
+  
+  async getPersons(data, params) {
+    try {
+      // Get persons with optional filtering
+      const persons = await app.service('abc').getPrsnList({}, params)
+      
+      return persons
+    } catch (error) {
+      console.error('Error in getPersons:', error)
+      return {
+        success: false,
+        message: 'Error fetching persons: ' + error.message
+      }
+    }
+  }
+}
+
+// Register the ABC helper service
+app.use('abcHelper', new ABCHelperServiceClass(), {
+  methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons']
+})
+
 //test it with TRDR_CLIENT=1 and clientPlatforma=11654
 //app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
