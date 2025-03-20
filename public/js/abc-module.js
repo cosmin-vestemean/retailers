@@ -64,6 +64,8 @@ async function initializeABC() {
 async function loadPersons() {
   try {
     const response = await client.service('abcHelper').getPersons({});
+
+    console.log(response);
     
     if (response.success) {
       allPersons = response.data || [];
