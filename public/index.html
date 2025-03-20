@@ -158,18 +158,32 @@
         align-items: center;
         margin-bottom: 1.5rem;
       }
+
+      /* Hide retail actions by default */
+      .retail-action {
+        display: none;
+      }
+
+      /* Nav context styles */
+      .app-context-title {
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+        color: #888;
+        font-style: italic;
+      }
     </style>
   </head>
   <body>
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item">
+        <a class="navbar-item" id="navbarBrand">
           <img
             src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png"
             width="90"
             height="28"
           />
           <span class="title is-4">Integration Portal</span>
+          <span class="app-context-title" id="contextTitle"></span>
         </a>
 
         <a
@@ -189,8 +203,8 @@
         <div class="navbar-start">
           <a class="navbar-item"> Documentation </a>
 
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link"> Actions </a>
+          <div class="navbar-item has-dropdown is-hoverable retail-action">
+            <a class="navbar-link"> Retailer Actions </a>
             <div class="navbar-dropdown">
               <a class="navbar-item" id="preluareComenziBtn">Preluare documente</a>
               <div class="dropdown-divider"></div>
@@ -345,6 +359,26 @@
         scanAndSend,
       } from './client.js'
       
+      // Function to update navigation context
+      function updateNavigationContext(context) {
+        const retailActions = document.querySelectorAll('.retail-action');
+        const contextTitle = document.getElementById('contextTitle');
+        
+        if (context === 'retailers') {
+          // Show retailer-specific actions in nav
+          retailActions.forEach(el => el.style.display = 'flex');
+          contextTitle.textContent = '» Retailers';
+        } else if (context === 'abc') {
+          // Hide retailer actions and update context
+          retailActions.forEach(el => el.style.display = 'none');
+          contextTitle.textContent = '» ABC';
+        } else {
+          // Home context, hide retailer actions
+          retailActions.forEach(el => el.style.display = 'none');
+          contextTitle.textContent = '';
+        }
+      }
+      
       // Add event listeners for existing functionality
       document.getElementById('preluareComenziBtn').addEventListener('click', function () {
         getRemoteXmlListToErp()
@@ -377,20 +411,31 @@
         }
       })
       
+      // Home navigation
+      document.getElementById('navbarBrand').addEventListener('click', function() {
+        document.getElementById('retailersSection').style.display = 'none';
+        document.getElementById('abcSection').style.display = 'none';
+        document.getElementById('cardSelectionScreen').style.display = 'block';
+        updateNavigationContext('home');
+      });
+      
       // Navigation between sections
       document.getElementById('retailersAppCard').addEventListener('click', function() {
         document.getElementById('cardSelectionScreen').style.display = 'none';
         document.getElementById('retailersSection').style.display = 'block';
+        updateNavigationContext('retailers');
       });
       
       document.getElementById('abcAppCard').addEventListener('click', function() {
         document.getElementById('cardSelectionScreen').style.display = 'none';
         document.getElementById('abcSection').style.display = 'block';
+        updateNavigationContext('abc');
       });
       
       document.getElementById('backToCardsBtn').addEventListener('click', function() {
         document.getElementById('retailersSection').style.display = 'none';
         document.getElementById('cardSelectionScreen').style.display = 'block';
+        updateNavigationContext('home');
         
         // Reset toggle logs button state if needed
         const ordersLogContainer = document.getElementById('ordersLogContainer');
@@ -407,9 +452,13 @@
       document.getElementById('backToCardsFromAbcBtn').addEventListener('click', function() {
         document.getElementById('abcSection').style.display = 'none';
         document.getElementById('cardSelectionScreen').style.display = 'block';
+        updateNavigationContext('home');
       });
       
       document.addEventListener('DOMContentLoaded', () => {
+        // Initialize navigation context
+        updateNavigationContext('home');
+        
         // Get all "navbar-burger" elements
         const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'))
         // Get all "navbar-item" elements inside the navbar menu
