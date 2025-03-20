@@ -180,92 +180,103 @@ function getABCEmployeesReport(o) {
     var fiscprd = o.fiscprd || new Date().getFullYear();
     var period = o.period || new Date().getMonth() + 1;
     
-    var qry = 'WITH CosturiAngajati AS (' +
-        'SELECT ' +
-            'm.D4 AS CodAngajat, ' +
-            'p.name2 AS NumeAngajat, ' +  // Added employee name
-            'm.tprms, ' +
-            'm.fiscprd, ' +
-            'm.period, ' +
-            'm.articol, ' +
-            'm.treapta1 AS CategoriePrincipala, ' +
-            'm.treapta2 AS Subcategorie, ' +
-            'm.treapta3 AS ElementSpecific, ' +
-            'c1.name AS NumeCategoriePrincipala, ' +
-            'c2.name AS NumeSubcategorie, ' +
-            'c3.name AS NumeElementSpecific, ' +
-            'SUM(m.amnt) AS SumaCost ' +
-        'FROM CCCABCTRNLINESMANAGV m ' +
-        'LEFT JOIN ccccateg1 c1 ON m.treapta1 = c1.ccccateg1 ' +
-        'LEFT JOIN ccccateg2 c2 ON m.treapta2 = c2.ccccateg2 ' +
-        'LEFT JOIN ccccateg3 c3 ON m.treapta3 = c3.ccccateg3 ' +
-        'LEFT JOIN abcst a ON m.D4 = a.abcst ' +  // Join with abcst table
-        'LEFT JOIN prsn p ON a.cccidcontextual = p.prsn ' +  // Join with prsn table, using cccidcontextual
-        'WHERE m.D4 IS NOT NULL ' +
-          'AND m.D4 <> \'\' ' +
-          'AND m.fiscprd = ' + fiscprd + ' ' +
-          'AND m.period = ' + period + ' ' +
-        'GROUP BY m.D4, p.name2, m.tprms, m.fiscprd, m.period, m.articol, m.treapta1, m.treapta2, m.treapta3, c1.name, c2.name, c3.name ' +
-    '), ' +
-    'TotalCosturi AS ( ' +
-        'SELECT ' +
-            'fiscprd, ' +
-            'period, ' +
-            'SUM(SumaCost) AS TotalCost ' +
-        'FROM CosturiAngajati ' +
-        'GROUP BY fiscprd, period ' +
-    '), ' +
-    'RankAngajati AS ( ' +
-        'SELECT ' +
-            'ca.CodAngajat, ' +
-            'ca.NumeAngajat, ' +  // Added employee name
-            'ca.fiscprd, ' +
-            'ca.period, ' +
-            'ca.tprms, ' +
-            'ca.articol, ' +
-            'ca.CategoriePrincipala, ' +
-            'ca.Subcategorie, ' +
-            'ca.ElementSpecific, ' +
-            'ca.NumeCategoriePrincipala, ' +
-            'ca.NumeSubcategorie, ' +
-            'ca.NumeElementSpecific, ' +
-            'ca.SumaCost, ' +
-            'tc.TotalCost, ' +
-            '(ca.SumaCost / tc.TotalCost) * 100 AS ProcentCost, ' +
-            'SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 AS ProcentCumulativ, ' +
-            'CASE ' +
-                'WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 80 THEN \'A\' ' +
-                'WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 95 THEN \'B\' ' +
-                'ELSE \'C\' ' +
-            'END AS ClasificareABC ' +
-        'FROM CosturiAngajati ca ' +
-        'JOIN TotalCosturi tc ON ca.fiscprd = tc.fiscprd AND ca.period = tc.period ' +
-    ') ' +
-    'SELECT ' +
-        'CodAngajat, ' +
-        'NumeAngajat, ' +  // Added employee name to final result
-        'fiscprd, ' +
-        'period, ' +
-        'tprms, ' +
-        'articol, ' +
-        'CategoriePrincipala, ' +
-        'NumeCategoriePrincipala, ' +
-        'Subcategorie, ' +
-        'NumeSubcategorie, ' +
-        'ElementSpecific, ' +
-        'NumeElementSpecific, ' +
-        'SumaCost, ' +
-        'CAST(ProcentCost AS DECIMAL(10,2)) AS ProcentCost, ' +
-        'CAST(ProcentCumulativ AS DECIMAL(10,2)) AS ProcentCumulativ, ' +
-        'ClasificareABC ' +
-    'FROM RankAngajati ' +
-    'ORDER BY ' +
-        'fiscprd, ' +
-        'period, ' +
-        'CategoriePrincipala, ' +
-        'Subcategorie, ' +
-        'ElementSpecific, ' +
-        'SumaCost DESC';
+    var qry = 'WITH CosturiAngajati AS (\n' +
+        '    SELECT \n' +
+        '        D4 AS CodAngajat,\n' +
+        '        b.name2 AS NumeAngajat,\n' +
+        '        tprms,\n' +
+        '        CASE \n' +
+        '            WHEN tprms = 1000 THEN \'Venituri\'\n' +
+        '            WHEN tprms = 1002 THEN \'Cheltuieli\'\n' +
+        '            ELSE \'Altele\'\n' +
+        '        END AS TipTranzactie,\n' +
+        '        fiscprd,\n' +
+        '        period,\n' +
+        '        articol,\n' +
+        '        treapta1 AS CategoriePrincipala,\n' +
+        '        treapta2 AS Subcategorie, \n' +
+        '        treapta3 AS ElementSpecific,\n' +
+        '        c1.name AS NumeCategoriePrincipala,\n' +
+        '        c2.name AS NumeSubcategorie,\n' +
+        '        c3.name AS NumeElementSpecific,\n' +
+        '        SUM(amnt) AS SumaCost\n' +
+        '    FROM CCCABCTRNLINESMANAGV m\n' +
+        '    LEFT JOIN ccccateg1 c1 ON m.treapta1 = c1.ccccateg1\n' +
+        '    LEFT JOIN ccccateg2 c2 ON m.treapta2 = c2.ccccateg2\n' +
+        '    LEFT JOIN ccccateg3 c3 ON m.treapta3 = c3.ccccateg3\n' +
+        '    LEFT JOIN abcst a ON m.D4 = a.abcst\n' +
+        '    LEFT JOIN prsn b ON a.cccidcontextual = b.prsn\n' +
+        '    WHERE D4 IS NOT NULL \n' +
+        '      AND D4 <> \'\' \n' +
+        '      AND fiscprd = ' + fiscprd + ' \n' +
+        '      AND period = ' + period + ' \n' +
+        '    GROUP BY D4, b.name2, tprms, fiscprd, period, articol, treapta1, treapta2, treapta3, c1.name, c2.name, c3.name\n' +
+        '),\n' +
+        'TotalCosturi AS (\n' +
+        '    SELECT \n' +
+        '        fiscprd,\n' +
+        '        period,\n' +
+        '        tprms,\n' +
+        '        SUM(SumaCost) AS TotalCost\n' +
+        '    FROM CosturiAngajati\n' +
+        '    GROUP BY fiscprd, period, tprms\n' +
+        '),\n' +
+        'RankAngajati AS (\n' +
+        '    SELECT \n' +
+        '        ca.CodAngajat,\n' +
+        '        ca.NumeAngajat,\n' +
+        '        ca.fiscprd,\n' +
+        '        ca.period,\n' +
+        '        ca.tprms,\n' +
+        '        ca.TipTranzactie,\n' +
+        '        ca.articol,\n' +
+        '        ca.CategoriePrincipala,\n' +
+        '        ca.Subcategorie,\n' +
+        '        ca.ElementSpecific,\n' +
+        '        ca.NumeCategoriePrincipala,\n' +
+        '        ca.NumeSubcategorie,\n' +
+        '        ca.NumeElementSpecific,\n' +
+        '        ca.SumaCost,\n' +
+        '        tc.TotalCost,\n' +
+        '        (ca.SumaCost / tc.TotalCost) * 100 AS ProcentCost,\n' +
+        '        SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period, ca.tprms ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 AS ProcentCumulativ,\n' +
+        '        CASE \n' +
+        '            WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period, ca.tprms ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 80 THEN \'A\'\n' +
+        '            WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period, ca.tprms ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 95 THEN \'B\'\n' +
+        '            ELSE \'C\'\n' +
+        '        END AS ClasificareABC\n' +
+        '    FROM CosturiAngajati ca\n' +
+        '    JOIN TotalCosturi tc ON ca.fiscprd = tc.fiscprd AND ca.period = tc.period AND ca.tprms = tc.tprms\n' +
+        ')\n' +
+        'SELECT \n' +
+        '    CodAngajat,\n' +
+        '    NumeAngajat,\n' +
+        '    fiscprd,\n' +
+        '    period,\n' +
+        '    tprms,\n' +
+        '    TipTranzactie,\n' +
+        '    articol,\n' +
+        '    CategoriePrincipala,\n' +
+        '    NumeCategoriePrincipala,\n' +
+        '    Subcategorie,\n' +
+        '    NumeSubcategorie,\n' +
+        '    ElementSpecific,\n' +
+        '    NumeElementSpecific,\n' +
+        '    SumaCost,\n' +
+        '    CAST(ProcentCost AS DECIMAL(10,2)) AS ProcentCost,\n' +
+        '    CAST(ProcentCumulativ AS DECIMAL(10,2)) AS ProcentCumulativ,\n' +
+        '    ClasificareABC\n' +
+        'FROM RankAngajati\n' +
+        'ORDER BY \n' +
+        '    fiscprd, \n' +
+        '    period, \n' +
+        '    tprms,\n' +
+        '    NumeAngajat,\n' +
+        '    TipTranzactie,\n' +
+        '    CategoriePrincipala, \n' +
+        '    Subcategorie, \n' +
+        '    ElementSpecific, \n' +
+        '    SumaCost DESC';
 
     var result = X.GETSQLDATASET(qry, null);
     if (result && result.RECORDCOUNT > 0) {
@@ -275,10 +286,11 @@ function getABCEmployeesReport(o) {
             data.push({
                 titluRaport: result.TitluRaport,
                 codAngajat: result.CodAngajat,
-                numeAngajat: result.NumeAngajat, // Added employee name
+                numeAngajat: result.NumeAngajat,
                 fiscprd: result.fiscprd,
                 period: result.period,
                 tprms: result.tprms,
+                tipTranzactie: result.TipTranzactie,
                 articol: result.articol,
                 categoriePrincipala: result.CategoriePrincipala,
                 numeCategoriePrincipala: result.NumeCategoriePrincipala,

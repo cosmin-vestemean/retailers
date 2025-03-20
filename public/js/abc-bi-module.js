@@ -341,13 +341,14 @@ function updateParetoChart(data) {
   }
 }
 
-// Create/update the employees horizontal bar chart
+// Update the employees horizontal bar chart
 function updateEmployeesChart(data) {
-  // Group data by employee
+  // Group data by employee and transaction type
   const employees = data.reduce((acc, item) => {
     const employeeId = item.codAngajat || 'Unknown';
     const employeeName = item.numeAngajat || 'Unknown';
-    const employeeLabel = `${employeeName} (${employeeId})`;
+    const transactionType = item.tipTranzactie || 'Altele';
+    const employeeLabel = `${employeeName} (${employeeId}) - ${transactionType}`;
     
     if (!acc[employeeLabel]) {
       acc[employeeLabel] = 0;
@@ -359,7 +360,7 @@ function updateEmployeesChart(data) {
   // Sort employees by cost (descending)
   const sortedEmployees = Object.entries(employees)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 10); // Top 10 employees
+    .slice(0, 10); // Top 10 employees with transaction type
   
   const labels = sortedEmployees.map(item => item[0]);
   const values = sortedEmployees.map(item => item[1]);
@@ -430,8 +431,16 @@ function updateTable(data) {
       row.classList.add('has-background-success-light');
     }
     
+    // Add class based on transaction type if available
+    if (item.tipTranzactie === 'Venituri') {
+      row.classList.add('has-background-primary-light');
+    } else if (item.tipTranzactie === 'Cheltuieli') {
+      row.classList.add('has-background-warning-light');
+    }
+    
     row.innerHTML = `
       <td>${item.numeAngajat || ''} (${item.codAngajat})</td>
+      <td>${item.tipTranzactie || 'N/A'}</td>
       <td>${item.numeCategoriePrincipala || '-'}</td>
       <td>${item.numeSubcategorie || '-'}</td>
       <td>${formatCurrency(item.sumaCost)}</td>
