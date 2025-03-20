@@ -1,7 +1,7 @@
 // ABC BI Module - Handles data fetching, processing, and visualization for the ABC BI dashboard
 
-// Import the Feathers client
-import client from '../modules/feathersjs-client.js';
+// Use the globally available client instead of importing it
+// Remove: import client from '../modules/feathersjs-client.js';
 
 // Global variables
 let abcReportData = [];
@@ -39,8 +39,8 @@ async function fetchAndDisplayData() {
   const period = document.getElementById('periodSelector').value;
   
   try {
-    // Use Feathers client instead of fetch
-    const result = await client.service('abcHelper').getEmployeesReport({
+    // Use the globally available client instead of the imported one
+    const result = await window.client.service('abcHelper').getEmployeesReport({
       fiscprd: fiscprd,
       period: period
     });
