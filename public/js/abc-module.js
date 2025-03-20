@@ -87,7 +87,7 @@ function populatePersonsDropdown(persons) {
   persons.forEach(person => {
     const option = document.createElement('option');
     option.value = person.prsn;
-    option.textContent = `${person.name} (${person.code})`;
+    option.textContent = `${person.name2} (${person.code})`;
     select.appendChild(option);
   });
 }
