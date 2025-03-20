@@ -468,11 +468,11 @@ function showNotification(message, type) {
 // Make sure the abcHelper service is properly registered in the client
 export function registerAbcServices(client, socketClient) {
   client.use('abc', socketClient.service('abc'), {
-    methods: ['getEmployees', 'setEmployee', 'getPrsnList']
+    methods: ['getEmployees', 'setEmployee', 'getPrsnList', 'getABCEmployeesReport']
   });
   
   client.use('abcHelper', socketClient.service('abcHelper'), {
-    methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons']
+    methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons', 'getEmployeesReport']
   });
 }
 
