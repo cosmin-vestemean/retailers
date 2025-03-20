@@ -238,7 +238,6 @@ function getABCEmployeesReport(o) {
         'JOIN TotalCosturi tc ON ca.fiscprd = tc.fiscprd AND ca.period = tc.period ' +
     ') ' +
     'SELECT ' +
-        '\'Raport ABC Angajați - Martie 2025\' AS TitluRaport, ' +
         'CodAngajat, ' +
         'fiscprd, ' +
         'period, ' +
