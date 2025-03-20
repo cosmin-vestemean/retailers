@@ -19,11 +19,11 @@ function getABCEmployees(o) {
     if (abcname) where.push("a.name='" + abcname + "'");
     if (abcisactive) where.push("a.isactive='" + abcisactive + "'");
     if (prsncode) where.push("b.code='" + prsncode + "'");
-    if (prsnname) where.push("b.name='" + prsnname + "'");
+    if (prsnname) where.push("b.name2='" + prsnname + "'");
     if (prsnisactive) where.push("b.isactive='" + prsnisactive + "'");
 
     var qry = 'select a.company, a.dimension, a.abcst, a.code abccode, a.name abcname, a.isactive abcisactive, a.acnmsk, a.cccidcontextual, a.sohcode, b.code prsncode, ' +
-        'b.name prsnname, b.name2, b.isactive prsnisactive, b.branch, b.depart, b.email,b.insdate  from abcst a ' +
+        'b.name2 prsnname, b.isactive prsnisactive, b.branch, b.depart, b.email,b.insdate  from abcst a ' +
         'left join prsn b on (b.prsn=a.cccidcontextual and a.company=b.company) ' +
         'where a.dimension=4' + (where.length > 0 ? ' and ' + where.join(' and ') : '') +
         ' order by b.name, a.name';
@@ -87,8 +87,16 @@ function setEmployee(emp) {
                 " WHERE abcst=" + emp.abcst + " AND dimension=4";
             X.RUNSQL(updateQry, null);
         } else {
-            var maxIdQry = "SELECT MAX(abcst) + 1 as nextId FROM abcst";
-            var nextId = X.GETSQLDATASET(maxIdQry, null).nextId || 1;
+            // Replace the MAX+1 approach with a gap-finding query
+            var unusedIdQry = 'SELECT MIN(t1.abcst + 1) AS nextId FROM abcst t1 LEFT JOIN abcst t2 ON t1.abcst + 1 = t2.abcst WHERE t2.abcst IS NULL AND t1.abcst + 1 > 0';
+
+            var nextId = X.GETSQLDATASET(unusedIdQry, null).nextId;
+
+            // In case there are no gaps, fall back to MAX+1
+            if (!nextId) {
+              var maxIdQry = "SELECT MAX(abcst) + 1 as nextId FROM abcst";
+              nextId = X.GETSQLDATASET(maxIdQry, null).nextId || 1;
+            }
 
             var insertQry = "INSERT INTO abcst (abcst, company, dimension, code, name, isactive, cccidcontextual) " +
                 "VALUES (" + nextId + ", 50, 4, '" + 
@@ -133,7 +141,7 @@ function getPrsnList(o) {
 
     var qry = 'select a.company, a.prsn, a.code, a.name, a.name2, a.isactive, a.branch, a.depart, a.email, a.insdate from prsn a ' +
         'where 1=1' + (where.length > 0 ? ' and ' + where.join(' and ') : '') +
-        ' order by a.name';
+        ' order by a.name2';
     var result = X.GETSQLDATASET(qry, null);
     if (result && result.RECORDCOUNT > 0) {
         var data = [];
@@ -157,5 +165,131 @@ function getPrsnList(o) {
     }
     else {
         return { success: false, message: 'No data found' };
+    }
+}
+
+//abc reports
+//dimension 4: employees
+
+function getABCEmployeesReport(o) {
+    if (!o) {
+        o = {};
+    }
+    
+    // Get parameters or use defaults
+    var fiscprd = o.fiscprd || new Date().getFullYear();
+    var period = o.period || new Date().getMonth() + 1;
+    
+    var qry = 'WITH CosturiAngajati AS (' +
+        'SELECT ' +
+            'D4 AS CodAngajat, ' +
+            'tprms, ' +
+            'fiscprd, ' +
+            'period, ' +
+            'articol, ' +
+            'treapta1 AS CategoriePrincipala, ' +
+            'treapta2 AS Subcategorie, ' +
+            'treapta3 AS ElementSpecific, ' +
+            'c1.name AS NumeCategoriePrincipala, ' +
+            'c2.name AS NumeSubcategorie, ' +
+            'c3.name AS NumeElementSpecific, ' +
+            'SUM(amnt) AS SumaCost ' +
+        'FROM CCCABCTRNLINESMANAGV m ' +
+        'LEFT JOIN ccccateg1 c1 ON m.treapta1 = c1.ccccateg1 ' +
+        'LEFT JOIN ccccateg2 c2 ON m.treapta2 = c2.ccccateg2 ' +
+        'LEFT JOIN ccccateg3 c3 ON m.treapta3 = c3.ccccateg3 ' +
+        'WHERE D4 IS NOT NULL ' +
+          'AND D4 <> \'\' ' +
+          'AND fiscprd = ' + fiscprd + ' ' +
+          'AND period = ' + period + ' ' +
+        'GROUP BY D4, tprms, fiscprd, period, articol, treapta1, treapta2, treapta3, c1.name, c2.name, c3.name ' +
+    '), ' +
+    'TotalCosturi AS ( ' +
+        'SELECT ' +
+            'fiscprd, ' +
+            'period, ' +
+            'SUM(SumaCost) AS TotalCost ' +
+        'FROM CosturiAngajati ' +
+        'GROUP BY fiscprd, period ' +
+    '), ' +
+    'RankAngajati AS ( ' +
+        'SELECT ' +
+            'ca.CodAngajat, ' +
+            'ca.fiscprd, ' +
+            'ca.period, ' +
+            'ca.tprms, ' +
+            'ca.articol, ' +
+            'ca.CategoriePrincipala, ' +
+            'ca.Subcategorie, ' +
+            'ca.ElementSpecific, ' +
+            'ca.NumeCategoriePrincipala, ' +
+            'ca.NumeSubcategorie, ' +
+            'ca.NumeElementSpecific, ' +
+            'ca.SumaCost, ' +
+            'tc.TotalCost, ' +
+            '(ca.SumaCost / tc.TotalCost) * 100 AS ProcentCost, ' +
+            'SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 AS ProcentCumulativ, ' +
+            'CASE ' +
+                'WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 80 THEN \'A\' ' +
+                'WHEN SUM(ca.SumaCost) OVER (PARTITION BY ca.fiscprd, ca.period ORDER BY ca.SumaCost DESC) / tc.TotalCost * 100 <= 95 THEN \'B\' ' +
+                'ELSE \'C\' ' +
+            'END AS ClasificareABC ' +
+        'FROM CosturiAngajati ca ' +
+        'JOIN TotalCosturi tc ON ca.fiscprd = tc.fiscprd AND ca.period = tc.period ' +
+    ') ' +
+    'SELECT ' +
+        '\'Raport ABC Angajați - Martie 2025\' AS TitluRaport, ' +
+        'CodAngajat, ' +
+        'fiscprd, ' +
+        'period, ' +
+        'tprms, ' +
+        'articol, ' +
+        'CategoriePrincipala, ' +
+        'NumeCategoriePrincipala, ' +
+        'Subcategorie, ' +
+        'NumeSubcategorie, ' +
+        'ElementSpecific, ' +
+        'NumeElementSpecific, ' +
+        'SumaCost, ' +
+        'CAST(ProcentCost AS DECIMAL(10,2)) AS ProcentCost, ' +
+        'CAST(ProcentCumulativ AS DECIMAL(10,2)) AS ProcentCumulativ, ' +
+        'ClasificareABC ' +
+    'FROM RankAngajati ' +
+    'ORDER BY ' +
+        'fiscprd, ' +
+        'period, ' +
+        'CategoriePrincipala, ' +
+        'Subcategorie, ' +
+        'ElementSpecific, ' +
+        'SumaCost DESC';
+
+    var result = X.GETSQLDATASET(qry, null);
+    if (result && result.RECORDCOUNT > 0) {
+        var data = [];
+        result.first;
+        while (!result.eof) {
+            data.push({
+                titluRaport: result.TitluRaport,
+                codAngajat: result.CodAngajat,
+                fiscprd: result.fiscprd,
+                period: result.period,
+                tprms: result.tprms,
+                articol: result.articol,
+                categoriePrincipala: result.CategoriePrincipala,
+                numeCategoriePrincipala: result.NumeCategoriePrincipala,
+                subcategorie: result.Subcategorie,
+                numeSubcategorie: result.NumeSubcategorie,
+                elementSpecific: result.ElementSpecific,
+                numeElementSpecific: result.NumeElementSpecific,
+                sumaCost: result.SumaCost,
+                procentCost: result.ProcentCost,
+                procentCumulativ: result.ProcentCumulativ,
+                clasificareABC: result.ClasificareABC
+            });
+            result.next;
+        }
+        return { success: true, total: result.RECORDCOUNT, data: data };
+    } else {
+        return { success: false, message: 'No ABC report data found' };
     }
 }

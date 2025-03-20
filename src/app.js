@@ -1386,11 +1386,42 @@ class ABCServiceClass {
       }
     }
   }
+
+  // Add new method for the ABC employees report
+  async getABCEmployeesReport(data, params) {
+    const url = this.baseUrl + '/getABCEmployeesReport'
+    const method = 'POST'
+    
+    // Prepare filter criteria for the report
+    const reportParams = params.query || {}
+    
+    try {
+      const response = await fetch(url, { 
+        method: method, 
+        body: JSON.stringify(reportParams),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      
+      const json = await response.json()
+      console.log('ABC Employees Report response:', json)
+      return json
+    } catch (error) {
+      console.error('Error fetching ABC employees report:', error)
+      return {
+        success: false,
+        message: 'Error fetching employees report: ' + error.message
+      }
+    }
+  }
 }
 
-// Register the ABC service
+// Register the ABC service with the new method
 app.use('abc', new ABCServiceClass(), {
-  methods: ['getEmployees', 'setEmployee', 'getPrsnList']
+  methods: ['getEmployees', 'setEmployee', 'getPrsnList', 'getABCEmployeesReport']
 })
 
 // Helper service to manage the connection between the two systems
@@ -1461,11 +1492,41 @@ class ABCHelperServiceClass {
       }
     }
   }
+  
+  // Add new helper method for the ABC employees report
+  async getEmployeesReport(data, params) {
+    try {
+      // Get employees report with optional filtering
+      const fiscprd = params.query?.fiscprd || new Date().getFullYear();
+      const period = params.query?.period || new Date().getMonth() + 1;
+      
+      const report = await app.service('abc').getABCEmployeesReport({}, {
+        query: { fiscprd, period, ...params.query }
+      });
+      
+      if (!report.success) {
+        return report;
+      }
+      
+      // Enhance the response with additional information
+      return {
+        ...report,
+        timestamp: new Date().toISOString(),
+        source: 'Pet Factory Integration Portal'
+      };
+    } catch (error) {
+      console.error('Error in getEmployeesReport:', error);
+      return {
+        success: false,
+        message: 'Error processing report request: ' + error.message
+      };
+    }
+  }
 }
 
-// Register the ABC helper service
+// Register the ABC helper service with the new method
 app.use('abcHelper', new ABCHelperServiceClass(), {
-  methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons']
+  methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons', 'getEmployeesReport']
 })
 
 //test it with TRDR_CLIENT=1 and clientPlatforma=11654
