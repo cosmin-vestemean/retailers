@@ -471,6 +471,16 @@
         <!-- BI Tab Content -->
         <div id="biTab" class="tab-content" style="display: none;">
           <div class="section">
+            <!-- Add Report Type Selector -->
+            <div class="tabs is-toggle is-small mb-4">
+              <ul id="biReportTabs">
+                <li class="is-active" data-report="overview"><a>Overview</a></li>
+                <li data-report="pareto"><a>Pareto Analysis</a></li>
+                <li data-report="costStructure"><a>Cost Structure</a></li>
+                <li data-report="employeeComparison"><a>Employee Comparison</a></li>
+              </ul>
+            </div>
+            
             <div class="columns">
               <div class="column is-3">
                 <div class="box">
@@ -511,6 +521,19 @@
                     </div>
                   </div>
                   
+                  <div class="field">
+                    <label class="label">Transaction Type</label>
+                    <div class="control">
+                      <div class="select is-fullwidth">
+                        <select id="transactionTypeSelector">
+                          <option value="all">All Transactions</option>
+                          <option value="1000">Revenues (1000)</option>
+                          <option value="1002">Expenses (1002)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div class="field mt-5">
                     <div class="control">
                       <button id="applyFiltersBtn" class="button is-primary is-fullwidth">
@@ -535,68 +558,194 @@
                 </div>
               </div>
               
+              <!-- Dashboard Section - Will contain different reports based on selection -->
               <div class="column is-9">
-                <!-- Dashboard Header with KPIs -->
-                <div class="columns is-multiline mb-4">
-                  <div class="column is-3">
-                    <div class="box has-background-primary has-text-white">
-                      <h4 class="is-size-6 mb-1">Total Employees</h4>
-                      <p class="title is-3" id="kpiTotalEmployees">-</p>
+                <!-- Report Content Container -->
+                <div id="reportContentContainer">
+                  <!-- Overview Report (Default) -->
+                  <div id="overviewReport" class="report-content">
+                    <!-- Dashboard Header with KPIs -->
+                    <div class="columns is-multiline mb-4">
+                      <div class="column is-3">
+                        <div class="box has-background-primary has-text-white">
+                          <h4 class="is-size-6 mb-1">Total Employees</h4>
+                          <p class="title is-3" id="kpiTotalEmployees">-</p>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-3">
+                        <div class="box has-background-link has-text-white">
+                          <h4 class="is-size-6 mb-1">Total Cost</h4>
+                          <p class="title is-3" id="kpiTotalCost">-</p>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-3">
+                        <div class="box has-background-danger has-text-white">
+                          <h4 class="is-size-6 mb-1">A Class Items (%)</h4>
+                          <p class="title is-3" id="kpiClassA">-</p>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-3">
+                        <div class="box has-background-success has-text-white">
+                          <h4 class="is-size-6 mb-1">Avg Cost per Employee</h4>
+                          <p class="title is-3" id="kpiAvgCost">-</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Charts Row -->
+                    <div class="columns">
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Cost Distribution by ABC Class</h3>
+                          <canvas id="abcDistributionChart"></canvas>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Top Categories by Cost</h3>
+                          <canvas id="categoriesChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Additional Charts -->
+                    <div class="columns mt-4">
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Pareto Analysis (Cumulative %)</h3>
+                          <canvas id="paretoChart"></canvas>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Top Employees by Cost</h3>
+                          <canvas id="employeesChart"></canvas>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div class="column is-3">
-                    <div class="box has-background-link has-text-white">
-                      <h4 class="is-size-6 mb-1">Total Cost</h4>
-                      <p class="title is-3" id="kpiTotalCost">-</p>
+                  <!-- Pareto Analysis Report -->
+                  <div id="paretoReport" class="report-content" style="display: none;">
+                    <div class="columns">
+                      <div class="column is-12">
+                        <div class="box" style="height: 500px;">
+                          <h3 class="title is-5">Detailed Pareto Analysis</h3>
+                          <canvas id="detailedParetoChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="columns">
+                      <div class="column is-6">
+                        <div class="box">
+                          <h3 class="title is-5">Pareto Distribution</h3>
+                          <p class="subtitle is-6">Applying the 80/20 principle to employee costs</p>
+                          <div class="content">
+                            <table class="table is-fullwidth is-striped">
+                              <thead>
+                                <tr>
+                                  <th>Class</th>
+                                  <th>% of Employees</th>
+                                  <th>% of Total Cost</th>
+                                </tr>
+                              </thead>
+                              <tbody id="paretoSummaryTable">
+                                <!-- Pareto summary data -->
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-6">
+                        <div class="box" style="height: 300px;">
+                          <h3 class="title is-5">Cumulative Distribution</h3>
+                          <canvas id="cumulativeDistributionChart"></canvas>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div class="column is-3">
-                    <div class="box has-background-danger has-text-white">
-                      <h4 class="is-size-6 mb-1">A Class Items (%)</h4>
-                      <p class="title is-3" id="kpiClassA">-</p>
+                  <!-- Cost Structure Report -->
+                  <div id="costStructureReport" class="report-content" style="display: none;">
+                    <div class="columns">
+                      <div class="column is-12">
+                        <div class="box" style="height: 400px;">
+                          <h3 class="title is-5">Cost Breakdown by Category</h3>
+                          <canvas id="costBreakdownChart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="columns">
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Main Categories Distribution</h3>
+                          <canvas id="mainCategoriesChart"></canvas>
+                        </div>
+                      </div>
+                      
+                      <div class="column is-6">
+                        <div class="box" style="height: 350px;">
+                          <h3 class="title is-5">Subcategories Distribution</h3>
+                          <canvas id="subcategoriesChart"></canvas>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div class="column is-3">
-                    <div class="box has-background-success has-text-white">
-                      <h4 class="is-size-6 mb-1">Avg Cost per Employee</h4>
-                      <p class="title is-3" id="kpiAvgCost">-</p>
+                  <!-- Employee Comparison Report -->
+                  <div id="employeeComparisonReport" class="report-content" style="display: none;">
+                    <div class="columns">
+                      <div class="column is-12">
+                        <div class="box">
+                          <h3 class="title is-5">Employee Comparison</h3>
+                          <div class="field">
+                            <label class="label">Select Employees to Compare</label>
+                            <div class="control">
+                              <div class="select is-multiple is-fullwidth">
+                                <select id="employeeComparisonSelect" multiple size="4">
+                                  <!-- Employee options will be populated here -->
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="field">
+                            <div class="control">
+                              <button id="compareEmployeesBtn" class="button is-info">
+                                <span class="icon">
+                                  <i class="fas fa-chart-bar"></i>
+                                </span>
+                                <span>Compare Selected Employees</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                
-                <!-- Charts Row -->
-                <div class="columns">
-                  <div class="column is-6">
-                    <div class="box" style="height: 350px;">
-                      <h3 class="title is-5">Cost Distribution by ABC Class</h3>
-                      <canvas id="abcDistributionChart"></canvas>
+                    
+                    <div class="columns">
+                      <div class="column is-12">
+                        <div class="box" style="height: 400px;">
+                          <h3 class="title is-5">Employee Cost Comparison</h3>
+                          <canvas id="employeeComparisonChart"></canvas>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div class="column is-6">
-                    <div class="box" style="height: 350px;">
-                      <h3 class="title is-5">Top Categories by Cost</h3>
-                      <canvas id="categoriesChart"></canvas>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Additional Charts -->
-                <div class="columns mt-4">
-                  <div class="column is-6">
-                    <div class="box" style="height: 350px;">
-                      <h3 class="title is-5">Pareto Analysis (Cumulative %)</h3>
-                      <canvas id="paretoChart"></canvas>
-                    </div>
-                  </div>
-                  
-                  <div class="column is-6">
-                    <div class="box" style="height: 350px;">
-                      <h3 class="title is-5">Top Employees by Cost</h3>
-                      <canvas id="employeesChart"></canvas>
+                    
+                    <div class="columns">
+                      <div class="column is-12">
+                        <div class="box" style="height: 400px;">
+                          <h3 class="title is-5">Cost Category Distribution by Employee</h3>
+                          <canvas id="employeeCategoryChart"></canvas>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -895,6 +1044,34 @@
             // Initialize BI dashboard if BI tab was selected
             if (tabId === 'bi' && window.abcBI) {
               window.abcBI.initDashboard();
+            }
+          });
+        });
+        
+        // Add report tab switching event for BI reports
+        const biReportTabs = document.querySelectorAll('#biReportTabs li');
+        const reportContents = document.querySelectorAll('.report-content');
+        
+        biReportTabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            biReportTabs.forEach(t => t.classList.remove('is-active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('is-active');
+            
+            // Hide all report contents
+            reportContents.forEach(content => {
+              content.style.display = 'none';
+            });
+            
+            // Show selected report content
+            const reportId = this.dataset.report;
+            document.getElementById(reportId + 'Report').style.display = 'block';
+            
+            // Update charts for the selected report
+            if (window.abcBI && window.abcBI.updateReportView) {
+              window.abcBI.updateReportView(reportId);
             }
           });
         });

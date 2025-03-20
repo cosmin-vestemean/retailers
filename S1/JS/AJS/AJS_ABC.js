@@ -182,35 +182,34 @@ function getABCEmployeesReport(o) {
     
     var qry = 'WITH CosturiAngajati AS (\n' +
         '    SELECT \n' +
-        '        D4 AS CodAngajat,\n' +
-        '        b.name2 AS NumeAngajat,\n' +
-        '        tprms,\n' +
+        '        m.D4 AS CodAngajat,\n' +
+        '        b.name AS NumeAngajat,\n' +
+        '        m.tprms,\n' +
         '        CASE \n' +
-        '            WHEN tprms = 1000 THEN \'Venituri\'\n' +
-        '            WHEN tprms = 1002 THEN \'Cheltuieli\'\n' +
+        '            WHEN m.tprms = 1000 THEN \'Venituri\'\n' +
+        '            WHEN m.tprms = 1002 THEN \'Cheltuieli\'\n' +
         '            ELSE \'Altele\'\n' +
         '        END AS TipTranzactie,\n' +
-        '        fiscprd,\n' +
-        '        period,\n' +
-        '        articol,\n' +
-        '        treapta1 AS CategoriePrincipala,\n' +
-        '        treapta2 AS Subcategorie, \n' +
-        '        treapta3 AS ElementSpecific,\n' +
+        '        m.fiscprd,\n' +
+        '        m.period,\n' +
+        '        m.articol,\n' +
+        '        m.treapta1 AS CategoriePrincipala,\n' +
+        '        m.treapta2 AS Subcategorie, \n' +
+        '        m.treapta3 AS ElementSpecific,\n' +
         '        c1.name AS NumeCategoriePrincipala,\n' +
         '        c2.name AS NumeSubcategorie,\n' +
         '        c3.name AS NumeElementSpecific,\n' +
-        '        SUM(amnt) AS SumaCost\n' +
+        '        SUM(m.amnt) AS SumaCost\n' +
         '    FROM CCCABCTRNLINESMANAGV m\n' +
+        '    INNER JOIN abcst b ON (b.abcst = m.D4 AND b.dimension = 4)\n' +
         '    LEFT JOIN ccccateg1 c1 ON m.treapta1 = c1.ccccateg1\n' +
         '    LEFT JOIN ccccateg2 c2 ON m.treapta2 = c2.ccccateg2\n' +
         '    LEFT JOIN ccccateg3 c3 ON m.treapta3 = c3.ccccateg3\n' +
-        '    LEFT JOIN abcst a ON m.D4 = a.abcst\n' +
-        '    LEFT JOIN prsn b ON a.cccidcontextual = b.prsn\n' +
-        '    WHERE D4 IS NOT NULL \n' +
-        '      AND D4 <> \'\' \n' +
-        '      AND fiscprd = ' + fiscprd + ' \n' +
-        '      AND period = ' + period + ' \n' +
-        '    GROUP BY D4, b.name2, tprms, fiscprd, period, articol, treapta1, treapta2, treapta3, c1.name, c2.name, c3.name\n' +
+        '    WHERE m.D4 IS NOT NULL \n' +
+        '      AND m.D4 <> \'\' \n' +
+        '      AND m.fiscprd = ' + fiscprd + ' \n' +
+        '      AND m.period = ' + period + ' \n' +
+        '    GROUP BY m.D4, b.name, m.tprms, m.fiscprd, m.period, m.articol, m.treapta1, m.treapta2, m.treapta3, c1.name, c2.name, c3.name\n' +
         '),\n' +
         'TotalCosturi AS (\n' +
         '    SELECT \n' +
