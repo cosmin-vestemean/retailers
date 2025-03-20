@@ -39,13 +39,14 @@ async function fetchAndDisplayData() {
   const period = document.getElementById('periodSelector').value;
   
   try {
-    // Make sure to pass the query parameters correctly 
-    const result = await client.service('abcHelper').getEmployeesReport({}, {
-      query: {
+    // Use create method with the getEmployeesReport action instead
+    const result = await client.service('abcHelper').create(
+      {
+        action: 'getEmployeesReport',
         fiscprd: fiscprd,
         period: period
       }
-    });
+    );
     
     if (result.success) {
       abcReportData = result.data;
