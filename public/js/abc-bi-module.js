@@ -467,9 +467,9 @@ function getClassTagColor(abcClass) {
 // Helper function to format currency
 function formatCurrency(value, shortFormat = false) {
   if (shortFormat && value >= 1000) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('ro-RO', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'RON',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
       notation: 'compact',
@@ -477,9 +477,9 @@ function formatCurrency(value, shortFormat = false) {
     }).format(value);
   }
   
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('ro-RO', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'RON',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(value);
