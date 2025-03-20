@@ -39,14 +39,11 @@ async function fetchAndDisplayData() {
   const period = document.getElementById('periodSelector').value;
   
   try {
-    // Use create method with the getEmployeesReport action instead
-    const result = await client.service('abcHelper').create(
-      {
-        action: 'getEmployeesReport',
-        fiscprd: fiscprd,
-        period: period
-      }
-    );
+    // Use Feathers client instead of fetch
+    const result = await client.service('abcHelper').getEmployeesReport({
+      fiscprd: fiscprd,
+      period: period
+    });
     
     if (result.success) {
       abcReportData = result.data;

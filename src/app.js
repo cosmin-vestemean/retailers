@@ -224,19 +224,19 @@ class SftpServiceClass {
         //getDataset service in table trdbranch searching for CCCS1DXGLN = /Order/DeliveryParty/EndpointID
         var trdr = endpointID
           ? await app
-              .service('getDataset')
-              .find({
-                query: {
-                  sqlQuery:
-                    "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
-                    endpointID +
-                    "'"
-                }
-              })
-              .then((result) => {
-                console.log('getDataset result', result)
-                return result
-              })
+            .service('getDataset')
+            .find({
+              query: {
+                sqlQuery:
+                  "SELECT a.trdr FROM trdbranch a inner join trdr b on a.trdr=b.trdr WHERE b.sodtype=13 and a.CCCS1DXGLN = '" +
+                  endpointID +
+                  "'"
+              }
+            })
+            .then((result) => {
+              console.log('getDataset result', result)
+              return result
+            })
           : null
         console.log('trdr', trdr)
         if (trdr.data) {
@@ -1264,19 +1264,19 @@ class retailerServiceClass {
     const response = await app.service('getDataset1').find({ query: { sqlQuery: ediQry } })
     const ediDetails = response.success
       ? {
-          TRDR_RETAILER: response.TRDR_RETAILER,
-          EDIPROVIDER: response.EDIPROVIDER,
-          EDIPROVIDERNAME: response.EDIPROVIDERNAME,
-          CONNTYPE: response.CONNTYPE,
-          URL: response.URL,
-          PORT: response.PORT,
-          USERNAME: response.USERNAME,
-          PASSPHRASE: response.PASSPHRASE,
-          PRIVATEKEY: response.PRIVATEKEY,
-          FINGERPRINT: response.FINGERPRINT,
-          INITIALDIRIN: response.INITIALDIRIN,
-          INITIALDIROUT: response.INITIALDIROUT
-        }
+        TRDR_RETAILER: response.TRDR_RETAILER,
+        EDIPROVIDER: response.EDIPROVIDER,
+        EDIPROVIDERNAME: response.EDIPROVIDERNAME,
+        CONNTYPE: response.CONNTYPE,
+        URL: response.URL,
+        PORT: response.PORT,
+        USERNAME: response.USERNAME,
+        PASSPHRASE: response.PASSPHRASE,
+        PRIVATEKEY: response.PRIVATEKEY,
+        FINGERPRINT: response.FINGERPRINT,
+        INITIALDIRIN: response.INITIALDIRIN,
+        INITIALDIROUT: response.INITIALDIROUT
+      }
       : {}
 
     //CCCDOCUMENTES1MAPPINGS
@@ -1303,21 +1303,21 @@ class ABCServiceClass {
   async getEmployees(data, params) {
     const url = this.baseUrl + '/getABCEmployees'
     const method = 'POST'
-    
+
     // Prepare filter criteria
     const filterCriteria = params.query || {}
-    
+
     try {
-      const response = await fetch(url, { 
-        method: method, 
+      const response = await fetch(url, {
+        method: method,
         body: JSON.stringify(filterCriteria),
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      
+
       const json = await response.json()
       console.log('ABC Employees response:', json)
       return json
@@ -1333,18 +1333,18 @@ class ABCServiceClass {
   async setEmployee(data, params) {
     const url = this.baseUrl + '/setEmployee'
     const method = 'POST'
-    
+
     try {
-      const response = await fetch(url, { 
-        method: method, 
+      const response = await fetch(url, {
+        method: method,
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      
+
       const json = await response.json()
       console.log('Set Employee response:', json)
       return json
@@ -1360,21 +1360,21 @@ class ABCServiceClass {
   async getPrsnList(data, params) {
     const url = this.baseUrl + '/getPrsnList'
     const method = 'POST'
-    
+
     // Prepare filter criteria
     const filterCriteria = params.query || {}
-    
+
     try {
-      const response = await fetch(url, { 
-        method: method, 
+      const response = await fetch(url, {
+        method: method,
         body: JSON.stringify(filterCriteria),
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      
+
       const json = await response.json()
       console.log('Person List response:', json)
       return json
@@ -1391,21 +1391,21 @@ class ABCServiceClass {
   async getABCEmployeesReport(data, params) {
     const url = this.baseUrl + '/getABCEmployeesReport'
     const method = 'POST'
-    
-    // Prepare filter criteria for the report
-    const reportParams = params.query || {}
-    
+
+    // Use data for filter criteria instead of params.query
+    const reportParams = data || {}
+
     try {
-      const response = await fetch(url, { 
-        method: method, 
+      const response = await fetch(url, {
+        method: method,
         body: JSON.stringify(reportParams),
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      
+
       const json = await response.json()
       console.log('ABC Employees Report response:', json)
       return json
@@ -1430,11 +1430,11 @@ class ABCHelperServiceClass {
     try {
       // Get employees with optional filtering
       const employees = await app.service('abc').getEmployees({}, params)
-      
+
       if (!employees.success) {
         return employees
       }
-      
+
       // Enhance the response with additional information if needed
       return {
         ...employees,
@@ -1449,7 +1449,7 @@ class ABCHelperServiceClass {
       }
     }
   }
-  
+
   async saveEmployee(data, params) {
     try {
       // Validate required fields
@@ -1459,15 +1459,15 @@ class ABCHelperServiceClass {
           message: 'Person ID (prsn) is required'
         }
       }
-      
+
       // Save the employee
       const result = await app.service('abc').setEmployee(data, {})
-      
+
       if (result.success) {
         // Log the successful operation
         console.log(`Employee saved successfully: ${data.prsn} - ${data.name || 'unnamed'}`)
       }
-      
+
       return result
     } catch (error) {
       console.error('Error in saveEmployee:', error)
@@ -1477,12 +1477,12 @@ class ABCHelperServiceClass {
       }
     }
   }
-  
+
   async getPersons(data, params) {
     try {
       // Get persons with optional filtering
       const persons = await app.service('abc').getPrsnList({}, params)
-      
+
       return persons
     } catch (error) {
       console.error('Error in getPersons:', error)
@@ -1492,17 +1492,20 @@ class ABCHelperServiceClass {
       }
     }
   }
-  
+
   // Add new helper method for the ABC employees report
   async getEmployeesReport(data, params) {
     try {
-      // Get employees report with optional filtering
-      const fiscprd = params.query?.fiscprd || new Date().getFullYear();
-      const period = params.query?.period || new Date().getMonth() + 1;
+      // Default values if not provided in data
+      const fiscprd = data.fiscprd || new Date().getFullYear();
+      const period = data.period || new Date().getMonth() + 1;
       
-      const report = await app.service('abc').getABCEmployeesReport({}, {
-        query: { fiscprd, period, ...params.query }
-      });
+      // Pass all parameters as data object
+      const report = await app.service('abc').getABCEmployeesReport({
+        fiscprd, 
+        period,
+        ...data  // Include any other parameters from data
+      }, {});
       
       if (!report.success) {
         return report;
