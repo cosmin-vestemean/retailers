@@ -117,9 +117,13 @@ function processEmployeeData(data) {
     const employeeId = item.codAngajat;
     const employeeName = item.numeAngajat || 'Unknown';
     const transactionType = item.tipTranzactie || 'Other';
+    const tprms = item.tprms || 0;
     const mainCategory = item.numeCategoriePrincipala || 'Uncategorized';
+    const mainCategoryId = item.categoriePrincipala || '0';
     const subCategory = item.numeSubcategorie || 'General';
+    const subCategoryId = item.subcategorie || '0'; 
     const specificElement = item.numeElementSpecific || 'General';
+    const specificElementId = item.elementSpecific || '0';
     const cost = item.sumaCost || 0;
     const abcClass = item.clasificareABC || 'C';
     
@@ -133,16 +137,19 @@ function processEmployeeData(data) {
         totalOther: 0,
         transactions: {
           revenues: {
+            tprms: 1000,
             total: 0,
             categories: {},
             items: []
           },
           expenses: {
+            tprms: 1002,
             total: 0,
             categories: {},
             items: []
           },
           other: {
+            tprms: -1,
             total: 0,
             categories: {},
             items: []
@@ -158,9 +165,9 @@ function processEmployeeData(data) {
     
     // Determine transaction category
     let transactionCategory;
-    if (transactionType.toLowerCase() === 'venituri') {
+    if (tprms === 1000 || transactionType.toLowerCase() === 'venituri') {
       transactionCategory = 'revenues';
-    } else if (transactionType.toLowerCase() === 'cheltuieli') {
+    } else if (tprms === 1002 || transactionType.toLowerCase() === 'cheltuieli') {
       transactionCategory = 'expenses';
     } else {
       transactionCategory = 'other';
@@ -173,33 +180,46 @@ function processEmployeeData(data) {
     transactions.total += cost;
     
     // Update main category totals
-    if (!transactions.categories[mainCategory]) {
-      transactions.categories[mainCategory] = {
+    if (!transactions.categories[mainCategoryId]) {
+      transactions.categories[mainCategoryId] = {
+        id: mainCategoryId,
+        name: mainCategory,
         total: 0,
         subcategories: {}
       };
     }
-    transactions.categories[mainCategory].total += cost;
+    transactions.categories[mainCategoryId].total += cost;
     
     // Update subcategory totals
-    if (!transactions.categories[mainCategory].subcategories[subCategory]) {
-      transactions.categories[mainCategory].subcategories[subCategory] = {
+    if (!transactions.categories[mainCategoryId].subcategories[subCategoryId]) {
+      transactions.categories[mainCategoryId].subcategories[subCategoryId] = {
+        id: subCategoryId,
+        name: subCategory,
         total: 0,
         specificElements: {}
       };
     }
-    transactions.categories[mainCategory].subcategories[subCategory].total += cost;
+    transactions.categories[mainCategoryId].subcategories[subCategoryId].total += cost;
     
     // Update specific element totals (third level)
-    if (!transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement]) {
-      transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement] = 0;
+    if (!transactions.categories[mainCategoryId].subcategories[subCategoryId].specificElements[specificElementId]) {
+      transactions.categories[mainCategoryId].subcategories[subCategoryId].specificElements[specificElementId] = {
+        id: specificElementId,
+        name: specificElement,
+        total: 0
+      };
     }
-    transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement] += cost;
+    transactions.categories[mainCategoryId].subcategories[subCategoryId].specificElements[specificElementId].total += cost;
     
     // Add item details
     transactions.items.push({
+      tprms: tprms,
+      transactionType: transactionType,
+      categoryId: mainCategoryId,
       category: mainCategory,
+      subcategoryId: subCategoryId,
       subcategory: subCategory,
+      specificElementId: specificElementId,
       specificElement: specificElement,
       cost: cost,
       abcClass: abcClass
@@ -575,7 +595,7 @@ function updateExpensesSection(employee) {
 }
 
 // Create a category section with subcategories
-function createCategorySection(type, index, categoryName, categoryData, totalAmount) {
+function createCategorySection(type, index, categoryId, categoryData, totalAmount) {
   const section = document.createElement('div');
   section.className = 'category-section';
   section.id = `${type}-category-${index}`;
@@ -583,14 +603,14 @@ function createCategorySection(type, index, categoryName, categoryData, totalAmo
   // Calculate percentage of total
   const percentage = (categoryData.total / totalAmount * 100).toFixed(1);
   
-  // Create header
+  // Create header (Level 1 - Main Category)
   const header = document.createElement('div');
-  header.className = 'category-header';
+  header.className = 'category-header level-1-header';
   header.innerHTML = `
     <div class="category-toggle">
       <span class="toggle-icon">+</span>
     </div>
-    <div class="category-name">${categoryName}</div>
+    <div class="category-name">${categoryData.name}</div>
     <div class="category-amount">${formatCurrency(categoryData.total)}</div>
     <div class="category-percentage">${percentage}%</div>
     <div class="category-progress">
@@ -605,31 +625,98 @@ function createCategorySection(type, index, categoryName, categoryData, totalAmo
   
   // Sort subcategories by amount
   const sortedSubcategories = Object.entries(categoryData.subcategories)
-    .sort((a, b) => b[1] - a[1]);
+    .sort((a, b) => b[1].total - a[1].total);
   
   // Add subcategories
-  sortedSubcategories.forEach(([subcategoryName, amount]) => {
-    const subcategoryPercentage = (amount / categoryData.total * 100).toFixed(1);
+  sortedSubcategories.forEach(([subCategoryId, subCategoryData], subIndex) => {
+    const subCategoryPercentage = (subCategoryData.total / categoryData.total * 100).toFixed(1);
     
-    const subcategory = document.createElement('div');
-    subcategory.className = 'subcategory-item';
-    subcategory.innerHTML = `
-      <div class="subcategory-name">${subcategoryName}</div>
-      <div class="subcategory-amount">${formatCurrency(amount)}</div>
-      <div class="subcategory-percentage">${subcategoryPercentage}%</div>
+    // Create subcategory container (Level 2)
+    const subCategoryContainer = document.createElement('div');
+    subCategoryContainer.className = 'subcategory-container';
+    subCategoryContainer.id = `${type}-subcategory-${index}-${subIndex}`;
+    
+    // Create subcategory header
+    const subCategoryHeader = document.createElement('div');
+    subCategoryHeader.className = 'subcategory-header level-2-header';
+    subCategoryHeader.innerHTML = `
+      <div class="subcategory-toggle">
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="subcategory-name">${subCategoryData.name}</div>
+      <div class="subcategory-amount">${formatCurrency(subCategoryData.total)}</div>
+      <div class="subcategory-percentage">${subCategoryPercentage}%</div>
       <div class="subcategory-progress">
-        <div class="progress-bar" style="width: ${subcategoryPercentage}%"></div>
+        <div class="progress-bar" style="width: ${subCategoryPercentage}%"></div>
       </div>
     `;
     
-    content.appendChild(subcategory);
+    // Create container for specific elements
+    const specificElementsContainer = document.createElement('div');
+    specificElementsContainer.className = 'specific-elements-container';
+    specificElementsContainer.style.display = 'none';
+    
+    // Sort specific elements by amount
+    const sortedSpecificElements = Object.entries(subCategoryData.specificElements)
+      .sort((a, b) => b[1].total - a[1].total);
+    
+    // Add specific elements (Level 3)
+    sortedSpecificElements.forEach(([elementId, elementData], elemIndex) => {
+      const elementPercentage = (elementData.total / subCategoryData.total * 100).toFixed(1);
+      
+      const specificElement = document.createElement('div');
+      specificElement.className = 'specific-element-item level-3-item';
+      specificElement.id = `${type}-element-${index}-${subIndex}-${elemIndex}`;
+      specificElement.innerHTML = `
+        <div class="element-name">${elementData.name}</div>
+        <div class="element-amount">${formatCurrency(elementData.total)}</div>
+        <div class="element-percentage">${elementPercentage}%</div>
+        <div class="element-progress">
+          <div class="progress-bar" style="width: ${elementPercentage}%"></div>
+        </div>
+      `;
+      
+      specificElementsContainer.appendChild(specificElement);
+    });
+    
+    // Add toggle functionality for subcategory
+    subCategoryHeader.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent triggering parent click events
+      
+      const isVisible = specificElementsContainer.style.display !== 'none';
+      specificElementsContainer.style.display = isVisible ? 'none' : 'block';
+      subCategoryHeader.querySelector('.toggle-icon').textContent = isVisible ? '+' : '-';
+      
+      // Track expanded state for this subcategory
+      const id = subCategoryContainer.id;
+      if (isVisible) {
+        expandedSections.delete(id);
+      } else {
+        expandedSections.add(id);
+      }
+    });
+    
+    // Append all elements to the subcategory container
+    subCategoryContainer.appendChild(subCategoryHeader);
+    subCategoryContainer.appendChild(specificElementsContainer);
+    
+    // Add the subcategory container to the main content
+    content.appendChild(subCategoryContainer);
   });
   
-  // Add toggle functionality
+  // Add toggle functionality for main category
   header.addEventListener('click', () => {
     const isVisible = content.style.display !== 'none';
     content.style.display = isVisible ? 'none' : 'block';
     header.querySelector('.toggle-icon').textContent = isVisible ? '+' : '-';
+    
+    // Track expanded state for this category
+    const id = section.id;
+    if (isVisible) {
+      expandedSections.delete(id);
+    } else {
+      expandedSections.add(id);
+    }
   });
   
   section.appendChild(header);
