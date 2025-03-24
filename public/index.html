@@ -171,143 +171,6 @@
         color: #888;
         font-style: italic;
       }
-      
-      /* ABC BI Module Four-Level Hierarchy Styles */
-      .transaction-type-section {
-        margin-bottom: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        background-color: white;
-        overflow: hidden;
-      }
-      
-      .level-0-header {
-        background-color: #34495e;
-        color: white;
-        padding: 1rem;
-        font-size: 1.2rem;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-      }
-      
-      .level-1-header {
-        background-color: #f8f9fa;
-        padding: 0.8rem 1rem 0.8rem 2rem;
-        font-weight: 600;
-        cursor: pointer;
-        border-bottom: 1px solid #eaeaea;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .level-2-header {
-        background-color: #ffffff;
-        padding: 0.7rem 1rem 0.7rem 3rem;
-        font-weight: 500;
-        cursor: pointer;
-        border-bottom: 1px solid #f0f0f0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .level-3-item {
-        padding: 0.6rem 1rem 0.6rem 4rem;
-        background-color: #fafafa;
-        border-bottom: 1px solid #f5f5f5;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .toggle-container, .category-toggle, .subcategory-toggle {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        margin-right: 10px;
-        background-color: rgba(255,255,255,0.2);
-        font-weight: bold;
-      }
-      
-      .level-1-header .toggle-icon, .category-toggle .toggle-icon {
-        color: #333;
-      }
-      
-      .level-2-header .toggle-icon, .subcategory-toggle .toggle-icon {
-        color: #555;
-      }
-      
-      .section-content, .subcategories-container, .specific-elements-container {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-out;
-      }
-      
-      .section-content.expanded {
-        max-height: 2000px !important;
-      }
-      
-      .category-progress, .subcategory-progress, .element-progress {
-        height: 6px;
-        width: 150px;
-        background-color: #ecf0f1;
-        border-radius: 3px;
-        overflow: hidden;
-        margin-left: 10px;
-      }
-      
-      .category-progress .progress-bar {
-        height: 100%;
-        background-color: #3498db;
-      }
-      
-      .subcategory-progress .progress-bar {
-        height: 100%;
-        background-color: #2ecc71;
-      }
-      
-      .element-progress .progress-bar {
-        height: 100%;
-        background-color: #f39c12;
-      }
-      
-      .category-name, .subcategory-name, .element-name {
-        flex-grow: 1;
-      }
-      
-      .category-amount, .subcategory-amount, .element-amount {
-        margin: 0 10px;
-        font-weight: 600;
-      }
-      
-      .category-percentage, .subcategory-percentage, .element-percentage {
-        width: 50px;
-        text-align: right;
-        color: #7f8c8d;
-      }
-      
-      /* Revenue type colors */
-      .transaction-type-section[id="revenuesSection"] .level-0-header {
-        background-color: #27ae60;
-      }
-      
-      /* Expense type colors */
-      .transaction-type-section[id="expensesSection"] .level-0-header {
-        background-color: #c0392b;
-      }
-      
-      /* Other type colors */
-      .transaction-type-section[id="otherSection"] .level-0-header {
-        background-color: #8e44ad;
-      }
     </style>
   </head>
   <body>
@@ -738,46 +601,38 @@
                 </div>
               </div>
               
-              <!-- Report Container for four-level hierarchy -->
-              <div id="reportContainer" class="mt-4">
-                <!-- Transaction type sections (TPRMS) will be inserted here dynamically -->
-              </div>
-              
-              <!-- Main container that previously held the reports -->
-              <div id="legacyReportContainer" style="display: none;">
-                <!-- Revenues Section -->
-                <div class="box mb-4" id="revenuesSection">
-                  <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
-                    <div class="is-flex is-align-items-center">
-                      <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
-                        <span class="toggle-icon">+</span>
-                      </span>
-                      <span class="has-text-weight-semibold is-size-5">Venituri</span>
-                    </div>
-                    <div class="has-text-weight-bold" id="totalRevenue">0,00 RON</div>
+              <!-- Revenues Section -->
+              <div class="box mb-4" id="revenuesSection">
+                <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
+                  <div class="is-flex is-align-items-center">
+                    <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
+                      <span class="toggle-icon">+</span>
+                    </span>
+                    <span class="has-text-weight-semibold is-size-5">Venituri</span>
                   </div>
-                  <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
-                    <div id="revenueSectionContent">
-                      <!-- This will be populated dynamically -->
-                    </div>
+                  <div class="has-text-weight-bold" id="totalRevenue">0,00 RON</div>
+                </div>
+                <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                  <div id="revenueSectionContent">
+                    <!-- This will be populated dynamically -->
                   </div>
                 </div>
-                
-                <!-- Expenses Section -->
-                <div class="box mb-4" id="expensesSection">
-                  <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
-                    <div class="is-flex is-align-items-center">
-                      <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
-                        <span class="toggle-icon">+</span>
-                      </span>
-                      <span class="has-text-weight-semibold is-size-5">Cheltuieli</span>
-                    </div>
-                    <div class="has-text-weight-bold" id="totalExpenses">0,00 RON</div>
+              </div>
+              
+              <!-- Expenses Section -->
+              <div class="box mb-4" id="expensesSection">
+                <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
+                  <div class="is-flex is-align-items-center">
+                    <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
+                      <span class="toggle-icon">+</span>
+                    </span>
+                    <span class="has-text-weight-semibold is-size-5">Cheltuieli</span>
                   </div>
-                  <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
-                    <div id="expensesSectionContent">
-                      <!-- This will be populated dynamically -->
-                    </div>
+                  <div class="has-text-weight-bold" id="totalExpenses">0,00 RON</div>
+                </div>
+                <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                  <div id="expensesSectionContent">
+                    <!-- This will be populated dynamically -->
                   </div>
                 </div>
               </div>
