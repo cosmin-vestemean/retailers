@@ -119,6 +119,7 @@ function processEmployeeData(data) {
     const transactionType = item.tipTranzactie || 'Other';
     const mainCategory = item.numeCategoriePrincipala || 'Uncategorized';
     const subCategory = item.numeSubcategorie || 'General';
+    const specificElement = item.numeElementSpecific || 'General';
     const cost = item.sumaCost || 0;
     const abcClass = item.clasificareABC || 'C';
     
@@ -182,14 +183,24 @@ function processEmployeeData(data) {
     
     // Update subcategory totals
     if (!transactions.categories[mainCategory].subcategories[subCategory]) {
-      transactions.categories[mainCategory].subcategories[subCategory] = 0;
+      transactions.categories[mainCategory].subcategories[subCategory] = {
+        total: 0,
+        specificElements: {}
+      };
     }
-    transactions.categories[mainCategory].subcategories[subCategory] += cost;
+    transactions.categories[mainCategory].subcategories[subCategory].total += cost;
+    
+    // Update specific element totals (third level)
+    if (!transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement]) {
+      transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement] = 0;
+    }
+    transactions.categories[mainCategory].subcategories[subCategory].specificElements[specificElement] += cost;
     
     // Add item details
     transactions.items.push({
       category: mainCategory,
       subcategory: subCategory,
+      specificElement: specificElement,
       cost: cost,
       abcClass: abcClass
     });
@@ -263,14 +274,130 @@ function updateDashboard() {
   // Update charts
   updateOverviewCharts(employee);
   
-  // Update revenues section
-  updateRevenuesSection(employee);
-  
-  // Update expenses section
-  updateExpensesSection(employee);
+  // Create main transaction type sections (TPRMS) - Level 0
+  updateTransactionTypeSections(employee);
   
   // Restore expanded sections
   restoreExpandedSections();
+}
+
+// Create and update transaction type sections (TPRMS: Venituri/Cheltuieli)
+function updateTransactionTypeSections(employee) {
+  const reportContainer = document.getElementById('reportContainer');
+  if (!reportContainer) return;
+  
+  // Clear existing content
+  reportContainer.innerHTML = '';
+  
+  // Create the transaction type sections
+  if (employee.totalRevenue > 0) {
+    const revenueSection = createTransactionTypeSection('revenues', 'Venituri', employee);
+    reportContainer.appendChild(revenueSection);
+  }
+  
+  if (employee.totalExpenses > 0) {
+    const expensesSection = createTransactionTypeSection('expenses', 'Cheltuieli', employee);
+    reportContainer.appendChild(expensesSection);
+  }
+  
+  if (employee.totalOther > 0) {
+    const otherSection = createTransactionTypeSection('other', 'Altele', employee);
+    reportContainer.appendChild(otherSection);
+  }
+}
+
+// Create a transaction type section (TPRMS level)
+function createTransactionTypeSection(type, title, employee) {
+  const transactions = employee.transactions[type];
+  const total = type === 'revenues' ? employee.totalRevenue : 
+                type === 'expenses' ? employee.totalExpenses : employee.totalOther;
+  
+  // Create section
+  const section = document.createElement('div');
+  section.className = 'report-section transaction-type-section';
+  section.id = `${type}Section`;
+  
+  // Create header
+  const header = document.createElement('div');
+  header.className = 'section-header transaction-type-header level-0-header';
+  header.innerHTML = `
+    <div class="toggle-container">
+      <span class="toggle-icon">+</span>
+    </div>
+    <div class="section-title">${title}</div>
+    <div class="section-total" id="total${type.charAt(0).toUpperCase() + type.slice(1)}">${formatCurrency(total)}</div>
+  `;
+  
+  // Create content
+  const content = document.createElement('div');
+  content.className = 'section-content';
+  content.id = `${type}SectionContent`;
+  
+  // Create chart container
+  const chartContainer = document.createElement('div');
+  chartContainer.className = 'chart-container';
+  chartContainer.style.height = '300px';
+  chartContainer.style.marginBottom = '20px';
+  
+  const canvas = document.createElement('canvas');
+  canvas.id = `${type}CategoriesChart`;
+  chartContainer.appendChild(canvas);
+  content.appendChild(chartContainer);
+  
+  // Sort categories by total
+  const sortedCategories = Object.entries(transactions.categories)
+    .sort((a, b) => b[1].total - a[1].total);
+  
+  // Add category breakdown
+  if (sortedCategories.length > 0) {
+    const categoriesContainer = document.createElement('div');
+    categoriesContainer.className = 'categories-container';
+    
+    sortedCategories.forEach(([categoryName, categoryData], index) => {
+      const categorySection = createCategorySection(
+        type, 
+        index, 
+        categoryName, 
+        categoryData, 
+        total
+      );
+      categoriesContainer.appendChild(categorySection);
+    });
+    
+    content.appendChild(categoriesContainer);
+    
+    // Add toggle functionality for transaction type header
+    header.addEventListener('click', () => {
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        content.style.maxHeight = '0';
+        header.querySelector('.toggle-icon').textContent = '+';
+        expandedSections.delete(section.id);
+      } else {
+        content.classList.add('expanded');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        header.querySelector('.toggle-icon').textContent = '-';
+        expandedSections.add(section.id);
+        
+        // Initialize the categories chart
+        if (type === 'revenues') {
+          updateRevenueCategoriesChart(sortedCategories);
+        } else if (type === 'expenses') {
+          updateExpenseCategoriesChart(sortedCategories);
+        }
+      }
+    });
+  } else {
+    const noDataMsg = document.createElement('p');
+    noDataMsg.className = 'no-data-message';
+    noDataMsg.textContent = `No ${type} data available for this period`;
+    content.appendChild(noDataMsg);
+  }
+  
+  section.appendChild(header);
+  section.appendChild(content);
+  
+  return section;
 }
 
 // Update employee info in the header
@@ -563,7 +690,7 @@ function updateExpensesSection(employee) {
   }
 }
 
-// Create a category section with subcategories
+// Create a category section with subcategories and specific elements
 function createCategorySection(type, index, categoryName, categoryData, totalAmount) {
   const section = document.createElement('div');
   section.className = 'category-section';
@@ -572,9 +699,9 @@ function createCategorySection(type, index, categoryName, categoryData, totalAmo
   // Calculate percentage of total
   const percentage = (categoryData.total / totalAmount * 100).toFixed(1);
   
-  // Create header
+  // Create header (Level 1)
   const header = document.createElement('div');
-  header.className = 'category-header';
+  header.className = 'category-header level-1-header';
   header.innerHTML = `
     <div class="category-toggle">
       <span class="toggle-icon">+</span>
@@ -594,27 +721,77 @@ function createCategorySection(type, index, categoryName, categoryData, totalAmo
   
   // Sort subcategories by amount
   const sortedSubcategories = Object.entries(categoryData.subcategories)
-    .sort((a, b) => b[1] - a[1]);
+    .sort((a, b) => b[1].total - a[1].total);
   
   // Add subcategories
-  sortedSubcategories.forEach(([subcategoryName, amount]) => {
-    const subcategoryPercentage = (amount / categoryData.total * 100).toFixed(1);
+  sortedSubcategories.forEach(([subcategoryName, subcategoryData], subIndex) => {
+    const subcategoryPercentage = (subcategoryData.total / categoryData.total * 100).toFixed(1);
     
-    const subcategory = document.createElement('div');
-    subcategory.className = 'subcategory-item';
-    subcategory.innerHTML = `
+    // Create subcategory container (Level 2)
+    const subcategoryContainer = document.createElement('div');
+    subcategoryContainer.className = 'subcategory-container';
+    subcategoryContainer.id = `${type}-subcategory-${index}-${subIndex}`;
+    
+    // Create subcategory header
+    const subcategoryHeader = document.createElement('div');
+    subcategoryHeader.className = 'subcategory-header level-2-header';
+    subcategoryHeader.innerHTML = `
+      <div class="subcategory-toggle">
+        <span class="toggle-icon">+</span>
+      </div>
       <div class="subcategory-name">${subcategoryName}</div>
-      <div class="subcategory-amount">${formatCurrency(amount)}</div>
+      <div class="subcategory-amount">${formatCurrency(subcategoryData.total)}</div>
       <div class="subcategory-percentage">${subcategoryPercentage}%</div>
       <div class="subcategory-progress">
         <div class="progress-bar" style="width: ${subcategoryPercentage}%"></div>
       </div>
     `;
     
-    content.appendChild(subcategory);
+    // Create container for specific elements
+    const specificElementsContainer = document.createElement('div');
+    specificElementsContainer.className = 'specific-elements-container';
+    specificElementsContainer.style.display = 'none';
+    
+    // Sort specific elements by amount
+    const sortedSpecificElements = Object.entries(subcategoryData.specificElements)
+      .sort((a, b) => b[1] - a[1]);
+    
+    // Add specific elements (Level 3)
+    sortedSpecificElements.forEach(([elementName, elementAmount]) => {
+      const elementPercentage = (elementAmount / subcategoryData.total * 100).toFixed(1);
+      
+      const specificElement = document.createElement('div');
+      specificElement.className = 'specific-element-item level-3-item';
+      specificElement.innerHTML = `
+        <div class="element-name">${elementName}</div>
+        <div class="element-amount">${formatCurrency(elementAmount)}</div>
+        <div class="element-percentage">${elementPercentage}%</div>
+        <div class="element-progress">
+          <div class="progress-bar" style="width: ${elementPercentage}%"></div>
+        </div>
+      `;
+      
+      specificElementsContainer.appendChild(specificElement);
+    });
+    
+    // Add toggle functionality for subcategory
+    subcategoryHeader.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent triggering parent click events
+      
+      const isVisible = specificElementsContainer.style.display !== 'none';
+      specificElementsContainer.style.display = isVisible ? 'none' : 'block';
+      subcategoryHeader.querySelector('.toggle-icon').textContent = isVisible ? '+' : '-';
+    });
+    
+    // Append all elements to the subcategory container
+    subcategoryContainer.appendChild(subcategoryHeader);
+    subcategoryContainer.appendChild(specificElementsContainer);
+    
+    // Add the subcategory container to the main content
+    content.appendChild(subcategoryContainer);
   });
   
-  // Add toggle functionality
+  // Add toggle functionality for main category
   header.addEventListener('click', () => {
     const isVisible = content.style.display !== 'none';
     content.style.display = isVisible ? 'none' : 'block';

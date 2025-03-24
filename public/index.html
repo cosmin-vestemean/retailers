@@ -601,38 +601,46 @@
                 </div>
               </div>
               
-              <!-- Revenues Section -->
-              <div class="box mb-4" id="revenuesSection">
-                <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
-                  <div class="is-flex is-align-items-center">
-                    <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
-                      <span class="toggle-icon">+</span>
-                    </span>
-                    <span class="has-text-weight-semibold is-size-5">Venituri</span>
-                  </div>
-                  <div class="has-text-weight-bold" id="totalRevenue">0,00 RON</div>
-                </div>
-                <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
-                  <div id="revenueSectionContent">
-                    <!-- This will be populated dynamically -->
-                  </div>
-                </div>
+              <!-- Report Container for four-level hierarchy -->
+              <div id="reportContainer" class="mt-4">
+                <!-- Transaction type sections (TPRMS) will be inserted here dynamically -->
               </div>
               
-              <!-- Expenses Section -->
-              <div class="box mb-4" id="expensesSection">
-                <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
-                  <div class="is-flex is-align-items-center">
-                    <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
-                      <span class="toggle-icon">+</span>
-                    </span>
-                    <span class="has-text-weight-semibold is-size-5">Cheltuieli</span>
+              <!-- Main container that previously held the reports -->
+              <div id="legacyReportContainer" style="display: none;">
+                <!-- Revenues Section -->
+                <div class="box mb-4" id="revenuesSection">
+                  <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
+                    <div class="is-flex is-align-items-center">
+                      <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
+                        <span class="toggle-icon">+</span>
+                      </span>
+                      <span class="has-text-weight-semibold is-size-5">Venituri</span>
+                    </div>
+                    <div class="has-text-weight-bold" id="totalRevenue">0,00 RON</div>
                   </div>
-                  <div class="has-text-weight-bold" id="totalExpenses">0,00 RON</div>
+                  <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                    <div id="revenueSectionContent">
+                      <!-- This will be populated dynamically -->
+                    </div>
+                  </div>
                 </div>
-                <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
-                  <div id="expensesSectionContent">
-                    <!-- This will be populated dynamically -->
+                
+                <!-- Expenses Section -->
+                <div class="box mb-4" id="expensesSection">
+                  <div class="is-flex is-justify-content-space-between is-align-items-center p-3" style="cursor: pointer; background-color: #f8f9fa; border-radius: 6px; margin: -1.25rem -1.25rem 0 -1.25rem;">
+                    <div class="is-flex is-align-items-center">
+                      <span class="icon-text mr-2" style="width: 24px; height: 24px; border-radius: 50%; background-color: #3498db; color: white; display: inline-flex; justify-content: center; align-items: center; font-weight: bold;">
+                        <span class="toggle-icon">+</span>
+                      </span>
+                      <span class="has-text-weight-semibold is-size-5">Cheltuieli</span>
+                    </div>
+                    <div class="has-text-weight-bold" id="totalExpenses">0,00 RON</div>
+                  </div>
+                  <div class="section-content mt-4" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                    <div id="expensesSectionContent">
+                      <!-- This will be populated dynamically -->
+                    </div>
                   </div>
                 </div>
               </div>
