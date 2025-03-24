@@ -1,62 +1,103 @@
-// ABC BI Module - Handles data fetching, processing, and visualization for the ABC BI dashboard
+// ABC BI Module - Beautiful Report ABC per Employee
+// A simplified, impressive interface showcasing the next possibilities in BI
 
 // Import the Feathers client
 import client from '../modules/feathersjs-client.js';
 
 // Global variables
-let abcReportData = [];
+let employeeData = {};
+let currentEmployee = null;
 let charts = {};
-let currentReportView = 'overview';
+let expandedSections = new Set();
 
 // Initialize the dashboard
 function initDashboard() {
-  // Set default values for selectors
-  const currentDate = new Date();
-  document.getElementById('fiscalYearSelector').value = currentDate.getFullYear();
-  document.getElementById('periodSelector').value = currentDate.getMonth() + 1;
+  // Set up the current date for the report header
+  setupReportDate();
   
-  // Add event listeners only if elements exist
-  const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-  if (applyFiltersBtn) {
-    applyFiltersBtn.addEventListener('click', fetchAndDisplayData);
-  }
+  // Add event listeners
+  document.getElementById('employeeSelector').addEventListener('change', handleEmployeeChange);
+  document.getElementById('periodSelector').addEventListener('change', fetchAndDisplayData);
+  document.getElementById('yearSelector').addEventListener('change', fetchAndDisplayData);
   
-  const tableSearchInput = document.getElementById('tableSearchInput');
-  if (tableSearchInput) {
-    tableSearchInput.addEventListener('keyup', filterTable);
-  }
-  
-  const compareEmployeesBtn = document.getElementById('compareEmployeesBtn');
-  if (compareEmployeesBtn) {
-    compareEmployeesBtn.addEventListener('click', updateEmployeeComparisonCharts);
-  }
+  // Set up expandable sections
+  setupExpandableSections();
   
   // Initial data load
   fetchAndDisplayData();
 }
 
-// Fetch data from the API and update all visualizations
+// Set up the current date display for the report header
+function setupReportDate() {
+  const today = new Date();
+  const options = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    weekday: 'long'
+  };
+  const formattedDate = today.toLocaleDateString('ro-RO', options);
+  
+  const dateElement = document.getElementById('reportDate');
+  if (dateElement) {
+    dateElement.textContent = formattedDate;
+  }
+  
+  // Set default values for selectors
+  document.getElementById('yearSelector').value = today.getFullYear();
+  document.getElementById('periodSelector').value = today.getMonth() + 1;
+}
+
+// Set up expandable sections for the hierarchical report
+function setupExpandableSections() {
+  document.querySelectorAll('.section-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const section = header.closest('.report-section');
+      const content = section.querySelector('.section-content');
+      const icon = header.querySelector('.toggle-icon');
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        content.style.maxHeight = '0';
+        icon.textContent = '+';
+        expandedSections.delete(section.id);
+      } else {
+        content.classList.add('expanded');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.textContent = '-';
+        expandedSections.add(section.id);
+      }
+    });
+  });
+}
+
+// Fetch data from the API and update visualizations
 async function fetchAndDisplayData() {
   // Show loading state
   showLoadingState();
   
   // Get filter values
-  const fiscprd = document.getElementById('fiscalYearSelector').value;
+  const year = document.getElementById('yearSelector').value;
   const period = document.getElementById('periodSelector').value;
-  const transactionType = document.getElementById('transactionTypeSelector').value;
   
   try {
-    // Use Feathers client instead of fetch
+    // Use Feathers client to fetch data
     const result = await client.service('abcHelper').getEmployeesReport({
-      fiscprd: fiscprd,
-      period: period,
-      tprms: transactionType !== 'all' ? transactionType : undefined
+      fiscprd: year,
+      period: period
     });
     
     if (result.success) {
-      abcReportData = result.data;
-      updateDashboard(abcReportData);
-      populateEmployeeComparisonSelect(abcReportData);
+      processEmployeeData(result.data);
+      populateEmployeeSelector();
+      
+      // If no employee is selected yet, select the first one
+      if (!currentEmployee && Object.keys(employeeData).length > 0) {
+        currentEmployee = Object.keys(employeeData)[0];
+        document.getElementById('employeeSelector').value = currentEmployee;
+      }
+      
+      updateDashboard();
     } else {
       showErrorMessage(result.message || 'Failed to load ABC report data');
     }
@@ -68,23 +109,222 @@ async function fetchAndDisplayData() {
   }
 }
 
+// Process the fetched data and organize it by employee
+function processEmployeeData(data) {
+  employeeData = {};
+  
+  data.forEach(item => {
+    const employeeId = item.codAngajat;
+    const employeeName = item.numeAngajat || 'Unknown';
+    const transactionType = item.tipTranzactie || 'Other';
+    const mainCategory = item.numeCategoriePrincipala || 'Uncategorized';
+    const subCategory = item.numeSubcategorie || 'General';
+    const cost = item.sumaCost || 0;
+    const abcClass = item.clasificareABC || 'C';
+    
+    // Create employee entry if it doesn't exist
+    if (!employeeData[employeeId]) {
+      employeeData[employeeId] = {
+        id: employeeId,
+        name: employeeName,
+        totalRevenue: 0,
+        totalExpenses: 0,
+        totalOther: 0,
+        transactions: {
+          revenues: {
+            total: 0,
+            categories: {},
+            items: []
+          },
+          expenses: {
+            total: 0,
+            categories: {},
+            items: []
+          },
+          other: {
+            total: 0,
+            categories: {},
+            items: []
+          }
+        },
+        abcDistribution: {
+          A: 0,
+          B: 0,
+          C: 0
+        }
+      };
+    }
+    
+    // Determine transaction category
+    let transactionCategory;
+    if (transactionType.toLowerCase() === 'venituri') {
+      transactionCategory = 'revenues';
+    } else if (transactionType.toLowerCase() === 'cheltuieli') {
+      transactionCategory = 'expenses';
+    } else {
+      transactionCategory = 'other';
+    }
+    
+    // Update transaction data
+    const transactions = employeeData[employeeId].transactions[transactionCategory];
+    
+    // Add to total
+    transactions.total += cost;
+    
+    // Update main category totals
+    if (!transactions.categories[mainCategory]) {
+      transactions.categories[mainCategory] = {
+        total: 0,
+        subcategories: {}
+      };
+    }
+    transactions.categories[mainCategory].total += cost;
+    
+    // Update subcategory totals
+    if (!transactions.categories[mainCategory].subcategories[subCategory]) {
+      transactions.categories[mainCategory].subcategories[subCategory] = 0;
+    }
+    transactions.categories[mainCategory].subcategories[subCategory] += cost;
+    
+    // Add item details
+    transactions.items.push({
+      category: mainCategory,
+      subcategory: subCategory,
+      cost: cost,
+      abcClass: abcClass
+    });
+    
+    // Update ABC classification totals
+    employeeData[employeeId].abcDistribution[abcClass] += cost;
+    
+    // Update employee totals
+    if (transactionCategory === 'revenues') {
+      employeeData[employeeId].totalRevenue += cost;
+    } else if (transactionCategory === 'expenses') {
+      employeeData[employeeId].totalExpenses += cost;
+    } else {
+      employeeData[employeeId].totalOther += cost;
+    }
+  });
+}
+
+// Populate the employee selector dropdown
+function populateEmployeeSelector() {
+  const select = document.getElementById('employeeSelector');
+  if (!select) return;
+  
+  // Save current selection
+  const currentSelection = select.value;
+  
+  // Clear existing options
+  select.innerHTML = '';
+  
+  // Sort employees by total (revenue + expenses)
+  const sortedEmployees = Object.values(employeeData)
+    .sort((a, b) => (b.totalRevenue + b.totalExpenses) - (a.totalRevenue + a.totalExpenses));
+  
+  // Add options for each employee
+  sortedEmployees.forEach(employee => {
+    const option = document.createElement('option');
+    option.value = employee.id;
+    option.textContent = `${employee.name} (${employee.id})`;
+    select.appendChild(option);
+  });
+  
+  // Restore selection if possible
+  if (currentSelection && select.querySelector(`option[value="${currentSelection}"]`)) {
+    select.value = currentSelection;
+  } else if (sortedEmployees.length > 0) {
+    select.value = sortedEmployees[0].id;
+  }
+}
+
+// Handle employee change in the selector
+function handleEmployeeChange(event) {
+  currentEmployee = event.target.value;
+  updateDashboard();
+}
+
 // Update all dashboard elements with new data
-function updateDashboard(data) {
-  if (!data || data.length === 0) {
-    showErrorMessage('No data available for the selected period');
+function updateDashboard() {
+  if (!currentEmployee || !employeeData[currentEmployee]) {
+    showErrorMessage('No employee data available');
     return;
   }
 
-  updateKPIs(data);
-  updateReportView(currentReportView);
-  // Always update the table data for when user switches to the table tab
-  updateTable(data);
+  const employee = employeeData[currentEmployee];
+  
+  // Update employee info header
+  updateEmployeeInfo(employee);
+  
+  // Update KPIs and Summary
+  updateKPIs(employee);
+  
+  // Update charts
+  updateOverviewCharts(employee);
+  
+  // Update revenues section
+  updateRevenuesSection(employee);
+  
+  // Update expenses section
+  updateExpensesSection(employee);
+  
+  // Restore expanded sections
+  restoreExpandedSections();
 }
 
-// Update dashboard based on selected report type
-function updateReportView(reportType) {
-  currentReportView = reportType;
+// Update employee info in the header
+function updateEmployeeInfo(employee) {
+  document.getElementById('employeeName').textContent = employee.name;
+  document.getElementById('employeeId').textContent = employee.id;
   
+  // Update total summary
+  const total = employee.totalRevenue + employee.totalExpenses + employee.totalOther;
+  document.getElementById('employeeTotal').textContent = formatCurrency(total);
+}
+
+// Calculate and update KPI metrics
+function updateKPIs(employee) {
+  // Revenue KPI
+  document.getElementById('kpiRevenue').textContent = formatCurrency(employee.totalRevenue);
+  
+  // Expenses KPI
+  document.getElementById('kpiExpenses').textContent = formatCurrency(employee.totalExpenses);
+  
+  // Balance KPI (Revenue - Expenses)
+  const balance = employee.totalRevenue - employee.totalExpenses;
+  const balanceElement = document.getElementById('kpiBalance');
+  balanceElement.textContent = formatCurrency(balance);
+  
+  // Add color class based on balance
+  balanceElement.className = 'kpi-value';
+  if (balance > 0) {
+    balanceElement.classList.add('positive');
+  } else if (balance < 0) {
+    balanceElement.classList.add('negative');
+  }
+  
+  // ABC Distribution KPI
+  const totalABC = employee.abcDistribution.A + employee.abcDistribution.B + employee.abcDistribution.C;
+  
+  // Calculate percentages
+  const aPercentage = totalABC > 0 ? (employee.abcDistribution.A / totalABC * 100).toFixed(1) : '0.0';
+  const bPercentage = totalABC > 0 ? (employee.abcDistribution.B / totalABC * 100).toFixed(1) : '0.0';
+  const cPercentage = totalABC > 0 ? (employee.abcDistribution.C / totalABC * 100).toFixed(1) : '0.0';
+  
+  // Update ABC distribution
+  document.getElementById('abcDistributionA').textContent = `${aPercentage}%`;
+  document.getElementById('abcDistributionB').textContent = `${bPercentage}%`;
+  document.getElementById('abcDistributionC').textContent = `${cPercentage}%`;
+  
+  // Update ABC distribution progress bars
+  document.getElementById('abcProgressA').style.width = `${aPercentage}%`;
+  document.getElementById('abcProgressB').style.width = `${bPercentage}%`;
+  document.getElementById('abcProgressC').style.width = `${cPercentage}%`;
+}
+
+// Update overview charts
+function updateOverviewCharts(employee) {
   // Clear previous charts to prevent memory leaks
   Object.keys(charts).forEach(key => {
     if (charts[key]) {
@@ -93,89 +333,92 @@ function updateReportView(reportType) {
     }
   });
   
-  switch (reportType) {
-    case 'overview':
-      updateOverviewCharts(abcReportData);
-      break;
-    case 'pareto':
-      updateParetoCharts(abcReportData);
-      break;
-    case 'costStructure':
-      updateCostStructureCharts(abcReportData);
-      break;
-    case 'employeeComparison':
-      updateEmployeeComparisonCharts();
-      break;
-    case 'reportDetails':
-      // Just make sure the table is updated
-      updateTable(abcReportData);
-      break;
-    default:
-      updateOverviewCharts(abcReportData);
-  }
+  updateRevenueExpenseChart(employee);
+  updateABCDistributionChart(employee);
 }
 
-// Calculate and update KPI metrics
-function updateKPIs(data) {
-  // Count unique employees
-  const uniqueEmployees = [...new Set(data.map(item => item.codAngajat))];
+// Create/update the revenue vs expenses chart
+function updateRevenueExpenseChart(employee) {
+  const ctx = document.getElementById('revenueExpenseChart').getContext('2d');
   
-  // Calculate total cost
-  const totalCost = data.reduce((sum, item) => sum + item.sumaCost, 0);
-  
-  // Count A class items
-  const aClassItems = data.filter(item => item.clasificareABC === 'A').length;
-  const aClassPercentage = (aClassItems / data.length * 100).toFixed(1);
-  
-  // Average cost per employee
-  const avgCost = totalCost / uniqueEmployees.length;
-  
-  // Update DOM
-  document.getElementById('kpiTotalEmployees').textContent = uniqueEmployees.length;
-  document.getElementById('kpiTotalCost').textContent = formatCurrency(totalCost);
-  document.getElementById('kpiClassA').textContent = `${aClassPercentage}%`;
-  document.getElementById('kpiAvgCost').textContent = formatCurrency(avgCost);
-}
-
-// Update overview charts (original dashboard)
-function updateOverviewCharts(data) {
-  updateABCDistributionChart(data);
-  updateCategoriesChart(data);
-  updateParetoChart(data);
-  updateEmployeesChart(data);
+  charts.revenueExpense = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Venituri', 'Cheltuieli', 'Sold'],
+      datasets: [{
+        data: [
+          employee.totalRevenue, 
+          employee.totalExpenses, 
+          employee.totalRevenue - employee.totalExpenses
+        ],
+        backgroundColor: [
+          'rgba(46, 204, 113, 0.8)',
+          'rgba(231, 76, 60, 0.8)',
+          (employee.totalRevenue - employee.totalExpenses) >= 0 ? 
+            'rgba(52, 152, 219, 0.8)' : 'rgba(243, 156, 18, 0.8)'
+        ],
+        borderColor: [
+          'rgba(46, 204, 113, 1)',
+          'rgba(231, 76, 60, 1)',
+          (employee.totalRevenue - employee.totalExpenses) >= 0 ? 
+            'rgba(52, 152, 219, 1)' : 'rgba(243, 156, 18, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return formatCurrency(context.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return formatCurrency(value, true);
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 // Create/update the ABC distribution pie chart
-function updateABCDistributionChart(data) {
-  // Group data by ABC classification
-  const abcGroups = data.reduce((acc, item) => {
-    if (!acc[item.clasificareABC]) {
-      acc[item.clasificareABC] = 0;
-    }
-    acc[item.clasificareABC] += item.sumaCost;
-    return acc;
-  }, {});
-  
-  const labels = Object.keys(abcGroups);
-  const values = Object.values(abcGroups);
-  
-  // Colors for different classes
-  const colors = {
-    'A': 'rgba(220, 53, 69, 0.8)',
-    'B': 'rgba(255, 193, 7, 0.8)',
-    'C': 'rgba(40, 167, 69, 0.8)'
-  };
-  
-  const backgroundColor = labels.map(label => colors[label] || 'rgba(108, 117, 125, 0.8)');
-  
+function updateABCDistributionChart(employee) {
   const ctx = document.getElementById('abcDistributionChart').getContext('2d');
+  
   charts.abcDistribution = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: labels,
+      labels: ['A', 'B', 'C'],
       datasets: [{
-        data: values,
-        backgroundColor: backgroundColor,
+        data: [
+          employee.abcDistribution.A,
+          employee.abcDistribution.B,
+          employee.abcDistribution.C
+        ],
+        backgroundColor: [
+          'rgba(231, 76, 60, 0.8)',
+          'rgba(243, 156, 18, 0.8)',
+          'rgba(46, 204, 113, 0.8)'
+        ],
+        borderColor: [
+          'rgba(231, 76, 60, 1)',
+          'rgba(243, 156, 18, 1)',
+          'rgba(46, 204, 113, 1)'
+        ],
         borderWidth: 1
       }]
     },
@@ -196,7 +439,7 @@ function updateABCDistributionChart(data) {
               const label = context.label || '';
               const value = context.parsed || 0;
               const total = context.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage = (value / total * 100).toFixed(1);
+              const percentage = total > 0 ? (value / total * 100).toFixed(1) : '0.0';
               return `Class ${label}: ${formatCurrency(value)} (${percentage}%)`;
             }
           }
@@ -206,860 +449,230 @@ function updateABCDistributionChart(data) {
   });
 }
 
-// Create/update the categories horizontal bar chart
-function updateCategoriesChart(data) {
-  // Group data by main category
-  const categories = data.reduce((acc, item) => {
-    const category = item.numeCategoriePrincipala || 'Uncategorized';
-    if (!acc[category]) {
-      acc[category] = 0;
-    }
-    acc[category] += item.sumaCost;
-    return acc;
-  }, {});
+// Update the revenues section with hierarchical data
+function updateRevenuesSection(employee) {
+  const revenueSectionContent = document.getElementById('revenueSectionContent');
+  if (!revenueSectionContent) return;
   
-  // Sort categories by cost (descending)
-  const sortedCategories = Object.entries(categories)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10); // Top 10 categories
+  // Update total revenue in section header
+  document.getElementById('totalRevenue').textContent = formatCurrency(employee.totalRevenue);
   
-  const labels = sortedCategories.map(item => item[0]);
-  const values = sortedCategories.map(item => item[1]);
+  // Clear existing content
+  revenueSectionContent.innerHTML = '';
   
-  const ctx = document.getElementById('categoriesChart').getContext('2d');
-  charts.categories = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Cost by Category',
-        data: values,
-        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return formatCurrency(context.parsed.x);
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return formatCurrency(value, true);
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Create/update the Pareto analysis chart (line + bar)
-function updateParetoChart(data) {
-  // Sort items by cost (descending)
-  const sortedItems = [...data].sort((a, b) => b.sumaCost - a.sumaCost);
+  // Get revenue data
+  const revenues = employee.transactions.revenues;
   
-  const labels = sortedItems.slice(0, 20).map((item, index) => `Item ${index + 1}`);
-  const values = sortedItems.slice(0, 20).map(item => item.sumaCost);
-  const cumulativePercent = sortedItems.slice(0, 20).map(item => item.procentCumulativ);
-  
-  const ctx = document.getElementById('paretoChart').getContext('2d');
-  charts.pareto = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Cost',
-          data: values,
-          backgroundColor: 'rgba(54, 162, 235, 0.8)',
-          order: 2
-        },
-        {
-          label: 'Cumulative %',
-          data: cumulativePercent,
-          type: 'line',
-          borderColor: 'rgba(220, 53, 69, 1)',
-          borderWidth: 2,
-          pointBackgroundColor: 'rgba(220, 53, 69, 1)',
-          fill: false,
-          yAxisID: 'y1',
-          order: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Cost'
-          },
-          ticks: {
-            callback: function(value) {
-              return formatCurrency(value, true);
-            }
-          }
-        },
-        y1: {
-          beginAtZero: true,
-          position: 'right',
-          max: 100,
-          title: {
-            display: true,
-            text: 'Cumulative %'
-          },
-          ticks: {
-            callback: function(value) {
-              return value + '%';
-            }
-          },
-          grid: {
-            drawOnChartArea: false
-          }
-        }
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.dataset.label || '';
-              const value = context.parsed.y;
-              if (label === 'Cost') {
-                return `${label}: ${formatCurrency(value)}`;
-              } else {
-                return `${label}: ${value.toFixed(1)}%`;
-              }
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Update the employees horizontal bar chart
-function updateEmployeesChart(data) {
-  // Group data by employee
-  const employees = data.reduce((acc, item) => {
-    const employeeId = item.codAngajat || 'Unknown';
-    const employeeName = item.numeAngajat || 'Unknown';
-    const employeeLabel = `${employeeName} (${employeeId})`;
-    
-    if (!acc[employeeLabel]) {
-      acc[employeeLabel] = 0;
-    }
-    acc[employeeLabel] += item.sumaCost;
-    return acc;
-  }, {});
-  
-  // Sort employees by cost (descending)
-  const sortedEmployees = Object.entries(employees)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10); // Top 10 employees
-  
-  const labels = sortedEmployees.map(item => item[0]);
-  const values = sortedEmployees.map(item => item[1]);
-  
-  const ctx = document.getElementById('employeesChart').getContext('2d');
-  charts.employees = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Cost by Employee',
-        data: values,
-        backgroundColor: 'rgba(40, 167, 69, 0.8)',
-        borderColor: 'rgba(40, 167, 69, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return formatCurrency(context.parsed.x);
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return formatCurrency(value, true);
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Update Pareto Analysis Charts
-function updateParetoCharts(data) {
-  // Create detailed Pareto chart
-  updateDetailedParetoChart(data);
-  
-  // Create cumulative distribution chart
-  updateCumulativeDistributionChart(data);
-  
-  // Update Pareto summary table
-  updateParetoSummaryTable(data);
-}
-
-// Create/update detailed Pareto chart
-function updateDetailedParetoChart(data) {
-  // Sort items by cost (descending)
-  const sortedItems = [...data].sort((a, b) => b.sumaCost - a.sumaCost);
-  
-  // Prepare data for chart - use more items than the overview chart
-  const labels = sortedItems.slice(0, 30).map((item, index) => {
-    const employeeName = item.numeAngajat || 'Unknown';
-    return `${employeeName.split(' ')[0]} (${index + 1})`;
-  });
-  
-  const values = sortedItems.slice(0, 30).map(item => item.sumaCost);
-  const cumulativePercent = sortedItems.slice(0, 30).map(item => item.procentCumulativ);
-  
-  // Determine bar colors based on ABC classification
-  const barColors = sortedItems.slice(0, 30).map(item => {
-    switch(item.clasificareABC) {
-      case 'A': return 'rgba(220, 53, 69, 0.8)';
-      case 'B': return 'rgba(255, 193, 7, 0.8)';
-      case 'C': return 'rgba(40, 167, 69, 0.8)';
-      default: return 'rgba(108, 117, 125, 0.8)';
-    }
-  });
-  
-  const ctx = document.getElementById('detailedParetoChart').getContext('2d');
-  charts.detailedPareto = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Cost',
-          data: values,
-          backgroundColor: barColors,
-          order: 2
-        },
-        {
-          label: 'Cumulative %',
-          data: cumulativePercent,
-          type: 'line',
-          borderColor: 'rgba(13, 110, 253, 1)',
-          borderWidth: 2,
-          pointBackgroundColor: 'rgba(13, 110, 253, 1)',
-          fill: false,
-          yAxisID: 'y1',
-          order: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Cost'
-          },
-          ticks: {
-            callback: function(value) {
-              return formatCurrency(value, true);
-            }
-          }
-        },
-        y1: {
-          beginAtZero: true,
-          position: 'right',
-          max: 100,
-          title: {
-            display: true,
-            text: 'Cumulative %'
-          },
-          ticks: {
-            callback: function(value) {
-              return value + '%';
-            }
-          },
-          grid: {
-            drawOnChartArea: false
-          }
-        }
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.dataset.label || '';
-              const value = context.parsed.y;
-              if (label === 'Cost') {
-                return `${label}: ${formatCurrency(value)}`;
-              } else {
-                return `${label}: ${value.toFixed(1)}%`;
-              }
-            }
-          }
-        },
-        legend: {
-          position: 'top'
-        }
-      }
-    }
-  });
-}
-
-// Create/update cumulative distribution chart
-function updateCumulativeDistributionChart(data) {
-  // Calculate the percentage of items for each ABC class
-  const totalItems = data.length;
-  const aClassCount = data.filter(item => item.clasificareABC === 'A').length;
-  const bClassCount = data.filter(item => item.clasificareABC === 'B').length;
-  const cClassCount = data.filter(item => item.clasificareABC === 'C').length;
-  
-  const aClassPercentage = (aClassCount / totalItems) * 100;
-  const bClassPercentage = (bClassCount / totalItems) * 100;
-  const cClassPercentage = (cClassCount / totalItems) * 100;
-  
-  const ctx = document.getElementById('cumulativeDistributionChart').getContext('2d');
-  charts.cumulativeDistribution = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['0%', '20%', '40%', '60%', '80%', '100%'],
-      datasets: [
-        {
-          label: 'Ideal Pareto',
-          data: [0, 0, 0, 0, 80, 100],
-          borderColor: 'rgba(108, 117, 125, 0.5)',
-          borderWidth: 2,
-          borderDash: [5, 5],
-          fill: false,
-          pointRadius: 0
-        },
-        {
-          label: 'Actual Distribution',
-          data: [0, 20, 40, 60, 80, 100].map(x => {
-            if (x <= aClassPercentage) return 80 * (x / aClassPercentage);
-            if (x <= aClassPercentage + bClassPercentage) 
-              return 80 + (15 * (x - aClassPercentage) / bClassPercentage);
-            return 95 + (5 * (x - aClassPercentage - bClassPercentage) / cClassPercentage);
-          }),
-          borderColor: 'rgba(13, 110, 253, 1)',
-          backgroundColor: 'rgba(13, 110, 253, 0.1)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: '% of Items'
-          }
-        },
-        y: {
-          beginAtZero: true,
-          max: 100,
-          title: {
-            display: true,
-            text: '% of Cost'
-          },
-          ticks: {
-            callback: function(value) {
-              return value + '%';
-            }
-          }
-        }
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Update Pareto summary table
-function updateParetoSummaryTable(data) {
-  const totalItems = data.length;
-  const totalCost = data.reduce((sum, item) => sum + item.sumaCost, 0);
-  
-  const aClassItems = data.filter(item => item.clasificareABC === 'A');
-  const bClassItems = data.filter(item => item.clasificareABC === 'B');
-  const cClassItems = data.filter(item => item.clasificareABC === 'C');
-  
-  const aClassCost = aClassItems.reduce((sum, item) => sum + item.sumaCost, 0);
-  const bClassCost = bClassItems.reduce((sum, item) => sum + item.sumaCost, 0);
-  const cClassCost = cClassItems.reduce((sum, item) => sum + item.sumaCost, 0);
-  
-  const tableBody = document.getElementById('paretoSummaryTable');
-  tableBody.innerHTML = `
-    <tr class="has-background-danger-light">
-      <td><strong>A</strong></td>
-      <td>${((aClassItems.length / totalItems) * 100).toFixed(1)}%</td>
-      <td>${((aClassCost / totalCost) * 100).toFixed(1)}%</td>
-    </tr>
-    <tr class="has-background-warning-light">
-      <td><strong>B</strong></td>
-      <td>${((bClassItems.length / totalItems) * 100).toFixed(1)}%</td>
-      <td>${((bClassCost / totalCost) * 100).toFixed(1)}%</td>
-    </tr>
-    <tr class="has-background-success-light">
-      <td><strong>C</strong></td>
-      <td>${((cClassItems.length / totalItems) * 100).toFixed(1)}%</td>
-      <td>${((cClassCost / totalCost) * 100).toFixed(1)}%</td>
-    </tr>
-  `;
-}
-
-// Update Cost Structure Charts
-function updateCostStructureCharts(data) {
-  updateCostBreakdownChart(data);
-  updateMainCategoriesChart(data);
-  updateSubcategoriesChart(data);
-}
-
-// Create/update the cost breakdown chart
-function updateCostBreakdownChart(data) {
-  // Group data by main category and subcategory
-  const categories = {};
-  
-  data.forEach(item => {
-    const mainCategory = item.numeCategoriePrincipala || 'Uncategorized';
-    const subCategory = item.numeSubcategorie || 'General';
-    
-    if (!categories[mainCategory]) {
-      categories[mainCategory] = {};
-    }
-    
-    if (!categories[mainCategory][subCategory]) {
-      categories[mainCategory][subCategory] = 0;
-    }
-    
-    categories[mainCategory][subCategory] += item.sumaCost;
-  });
-  
-  // Create labels and dataset series
-  const mainCategories = Object.keys(categories).sort();
-  const datasets = [];
-  const colors = [
-    'rgba(54, 162, 235, 0.8)',
-    'rgba(255, 99, 132, 0.8)',
-    'rgba(255, 205, 86, 0.8)',
-    'rgba(75, 192, 192, 0.8)',
-    'rgba(153, 102, 255, 0.8)',
-    'rgba(255, 159, 64, 0.8)',
-    'rgba(201, 203, 207, 0.8)',
-    'rgba(94, 232, 177, 0.8)'
-  ];
-  
-  mainCategories.forEach((mainCategory, index) => {
-    const subCategories = Object.keys(categories[mainCategory]);
-    const borderColor = colors[index % colors.length].replace('0.8', '1');
-    
-    subCategories.forEach(subCategory => {
-      datasets.push({
-        label: `${mainCategory} - ${subCategory}`,
-        data: mainCategories.map(cat => cat === mainCategory ? categories[mainCategory][subCategory] : 0),
-        backgroundColor: colors[index % colors.length],
-        borderColor: borderColor,
-        borderWidth: 1
-      });
-    });
-  });
-  
-  const ctx = document.getElementById('costBreakdownChart').getContext('2d');
-  charts.costBreakdown = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: mainCategories,
-      datasets: datasets
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          stacked: true
-        },
-        y: {
-          stacked: true,
-          ticks: {
-            callback: function(value) {
-              return formatCurrency(value, true);
-            }
-          }
-        }
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`;
-            }
-          }
-        },
-        legend: {
-          position: 'right',
-          labels: {
-            boxWidth: 12,
-            font: {
-              size: 10
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Create/update main categories chart
-function updateMainCategoriesChart(data) {
-  // Group data by main category
-  const categories = data.reduce((acc, item) => {
-    const category = item.numeCategoriePrincipala || 'Uncategorized';
-    if (!acc[category]) {
-      acc[category] = 0;
-    }
-    acc[category] += item.sumaCost;
-    return acc;
-  }, {});
-  
-  // Prepare data for chart
-  const sortedCategories = Object.entries(categories)
-    .sort((a, b) => b[1] - a[1]);
-  
-  const labels = sortedCategories.map(item => item[0]);
-  const values = sortedCategories.map(item => item[1]);
-  
-  // Generate colors
-  const colors = [
-    'rgba(54, 162, 235, 0.8)',
-    'rgba(255, 99, 132, 0.8)',
-    'rgba(255, 205, 86, 0.8)',
-    'rgba(75, 192, 192, 0.8)',
-    'rgba(153, 102, 255, 0.8)',
-    'rgba(255, 159, 64, 0.8)',
-    'rgba(201, 203, 207, 0.8)',
-    'rgba(94, 232, 177, 0.8)'
-  ];
-  
-  const backgroundColor = values.map((_, i) => colors[i % colors.length]);
-  
-  const ctx = document.getElementById('mainCategoriesChart').getContext('2d');
-  charts.mainCategories = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: backgroundColor,
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: {
-            font: {
-              size: 11
-            }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.label || '';
-              const value = context.parsed || 0;
-              const total = context.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage = (value / total * 100).toFixed(1);
-              return `${label}: ${formatCurrency(value)} (${percentage}%)`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-// Create/update subcategories chart
-function updateSubcategoriesChart(data) {
-  // Get the main category with the highest cost
-  const mainCategories = data.reduce((acc, item) => {
-    const category = item.numeCategoriePrincipala || 'Uncategorized';
-    if (!acc[category]) {
-      acc[category] = 0;
-    }
-    acc[category] += item.sumaCost;
-    return acc;
-  }, {});
-  
-  const topMainCategory = Object.entries(mainCategories)
-    .sort((a, b) => b[1] - a[1])[0][0];
-  
-  // Filter data for the top main category and group by subcategory
-  const subcategories = data
-    .filter(item => (item.numeCategoriePrincipala || 'Uncategorized') === topMainCategory)
-    .reduce((acc, item) => {
-      const subcategory = item.numeSubcategorie || 'General';
-      if (!acc[subcategory]) {
-        acc[subcategory] = 0;
-      }
-      acc[subcategory] += item.sumaCost;
-      return acc;
-    }, {});
-  
-  // Prepare data for chart
-  const sortedSubcategories = Object.entries(subcategories)
-    .sort((a, b) => b[1] - a[1]);
-  
-  const labels = sortedSubcategories.map(item => item[0]);
-  const values = sortedSubcategories.map(item => item[1]);
-  
-  // Generate colors
-  const colors = [
-    'rgba(75, 192, 192, 0.8)',
-    'rgba(153, 102, 255, 0.8)',
-    'rgba(255, 159, 64, 0.8)',
-    'rgba(54, 162, 235, 0.8)',
-    'rgba(255, 99, 132, 0.8)',
-    'rgba(255, 205, 86, 0.8)',
-    'rgba(201, 203, 207, 0.8)',
-    'rgba(94, 232, 177, 0.8)'
-  ];
-  
-  const backgroundColor = values.map((_, i) => colors[i % colors.length]);
-  
-  const ctx = document.getElementById('subcategoriesChart').getContext('2d');
-  charts.subcategories = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: backgroundColor,
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: {
-            font: {
-              size: 11
-            }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.label || '';
-              const value = context.parsed || 0;
-              const total = context.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage = (value / total * 100).toFixed(1);
-              return `${label}: ${formatCurrency(value)} (${percentage}%)`;
-            }
-          }
-        },
-        title: {
-          display: true,
-          text: `Subcategories for ${topMainCategory}`,
-          font: {
-            size: 14
-          }
-        }
-      }
-    }
-  });
-}
-
-// Employee Comparison Functions
-// Populate employee comparison select dropdown
-function populateEmployeeComparisonSelect(data) {
-  const select = document.getElementById('employeeComparisonSelect');
-  if (!select) return;
-  
-  // Get unique employees
-  const uniqueEmployees = [...new Set(data.map(item => item.codAngajat))];
-  
-  // Clear existing options
-  select.innerHTML = '';
-  
-  // Group employee data
-  const employeeData = {};
-  uniqueEmployees.forEach(employeeId => {
-    const employeeItems = data.filter(item => item.codAngajat === employeeId);
-    const employeeName = employeeItems[0]?.numeAngajat || 'Unknown';
-    const totalCost = employeeItems.reduce((sum, item) => sum + item.sumaCost, 0);
-    
-    employeeData[employeeId] = {
-      name: employeeName,
-      totalCost: totalCost
-    };
-  });
-  
-  // Sort employees by total cost (descending)
-  const sortedEmployees = Object.entries(employeeData)
-    .sort((a, b) => b[1].totalCost - a[1].totalCost);
-  
-  // Add options for each employee
-  sortedEmployees.forEach(([employeeId, data]) => {
-    const option = document.createElement('option');
-    option.value = employeeId;
-    option.textContent = `${data.name} (${employeeId}) - ${formatCurrency(data.totalCost)}`;
-    select.appendChild(option);
-  });
-  
-  // Select the top 3 employees by default
-  const topEmployees = sortedEmployees.slice(0, 3).map(([id]) => id);
-  topEmployees.forEach(id => {
-    const option = select.querySelector(`option[value="${id}"]`);
-    if (option) option.selected = true;
-  });
-}
-
-// Update employee comparison charts
-function updateEmployeeComparisonCharts() {
-  const select = document.getElementById('employeeComparisonSelect');
-  if (!select) return;
-  
-  // Get selected employee IDs
-  const selectedEmployees = Array.from(select.selectedOptions).map(option => option.value);
-  
-  if (selectedEmployees.length === 0) {
-    showErrorMessage('Please select at least one employee for comparison');
-    return;
-  }
-  
-  // Filter data for selected employees
-  const filteredData = abcReportData.filter(item => selectedEmployees.includes(item.codAngajat));
-  
-  updateEmployeeCostComparisonChart(filteredData, selectedEmployees);
-  updateEmployeeCategoryChart(filteredData, selectedEmployees);
-}
-
-// Create/update employee cost comparison chart
-function updateEmployeeCostComparisonChart(data, selectedEmployees) {
-  // Prepare data for chart
-  const employeeData = {};
-  
-  selectedEmployees.forEach(employeeId => {
-    const employeeItems = data.filter(item => item.codAngajat === employeeId);
-    const employeeName = employeeItems[0]?.numeAngajat || 'Unknown';
-    
-    // Calculate total for each transaction type
-    const venituriTotal = employeeItems
-      .filter(item => item.tipTranzactie === 'Venituri')
-      .reduce((sum, item) => sum + item.sumaCost, 0);
-      
-    const cheltuieliTotal = employeeItems
-      .filter(item => item.tipTranzactie === 'Cheltuieli')
-      .reduce((sum, item) => sum + item.sumaCost, 0);
-    
-    const alteleTotal = employeeItems
-      .filter(item => item.tipTranzactie !== 'Venituri' && item.tipTranzactie !== 'Cheltuieli')
-      .reduce((sum, item) => sum + item.sumaCost, 0);
-    
-    employeeData[employeeId] = {
-      name: employeeName,
-      venituri: venituriTotal,
-      cheltuieli: cheltuieliTotal,
-      altele: alteleTotal,
-      total: venituriTotal + cheltuieliTotal + alteleTotal
-    };
-  });
-  
-  // Sort employees by total cost (descending)
-  const sortedEmployees = Object.entries(employeeData)
+  // Sort categories by total
+  const sortedCategories = Object.entries(revenues.categories)
     .sort((a, b) => b[1].total - a[1].total);
   
-  const labels = sortedEmployees.map(([_, data]) => data.name);
-  const venituriData = sortedEmployees.map(([_, data]) => data.venituri);
-  const cheltuieliData = sortedEmployees.map(([_, data]) => data.cheltuieli);
-  const alteleData = sortedEmployees.map(([_, data]) => data.altele);
+  // Create chart for revenue categories
+  const chartContainer = document.createElement('div');
+  chartContainer.className = 'chart-container';
+  chartContainer.style.height = '300px';
+  chartContainer.style.marginBottom = '20px';
   
-  const ctx = document.getElementById('employeeComparisonChart').getContext('2d');
-  charts.employeeComparison = new Chart(ctx, {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'revenueCategoriesChart';
+  chartContainer.appendChild(canvas);
+  revenueSectionContent.appendChild(chartContainer);
+  
+  // Add category breakdown
+  if (sortedCategories.length > 0) {
+    const categoriesContainer = document.createElement('div');
+    categoriesContainer.className = 'categories-container';
+    
+    sortedCategories.forEach(([categoryName, categoryData], index) => {
+      const categorySection = createCategorySection(
+        'revenue', 
+        index, 
+        categoryName, 
+        categoryData, 
+        employee.totalRevenue
+      );
+      categoriesContainer.appendChild(categorySection);
+    });
+    
+    revenueSectionContent.appendChild(categoriesContainer);
+    
+    // Initialize the revenue categories chart
+    updateRevenueCategoriesChart(sortedCategories);
+  } else {
+    const noDataMsg = document.createElement('p');
+    noDataMsg.className = 'no-data-message';
+    noDataMsg.textContent = 'No revenue data available for this period';
+    revenueSectionContent.appendChild(noDataMsg);
+  }
+}
+
+// Update the expenses section with hierarchical data
+function updateExpensesSection(employee) {
+  const expensesSectionContent = document.getElementById('expensesSectionContent');
+  if (!expensesSectionContent) return;
+  
+  // Update total expenses in section header
+  document.getElementById('totalExpenses').textContent = formatCurrency(employee.totalExpenses);
+  
+  // Clear existing content
+  expensesSectionContent.innerHTML = '';
+  
+  // Get expenses data
+  const expenses = employee.transactions.expenses;
+  
+  // Sort categories by total
+  const sortedCategories = Object.entries(expenses.categories)
+    .sort((a, b) => b[1].total - a[1].total);
+  
+  // Create chart for expenses categories
+  const chartContainer = document.createElement('div');
+  chartContainer.className = 'chart-container';
+  chartContainer.style.height = '300px';
+  chartContainer.style.marginBottom = '20px';
+  
+  const canvas = document.createElement('canvas');
+  canvas.id = 'expenseCategoriesChart';
+  chartContainer.appendChild(canvas);
+  expensesSectionContent.appendChild(chartContainer);
+  
+  // Add category breakdown
+  if (sortedCategories.length > 0) {
+    const categoriesContainer = document.createElement('div');
+    categoriesContainer.className = 'categories-container';
+    
+    sortedCategories.forEach(([categoryName, categoryData], index) => {
+      const categorySection = createCategorySection(
+        'expense', 
+        index, 
+        categoryName, 
+        categoryData, 
+        employee.totalExpenses
+      );
+      categoriesContainer.appendChild(categorySection);
+    });
+    
+    expensesSectionContent.appendChild(categoriesContainer);
+    
+    // Initialize the expense categories chart
+    updateExpenseCategoriesChart(sortedCategories);
+  } else {
+    const noDataMsg = document.createElement('p');
+    noDataMsg.className = 'no-data-message';
+    noDataMsg.textContent = 'No expense data available for this period';
+    expensesSectionContent.appendChild(noDataMsg);
+  }
+}
+
+// Create a category section with subcategories
+function createCategorySection(type, index, categoryName, categoryData, totalAmount) {
+  const section = document.createElement('div');
+  section.className = 'category-section';
+  section.id = `${type}-category-${index}`;
+  
+  // Calculate percentage of total
+  const percentage = (categoryData.total / totalAmount * 100).toFixed(1);
+  
+  // Create header
+  const header = document.createElement('div');
+  header.className = 'category-header';
+  header.innerHTML = `
+    <div class="category-toggle">
+      <span class="toggle-icon">+</span>
+    </div>
+    <div class="category-name">${categoryName}</div>
+    <div class="category-amount">${formatCurrency(categoryData.total)}</div>
+    <div class="category-percentage">${percentage}%</div>
+    <div class="category-progress">
+      <div class="progress-bar" style="width: ${percentage}%"></div>
+    </div>
+  `;
+  
+  // Create content container for subcategories
+  const content = document.createElement('div');
+  content.className = 'subcategories-container';
+  content.style.display = 'none';
+  
+  // Sort subcategories by amount
+  const sortedSubcategories = Object.entries(categoryData.subcategories)
+    .sort((a, b) => b[1] - a[1]);
+  
+  // Add subcategories
+  sortedSubcategories.forEach(([subcategoryName, amount]) => {
+    const subcategoryPercentage = (amount / categoryData.total * 100).toFixed(1);
+    
+    const subcategory = document.createElement('div');
+    subcategory.className = 'subcategory-item';
+    subcategory.innerHTML = `
+      <div class="subcategory-name">${subcategoryName}</div>
+      <div class="subcategory-amount">${formatCurrency(amount)}</div>
+      <div class="subcategory-percentage">${subcategoryPercentage}%</div>
+      <div class="subcategory-progress">
+        <div class="progress-bar" style="width: ${subcategoryPercentage}%"></div>
+      </div>
+    `;
+    
+    content.appendChild(subcategory);
+  });
+  
+  // Add toggle functionality
+  header.addEventListener('click', () => {
+    const isVisible = content.style.display !== 'none';
+    content.style.display = isVisible ? 'none' : 'block';
+    header.querySelector('.toggle-icon').textContent = isVisible ? '+' : '-';
+  });
+  
+  section.appendChild(header);
+  section.appendChild(content);
+  
+  return section;
+}
+
+// Create/update the revenue categories chart
+function updateRevenueCategoriesChart(sortedCategories) {
+  const ctx = document.getElementById('revenueCategoriesChart').getContext('2d');
+  
+  const labels = sortedCategories.map(([name]) => name);
+  const values = sortedCategories.map(([_, data]) => data.total);
+  
+  // Generate gradient colors for the chart
+  const gradients = values.map((_, index) => {
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    const hue = 120 + (index * 30) % 360; // Green-based hues
+    gradient.addColorStop(0, `hsla(${hue}, 70%, 60%, 0.8)`);
+    gradient.addColorStop(1, `hsla(${hue}, 70%, 40%, 0.8)`);
+    return gradient;
+  });
+  
+  charts.revenueCategories = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
-      datasets: [
-        {
-          label: 'Venituri',
-          data: venituriData,
-          backgroundColor: 'rgba(40, 167, 69, 0.8)',
-          borderColor: 'rgba(40, 167, 69, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Cheltuieli',
-          data: cheltuieliData,
-          backgroundColor: 'rgba(220, 53, 69, 0.8)',
-          borderColor: 'rgba(220, 53, 69, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Altele',
-          data: alteleData,
-          backgroundColor: 'rgba(108, 117, 125, 0.8)',
-          borderColor: 'rgba(108, 117, 125, 1)',
-          borderWidth: 1
-        }
-      ]
+      datasets: [{
+        label: 'Venituri pe categorii',
+        data: values,
+        backgroundColor: gradients,
+        borderWidth: 1
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
-        x: {
-          stacked: false
+      plugins: {
+        legend: {
+          display: false
         },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.parsed.y;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = (value / total * 100).toFixed(1);
+              return `${formatCurrency(value)} (${percentage}%)`;
+            }
+          }
+        }
+      },
+      scales: {
         y: {
           beginAtZero: true,
           ticks: {
@@ -1068,168 +681,90 @@ function updateEmployeeCostComparisonChart(data, selectedEmployees) {
             }
           }
         }
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.dataset.label}: ${formatCurrency(context.parsed.y)}`;
-            }
-          }
-        }
       }
     }
   });
 }
 
-// Create/update employee category chart
-function updateEmployeeCategoryChart(data, selectedEmployees) {
-  // For simplicity, we'll focus on the top employee's categories
-  if (selectedEmployees.length === 0) return;
+// Create/update the expense categories chart
+function updateExpenseCategoriesChart(sortedCategories) {
+  const ctx = document.getElementById('expenseCategoriesChart').getContext('2d');
   
-  // Get top employee data
-  const employeeItems = {};
-  const employeeNames = {};
+  const labels = sortedCategories.map(([name]) => name);
+  const values = sortedCategories.map(([_, data]) => data.total);
   
-  selectedEmployees.forEach(employeeId => {
-    const items = data.filter(item => item.codAngajat === employeeId);
-    employeeItems[employeeId] = items;
-    employeeNames[employeeId] = items[0]?.numeAngajat || 'Unknown';
+  // Generate gradient colors for the chart
+  const gradients = values.map((_, index) => {
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    const hue = 0 + (index * 30) % 360; // Red-based hues
+    gradient.addColorStop(0, `hsla(${hue}, 70%, 60%, 0.8)`);
+    gradient.addColorStop(1, `hsla(${hue}, 70%, 40%, 0.8)`);
+    return gradient;
   });
   
-  // Get the main categories across all selected employees
-  const allCategories = new Set();
-  Object.values(employeeItems).flat().forEach(item => {
-    allCategories.add(item.numeCategoriePrincipala || 'Uncategorized');
-  });
-  
-  const categories = Array.from(allCategories);
-  
-  // Create datasets for each employee
-  const datasets = selectedEmployees.map((employeeId, index) => {
-    const items = employeeItems[employeeId];
-    const employeeName = employeeNames[employeeId];
-    
-    // Calculate total for each category
-    const categoryTotals = categories.map(category => {
-      return items
-        .filter(item => (item.numeCategoriePrincipala || 'Uncategorized') === category)
-        .reduce((sum, item) => sum + item.sumaCost, 0);
-    });
-    
-    // Colors for different employees
-    const colors = [
-      'rgba(54, 162, 235, 0.8)',
-      'rgba(255, 99, 132, 0.8)',
-      'rgba(255, 205, 86, 0.8)',
-      'rgba(75, 192, 192, 0.8)',
-      'rgba(153, 102, 255, 0.8)',
-      'rgba(255, 159, 64, 0.8)'
-    ];
-    
-    return {
-      label: employeeName,
-      data: categoryTotals,
-      backgroundColor: colors[index % colors.length],
-      borderColor: colors[index % colors.length].replace('0.8', '1'),
-      borderWidth: 1
-    };
-  });
-  
-  const ctx = document.getElementById('employeeCategoryChart').getContext('2d');
-  charts.employeeCategory = new Chart(ctx, {
-    type: 'radar',
+  charts.expenseCategories = new Chart(ctx, {
+    type: 'bar',
     data: {
-      labels: categories,
-      datasets: datasets
+      labels: labels,
+      datasets: [{
+        label: 'Cheltuieli pe categorii',
+        data: values,
+        backgroundColor: gradients,
+        borderWidth: 1
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      scales: {
-        r: {
-          beginAtZero: true,
-          ticks: {
-            display: false
-          }
-        }
-      },
       plugins: {
+        legend: {
+          display: false
+        },
         tooltip: {
           callbacks: {
             label: function(context) {
-              return `${context.dataset.label} - ${context.label}: ${formatCurrency(context.parsed.r)}`;
+              const value = context.parsed.y;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = (value / total * 100).toFixed(1);
+              return `${formatCurrency(value)} (${percentage}%)`;
             }
           }
-        },
-        legend: {
-          position: 'top'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return formatCurrency(value, true);
+            }
+          }
         }
       }
     }
   });
 }
 
-// Update the data table
-function updateTable(data) {
-  const tableBody = document.getElementById('abcReportTableBody');
-  if (!tableBody) return; // Safety check
-  
-  tableBody.innerHTML = '';
-  
-  data.forEach(item => {
-    const row = document.createElement('tr');
-    
-    // Add class based on ABC classification
-    if (item.clasificareABC === 'A') {
-      row.classList.add('has-background-danger-light');
-    } else if (item.clasificareABC === 'B') {
-      row.classList.add('has-background-warning-light');
-    } else if (item.clasificareABC === 'C') {
-      row.classList.add('has-background-success-light');
+// Restore expanded sections after data update
+function restoreExpandedSections() {
+  expandedSections.forEach(sectionId => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      const content = section.querySelector('.section-content');
+      const icon = section.querySelector('.toggle-icon');
+      
+      if (content && icon) {
+        content.classList.add('expanded');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.textContent = '-';
+      }
     }
-    
-    row.innerHTML = `
-      <td>${item.numeAngajat || ''} (${item.codAngajat})</td>
-      <td>${item.tipTranzactie || 'N/A'}</td>
-      <td>${item.numeCategoriePrincipala || '-'}</td>
-      <td>${item.numeSubcategorie || '-'}</td>
-      <td>${formatCurrency(item.sumaCost)}</td>
-      <td>${item.procentCost.toFixed(2)}%</td>
-      <td>${item.procentCumulativ.toFixed(2)}%</td>
-      <td>
-        <span class="tag ${getClassTagColor(item.clasificareABC)}">${item.clasificareABC}</span>
-      </td>
-    `;
-    
-    tableBody.appendChild(row);
   });
-}
-
-// Filter table based on search input
-function filterTable() {
-  const searchText = document.getElementById('tableSearchInput').value.toLowerCase();
-  const rows = document.getElementById('abcReportTableBody').getElementsByTagName('tr');
-  
-  Array.from(rows).forEach(row => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(searchText) ? '' : 'none';
-  });
-}
-
-// Helper function to get tag color based on ABC class
-function getClassTagColor(abcClass) {
-  switch (abcClass) {
-    case 'A': return 'is-danger';
-    case 'B': return 'is-warning';
-    case 'C': return 'is-success';
-    default: return 'is-info';
-  }
 }
 
 // Helper function to format currency
 function formatCurrency(value, shortFormat = false) {
-  if (shortFormat && value >= 1000) {
+  if (shortFormat && Math.abs(value) >= 1000) {
     return new Intl.NumberFormat('ro-RO', {
       style: 'currency',
       currency: 'RON',
@@ -1250,73 +785,42 @@ function formatCurrency(value, shortFormat = false) {
 
 // Show loading state
 function showLoadingState() {
-  document.querySelectorAll('.box canvas').forEach(canvas => {
-    const boxElement = canvas.closest('.box');
-    if (boxElement) {
-      boxElement.classList.add('is-loading');
-    }
-  });
+  document.body.classList.add('is-loading');
+  
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'flex';
+  }
 }
 
 // Hide loading state
 function hideLoadingState() {
-  document.querySelectorAll('.box canvas').forEach(canvas => {
-    const boxElement = canvas.closest('.box');
-    if (boxElement) {
-      boxElement.classList.remove('is-loading');
-    }
-  });
+  document.body.classList.remove('is-loading');
+  
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  if (loadingOverlay) {
+    loadingOverlay.style.display = 'none';
+  }
 }
 
 // Show error message
 function showErrorMessage(message) {
   console.warn('Error message:', message);
   
-  // Try to use notification element if it exists
   const notification = document.getElementById('notification');
   if (notification) {
     const notificationMessage = document.getElementById('notificationMessage');
     if (notificationMessage) {
       notificationMessage.textContent = message;
       notification.style.display = 'block';
-      notification.className = 'notification is-danger';
       
       // Auto-hide after 5 seconds
       setTimeout(() => {
         notification.style.display = 'none';
       }, 5000);
-      return;
     }
-  }
-  
-  // Try to use notification container if it exists
-  const container = document.getElementById('notification-container');
-  if (container) {
-    const notificationElement = document.createElement('div');
-    notificationElement.className = 'notification is-danger';
-    notificationElement.innerHTML = `
-      <button class="delete"></button>
-      <p><strong>Error:</strong> ${message}</p>
-    `;
-    
-    // Add delete button functionality
-    const deleteButton = notificationElement.querySelector('.delete');
-    if (deleteButton) {
-      deleteButton.addEventListener('click', () => {
-        notificationElement.remove();
-      });
-    }
-    
-    container.appendChild(notificationElement);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-      if (notificationElement.parentNode) {
-        notificationElement.remove();
-      }
-    }, 5000);
   } else {
-    // Fallback to alert if no notification elements exist
+    // Fallback to alert
     alert(message);
   }
 }
@@ -1324,6 +828,5 @@ function showErrorMessage(message) {
 // Export functions for external use
 window.abcBI = {
   initDashboard,
-  fetchAndDisplayData,
-  updateReportView
+  fetchAndDisplayData
 };
