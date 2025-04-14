@@ -1,5 +1,24 @@
 # Soft1 Web Services Integration Reference
 
+## Table of Contents
+- [Key Endpoints](#key-endpoints)
+- [Authentication](#authentication)
+- [Documentation](#documentation)
+- [Code Structure](#code-structure)
+- [API Functions](#api-functions)
+  - [RUNSQL](#runsqlasql-string-aparams-variant)
+  - [GETSQLDATASET](#getsqldatasetasql-string-aparams-variant-tdataset)
+  - [HTTPCALL](#httpcallurl-string-postdata-string-headers-string-method-string-variant)
+  - [WEBREQUEST](#webrequestjsonrequest-string-string)
+  - [WSCALL](#wscallscope-variant-uri-string-postdata-string-callbackfunc-variant-string)
+  - [GETXML](#getxmlwithmetadata-boolean-string)
+  - [JSON](#json-string)
+  - [Database Operations](#database-operations)
+    - [DBDELETE](#dbdelete)
+    - [DBLOCATE](#dblocate)
+    - [DBINSERT](#dbinsert)
+    - [DBPOST](#dbpost)
+
 This repository integrates with the Soft1 Web Services API available at https://www.softone.gr/ws/
 
 ## Key Endpoints
@@ -243,7 +262,6 @@ Sample Output (with metadata):
 </SODATA>
 ```
 
-
 ### JSON: string
 
 Returns a dataset or table contents in JSON format.
@@ -265,3 +283,110 @@ function GetTableAsJson() {
     return vjson;
 }
 ```
+
+### Database Operations
+
+Core functions for performing CRUD operations within SoftOne's business logic.
+
+### DBDELETE
+
+Deletes a located record, executing all object methods and jobs.
+
+#### Usage Notes
+- Similar to using the "Delete" toolbar button
+- Must locate record first using DBLocate
+- Validates deletion permissions
+- Throws error if deletion not allowed
+
+#### Example
+```javascript
+// Delete a purchase document
+function DeleteRecord(vID) {
+    var myObj = X.CreateObj('PURDOC');
+    myObj.DBLocate(vID);
+    myObj.DBDelete;
+}
+```
+
+### DBLOCATE(KeyData: variant)
+
+Locates a record by primary key value.
+
+#### Parameters
+- `KeyData` (variant): Primary key value to locate
+
+#### Example
+```javascript
+// Locate sales document
+function LocateRecord(vID) {
+    var myObj = X.CreateObj('SALDOC');
+    myObj.DBLocate(vID);
+    X.WARNING('Located record: ' + vID);
+}
+```
+
+### DBINSERT
+
+Prepares object for inserting new record.
+
+#### Usage Notes
+- Similar to "New" toolbar button
+- Must be called before setting field values
+- Used with DBPOST to save changes
+
+#### Example
+```javascript
+// Add new customer
+function AddNewCustomer() {
+    var myObj = X.CREATEOBJ('CUSTOMER');
+    var CustTbl;
+    try {
+        CustTbl = myObj.FINDTABLE('TRDR');
+        myObj.DBINSERT;
+        CustTbl.CODE = "000*";
+        CustTbl.NAME = "TEST_CUSTOMER";
+        var newid = myObj.DBPOST;
+        X.WARNING("New Customer's ID is: " + newid);
+    }
+    catch (e) {
+        if (myObj != null)
+            X.WARNING("General Error: " + e.message + "\nObject Error: " + myObj.GETLASTERROR);
+        else
+            X.WARNING("General Error: " + e.message);
+    }
+}
+```
+
+### DBPOST
+
+Saves object changes to database.
+
+#### Usage Notes
+- Similar to "Save" toolbar button
+- Applies all business logic and validations
+- Returns new record ID for inserts
+- Throws error if validation fails
+
+#### Example
+```javascript
+// Update project record
+function UpdatePRJC(vPRJCID, vnewTRDR, vnewBOOL01) {
+    var myObj = X.CREATEOBJ('PRJC;MYCUSTOMFORM');
+    var tblPRJC = myObj.FINDTABLE('PRJC');
+    var tblPRJEXTRA = myObj.FINDTABLE('PRJEXTRA');
+    try {
+        myObj.DBLOCATE(vPRJCID);
+        // Set new values
+        tblPRJC.TRDR = vnewTRDR;
+        tblPRJEXTRA.BOOL01 = vnewBOOL01;
+        // Save changes
+        myObj.DBPOST;
+        return true;
+    }
+    catch (e) {
+        X.WARNING("Failed to update: " + e.message);
+        return false;
+    }
+}
+```
+
