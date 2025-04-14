@@ -67,6 +67,11 @@ This project uses FeathersJS as the backend framework. Refer to the [FeathersJS 
 ### API Endpoints
 - Custom API endpoints should be placed in the `/public/S1/AJS` directory
 - Only files in the AJS directory should be modified
+- URL endpoints are published following this pattern:
+  ```
+  https://petfactory.oncloud.gr/s1services/JS/AJS_filename/function_name
+  ```
+  Where `AJS_filename` is the name of your file in the AJS directory and `function_name` is the exported function
 
 ## Code Structure
 
