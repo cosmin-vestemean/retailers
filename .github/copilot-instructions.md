@@ -13,6 +13,8 @@
   - [WSCALL](#wscallscope-variant-uri-string-postdata-string-callbackfunc-variant-string)
   - [GETXML](#getxmlwithmetadata-boolean-string)
   - [JSON](#json-string)
+  - [CREATEOBJ](#createobobjectname-string-object-idispatch)
+  - [CREATEOBJFORM](#createobjformobjectname-string-object-idispatch)
   - [Database Operations](#database-operations)
     - [DBDELETE](#dbdelete)
     - [DBLOCATE](#dblocate)
@@ -281,6 +283,134 @@ function GetTableAsJson() {
     var vjson = MTRSUBSTITUTE.JSON;
     X.WARNING(vjson);
     return vjson;
+}
+```
+
+### CREATEOBJ(ObjectName: string): OBJECT (IDispatch)
+
+Creates a SoftOne business object instance and returns its interface.
+
+#### Parameters
+- `ObjectName` (string): The name of the object to create
+  - Can include form name using syntax: 'ObjectName;FormName'
+
+#### Returns
+- `OBJECT (IDispatch)`: Interface to interact with the created object
+
+#### Usage Notes
+- Used to programmatically create and manipulate business objects
+- Allows access to business logic and database operations
+- Objects can be created with specific forms for customized behavior
+- Commonly used with DBINSERT, DBLOCATE, and DBPOST operations
+
+#### Examples
+
+```javascript
+// Example 1: Create and save a sales document
+function CreateSales() {
+    var myObj = X.CreateObj('SALDOC;MYSALESVIEW');
+    try {
+        myObj.DBINSERT;
+        var tblFINDOC = myObj.FindTable('FINDOC');
+        var tblITELINES = myObj.FindTable('ITELINES');
+        
+        tblFINDOC.Edit;
+        tblFINDOC.SERIES = 7062;
+        tblFINDOC.TRDR = CUSTOMER.TRDR;
+        
+        tblITELINES.Append;
+        tblITELINES.MTRL = 123456;
+        tblITELINES.QTY1 = 100;
+        tblITELINES.PRICE = 50;
+        tblITELINES.Post;
+        
+        var id = myObj.DBPOST;
+        if (id > 0)
+            X.WARNING('New id is: ' + id);
+    }
+    catch (e) {
+        if (myObj != null)
+            X.WARNING("General Error: " + e.message + "\nObject Error: " + myObj.GETLASTERROR);
+        else
+            X.WARNING("General Error: " + e.message);
+    }
+}
+
+// Example 2: Batch print documents to PDF
+function PrintSelectedDocuments() {
+    var vSelRecs = X.GETPARAM('SELRECS');
+    var fso = new ActiveXObject('Scripting.FileSystemObject');
+    var vFolder = "C:\\Temp";
+    var ObjSaldoc = X.CreateObj('SALDOC');
+    
+    vQueryBrowser = "SELECT DISTINCT FINDOC, TRDR, (SELECT CODE FROM TRDR WHERE TRDR=FINDOC.TRDR) as TRDRCODE FROM FINDOC WHERE " + vSelRecs + " ORDER BY TRDR";
+    ds = X.GETSQLDATASET(vQueryBrowser, null);
+    
+    ds.FIRST;
+    while (!ds.EOF) {
+        vCurTrdr = ds.TRDR;
+        vCurTrdrCode = ds.TRDRCODE;
+        
+        if (!fso.FolderExists(vFolder + "\\" + vCurTrdrCode)) {
+            fso.CreateFolder(vFolder + "\\" + vCurTrdrCode);
+        }
+        
+        ObjSaldoc.DBLocate(ds.FINDOC);
+        ObjSaldoc.PRINTFORM(1001, 'PDF file', vFolder + '\\' + vCurTrdrCode + '\\' + ds.FINDOC + '.PDF');
+        ds.NEXT;
+    }
+}
+```
+
+### CREATEOBJFORM(ObjectName: string): OBJECT (IDispatch)
+
+Creates a SoftOne business object instance configured to display UI forms, and returns its interface.
+
+#### Parameters
+- `ObjectName` (string): The name of the object to create
+  - Can include form and list specifications using syntax: 'ObjectName[FORM=MyFormName, LIST=MyListName]'
+
+#### Returns
+- `OBJECT (IDispatch)`: Interface to interact with the created object
+
+#### Usage Notes
+- Similar to CREATEOBJ but designed to display forms to users
+- Used when interaction with the UI form is required before finalizing operations
+- Support for SHOWOBJFORM() to display the form to users
+- Combines programmatic data manipulation with user interaction
+
+#### Example
+
+```javascript
+// Create purchase document and display form for user interaction
+function CreatePurchase() {
+    var myObj = X.CreateObjForm('PURDOC[FORM=MyFormName]');
+    try {
+        myObj.DBINSERT;
+        var tblFINDOC = myObj.FindTable('FINDOC');
+        var tblITELINES = myObj.FindTable('ITELINES');
+        
+        tblFINDOC.Edit;
+        tblFINDOC.SERIES = 2001;
+        tblFINDOC.TRDR = 123456;
+        
+        tblITELINES.Append;
+        tblITELINES.MTRL = ITEM.MTRL;
+        tblITELINES.QTY1 = 100;
+        tblITELINES.PRICE = 50;
+        tblITELINES.Post;
+        
+        // Display form to user - waits for user to save
+        var id = myObj.SHOWOBJFORM();
+        if (id > 0)
+            X.WARNING('New id is: ' + id);
+    }
+    catch (e) {
+        if (myObj != null)
+            X.WARNING("General Error: " + e.message + "\nObject Error: " + myObj.GETLASTERROR);
+        else
+            X.WARNING("General Error: " + e.message);
+    }
 }
 ```
 
