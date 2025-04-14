@@ -1162,3 +1162,1452 @@ Pentru platforma ta EDI, iată componentele principale de care vei avea nevoie:
 Trecerea de la Lit la Vue va fi un pas firesc - ambele folosesc concepte de componente, doar că Vue oferă mai multe facilități built-in pentru state management și efecte reactive.
 
 Îți doresc succes în dezvoltarea noii platforme cu Vue!
+
+14.04.2025:
+cosmin-vestemean: Conform fisierului atasat, care contine toata conversatia nostra anterioara: Pana acum am discutat despre backend si cum acesta mijloceste automat tranferul intre EDI's XML files si S1. Si am mai discutat despre extensia inspre frontend referitoare la configurare, atat a conectorilor cat si a maparii documentelor (tipuri de documente si campurile acestor tipuri). Este corect?
+
+Workspace: Collecting workspace information# Confirmare Arhitectură EDI
+
+Da, rezumatul este perfect corect. Până acum am discutat două componente principale ale noii platforme EDI:
+
+## 1. Backend-ul pentru procesare automată
+- **Serviciul de transfer EDI-S1**: Un middleware care transferă automat documente între sistemele EDI (DocProcess/Infinite) și ERP-ul S1
+- **Serviciul de download**: O componentă microservice separată care rezolvă problema auto-ștergerii fișierelor de pe serverul DocProcess
+- **Integrarea cu Web Services S1**: Utilizarea API-urilor native S1 pentru procesarea și stocarea datelor
+- **Stocarea configurațiilor în ERP**: Tabele CCC* pentru conformitate GDPR și acces direct la logica de business
+
+## 2. Frontend-ul pentru configurare
+- **Maparea tipurilor de documente**: Configurarea relațiilor între documentele EDI standard și tripletul S1 {sosource, fprms, series}
+- **Maparea câmpurilor**: Stabilirea corespondenței între căile XML și câmpurile S1
+- **Configurare conectori**: Setarea detaliilor de acces pentru diferiți provideri EDI
+- **Monitorizare procesare**: Vizualizarea statusului documentelor procesate
+
+Am decis să implementăm frontend-ul folosind Vue.js pentru un echilibru optim între structură și control, cu componente reutilizabile care vor facilita și viitoarea dezvoltare de funcționalități analitice.
+
+Arhitectura propusă separă clar responsabilitățile și oferă o bază solidă pentru extinderea ulterioară cu funcționalități precum rapoarte și statistici.
+
+cosmin-vestemean: Te rog sa analizezi codebase-ul privitor la afisarea documentelor procesate sau de procesat. Sa o numim coada de procesare. Extrage o lista de idei fundamentale din codul existent. Doresc sa discutam acest aspect mai departe, probabil sa il "reinventam" in noua arhitectura. Poti incepe cu #file:retailer_file_manager.html si sa cauti toate firele care au legatura cu acest aspect, asta daca sugestia aceasta te ajuta.
+
+GitHub Copilot: # Analiza Sistemului de Procesare a Documentelor EDI
+
+După studierea codului din retailer_file_manager.html și a fișierelor asociate, am extras următoarele concepte fundamentale privind sistemul actual de procesare a documentelor EDI:
+
+## Structura Cozii de Procesare
+
+1. **Organizare pe Tipuri de Documente**
+   - Sistemul separă documentele în două categorii principale: Comenzi și Facturi
+   - Interfața folosește tab-uri pentru navigarea între aceste tipuri
+
+2. **Vizualizare Tabelară**
+   - Documentele sunt afișate în tabele cu coloane pentru metadate, stare și acțiuni
+   - Formatare responsivă pentru diferite dispozitive
+
+3. **Indicatori de Stare**
+   - Marcaje vizuale pentru diferite stări ale documentelor (trimise/netrimise)
+   - Filtrare bazată pe stare (`toggleComenziNetrimise()`, `toggleFacturiNetrimise()`)
+
+## Procesare și Flux de Date
+
+4. **Procesare Bidirecțională**
+   - Comenzi: Din EDI provider spre S1 (`trimiteComenzileNetrimise()`)
+   - Facturi: Din S1 spre retailer (`sendAllFacturi()`)
+
+5. **Interogare Periodică**
+   - Scanarea periodică a noilor fișiere XML (`getNDisplayOrders()`)
+   - Extragerea documentelor din S1 (`getNDisplayS1Docs()`)
+
+6. **Procesare în Batch sau Individuală**
+   - Acțiuni pentru procesarea întregului lot de documente
+   - Acțiuni la nivel de document individual pentru fiecare rând din tabel
+
+## Integrare cu Sistemele Externe
+
+7. **Comunicare cu Backend-ul FeathersJS**
+   - Utilizarea Socket.IO pentru conexiune în timp real (`socket.io.min.js`)
+   - Servicii FeathersJS pentru operațiunile CRUD (`@feathersjs/client`)
+
+8. **Integrarea cu S1 ERP**
+   - Parametri specifici pentru interogări S1 (sosource, fprms, series)
+   - Manipularea documentelor între EDI și S1
+
+9. **Stocare Temporară**
+   - Documentele sunt recuperate și stocate înainte de procesare
+   - UI pentru vizualizarea conținutului XML
+
+## Experiența Utilizator
+
+10. **Feedback și Notificări**
+    - Overlay de loading pentru operațiuni de durată
+    - Sistem de notificări pentru rezultatele procesării
+    - Dialoguri modale pentru confirmare și detalii
+
+11. **Metadate Document**
+    - Afișarea informațiilor cheie: dată, nume fișier, sumă
+    - Accesul la conținutul raw XML pentru debugging
+
+12. **Gestionarea Erorilor**
+    - Dialoguri pentru confirmarea acțiunilor potențial periculoase
+    - Afișarea răspunsurilor de la EDI provider pentru verificare
+
+## Concepte Arhitecturale
+
+13. **Separarea Modulelor**
+    - Cod modularizat pentru comenzi și facturi (`orderTable.js`, `invoiceTable.js`)
+    - Organizare pe responsabilități specifice fiecărui tip de document
+
+14. **Configurare pe Retailer**
+    - Parametri specifici retailer-ului (`trdrRetailerFromUrl`)
+    - Logică adaptată pentru diferiți retaileri
+
+15. **Performanță și UX**
+    - Animații și tranziții pentru feedback vizual
+    - Optimizări pentru încărcare și afișare a datelor
+
+Această analiză evidențiază modurile în care sistemul actual gestionează coada de procesare a documentelor, oferind o bază pentru discuții despre implementarea în noua arhitectură.
+
+cosmin-vestemean: Vreau sa renunt la a scrie in tablele CCC* a bazei de date din ERP prin conexiune directa. Doresc sa creez endpoints in S1 (ERP) care sa imi permita sa inserez date (X.RUNSQL) si sa citesc date (X.GETSQLDTASET/getDataset1ServiceClass)
+
+GitHub Copilot: # S1 Custom Endpoints Strategy for CCC* Tables Access
+
+Moving away from direct database connections to a service-oriented approach is an excellent architectural decision. Let's implement this using S1's Web Services module.
+
+## Creating Custom Endpoints in S1
+
+First, create a new JavaScript file in the AJS directory to contain your custom endpoints:
+
+```javascript
+// === READ OPERATIONS ===
+
+/**
+ * Generic endpoint to retrieve data from CCC tables
+ */
+function getCCCData(obj) {
+  try {
+    const query = obj.query;
+    const params = obj.params || [];
+    
+    // Use X.GETSQLDATASET for data retrieval
+    const dataset = X.GETSQLDATASET(query, ...params);
+    
+    // Convert dataset to array
+    const data = [];
+    dataset.FIRST;
+    while (!dataset.EOF) {
+      const row = {};
+      for (let i = 0; i < dataset.FIELDCOUNT; i++) {
+        const fieldName = dataset.FIELDNAME(i);
+        row[fieldName] = dataset.FIELDS(i);
+      }
+      data.push(row);
+      dataset.NEXT;
+    }
+    
+    return {
+      success: true,
+      data: data,
+      total: dataset.RECORDCOUNT
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+// === WRITE OPERATIONS ===
+
+/**
+ * Generic endpoint to insert/update data in CCC tables
+ */
+function setCCCData(obj) {
+  try {
+    const query = obj.query;
+    const params = obj.params || [];
+    
+    // Use X.RUNSQL for write operations
+    X.RUNSQL(query, ...params);
+    
+    return {
+      success: true,
+      message: "Operation completed successfully"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
+// === SPECIFIC ENDPOINTS ===
+
+/**
+ * Get EDI provider configurations
+ */
+function getEDIProviders(obj) {
+  const query = `
+    SELECT * FROM CCCEDIPROVIDER 
+    WHERE ISACTIVE = 1
+    ORDER BY NAME
+  `;
+  
+  return getCCCData({ query: query });
+}
+
+/**
+ * Insert or update an EDI provider
+ */
+function setEDIProvider(obj) {
+  const { id, name, connType } = obj;
+  
+  let query;
+  if (id) {
+    // Update existing provider
+    query = `
+      UPDATE CCCEDIPROVIDER 
+      SET NAME = :1, CONNTYPE = :2
+      WHERE CCCEDIPROVIDER = :3
+    `;
+    return setCCCData({ query: query, params: [name, connType, id] });
+  } else {
+    // Insert new provider
+    query = `
+      INSERT INTO CCCEDIPROVIDER (NAME, CONNTYPE) 
+      VALUES (:1, :2)
+    `;
+    return setCCCData({ query: query, params: [name, connType] });
+  }
+}
+
+/**
+ * Get document mappings for a retailer
+ */
+function getRetailerMappings(obj) {
+  const retailerId = obj.retailerId;
+  
+  const query = `
+    SELECT m.*, x.XMLNODE, x.S1TABLE1, x.S1FIELD1 
+    FROM CCCDOCUMENTES1MAPPINGS m
+    JOIN CCCXMLS1MAPPINGS x ON m.CCCDOCUMENTES1MAPPINGS = x.CCCDOCUMENTES1MAPPINGS
+    WHERE m.TRDR_RETAILER = :1
+    ORDER BY x.XMLORDER
+  `;
+  
+  return getCCCData({ query: query, params: [retailerId] });
+}
+```
+
+## Updating FeathersJS Services
+
+Now, modify your FeathersJS services to use these endpoints instead of direct database access:
+
+```javascript
+class CCCDataService {
+  async find(params) {
+    const endpoint = params.query.endpoint || 'getCCCData';
+    const queryParams = {
+      ...params.query,
+      endpoint: undefined // Remove endpoint from query params
+    };
+    
+    try {
+      // Call the S1 endpoint
+      const url = `${mainURL}/JS/AJS/CCCEndpoints/${endpoint}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(queryParams)
+      });
+      
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      
+      return {
+        data: result.data,
+        total: result.total
+      };
+    } catch (error) {
+      console.error(`Error calling S1 endpoint ${endpoint}:`, error);
+      throw error;
+    }
+  }
+  
+  async create(data, params) {
+    const endpoint = params.query.endpoint || 'setCCCData';
+    
+    try {
+      // Call the S1 endpoint
+      const url = `${mainURL}/JS/AJS/CCCEndpoints/${endpoint}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      
+      return result;
+    } catch (error) {
+      console.error(`Error calling S1 endpoint ${endpoint}:`, error);
+      throw error;
+    }
+  }
+}
+
+// Register the service
+app.use('ccc-data', new CCCDataService());
+```
+
+## Using the New Service in Your Application
+
+```javascript
+// Example: Getting EDI providers
+const providers = await app.service('ccc-data').find({
+  query: {
+    endpoint: 'getEDIProviders'
+  }
+});
+
+// Example: Creating a new EDI provider
+await app.service('ccc-data').create(
+  {
+    name: 'DocProcess',
+    connType: 2  // SFTP
+  },
+  {
+    query: {
+      endpoint: 'setEDIProvider'
+    }
+  }
+);
+```
+
+## Benefits of This Approach
+
+1. **Improved Security**: Database access is encapsulated within ERP's business logic
+2. **Better Maintainability**: Database operations are centralized in the S1 endpoints
+3. **Enhanced Business Logic**: Complex operations can leverage S1's native capabilities
+4. **Cleaner Architecture**: Service-oriented approach following best practices
+5. **GDPR Compliance**: Data processing remains within the S1 boundary
+
+This architecture gives you the flexibility to expand with additional endpoint methods as needed while maintaining a clean separation between your FeathersJS application and the ERP database.
+
+Would you like me to elaborate on any specific endpoint implementations for your EDI platform's requirements?
+
+cosmin-vestemean: In modulul de configurare am decis ca fiecare asociere a unui tip de document (sosource, fprms, series) cu campuri (path) XML sa aiba propria zona de configurare. Esti de acord?
+
+GitHub Copilot: # Evaluare Configurare Document-Path XML
+
+## Analiză Arhitecturală 
+
+Da, sunt de acord cu decizia ta de a avea zone de configurare separate pentru fiecare asociere dintre tipul de document S1 (identificat prin tripletul sosource, fprms, series) și câmpurile XML (path-uri). Aceasta este o abordare foarte potrivită pentru platforma EDI.
+
+## Avantaje ale acestei abordări
+
+1. **Separare clară a contextelor**
+   - Fiecare tip de document are propriile specificații și cerințe
+   - Evită confuzia între mapeările pentru diferite tipuri de documente
+
+2. **UI focalizat și specializat**
+   - Interfața poate fi adaptată specific pentru fiecare tip de document
+   - Facilitează validarea specifică tipului de document
+
+3. **Managementul complexității**
+   - Reduce încărcătura cognitivă pentru utilizator
+   - Permite afișarea numai a path-urilor XML relevante pentru documentul curent
+
+4. **Flexibilitate pentru retaileri**
+   - Diferite lanțuri pot avea implementări unice pentru același tip de document
+   - Facilitează personalizarea la nivel de retailer-document
+
+## Sugestii pentru implementare
+
+Pentru a maximiza beneficiile acestei abordări:
+
+1. **Navigare eficientă între configurări**
+   - Un meniu lateral sau tab-uri pentru navigare rapidă între tipuri de documente
+   - Opțiune de căutare pentru documente specifice
+
+2. **Template-uri și clonare**
+   - Posibilitatea de a crea template-uri pentru configurări comune
+   - Funcție de clonare pentru a reproduce mapeări similare
+
+3. **Validare contextuală**
+   - Validări specifice pentru fiecare tip de document
+   - Evidențierea câmpurilor obligatorii conform specificațiilor retailerului
+
+Această abordare se aliniază perfect cu arhitectura orientată pe servicii pe care o implementezi și va facilita atât dezvoltarea cât și mentenanța pe termen lung.
+
+cosmin-vestemean: Excelente aceste ultime sugestii, mai ales aceea de clonare.
+Acum... cred ca la fel ar trebui sa avem n "zone" (tab-uri?) pentru fiecare lista de documente, creata dinamic functie de numarul si tipul de documente, eventual grupate dupa sensul directiei XML-urilor EDI: daca vin spre S1 sau daca pleaca dinspre S1. Cele care vin pot constitui: a) raport documente de un anume tip procesate prin platforma & b) documentele care au avut erori la introducerea lor in ERP. Acestea din urma vor putea fi trimise manual cand s-a corectat eroarea (erorile) daca utilizatorul se grabeste si nu asteapta urmatorul ciclu de procesare (documente noi + documente cu erori). Cele care pleaca (DESADV = avize de livrare, INVOICES, etc) initial vor fi trimise manual din platforma, dintr-o lista "trasa" din ERP, pana cand vor fi stabilite criteriile de trimitere automate (anume events, etc). Imi doresc sa aflu parerea ta, te rog :)
+
+GitHub Copilot: # Interfață Dinamică pentru Procesarea Documentelor EDI
+
+Propunerea ta pentru organizarea dinamică pe zone/tab-uri a documentelor în funcție de tip și direcție este excelentă și aliniată cu cele mai bune practici din domeniu.
+
+## Avantajele Abordării Propuse
+
+1. **Organizare Intuitivă pe Flux de Date**
+   - Separarea clară între documente inbound și outbound facilitează înțelegerea proceselor
+   - Gruparea naturală reflectă fluxul de lucru real al utilizatorilor
+
+2. **Gestionare Diferențiată a Documentelor**
+   - Documente cu erori separate de cele procesate cu succes
+   - Posibilitatea de reprocessare manuală pentru documentele problematice
+   - Tranziția graduală de la procesare manuală la automatizare pentru outbound
+
+3. **Flexibilitate și Scalabilitate**
+   - Generarea dinamică a tab-urilor se adaptează automat când se adaugă noi tipuri de documente
+   - Când un nou retailer adoptă documente suplimentare, interfața se actualizează fără modificări de cod
+
+## Sugestii de Îmbunătățire
+
+1. **Tab-uri Ierarhice sau Grupate**
+   ```
+   - INBOUND 
+     ├─ Orders (12)
+     ├─ Retanns (3)
+     └─ RecAdvs (7)
+   - OUTBOUND
+     ├─ Invoices (15)
+     ├─ DesAdvs (8)
+     └─ [+] Adaugă Tip Document
+   ```
+
+2. **Indicator de Status Agregat**
+   - Badge-uri colorate pe fiecare tab care indică numărul de documente și starea lor
+   - De exemplu: "Orders (10🟢 / 2🔴)" pentru 10 procesate și 2 cu erori
+
+3. **Acțiuni Batch pentru Eficiență**
+   - Reprocessarea în grup a documentelor cu erori similare
+   - Trimitere în lot pentru documentele outbound
+
+4. **Personalizare Vizualizare**
+   - Opțiuni de filtrare avansată în fiecare tab
+   - Posibilitatea de a salva vizualizări personalizate pentru fluxuri de lucru frecvente
+
+## Implementare Tehnică în Vue
+
+```vue
+<template>
+  <div class="document-processing">
+    <!-- Tabs de nivel superior (Inbound/Outbound) -->
+    <div class="tabs is-boxed">
+      <ul>
+        <li :class="{'is-active': activeGroup === 'inbound'}" @click="setActiveGroup('inbound')">
+          <a>
+            <span>Inbound</span>
+            <span class="tag is-info ml-2">{{ totalInboundCount }}</span>
+          </a>
+        </li>
+        <li :class="{'is-active': activeGroup === 'outbound'}" @click="setActiveGroup('outbound')">
+          <a>
+            <span>Outbound</span>
+            <span class="tag is-info ml-2">{{ totalOutboundCount }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Sub-tabs pentru tipurile de documente -->
+    <div class="tabs is-toggle is-small">
+      <ul>
+        <li v-for="docType in currentDocTypes" :key="docType.id"
+            :class="{'is-active': activeDocType === docType.id}" 
+            @click="setActiveDocType(docType.id)">
+          <a>
+            <span>{{ docType.name }}</span>
+            <span class="tag is-success ml-1">{{ docType.successCount }}</span>
+            <span v-if="docType.errorCount" class="tag is-danger ml-1">{{ docType.errorCount }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Conținutul documentelor pentru tipul activ -->
+    <document-list 
+      :documents="activeDocuments"
+      :direction="activeGroup" 
+      :doc-type="activeDocType"
+      @process="processDocument"
+      @reprocess="reprocessDocument"
+    />
+  </div>
+</template>
+```
+
+Această abordare dinamică și orientată pe fluxuri de lucru va oferi o experiență intuitivă utilizatorilor, indiferent dacă sunt începători sau experți în procesarea documentelor EDI.
+
+Ce aspect specific al acestei abordări ți-ar plăcea să explorăm mai detaliat?
+
+cosmin-vestemean: Analizeaza functionalitatile principale a procesarii APERAK-urilor
+
+GitHub Copilot: # Analiza Funcționalităților de Procesare APERAK
+
+APERAK (Application Error and Acknowledgment Message) reprezintă un component critic în ecosistemul EDI, fiind mesajele de confirmare/eroare pentru documentele trimise către retaileri. Analizând codebase-ul, am identificat următoarele funcționalități principale în procesarea lor:
+
+## 1. Descărcarea Automată a Mesajelor APERAK
+
+```javascript
+export async function getRemoteAperakXmlListToErp() {
+  // Descarcă mesajele APERAK de pe serverul SFTP
+  await client.service('sftp').downloadXml({}, 
+    { query: { retailer: retailer, rootPath: aperakPath, startsWith: 'APERAK_' } })
+  // Procesează și stochează mesajele în ERP
+  await client.service('sftp').storeAperakInErpMessages({}, 
+    { query: { rootPath: aperakPath } })
+}
+```
+
+Sistemul scanează periodic serverul SFTP pentru fișiere APERAK noi și le descarcă local pentru procesare.
+
+## 2. Parsarea Conținutului XML
+
+```javascript
+const json = await new Promise((resolve, reject) =>
+  parseString(xmlClean, { explicitArray: false }, (err, result) => {
+    if (err) reject(err)
+    else resolve(result)
+  })
+)
+var MessageDate = json.DXMessage.MessageDate
+var MessageTime = json.DXMessage.MessageTime
+var MessageOrigin = json.DXMessage.MessageOrigin
+var DocumentReference = json.DXMessage.DocumentReference
+```
+
+Extragerea datelor relevante din XML-ul mesajului APERAK pentru identificarea documentului original și a statusului său.
+
+## 3. Corelarea cu Documentele Originale
+
+```javascript
+// Extragere număr factură din referință
+if (DocumentReference.includes('INVOIC_')) {
+  DocumentReference = DocumentReference.split('_')[1]
+}
+
+// Căutare în ERP a documentului original
+sqlQuery: `select f.findoc, f.trdr retailer, m.CCCXMLFilename xmlFilename, 
+m.CCCXMLSendDate xmlSentDate 
+from findoc f join mtrdoc m on f.findoc = m.findoc 
+where f.fincode = '${DocumentReference}'`
+```
+
+Sistemul identifică documentul original (factură, aviz, etc.) la care se referă APERAK-ul.
+
+## 4. Stocarea în Tabela CCCAPERAK
+
+```javascript
+// Schema datelor APERAK
+export const cccaperakSchema = Type.Object({
+  CCCAPERAK: Type.Number(),
+  TRDR_RETAILER: Type.Number(),
+  TRDR_CLIENT: Type.Number(),
+  FINDOC: Type.Number(),
+  XMLFILENAME: Type.Optional(Type.String()),
+  XMLSENTDATE: Type.Optional(Type.String()),
+  MESSAGEDATE: Type.String(),
+  MESSAGETIME: Type.String(),
+  MESSAGEORIGIN: Type.String(),
+  DOCUMENTREFERENCE: Type.String(),
+  DOCUMENTUID: Type.String(),
+  SUPPLIERRECEIVERCODE: Type.Optional(Type.String()),
+  DOCUMENTRESPONSE: Type.String(),
+  DOCUMENTDETAIL: Type.String()
+})
+```
+
+Toate APERAK-urile sunt stocate într-un tabel dedicat din ERP pentru referință și analiză.
+
+## 5. Vizualizarea și Monitorizarea
+
+```javascript
+export function getEmptyAperak() {
+  client.service('CCCAPERAK').find({
+    query: {
+      FINDOC: -1,
+      TRDR_RETAILER: -1,
+      $limit: 50,
+      $sort: { MESSAGEDATE: -1, MESSAGETIME: -1 }
+    }
+  }).then((res) => {
+    // Populare tabel cu date APERAK
+  })
+}
+```
+
+Interfața oferă acces la istoricul APERAK-urilor pentru analiza erorilor și confirmărilor.
+
+## 6. Managementul Arhivelor și Erorilor
+
+```javascript
+// Procesare succes
+if (result.CCCAPERAK) {
+  returnedData.push({ filename: filename, success: true, response: result })
+  // Mutare în folder procesat
+  fs.renameSync(localPath, processedPath + '/' + filename)
+} else {
+  // Procesare eroare
+  returnedData.push({ filename: filename, success: false, response: result })
+  // Mutare în folder erori
+  fs.renameSync(localPath, errorPath + '/' + filename)
+}
+```
+
+Gestionarea fișierelor APERAK prin separarea celor procesate cu succes de cele cu erori.
+
+## 7. Integrarea în Fluxul de Documente
+
+Sistemul folosește APERAK-urile pentru a:
+- Confirma primirea documentelor de către retailer
+- Marca documentele acceptate/respinse în ERP
+- Oferi feedback automat despre problemele apărute în transmisia documentelor
+- Completa ciclul de viață al documentelor EDI
+
+Această structură oferă o monitorizare completă a comunicării EDI și un sistem eficient de detectare și remediere a erorilor de transmisie.
+
+Similar code found with 1 license type
+
+cosmin-vestemean: Ce management al erorilor (buna functionare a bifluxului EDI-ERP) (vezi si acela care se refera la incapacitatea de a gasi un produs in baza de date a ERP-ului) identifici in aplicatia curenta? Trebuie sa ne gandim la un sistem de monitorizare in aplicatia care se va dezvolta. Te rog sa ignori urmatoarele fisiere din folderul S1: EF*.js si SALDOC*.js.
+
+GitHub Copilot: # Analiza Sistemului de Management al Erorilor în Aplicația EDI
+
+Analizând codul sursă din folderul `retailers`, am identificat următoarele mecanisme de gestionare a erorilor și limitările acestora în bifluxul EDI-ERP actual:
+
+## Mecanisme existente de gestionare a erorilor
+
+### 1. Detectarea și înregistrarea erorilor
+
+```javascript
+// Înregistrarea erorilor când un produs nu este găsit
+X.RUNSQL("insert into CCCXMLERRORLINES (...)'" + coduriArticole.item(i).text + "','" + 
+         denumiri.item(i).text + "')", null);
+errCnt++;
+```
+
+- Utilizează tabele specializate (`CCCXMLERRORLINES`, `CCCDOCPROCDANTEXMLERR`) pentru înregistrarea erorilor
+- Contorizează erorile pentru a determina dacă procesul poate continua
+
+### 2. Segregarea fișierelor în funcție de status
+
+```javascript
+// Mutarea fișierelor cu erori în directorul corespunzător
+fs.renameSync(localPath, errorPath + '/' + filename)
+```
+
+- Organizează fișierele în directoare diferite (`processed`, `failed`, `error`)
+- Păstrează istoricul procesării pentru analiză ulterioară
+
+### 3. Interfața utilizator pentru monitorizare
+
+```html
+<div id="notification-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;"></div>
+```
+
+- Notificări pentru rezultatele procesării
+- Indicatori vizuali pentru status (succes, avertisment, eroare)
+- Modală pentru detalii despre erori și pentru confirmare
+
+### 4. Gestionarea erorilor de conectivitate
+
+- Persistența fișierelor înainte de procesare pentru a contracara auto-ștergerea DocProcess
+- Mecanisme pentru reîncărcarea documentelor care au eșuat inițial
+
+## Limitări ale sistemului actual
+
+1. **Lipsa centralizării monitoringului**
+   - Erorile sunt distribuite în diverse tabele fără o viziune unificată
+   - Nu există dashboard-uri pentru vizualizarea stării generale a sistemului
+
+2. **Clasificarea insuficientă a erorilor**
+   - Nu se distinge clar între erorile tehnice și cele de business
+   - Lipsă de prioritizare (critice vs. non-critice)
+
+3. **Mecanisme limitate de recuperare**
+   - Recuperarea erorilor se face în mare parte manual
+   - Nu există strategii automate de reîncercare pentru erori temporare
+
+4. **Notificare incompletă**
+   - Utilizatorii trebuie să verifice activ interfața pentru a descoperi erorile
+   - Nu există alerte proactive pentru situații critice
+
+## Recomandări pentru noul sistem de monitorizare
+
+### 1. Arhitectură de logging centralizată
+
+```javascript
+// Exemplu conceptual pentru un sistem centralizat de logging
+async function logProcessingError(context, errorType, details) {
+  await db.insertError({
+    timestamp: new Date(),
+    documentType: context.documentType,
+    documentId: context.documentId,
+    retailerId: context.retailerId,
+    errorType: errorType,
+    severity: determineSeverity(errorType),
+    details: details,
+    status: 'NEW'
+  });
+  
+  // Emit event for real-time monitoring
+  eventBus.emit('error:detected', {...});
+}
+```
+
+### 2. Dashboard complex pentru monitorizare
+
+- Vizualizare agregată a tuturor proceselor EDI în curs
+- Filtre avansate (tip document, retailer, interval, severitate)
+- Grafice pentru tendințe și modele în erorile apărute
+- KPIs pentru succesul procesării (rata de succes, timp mediu de procesare)
+
+### 3. Sistem de notificări și alerte
+
+- Alertare multi-canal (UI, email, webhook)
+- Configurarea pragurilor pentru alertare în funcție de frecvența sau tipul erorilor
+- Escaladare automată pentru erori persistente sau critice
+
+### 4. Mecanisme de auto-remediere
+
+- Strategii de reîncercare cu backoff exponențial pentru erorile tranziente
+- Izolarea automată a documentelor problematice
+- Detectarea și gruparea erorilor similare pentru remediere în bloc
+
+### 5. Trasabilitate completă
+
+- Log de audit complet pentru toate acțiunile de procesare
+- Asocierea clară între documente originale, erori și acțiuni de remediere
+- Timeline vizual pentru ciclul de viață al documentelor
+
+Implementarea acestor recomandări va transforma managementul erorilor dintr-un proces reactiv într-unul proactiv, îmbunătățind considerabil fiabilitatea și transparența bifluxului EDI-ERP.
+
+cosmin-vestemean: Trebuie sa luam in considerare ca heroku nu ofera persistenta fisierelor. Pentru inceput nu as folosi pluginul postgresql, doar baza de date a ERP-ului.
+
+GitHub Copilot: # Arhitectură EDI pentru Heroku cu Stocare în ERP
+
+Restricția de persistență a fișierelor pe Heroku este într-adevăr o considerație importantă care influențează fundamental arhitectura soluției. Iată cum putem adapta designul pentru a funcționa exclusiv cu baza de date a ERP-ului:
+
+## Noul Flow de Procesare pentru EDI Connector
+
+```
+EDI SFTP → Download în memorie → Parsare XML → Stocare în ERP → Procesare ulterioară
+```
+
+### 1. Stocare Imediată în ERP
+
+Creăm un endpoint S1 Web Service pentru stocarea documentelor XML:
+
+```javascript
+// În S1 Web Services
+function storeRawXMLDocument(params) {
+  try {
+    const { xmlContent, filename, providerName } = params;
+    
+    // Identificăm retailer-ul din XML (direct în S1)
+    const retailerId = identifyRetailerFromXML(xmlContent);
+    
+    // Inserare în tabelul de documente raw
+    X.RUNSQL(`
+      INSERT INTO CCCEDIRAWDOCUMENTS 
+      (FILENAME, PROVIDER, RETAILER, CONTENT, PROCESSSTATUS, DOWNLOADDATE)
+      VALUES (:1, :2, :3, :4, 'NEW', GETDATE())
+    `, filename, providerName, retailerId, xmlContent);
+    
+    return { success: true, retailerId };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### 2. EDI Connector Fără Persistență Locală
+
+```javascript
+// În Heroku microservice
+async function downloadAndProcessDocuments() {
+  // Conectare la SFTP
+  const sftp = await connectToSFTP(config.docprocess);
+  
+  // Listare fișiere
+  const files = await sftp.list('/out');
+  
+  for (const file of files) {
+    if (!file.name.endsWith('.xml')) continue;
+    
+    try {
+      // Descărcare direct în memorie - fără salvare pe filesystem
+      const contentBuffer = await sftp.get(`/out/${file.name}`);
+      const xmlContent = contentBuffer.toString('utf8');
+      
+      // Apel direct către Web Service S1 pentru stocare
+      const response = await callS1WebService('storeRawXMLDocument', {
+        xmlContent,
+        filename: file.name,
+        providerName: 'DocProcess'
+      });
+      
+      if (response.success) {
+        // Ștergere fișier din SFTP doar dacă a fost stocat cu succes
+        await sftp.delete(`/out/${file.name}`);
+      }
+    } catch (error) {
+      console.error(`Error processing file ${file.name}:`, error);
+      // Log error but continue with other files
+    }
+  }
+}
+```
+
+## Modificări în Schema ERP
+
+```sql
+-- Tabel pentru documente XML brute
+CREATE TABLE CCCEDIRAWDOCUMENTS (
+  CCCEDIRAWDOCUMENTS INT IDENTITY(1,1) PRIMARY KEY,
+  FILENAME NVARCHAR(255) NOT NULL,
+  PROVIDER NVARCHAR(50) NOT NULL,
+  RETAILER NVARCHAR(50) NULL,
+  CONTENT NVARCHAR(MAX) NOT NULL,    -- XML stocat ca text
+  PROCESSSTATUS NVARCHAR(20) NOT NULL,
+  DOWNLOADDATE DATETIME NOT NULL,
+  PROCESSDATE DATETIME NULL,
+  PROCESSMESSAGE NVARCHAR(1000) NULL
+);
+
+-- Index pentru performanță
+CREATE INDEX IDX_CCCEDIRAWDOC_STATUS ON CCCEDIRAWDOCUMENTS (PROCESSSTATUS);
+```
+
+## Procesare din ERP
+
+```javascript
+// În S1 Web Services
+function processNewDocuments() {
+  // Găsește documentele care nu au fost procesate
+  const pendingDocs = X.GETSQLDATASET(`
+    SELECT CCCEDIRAWDOCUMENTS, FILENAME, RETAILER, CONTENT 
+    FROM CCCEDIRAWDOCUMENTS 
+    WHERE PROCESSSTATUS = 'NEW'
+  `);
+  
+  const results = [];
+  pendingDocs.FIRST;
+  
+  while (!pendingDocs.EOF) {
+    try {
+      const id = pendingDocs.CCCEDIRAWDOCUMENTS;
+      const content = pendingDocs.CONTENT;
+      const retailer = pendingDocs.RETAILER;
+      
+      // Procesare document conform configurării retailer-ului
+      const result = processDocumentByType(content, retailer);
+      
+      // Actualizare status
+      X.RUNSQL(`
+        UPDATE CCCEDIRAWDOCUMENTS 
+        SET PROCESSSTATUS = 'PROCESSED', 
+            PROCESSDATE = GETDATE() 
+        WHERE CCCEDIRAWDOCUMENTS = :1
+      `, id);
+      
+      results.push({ id, success: true });
+    } catch (error) {
+      // Marcare eroare
+      X.RUNSQL(`
+        UPDATE CCCEDIRAWDOCUMENTS 
+        SET PROCESSSTATUS = 'ERROR', 
+            PROCESSDATE = GETDATE(),
+            PROCESSMESSAGE = :2 
+        WHERE CCCEDIRAWDOCUMENTS = :1
+      `, pendingDocs.CCCEDIRAWDOCUMENTS, error.message);
+      
+      results.push({ id: pendingDocs.CCCEDIRAWDOCUMENTS, success: false, error: error.message });
+    }
+    
+    pendingDocs.NEXT;
+  }
+  
+  return results;
+}
+```
+
+## Avantaje ale Acestei Abordări
+
+1. **Zero Dependență de Filesystem Heroku**
+   - Toate datele sunt stocate direct în baza de date ERP
+   - Nu există risc de pierdere a datelor la restart-uri Heroku
+
+2. **Simplitate Arhitecturală**
+   - Microservice-ul de pe Heroku devine mai simplu - doar orchestrator
+   - Logica de business este centralizată în S1 Web Services
+
+3. **GDPR-Compliant**
+   - Datele nu părăsesc sistemul ERP (exceptând memoria temporar)
+   - Procesarea se face în ecosistemul securizat al ERP-ului
+
+4. **Eficiență**
+   - Procesarea XML se face o singură dată, direct în S1
+   - Se elimină sincronizarea între sisteme
+
+Această abordare este optimă pentru mediul Heroku fără persistență, folosind ERP-ul pentru toate necesitățile de stocare permanentă.
+
+cosmin-vestemean: Verifica si functionalitatile actuale legate de butonul "Show logs" si identifica ce se logheaza
+
+GitHub Copilot: # Analiza Funcționalității de Logging din Platforma EDI
+
+După analizarea codului referitor la butonul "Show Logs" și funcționalitatea asociată de logging, am identificat următoarele componente cheie:
+
+## 1. Structura de Interfață pentru Logging
+
+Butonul "Show Logs" din index.html declanșează afișarea unui container dedicat care prezintă istoricul procesării documentelor:
+
+```javascript
+document.getElementById('toggleLogsBtn').addEventListener('click', function () {
+  // Toggle între vizualizarea cardurilor și vizualizarea logurilor
+  const cardsContainer = document.getElementById('cardsContainer');
+  const ordersLogContainer = document.getElementById('ordersLogContainer');
+  
+  if (ordersLogContainer.style.display === 'none') {
+    ordersLogContainer.style.display = 'block';
+    cardsContainer.style.display = 'none';
+    loadOrdersLog(); // Încărcare log-uri
+  }
+});
+```
+
+## 2. Sursa Datelor de Log
+
+Funcția `loadOrdersLog()` interogează serviciul `CCCORDERSLOG` pentru a prelua istoricul procesării:
+
+```javascript
+async function loadOrdersLog() {
+  const response = await client.service('CCCORDERSLOG').find({
+    query: {
+      $limit: 200,
+      $sort: { MESSAGEDATE: -1 }
+    }
+  });
+  
+  // Populare tabel cu datele obținute
+  response.data.forEach((order, index) => {
+    // ...creare rânduri în tabel
+  });
+}
+```
+
+## 3. Informații Înregistrate în Log
+
+Tabelul de loguri afișează următoarele informații pentru fiecare document procesat:
+
+| Coloană | Câmp | Descriere |
+|---------|------|-----------|
+| # | - | Număr de ordine în listă |
+| Data | MESSAGEDATE | Data și ora procesării |
+| ID Order | ORDERID | Identificatorul documentului procesat |
+| Mesaj | MESSAGETEXT | Descriere detaliată a procesării, inclusiv erori sau XML |
+
+## 4. Tratamente Speciale pentru Conținut
+
+Sistemul actual include formatare specială pentru conținutul XML, cu afișare structurată:
+
+```javascript
+if (order.MESSAGETEXT.length > 250) {
+  // Formatare specială pentru conținut XML lung
+  let messageText = order.MESSAGETEXT.replace('<pre><code>', '').replace('</code></pre>', '');
+  displayXML(messageText, xmlDisplay);
+} else {
+  cellMessage.innerHTML = order.MESSAGETEXT;
+}
+```
+
+## 5. Tabela de Logging în ERP
+
+Datele sunt stocate în tabela `CCCORDERSLOG` din ERP, care are următoarea structură:
+
+- **CCCORDERSLOG**: ID-ul înregistrării
+- **MESSAGEDATE**: Data și ora mesajului
+- **ORDERID**: Identificatorul documentului
+- **MESSAGETEXT**: Conținutul mesajului (poate conține XML sau text)
+
+## 6. Tipuri de Mesaje Logate
+
+Sistemul înregistrează:
+- Încercări de procesare documente
+- Eșecuri la găsirea codurilor de produs în ERP
+- Rezultate ale procesării documentelor (succes/eșec)
+- Răspunsuri APERAK primite de la retaileri
+- Erori de validare a documentelor
+
+## 7. Notificări Suplimentare
+
+Pe lângă logarea istorică, există și un sistem de notificări temporare pentru feedback imediat:
+
+```javascript
+function showNotification(message, type = 'is-info') {
+  // Crearea unei notificări temporare
+  const notification = document.createElement('div');
+  notification.className = `notification ${type} is-light`;
+  // ...
+  
+  // Auto-ștergere după 5 secunde
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 500);
+  }, 5000);
+}
+```
+
+Pentru noua arhitectură, aceste concepte ar trebui extinse cu un sistem de logging mai robust, centralizat și care să ofere facilități avansate de filtrare și analiză.
+
+cosmin-vestemean: Alta idee, alt punct de vedere asupra noii arhitecturi: #file:create table CCCXMLS1MAPPINGS.sql Datele de aici ar trebui refolosite cat se poate de mult in noua arhitectura
+
+GitHub Copilot: # Reutilizarea Schema CCC* în Noua Arhitectură EDI
+
+Analiza `create table CCCXMLS1MAPPINGS.sql` relevă o structură de date bine concepută care poate fi reutilizată în noua arhitectură. Iată cum putem implementa acest lucru cu endpoints S1:
+
+## Structura de Tabele Existentă
+
+Schema actuală are o structură logică excelentă care separează:
+- **Conectori** (CCCSFTP) - Credențiale și detalii de conexiune
+- **Mapeări de documente** (CCCDOCUMENTES1MAPPINGS) - Corelări între tipuri de documente EDI și S1
+- **Mapeări de câmpuri** (CCCXMLS1MAPPINGS) - Corelări între noduri XML și câmpuri S1
+- **Stocare XML** (CCCSFTPXML) - Păstrarea documentelor originale pentru audit
+- **Procesare** (CCCAPERAK, CCCORDERSLOG) - Urmărirea statusului procesării
+
+## Endpoints S1 pentru Acces la Date
+
+```javascript
+/**
+ * Serviciu pentru gestionarea mapărilor EDI în S1
+ */
+
+// === CONECTORI EDI ===
+
+/**
+ * Obține lista conectorilor EDI configurați
+ */
+function getEDIConnectors(obj) {
+  try {
+    var dataset = X.GETSQLDATASET(`
+      SELECT 
+        C.CCCSFTP, C.TRDR_RETAILER, T.NAME AS RETAILER_NAME, 
+        C.URL, C.USERNAME, C.PORT,
+        C.INITIALDIRIN, C.INITIALDIROUT
+      FROM CCCSFTP C
+      JOIN TRDR T ON C.TRDR_RETAILER = T.TRDR
+      WHERE T.COMPANY = :1
+    `, X.SYS.COMPANY);
+    
+    return { success: true, data: JSON.parse(dataset.JSON) };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Salvează un conector EDI
+ */
+function saveEDIConnector(obj) {
+  try {
+    var id = obj.CCCSFTP;
+    var trdrRetailer = obj.TRDR_RETAILER;
+    var url = obj.URL;
+    var username = obj.USERNAME;
+    var passphrase = obj.PASSPHRASE || '';
+    var port = obj.PORT || 22;
+    var dirIn = obj.INITIALDIRIN;
+    var dirOut = obj.INITIALDIROUT;
+    var fingerprint = obj.FINGERPRINT || '';
+    var privateKey = obj.PRIVATEKEY || '';
+    
+    if (id > 0) {
+      // Update existing connector
+      X.RUNSQL(`
+        UPDATE CCCSFTP SET
+          URL = :1, USERNAME = :2, PORT = :3,
+          PASSPHRASE = :4, INITIALDIRIN = :5, INITIALDIROUT = :6,
+          FINGERPRINT = :7, PRIVATEKEY = :8
+        WHERE CCCSFTP = :9
+      `, url, username, port, passphrase, dirIn, dirOut, fingerprint, privateKey, id);
+    } else {
+      // Insert new connector
+      X.RUNSQL(`
+        INSERT INTO CCCSFTP (TRDR_RETAILER, URL, USERNAME, PORT, PASSPHRASE, 
+                          INITIALDIRIN, INITIALDIROUT, FINGERPRINT, PRIVATEKEY)
+        VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)
+      `, trdrRetailer, url, username, port, passphrase, dirIn, dirOut, fingerprint, privateKey);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// === MAPĂRI DE DOCUMENTE ===
+
+/**
+ * Obține mapările de documente configurate
+ */
+function getDocumentMappings(obj) {
+  try {
+    var retailerId = obj.retailerId || 0;
+    
+    var whereClause = '';
+    if (retailerId > 0) {
+      whereClause = ' WHERE M.TRDR_RETAILER = :1';
+    }
+    
+    var dataset = X.GETSQLDATASET(`
+      SELECT 
+        M.CCCDOCUMENTES1MAPPINGS, M.TRDR_RETAILER, M.TRDR_CLIENT,
+        T.NAME AS RETAILER_NAME, M.SOSOURCE, M.FPRMS, M.SERIES,
+        SS.NAME AS SOSOURCE_NAME, FP.NAME AS FPRMS_NAME, S.NAME AS SERIES_NAME,
+        M.INITIALDIRIN, M.INITIALDIROUT
+      FROM CCCDOCUMENTES1MAPPINGS M
+      JOIN TRDR T ON M.TRDR_RETAILER = T.TRDR
+      JOIN SOSOURCES SS ON M.SOSOURCE = SS.SOSOURCE
+      JOIN FPRMS FP ON M.FPRMS = FP.FPRMS
+      JOIN SERIES S ON M.SERIES = S.SERIES
+      ${whereClause}
+      ORDER BY T.NAME, SS.NAME
+    `, retailerId);
+    
+    return { success: true, data: JSON.parse(dataset.JSON) };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Salvează o mapare de document
+ */
+function saveDocumentMapping(obj) {
+  try {
+    var myObj = X.CREATEOBJ('CUSTOMFORM;CCCDOCMAPPING');
+    var tbl = myObj.FINDTABLE('CCCDOCUMENTES1MAPPINGS');
+    
+    if (obj.CCCDOCUMENTES1MAPPINGS > 0) {
+      // Update existing mapping
+      myObj.DBLOCATE(obj.CCCDOCUMENTES1MAPPINGS);
+    } else {
+      // Create new mapping
+      myObj.DBINSERT;
+    }
+    
+    // Set values
+    tbl.TRDR_RETAILER = obj.TRDR_RETAILER;
+    tbl.TRDR_CLIENT = obj.TRDR_CLIENT;
+    tbl.SOSOURCE = obj.SOSOURCE;
+    tbl.FPRMS = obj.FPRMS;
+    tbl.SERIES = obj.SERIES;
+    tbl.INITIALDIRIN = obj.INITIALDIRIN;
+    tbl.INITIALDIROUT = obj.INITIALDIROUT;
+    
+    // Save changes
+    var newId = myObj.DBPOST;
+    
+    return { 
+      success: true, 
+      id: newId || obj.CCCDOCUMENTES1MAPPINGS
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// === MAPĂRI DE CÂMPURI XML ===
+
+/**
+ * Obține mapările de câmpuri pentru un document
+ */
+function getFieldMappings(obj) {
+  try {
+    var documentId = obj.documentId;
+    
+    var dataset = X.GETSQLDATASET(`
+      SELECT 
+        X.CCCXMLS1MAPPINGS, X.XMLNODE, X.MANDATORY, 
+        X.S1TABLE1, X.S1FIELD1, X.S1TABLE2, X.S1FIELD2,
+        X.SQL, X.OBSERVATII, X.XMLORDER, X.SIZE, X.FORMAT
+      FROM CCCXMLS1MAPPINGS X
+      WHERE X.CCCDOCUMENTES1MAPPINGS = :1
+      ORDER BY X.XMLORDER
+    `, documentId);
+    
+    return { success: true, data: JSON.parse(dataset.JSON) };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Salvează o mapare de câmp XML
+ */
+function saveFieldMapping(obj) {
+  try {
+    var fieldId = obj.CCCXMLS1MAPPINGS;
+    var docId = obj.CCCDOCUMENTES1MAPPINGS;
+    var xmlNode = obj.XMLNODE;
+    var mandatory = obj.MANDATORY || 0;
+    var s1Table1 = obj.S1TABLE1;
+    var s1Field1 = obj.S1FIELD1;
+    
+    if (fieldId > 0) {
+      // Update existing field mapping
+      X.RUNSQL(`
+        UPDATE CCCXMLS1MAPPINGS SET
+          XMLNODE = :1, MANDATORY = :2, 
+          S1TABLE1 = :3, S1FIELD1 = :4,
+          S1TABLE2 = :5, S1FIELD2 = :6,
+          SQL = :7, OBSERVATII = :8,
+          XMLORDER = :9, SIZE = :10,
+          FORMAT = :11
+        WHERE CCCXMLS1MAPPINGS = :12
+      `, xmlNode, mandatory, s1Table1, s1Field1, 
+         obj.S1TABLE2, obj.S1FIELD2, obj.SQL, 
+         obj.OBSERVATII, obj.XMLORDER, obj.SIZE, 
+         obj.FORMAT, fieldId);
+    } else {
+      // Insert new field mapping
+      X.RUNSQL(`
+        INSERT INTO CCCXMLS1MAPPINGS 
+          (XMLNODE, MANDATORY, S1TABLE1, S1FIELD1, 
+           S1TABLE2, S1FIELD2, SQL, CCCDOCUMENTES1MAPPINGS, 
+           OBSERVATII, XMLORDER, SIZE, FORMAT)
+        VALUES 
+          (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12)
+      `, xmlNode, mandatory, s1Table1, s1Field1, 
+         obj.S1TABLE2, obj.S1FIELD2, obj.SQL, docId, 
+         obj.OBSERVATII, obj.XMLORDER, obj.SIZE, 
+         obj.FORMAT);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+// === PROCESARE DOCUMENTE ===
+
+/**
+ * Stochează un document XML în baza de date
+ */
+function storeXMLDocument(obj) {
+  try {
+    var xmlContent = obj.xmlContent;
+    var filename = obj.filename;
+    var retailerId = obj.retailerId;
+    var clientId = obj.clientId || 1;
+    
+    X.RUNSQL(`
+      INSERT INTO CCCSFTPXML 
+        (TRDR_RETAILER, TRDR_CLIENT, XMLFILENAME, 
+         XMLDATA, XMLDATE, XMLSTATUS)
+      VALUES
+        (:1, :2, :3, :4, GETDATE(), 'NEW')
+    `, retailerId, clientId, filename, xmlContent);
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Obține jurnalul de procesare
+ */
+function getProcessingLog(obj) {
+  try {
+    var limit = obj.limit || 100;
+    var retailerId = obj.retailerId || 0;
+    
+    var whereClause = '';
+    if (retailerId > 0) {
+      whereClause = ' AND L.TRDR_RETAILER = :1';
+    }
+    
+    var dataset = X.GETSQLDATASET(`
+      SELECT TOP ${limit}
+        L.CCCORDERSLOG, L.MESSAGEDATE, L.ORDERID,
+        L.MESSAGETEXT, T.NAME AS RETAILER_NAME
+      FROM CCCORDERSLOG L
+      JOIN TRDR T ON L.TRDR_RETAILER = T.TRDR
+      WHERE 1=1 ${whereClause}
+      ORDER BY L.MESSAGEDATE DESC
+    `, retailerId);
+    
+    return { success: true, data: JSON.parse(dataset.JSON) };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+```
+
+## Tabel nou pentru Monitorizare Centralizată
+
+Pentru a îmbunătăți monitorizarea în noua arhitectură, adaug un nou tabel pentru urmărirea proceselor:
+
+```sql
+CREATE TABLE CCCEDIPROCESSMONITOR (
+  CCCEDIPROCESSMONITOR INT NOT NULL IDENTITY(1, 1),
+  PROCESSTYPE VARCHAR(50) NOT NULL, -- 'INBOUND', 'OUTBOUND', 'APERAK'
+  DOCUMENTTYPE VARCHAR(50) NOT NULL, -- 'ORDER', 'INVOICE', 'DESADV', etc.
+  TRDR_RETAILER INT NOT NULL,
+  TRDR_CLIENT INT NOT NULL,
+  FILENAME VARCHAR(250),
+  FINDOC INT,
+  PROCESSDATE DATETIME NOT NULL DEFAULT GETDATE(),
+  STATUS VARCHAR(50) NOT NULL, -- 'SUCCESS', 'ERROR', 'WARNING', 'PENDING'
+  ERRORMESSAGE VARCHAR(MAX),
+  PROCESSDURATION INT, -- Durata în ms
+  RETRYCOUNT INT DEFAULT 0,
+  NEXTRETRYDATE DATETIME,
+  CONSTRAINT PK_CCCEDIPROCESSMONITOR PRIMARY KEY (CCCEDIPROCESSMONITOR)
+);
+
+CREATE INDEX IDX_CCCEDIMON_STATUS ON CCCEDIPROCESSMONITOR (STATUS, PROCESSDATE);
+CREATE INDEX IDX_CCCEDIMON_RETAILER ON CCCEDIPROCESSMONITOR (TRDR_RETAILER, DOCUMENTTYPE);
+```
+
+Și endpoint-ul corespunzător în S1:
+
+```javascript
+/**
+ * Adaugă o intrare în monitorul de procesare
+ */
+function logProcessActivity(obj) {
+  try {
+    var processType = obj.processType;
+    var documentType = obj.documentType;
+    var retailerId = obj.retailerId;
+    var clientId = obj.clientId || 1;
+    var filename = obj.filename || '';
+    var findoc = obj.findoc || 0;
+    var status = obj.status;
+    var errorMessage = obj.errorMessage || '';
+    var duration = obj.duration || 0;
+    
+    X.RUNSQL(`
+      INSERT INTO CCCEDIPROCESSMONITOR
+        (PROCESSTYPE, DOCUMENTTYPE, TRDR_RETAILER, TRDR_CLIENT,
+         FILENAME, FINDOC, PROCESSDATE, STATUS, ERRORMESSAGE, PROCESSDURATION)
+      VALUES
+        (:1, :2, :3, :4, :5, :6, GETDATE(), :7, :8, :9)
+    `, processType, documentType, retailerId, clientId,
+       filename, findoc, status, errorMessage, duration);
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Obține statistici de procesare pentru dashboard
+ */
+function getProcessingStatistics(obj) {
+  try {
+    var days = obj.days || 7;
+    var retailerId = obj.retailerId || 0;
+    
+    var retailerFilter = '';
+    if (retailerId > 0) {
+      retailerFilter = ' AND TRDR_RETAILER = ' + retailerId;
+    }
+    
+    // Statistici de succes per tip document
+    var successStatsByType = X.GETSQLDATASET(`
+      SELECT 
+        DOCUMENTTYPE, COUNT(*) AS COUNT
+      FROM CCCEDIPROCESSMONITOR
+      WHERE PROCESSDATE >= DATEADD(day, -:1, GETDATE())
+      AND STATUS = 'SUCCESS'
+      ${retailerFilter}
+      GROUP BY DOCUMENTTYPE
+    `, days);
+    
+    // Statistici de erori per tip document
+    var errorStatsByType = X.GETSQLDATASET(`
+      SELECT 
+        DOCUMENTTYPE, COUNT(*) AS COUNT
+      FROM CCCEDIPROCESSMONITOR
+      WHERE PROCESSDATE >= DATEADD(day, -:1, GETDATE())
+      AND STATUS = 'ERROR'
+      ${retailerFilter}
+      GROUP BY DOCUMENTTYPE
+    `, days);
+    
+    // Tendințe de procesare (ultimele zile)
+    var processingTrends = X.GETSQLDATASET(`
+      SELECT 
+        CAST(PROCESSDATE AS DATE) AS DATE,
+        DOCUMENTTYPE,
+        STATUS,
+        COUNT(*) AS COUNT
+      FROM CCCEDIPROCESSMONITOR
+      WHERE PROCESSDATE >= DATEADD(day, -:1, GETDATE())
+      ${retailerFilter}
+      GROUP BY CAST(PROCESSDATE AS DATE), DOCUMENTTYPE, STATUS
+      ORDER BY DATE
+    `, days);
+    
+    return { 
+      success: true, 
+      successByType: JSON.parse(successStatsByType.JSON),
+      errorsByType: JSON.parse(errorStatsByType.JSON),
+      trends: JSON.parse(processingTrends.JSON)
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+```
+
+## Integrare cu Vue.js
+
+Pentru a utiliza aceste endpoint-uri în frontend-ul Vue.js:
+
+```javascript
+// Exemplu de serviciu Vue pentru EDI mappings
+import { api } from '@/services/api';
+
+export default {
+  // Obține conectorii EDI
+  async getConnectors() {
+    const response = await api.post('/s1services/JS/AJS/EDIMappingService/getEDIConnectors', {});
+    return response.data;
+  },
+  
+  // Salvează un conector
+  async saveConnector(connectorData) {
+    const response = await api.post('/s1services/JS/AJS/EDIMappingService/saveEDIConnector', connectorData);
+    return response.data;
+  },
+  
+  // Obține mapările de documente
+  async getDocumentMappings(retailerId = 0) {
+    const response = await api.post('/s1services/JS/AJS/EDIMappingService/getDocumentMappings', {
+      retailerId
+    });
+    return response.data;
+  },
+  
+  // ... alte metode pentru accesarea endpoint-urilor
+}
+```
+
+Această abordare reutilizează schema existentă dar adaugă abstracția endpoint-urilor S1, asigurând compatibilitatea cu arhitectura bazată pe Heroku, fără a necesita acces direct la baza de date.

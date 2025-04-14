@@ -1,3 +1,4 @@
+//Cod specific S1 - AJS
 const eMagMarketplaceBatchSize = 10
 var ftpQueue = []
 folderPath = 'C:\\S1Print\\FTP\\Online\\'

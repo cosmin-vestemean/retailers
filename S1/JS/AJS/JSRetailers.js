@@ -1,3 +1,4 @@
+//Cod specific S1 - AJS
 //// JSRetailers
 function processSqlAsDataset(obj) {
   return { data: X.SQL(obj.sqlQuery, null) }

@@ -1,3 +1,5 @@
+//Cod specific S1 - AJS
+
 var doc,
   SALDOC = X.SALDOC,
   MTRDOC = X.MTRDOC,

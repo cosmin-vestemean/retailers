@@ -4,6 +4,8 @@
 - [Key Endpoints](#key-endpoints)
 - [Authentication](#authentication)
 - [Documentation](#documentation)
+- [FeathersJS Backend Integration](#feathersjs-backend-integration)
+- [Coding Conventions](#coding-conventions)
 - [Code Structure](#code-structure)
 - [API Functions](#api-functions)
   - [RUNSQL](#runsqlasql-string-aparams-variant)
@@ -39,6 +41,32 @@ http://[Registered Name or Serial Number].oncloud.gr/s1services
 
 ## Documentation
 For complete API documentation and integration details, visit [Soft1 Web Services Documentation](https://www.softone.gr/ws/)
+
+## FeathersJS Backend Integration
+
+This project uses FeathersJS as the backend framework. Refer to the [FeathersJS API Documentation](https://feathersjs.com/api/) for the latest information.
+
+### Key FeathersJS Components:
+- **Application**: Main Feathers application API
+- **Services**: Service objects and their methods
+- **Hooks**: Pluggable middleware for service methods
+- **Events**: Events sent by service methods
+- **Authentication**: Supports JWT, Local, and OAuth strategies
+- **Transports**: REST, Socket.io, and other API server implementations
+- **Database Adapters**: Support for MongoDB, SQL, Memory, and other databases
+
+## Coding Conventions
+
+### Soft1 Specific Code Files
+- Files containing Soft1 ERP specific code must use JavaScript ES5 syntax
+- All Soft1 specific files should be marked with a comment in the first line:
+  - Standard S1 files: `// Cod specific S1`
+  - AJS endpoint files: `// Cod specific S1 - AJS`
+- The global variable `X` is used throughout Soft1 code and provides access to Soft1 API
+
+### API Endpoints
+- Custom API endpoints should be placed in the `/public/S1/AJS` directory
+- Only files in the AJS directory should be modified
 
 ## Code Structure
 
