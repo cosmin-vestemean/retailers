@@ -10,6 +10,7 @@
 - [API Functions](#api-functions)
   - [RUNSQL](#runsqlasql-string-aparams-variant)
   - [GETSQLDATASET](#getsqldatasetasql-string-aparams-variant-tdataset)
+  - [SQL](#sql-asql-string-aparams-variant-string)
   - [HTTPCALL](#httpcallurl-string-postdata-string-headers-string-method-string-variant)
   - [WEBREQUEST](#webrequestjsonrequest-string-string)
   - [WSCALL](#wscallscope-variant-uri-string-postdata-string-callbackfunc-variant-string)
@@ -124,6 +125,40 @@ Executes a SQL query and returns results in a dataset.
 ```javascript
 var qry = "SELECT CODE, NAME FROM TRDR WHERE COMPANY=:1 AND SODTYPE=:2 AND BUSUNITS=:3";
 var ds = X.GETSQLDATASET(qry, X.SYS.COMPANY, 13, 100);
+```
+
+### SQL(ASQL: string; AParams: Variant): string
+
+Executes a SQL query and returns a single row result as a comma-separated string.
+
+#### Parameters
+- `ASQL` (string): The SQL statement to execute. Can include parameterized queries using :1, :2 etc syntax.
+- `AParams` (Variant): Array containing parameter values to substitute in the SQL statement.
+
+#### Returns
+- `string`: A comma-separated string with the values from the first row of the result set.
+
+#### Usage Notes
+- Used for simple queries where you need only one row result
+- Useful for retrieving single values or a small set of values
+- Returns empty string if no rows are found
+- Only returns the first row if multiple rows are in the result set
+- For multiple rows or complex data, use GETSQLDATASET instead
+
+#### Examples
+
+```javascript
+// Example 1: Get next number in sequence
+var NewCode = X.SQL("SELECT ISNULL((SELECT MAX(ISNULL(TRY_PARSE(ISNULL(SNCODE,0) AS INT),0)) FROM GUARANTY),0) + 1", null);
+// Returns the max number + 1 of the field Guaranty.SNCODE
+
+// Example 2: Get customer information by tax ID
+function ExampleSQL(vAFM) {
+    var str = "SELECT TRDR, CODE, NAME FROM TRDR "
+        + "\n WHERE COMPANY=:X.SYS.COMPANY AND SODTYPE=13 AND AFM=:1";
+    return X.SQL(str, vAFM);
+}
+// Return Example: 1, 1234, TestCustomer
 ```
 
 ### HTTPCALL(URL: string, PostData: string, Headers: string, Method: string): Variant
