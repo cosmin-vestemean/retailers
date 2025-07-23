@@ -1586,6 +1586,19 @@ app.use('abcHelper', new ABCHelperServiceClass(), {
 //scanPeriodically run
 app.service('sftp').scanPeriodically({}, {})
 
+// Modified middleware to track only database requests
+app.use(async (ctx, next) => {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  
+  // Only log database-related services
+  const dbServices = ['CCCORDERSLOG', 'CCCSFTPXML', 'getDataset', 'getS1SqlData'];
+  if (dbServices.some(service => ctx.url.includes(service))) {
+    console.log(`DB ${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`);
+  }
+});
+
 export { app }
 
 /*
