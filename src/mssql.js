@@ -30,7 +30,9 @@ export const mssql = (app) => {
           destination: {
             host: config.connection.server,
             port: config.connection.port || 1433
-          }
+          },
+          // Add a timeout (e.g., 15 seconds) for faster failure
+          timeout: 15000 
         })
         
         console.log('SOCKS connection established to database')
