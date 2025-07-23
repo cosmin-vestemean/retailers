@@ -24,13 +24,53 @@ import { parseString } from 'xml2js'
 
 const app = koa(feathers())
 
-// Add this logging middleware right after app initialization
+// --- Start of new metrics logic ---
+
+// In-memory store for monthly metrics. Resets on app restart.
+const monthlyMetrics = {
+  count: 0,
+  lastResetMonth: new Date().getMonth(), // 0-11
+  lastResetYear: new Date().getFullYear()
+}
+
+// Function to log the daily report
+const logDailyReport = () => {
+  const today = new Date().toISOString().slice(0, 10)
+  console.log(`[METRICS REPORT ${today}] Requests this month so far: ${monthlyMetrics.count}`)
+}
+
+// Log the report once on startup
+logDailyReport()
+
+// Schedule the report to run every 24 hours
+setInterval(logDailyReport, 24 * 60 * 60 * 1000)
+
+// Expanded logging middleware
 app.use(async (ctx, next) => {
   const start = Date.now()
-  await next()
+
+  // Check if the month has changed
+  const now = new Date()
+  const currentMonth = now.getMonth()
+  const currentYear = now.getFullYear()
+
+  if (currentYear > monthlyMetrics.lastResetYear || (currentYear === monthlyMetrics.lastResetYear && currentMonth > monthlyMetrics.lastResetMonth)) {
+    console.log(`[Metrics] New month detected. Resetting monthly counter.`)
+    monthlyMetrics.count = 0 // Reset the counter
+    monthlyMetrics.lastResetMonth = currentMonth
+    monthlyMetrics.lastResetYear = currentYear
+  }
+
+  monthlyMetrics.count++ // Increment for the current request
+
+  await next() // Process the actual request
+
   const ms = Date.now() - start
+  // Log individual request timing
   console.log(`${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`)
 })
+
+// --- End of new metrics logic ---
 
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
