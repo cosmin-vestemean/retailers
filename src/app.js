@@ -24,6 +24,14 @@ import { parseString } from 'xml2js'
 
 const app = koa(feathers())
 
+// Add this logging middleware right after app initialization
+app.use(async (ctx, next) => {
+  const start = Date.now()
+  await next()
+  const ms = Date.now() - start
+  console.log(`${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`)
+})
+
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
 
