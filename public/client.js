@@ -102,7 +102,7 @@ async function getNDisplayOrders(retailer) {
       .find()
       .then((result) => result.token);
     
-    // Use the new API endpoint for orders - direct call to getOrdersData
+    // Use the new SQL script getOrdersData with standard parameters
     const result = await client
       .service('getS1SqlData')
       .find({
@@ -111,8 +111,10 @@ async function getNDisplayOrders(retailer) {
           appID: '1001',
           SqlName: 'getOrdersData',
           trdr: retailer,
-          daysOlder: 30,
-          limit: 50
+          series: 7121, // Standard series for orders
+          sosource: 1351, // Standard sosource for orders  
+          fprms: 712, // Standard fprms for orders
+          daysOlder: 30
         }
       });
     
