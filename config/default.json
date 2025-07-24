@@ -12,7 +12,7 @@
   "mssql": {
     "client": "mssql",
     "connection": {
-      "server": "37.251.146.15",
+      "server": "37.251.149.207",
       "user": "sa",
       "password": "3Y\\+pa7um!3U)DA(Vd",
       "database": "PetFactory"

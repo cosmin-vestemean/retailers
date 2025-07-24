@@ -1,0 +1,1512 @@
+2025-07-24T11:30:40.585426+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].* from [CCCSFTPXML] where [CCCSFTPXML].[CCCSFTPXML] in (@p0) order by [CCCSFTPXM...
+2025-07-24T11:30:45.585773+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:30:45.585792+00:00 app[web.1]:   - Total: 5/5
+2025-07-24T11:30:45.585793+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:30:45.585832+00:00 app[web.1]:   - Free: 5
+2025-07-24T11:30:45.585832+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:30:45.585833+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:00.574568+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClYk&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=8fda43f9-1f73-4a71-e026-27cdce4f6bc6 fwd="86.127.118.133" dyno=web.1 connect=0ms service=22141ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:00.789903+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClYu&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=435efcad-bae0-a48b-0e1d-2b812a29644d fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:00.790723+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=f2f6d489-add0-1a1a-cd78-22066663286c fwd="86.127.118.133" dyno=web.1 connect=0ms service=24324ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:15.586332+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:31:15.586367+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:31:15.586368+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:25.790329+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClYu.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=b64223bd-067d-3715-3ab4-9be98df20665 fwd="86.127.118.133" dyno=web.1 connect=1ms service=24998ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:26.005977+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZ2&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=64a02180-5eea-a012-dc66-16df4f9bf3b7 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:45.587999+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:31:45.588029+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:31:45.588029+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:51.006280+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZ2.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=f40e2480-fa92-4742-fc79-e7e340e9a991 fwd="86.127.118.133" dyno=web.1 connect=0ms service=24992ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:51.223296+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZC&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=e70f5f56-ce11-d169-3461-5b8008b1c946 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:15.588361+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:32:15.588391+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:32:16.223762+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZC.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=77496484-4758-c30d-f784-a3764d7b0552 fwd="86.127.118.133" dyno=web.1 connect=0ms service=24996ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:16.440497+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZM&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=da3188a7-da19-d02b-dcaf-617253ac6f54 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:41.440705+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZM.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=d503d940-bbd0-66dc-94bb-f71aed57a34b fwd="86.127.118.133" dyno=web.1 connect=0ms service=25006ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:45.589939+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:32:45.589983+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:32:45.589986+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:33:13.392759+00:00 heroku[web.1]: Restarting
+2025-07-24T11:33:13.395046+00:00 heroku[web.1]: State changed from up to starting
+2025-07-24T11:33:13.906561+00:00 heroku[web.1]: Stopping all processes with SIGTERM
+2025-07-24T11:33:13.937345+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=Ucfb6aXqmngUf3qjAAAY" host=retailers1-0691020d207c.herokuapp.com request_id=2533781b-1c7d-dfb8-9035-4bf9aac4cda9 fwd="81.196.206.203" dyno=web.1 connect=0ms service=211479ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:13.937628+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=FD9ZOfLZpIVNXoqtAAAe" host=retailers1-0691020d207c.herokuapp.com request_id=f16ab1b6-d441-ea24-e58f-3252d3dc493f fwd="86.122.68.77" dyno=web.1 connect=0ms service=155508ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:13.985340+00:00 heroku[web.1]: Process exited with status 143
+2025-07-24T11:33:16.637204+00:00 heroku[web.1]: Starting process with command `npm start`
+2025-07-24T11:33:17.421345+00:00 app[web.1]: 
+2025-07-24T11:33:17.421367+00:00 app[web.1]: > retailers@1.1.52 start
+2025-07-24T11:33:17.421367+00:00 app[web.1]: > node src
+2025-07-24T11:33:17.421368+00:00 app[web.1]: 
+2025-07-24T11:33:17.550047+00:00 app[web.1]: WARNING: NODE_ENV value of 'production' did not match any deployment config file names.
+2025-07-24T11:33:17.550244+00:00 app[web.1]: WARNING: See https://github.com/node-config/node-config/wiki/Strict-Mode
+2025-07-24T11:33:18.501905+00:00 app[web.1]: [METRICS REPORT 2025-07-24] Requests this month so far: 0
+2025-07-24T11:33:18.505629+00:00 app[web.1]: warn: Publishing all events to all authenticated users. See `channels.js` and https://dove.feathersjs.com/api/channels.html for more information.
+2025-07-24T11:33:18.506170+00:00 app[web.1]: === FIXIE SOCKS CONFIGURATION ===
+2025-07-24T11:33:18.506211+00:00 app[web.1]: Proxy Host: bici.usefixie.com
+2025-07-24T11:33:18.506294+00:00 app[web.1]: Proxy Port: 1080
+2025-07-24T11:33:18.506318+00:00 app[web.1]: Database Target: 37.251.146.15:1433
+2025-07-24T11:33:18.506338+00:00 app[web.1]: Database: PetFactory
+2025-07-24T11:33:18.506546+00:00 app[web.1]: === STARTING PROXY CONNECTION ===
+2025-07-24T11:33:18.620431+00:00 app[web.1]: 🔧 Setting up connection pool monitoring for SOCKS proxy...
+2025-07-24T11:33:18.620484+00:00 app[web.1]: Database client configured and ready
+2025-07-24T11:33:18.633035+00:00 app[web.1]: info: Feathers app listening on http://localhost:51988
+2025-07-24T11:33:18.633147+00:00 app[web.1]: (node:21) [DEP0044] DeprecationWarning: The `util.isArray` API is deprecated. Please use `Array.isArray()` instead.
+2025-07-24T11:33:18.633162+00:00 app[web.1]: (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-07-24T11:33:18.633178+00:00 app[web.1]: (node:21) [DEP0055] DeprecationWarning: The `util.isRegExp` API is deprecated. Please use `arg instanceof RegExp` instead.
+2025-07-24T11:33:18.633196+00:00 app[web.1]: (node:21) [DEP0047] DeprecationWarning: The `util.isDate` API is deprecated.  Please use `arg instanceof Date` instead.
+2025-07-24T11:33:18.633594+00:00 app[web.1]: (node:21) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2025-07-24T11:33:19.057372+00:00 heroku[web.1]: State changed from starting to up
+2025-07-24T11:33:20.477114+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDNrk" host=retailers1-0691020d207c.herokuapp.com request_id=01c99d3e-5e2a-2066-a424-36a7542e6379 fwd="81.196.206.203" dyno=web.1 connect=5001ms service=5ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.550738+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDP87&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=794a65c9-d232-8cf7-a26e-595339920212 fwd="81.196.206.203" dyno=web.1 connect=0ms service=2ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.565824+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDNNF" host=retailers1-0691020d207c.herokuapp.com request_id=e7480f11-4a92-f45a-7bbf-e94ac3dfc458 fwd="86.122.68.77" dyno=web.1 connect=5001ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.612132+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDP89&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=e7b3dc51-e0fa-41e5-816f-0b63bf46d4ad fwd="81.196.206.203" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.633729+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDOgX&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=eef2639e-da46-c511-cb9c-8bfa5c2be8e1 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.697422+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDOga&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=45737513-aec7-a4d1-7da5-7d0d9b7286e7 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.921928+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDPAD&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=40fa757e-b41a-caae-54ad-a51b32584b76 fwd="81.196.206.203" dyno=web.1 connect=0ms service=238ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.921507+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDOia&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=1bf33761-b77d-74bd-b3f5-389f4299903b fwd="86.122.68.77" dyno=web.1 connect=0ms service=158ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.773791+00:00 heroku[router]: at=info method=GET path="/retailer_file_manager.html?trdr=12349&logo=%27https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg%27" host=retailers1-0691020d207c.herokuapp.com request_id=04cbb6ad-a902-7d14-1741-d2e5a85cfe1a fwd="86.122.68.77" dyno=web.1 connect=0ms service=5ms status=200 bytes=18023 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.845671+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=c1ae5e50-dad7-554e-77b8-2da9172d9fe4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=9089ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.889870+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=05db7e72-903a-7e37-c568-9d45c266d81f fwd="86.122.68.77" dyno=web.1 connect=0ms service=5ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.772126+00:00 app[web.1]: GET 200 /retailer_file_manager.html?trdr=12349&logo=%27https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg%27 - 2ms
+2025-07-24T11:33:29.886445+00:00 app[web.1]: GET 200 /css/sandstone.css - 1ms
+2025-07-24T11:33:30.318515+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=54a7a17e-29b2-49ad-38c3-c2bb434f1fc2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.388749+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=99e047ee-5065-8d30-ce56-3234e57d7e5a fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.320006+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=234960a3-5d7b-724e-4dcf-560c8b16984b fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.442698+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=b244e6d8-ca96-413f-ead7-103812d640a6 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.444918+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=ab671c9e-6154-d2e2-9979-c1129791ee49 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.451362+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=71e9b5e0-93f8-f8e1-7e15-29df18a7e96b fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.317776+00:00 app[web.1]: GET 200 /client.js - 0ms
+2025-07-24T11:33:30.319194+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 1ms
+2025-07-24T11:33:30.387896+00:00 app[web.1]: GET 200 /modules/orderTable.js - 0ms
+2025-07-24T11:33:30.442142+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:33:30.444453+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 0ms
+2025-07-24T11:33:30.450867+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:33:30.606018+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=8f4536bf-98ca-48a4-80fd-aaa500806d1f fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.605218+00:00 app[web.1]: GET 200 /modules/retailer.js - 1ms
+2025-07-24T11:33:31.007769+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRCV" host=retailers1-0691020d207c.herokuapp.com request_id=59431e9d-30e7-a556-81e4-f1ad5faf0375 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.521986+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRKM&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=a6e331d1-ef9b-3de4-072c-d9b721fe3c28 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.524241+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRKO&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=fa54203c-0627-65b8-5b85-40d93c9f7e62 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.594738+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRLm&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=56693676-02f4-b66d-3656-3aa766dea36c fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.677702+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRN2&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=55ea56b3-4e95-7a30-d4cc-812f6718479a fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.813069+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRLl&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=5d9cd59a-2ca2-aaa6-00de-37770d441eb5 fwd="86.122.68.77" dyno=web.1 connect=0ms service=219ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.678001+00:00 app[web.1]: {
+2025-07-24T11:33:31.678013+00:00 app[web.1]:   service: 'login',
+2025-07-24T11:33:31.678014+00:00 app[web.1]:   username: 'websitepetfactory',
+2025-07-24T11:33:31.678014+00:00 app[web.1]:   password: 'petfactory4321',
+2025-07-24T11:33:31.678015+00:00 app[web.1]:   appId: 1001
+2025-07-24T11:33:31.678015+00:00 app[web.1]: }
+2025-07-24T11:33:31.707030+00:00 app[web.1]: sqlQuery select name from trdr where sodtype=13 and trdr=12349
+2025-07-24T11:33:31.913293+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTPXML].* from [CCCSFTPXML] where [TRDR_RETAILER] = @p1 order by [XMLDATE] des...
+2025-07-24T11:33:32.440471+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTPXML].[CCCSFTPXML]) as [total] from [CCCSFTPXML] where [TRDR_RETAILER] = @p0
+2025-07-24T11:33:32.457405+00:00 app[web.1]: {
+2025-07-24T11:33:32.457407+00:00 app[web.1]:   success: true,
+2025-07-24T11:33:32.457410+00:00 app[web.1]:   clientID: '9J8pLdDOKqTbP5HH9JL5JMDFGoKsC7T5KYKrH4LH9JT69JT4PLTIR598R6nIIsjeLKr4H75I9JT2S7129JL5LIKsC4nnM49MHbL5G7959JOmL5H1H2KrHLXPPIKrGrLjOrHHRKK',
+2025-07-24T11:33:32.457410+00:00 app[web.1]:   objs: [
+2025-07-24T11:33:32.457411+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457411+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457411+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457412+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457412+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       REFID: '1',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       REFIDNAME: 'Sorin Fliundra',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       USERID: '1',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457415+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:33:32.457423+00:00 app[web.1]:     },
+2025-07-24T11:33:32.457424+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       REFID: '14',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       REFIDNAME: 'Ana Topirceanu',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       USERID: '14',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       EXPTIME: ''
+2025-07-24T11:33:32.457426+00:00 app[web.1]:     },
+2025-07-24T11:33:32.457426+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       REFID: '1000',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       REFIDNAME: 'Admin',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       USERID: '1000',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:33:32.457428+00:00 app[web.1]:     }
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   ],
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   ver: '6.00.622.11546',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   sn: '01102476371318',
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   off: false,
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   pin: false,
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   appid: '1001'
+2025-07-24T11:33:32.457429+00:00 app[web.1]: }
+2025-07-24T11:33:32.457709+00:00 app[web.1]: {
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   service: 'authenticate',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   clientID: '9J8pLdDOKqTbP5HH9JL5JMDFGoKsC7T5KYKrH4LH9JT69JT4PLTIR598R6nIIsjeLKr4H75I9JT2S7129JL5LIKsC4nnM49MHbL5G7959JOmL5H1H2KrHLXPPIKrGrLjOrHHRKK',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   COMPANY: '50',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   BRANCH: '1000',
+2025-07-24T11:33:32.457710+00:00 app[web.1]:   MODULE: '0',
+2025-07-24T11:33:32.457710+00:00 app[web.1]:   REFID: '1'
+2025-07-24T11:33:32.457710+00:00 app[web.1]: }
+2025-07-24T11:33:32.524963+00:00 app[web.1]: { data: 'KAUFLAND ROMANIA SCS ' }
+2025-07-24T11:33:32.757624+00:00 app[web.1]: {
+2025-07-24T11:33:32.757643+00:00 app[web.1]:   success: true,
+2025-07-24T11:33:32.757643+00:00 app[web.1]:   clientID: '9J8pHdbOGq9gU5LNNs5YJtTiK4bEKNKbDKDVLMLNHr1YJNTeOarhU6PHTdH0KanmKa0bDKL1KKzcT5DM9JL4LKLDGKnZKrSbDKH7Lb9PTLbQKL98TYKrGqDFRa50McnaKavV9JT3SaebDKDCPLLV9JT4TKebDqDOGaDYR4DMSYKtH4LLLMr6IoKtGa13J2KtHMnY9JL2GIKsC5PFOqXZGMebDZ159JL4LMrZL5LbPLS',
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   s1u: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   hyperlinks: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   canexport: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   image: '01102476371318/B9BBBC6FB52C7057.jpg',
+2025-07-24T11:33:32.757647+00:00 app[web.1]:   companyinfo: 'PET FACTORY SRL, Sediu|Sos. Giurgiului Nr. 118, Bl. 12, Sc. 5, Ap.130, Sector 4, 040676|Cod Fiscal: RO25190857 Nr. Reg. Comertului: J2009002551402'
+2025-07-24T11:33:32.757647+00:00 app[web.1]: }
+2025-07-24T11:33:33.248550+00:00 app[web.1]: { success: true, totalcount: 0, rows: [] }
+2025-07-24T11:33:48.620850+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:33:48.620904+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:33:48.620917+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:33:48.620930+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:33:48.620941+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:33:48.620953+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:34:18.621209+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:34:18.621232+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:34:18.621250+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:34:18.621262+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:34:18.621273+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:34:18.621286+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:34:48.621972+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:34:48.622032+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:34:48.622036+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:34:48.622037+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:34:48.622053+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:34:48.622066+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:35:18.621992+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:35:18.622023+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:35:18.622024+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:35:18.622024+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:35:18.622041+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:35:18.622063+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:35:48.621857+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:35:48.621890+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:35:48.621899+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:35:48.621908+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:35:48.621917+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:35:48.621927+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:36:18.622379+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:36:18.622423+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:36:18.622425+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:36:18.622437+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:36:18.622446+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:36:18.622455+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:36:48.623383+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:36:48.623434+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:36:48.623448+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:36:48.623460+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:36:48.623472+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:36:48.623486+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:37:18.624179+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:37:18.624224+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:37:18.624234+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:37:18.624243+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:37:18.624252+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:37:18.624263+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:37:48.624793+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:37:48.624815+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:37:48.624816+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:37:48.624828+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:37:48.624843+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:37:48.624857+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:38:18.625037+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:38:18.625093+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:38:18.625108+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:38:18.625121+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:38:18.625138+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:38:18.625154+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:38:42.975965+00:00 heroku[router]: at=info method=GET path="/" host=retailers1-0691020d207c.herokuapp.com request_id=d593cb8d-a563-6cb0-8a42-fafd693a9d6e fwd="86.122.68.77" dyno=web.1 connect=0ms service=4ms status=200 bytes=44387 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:43.113024+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=db4dedd0-1589-ef8e-7c2b-7186208b2623 fwd="86.122.68.77" dyno=web.1 connect=0ms service=4ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:42.973639+00:00 app[web.1]: GET 200 / - 1ms
+2025-07-24T11:38:43.109439+00:00 app[web.1]: GET 200 /css/sandstone.css - 1ms
+2025-07-24T11:38:43.604779+00:00 heroku[router]: at=info method=GET path="/js/abc-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=444ad81f-20f6-91a8-1e79-4c12ba7a55a1 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=15163 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:43.606629+00:00 heroku[router]: at=info method=GET path="/js/abc-bi-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=bd29cc5e-03fb-4c7d-d33d-6ed7961c7fcf fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=29828 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:43.660390+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=f9592960-c089-1ea6-a685-e558f5a812a2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=312019ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:43.604046+00:00 app[web.1]: GET 200 /js/abc-module.js - 0ms
+2025-07-24T11:38:43.605517+00:00 app[web.1]: GET 200 /js/abc-bi-module.js - 0ms
+2025-07-24T11:38:44.110357+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=23b7ea71-0a76-1561-0c98-f6a773930ff6 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.111030+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=356e9959-25fd-7d49-685e-00c7be1454a0 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.261125+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=f4175efe-c8b6-7393-2c50-84bb800eb54b fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.260855+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=36c54983-a1d8-8575-3289-88ef9e750542 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.326909+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=b406fa95-c97a-43a6-c38a-794d96b6372e fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.328004+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=a13d4bdc-d7f2-9b3e-8ba3-dfbf5be2cfda fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.109166+00:00 app[web.1]: GET 200 /client.js - 1ms
+2025-07-24T11:38:44.110334+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:38:44.260070+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 0ms
+2025-07-24T11:38:44.260352+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 1ms
+2025-07-24T11:38:44.325644+00:00 app[web.1]: GET 200 /modules/orderTable.js - 0ms
+2025-07-24T11:38:44.327451+00:00 app[web.1]: GET 200 /modules/retailer.js - 0ms
+2025-07-24T11:38:44.389652+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=68cd5ef0-9a3e-de44-b033-27053a19b87f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.403007+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyEdjM" host=retailers1-0691020d207c.herokuapp.com request_id=c5e8a5c3-ffdd-27d6-5951-cd07bea4edd4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.491027+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyEdkh&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=5f1f0afe-83af-f381-383e-58640430d8f5 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.492038+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyEdkj&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=8f92d7f2-394d-0b2d-44a9-9a976623e217 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.603728+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyEdmR&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=2e926c69-0774-f29f-23f9-e8c68b172da9 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.389301+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:38:44.603824+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11639 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:44.713988+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyEdmP&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=5e70a4db-05c1-5916-069a-edce41934f04 fwd="86.122.68.77" dyno=web.1 connect=0ms service=109ms status=200 bytes=22 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:44.713468+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:38:45.331449+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyEdxh&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=0ac77106-0f8e-1a64-3f33-82141773d7dc fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:45.410812+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyEdy1&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=984e44cf-1ae9-cee8-618b-ffd49786c021 fwd="86.122.68.77" dyno=web.1 connect=0ms service=40ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:38:45.331317+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12349 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.332169+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 13249 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.333917+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 78631 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.335697+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11322 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.337809+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12664 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.339400+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 38804 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.341043+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11654 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.343144+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.344902+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.346345+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.347855+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.349959+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.350938+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.352025+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.353063+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.434770+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.439955+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:38:45.440876+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.443245+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:38:45.445077+00:00 app[web.1]: { data: '21' }
+2025-07-24T11:38:45.445641+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.446097+00:00 app[web.1]: { data: '24' }
+2025-07-24T11:38:45.446623+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.447083+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.447496+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.451126+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.455449+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:45.456999+00:00 app[web.1]: { data: '16' }
+2025-07-24T11:38:45.567306+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.567307+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.567311+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.568411+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.568411+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.568412+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.570119+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.570119+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.570119+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.576381+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.576383+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.576384+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.581432+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.581433+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.581434+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.586011+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:45.586023+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:45.586031+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:45.640774+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:38:45.657691+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:38:45.667265+00:00 app[web.1]: {
+2025-07-24T11:38:45.667267+00:00 app[web.1]:   success: true,
+2025-07-24T11:38:45.667268+00:00 app[web.1]:   data: [
+2025-07-24T11:38:45.667269+00:00 app[web.1]:     { fincode: 'FAEX-PF-30172', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667269+00:00 app[web.1]:     { fincode: 'FAEX-PF-30173', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667270+00:00 app[web.1]:     { fincode: 'FAEX-PF-30174', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667270+00:00 app[web.1]:     { fincode: 'FAEX-PF-30175', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667271+00:00 app[web.1]:     { fincode: 'FAEX-PF-30176', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667271+00:00 app[web.1]:     { fincode: 'FAEX-PF-30177', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667271+00:00 app[web.1]:     { fincode: 'FAEX-PF-30178', trndate: '30.06.2025' },
+2025-07-24T11:38:45.667271+00:00 app[web.1]:     { fincode: 'FAEX-PF-30309', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667287+00:00 app[web.1]:     { fincode: 'FAEX-PF-30310', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667287+00:00 app[web.1]:     { fincode: 'FAEX-PF-30311', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667287+00:00 app[web.1]:     { fincode: 'FAEX-PF-30312', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667288+00:00 app[web.1]:     { fincode: 'FAEX-PF-30313', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667288+00:00 app[web.1]:     { fincode: 'FAEX-PF-30314', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667288+00:00 app[web.1]:     { fincode: 'FAEX-PF-30315', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667288+00:00 app[web.1]:     { fincode: 'FAEX-PF-30316', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667288+00:00 app[web.1]:     { fincode: 'FAEX-PF-30317', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667289+00:00 app[web.1]:     { fincode: 'FAEX-PF-30318', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667289+00:00 app[web.1]:     { fincode: 'FAEX-PF-30319', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667289+00:00 app[web.1]:     { fincode: 'FAEX-PF-30320', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667289+00:00 app[web.1]:     { fincode: 'FAEX-PF-30321', trndate: '10.07.2025' },
+2025-07-24T11:38:45.667290+00:00 app[web.1]:     { fincode: 'FAEX-PF-30384', trndate: '16.07.2025' },
+2025-07-24T11:38:45.667290+00:00 app[web.1]:     { fincode: 'FAEX-PF-30385', trndate: '16.07.2025' },
+2025-07-24T11:38:45.667290+00:00 app[web.1]:     { fincode: 'FAEX-PF-30386', trndate: '16.07.2025' },
+2025-07-24T11:38:45.667291+00:00 app[web.1]:     { fincode: 'FAEX-PF-30387', trndate: '16.07.2025' }
+2025-07-24T11:38:45.667291+00:00 app[web.1]:   ],
+2025-07-24T11:38:45.667291+00:00 app[web.1]:   total: 24
+2025-07-24T11:38:45.667291+00:00 app[web.1]: }
+2025-07-24T11:38:45.671114+00:00 app[web.1]: {
+2025-07-24T11:38:45.671114+00:00 app[web.1]:   success: true,
+2025-07-24T11:38:45.671115+00:00 app[web.1]:   data: [
+2025-07-24T11:38:45.671115+00:00 app[web.1]:     { fincode: 'FAEX-PF-30074', trndate: '26.06.2025' },
+2025-07-24T11:38:45.671115+00:00 app[web.1]:     { fincode: 'FAEX-PF-30075', trndate: '26.06.2025' },
+2025-07-24T11:38:45.671115+00:00 app[web.1]:     { fincode: 'FAEX-PF-30076', trndate: '26.06.2025' },
+2025-07-24T11:38:45.671115+00:00 app[web.1]:     { fincode: 'FAEX-PF-30077', trndate: '26.06.2025' },
+2025-07-24T11:38:45.671116+00:00 app[web.1]:     { fincode: 'FAEX-PF-30219', trndate: '02.07.2025' },
+2025-07-24T11:38:45.671116+00:00 app[web.1]:     { fincode: 'FAEX-PF-30220', trndate: '02.07.2025' },
+2025-07-24T11:38:45.671116+00:00 app[web.1]:     { fincode: 'FAEX-PF-30221', trndate: '02.07.2025' },
+2025-07-24T11:38:45.671116+00:00 app[web.1]:     { fincode: 'FAEX-PF-30222', trndate: '02.07.2025' },
+2025-07-24T11:38:45.671116+00:00 app[web.1]:     { fincode: 'FAEX-PF-30223', trndate: '02.07.2025' }
+2025-07-24T11:38:45.671117+00:00 app[web.1]:   ],
+2025-07-24T11:38:45.671117+00:00 app[web.1]:   total: 9
+2025-07-24T11:38:45.671117+00:00 app[web.1]: }
+2025-07-24T11:38:45.677293+00:00 app[web.1]: {
+2025-07-24T11:38:45.677293+00:00 app[web.1]:   success: true,
+2025-07-24T11:38:45.677294+00:00 app[web.1]:   data: [
+2025-07-24T11:38:45.677294+00:00 app[web.1]:     { fincode: 'FAEX-PF-30555', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677294+00:00 app[web.1]:     { fincode: 'FAEX-PF-30556', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677294+00:00 app[web.1]:     { fincode: 'FAEX-PF-30557', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677294+00:00 app[web.1]:     { fincode: 'FAEX-PF-30558', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677294+00:00 app[web.1]:     { fincode: 'FAEX-PF-30559', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30560', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30561', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30562', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30563', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30564', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677295+00:00 app[web.1]:     { fincode: 'FAEX-PF-30565', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30566', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30567', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30568', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30569', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30570', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30571', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30572', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30573', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30574', trndate: '23.07.2025' },
+2025-07-24T11:38:45.677297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30575', trndate: '23.07.2025' }
+2025-07-24T11:38:45.677297+00:00 app[web.1]:   ],
+2025-07-24T11:38:45.677297+00:00 app[web.1]:   total: 21
+2025-07-24T11:38:45.677297+00:00 app[web.1]: }
+2025-07-24T11:38:45.728012+00:00 app[web.1]: {
+2025-07-24T11:38:45.728013+00:00 app[web.1]:   success: true,
+2025-07-24T11:38:45.728014+00:00 app[web.1]:   data: [
+2025-07-24T11:38:45.728015+00:00 app[web.1]:     { fincode: 'FAEX-PF-30160', trndate: '30.06.2025' },
+2025-07-24T11:38:45.728015+00:00 app[web.1]:     { fincode: 'FAEX-PF-30161', trndate: '30.06.2025' },
+2025-07-24T11:38:45.728015+00:00 app[web.1]:     { fincode: 'FAEX-PF-30162', trndate: '30.06.2025' },
+2025-07-24T11:38:45.728016+00:00 app[web.1]:     { fincode: 'FAEX-PF-30163', trndate: '30.06.2025' },
+2025-07-24T11:38:45.728016+00:00 app[web.1]:     { fincode: 'FAEX-PF-30164', trndate: '30.06.2025' },
+2025-07-24T11:38:45.728016+00:00 app[web.1]:     { fincode: 'FAEX-PF-30335', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728017+00:00 app[web.1]:     { fincode: 'FAEX-PF-30336', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728017+00:00 app[web.1]:     { fincode: 'FAEX-PF-30337', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728017+00:00 app[web.1]:     { fincode: 'FAEX-PF-30338', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728017+00:00 app[web.1]:     { fincode: 'FAEX-PF-30339', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728018+00:00 app[web.1]:     { fincode: 'FAEX-PF-30340', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728018+00:00 app[web.1]:     { fincode: 'FAEX-PF-30341', trndate: '10.07.2025' },
+2025-07-24T11:38:45.728018+00:00 app[web.1]:     { fincode: 'FAEX-PF-30391', trndate: '16.07.2025' },
+2025-07-24T11:38:45.728018+00:00 app[web.1]:     { fincode: 'FAEX-PF-30392', trndate: '16.07.2025' },
+2025-07-24T11:38:45.728018+00:00 app[web.1]:     { fincode: 'FAEX-PF-30393', trndate: '16.07.2025' },
+2025-07-24T11:38:45.728019+00:00 app[web.1]:     { fincode: 'FAEX-PF-30394', trndate: '16.07.2025' }
+2025-07-24T11:38:45.728019+00:00 app[web.1]:   ],
+2025-07-24T11:38:45.728019+00:00 app[web.1]:   total: 16
+2025-07-24T11:38:45.728019+00:00 app[web.1]: }
+2025-07-24T11:38:46.064589+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:38:46.118210+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:38:46.127662+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:46.127664+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:46.127665+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:46.182021+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:38:46.182023+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:38:46.182024+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:38:46.203828+00:00 app[web.1]: {
+2025-07-24T11:38:46.203841+00:00 app[web.1]:   success: true,
+2025-07-24T11:38:46.203842+00:00 app[web.1]:   data: [
+2025-07-24T11:38:46.203842+00:00 app[web.1]:     { fincode: 'FAEX-PF-30073', trndate: '26.06.2025' },
+2025-07-24T11:38:46.203843+00:00 app[web.1]:     { fincode: 'FAEX-PF-30170', trndate: '30.06.2025' },
+2025-07-24T11:38:46.203843+00:00 app[web.1]:     { fincode: 'FAEX-PF-30171', trndate: '30.06.2025' },
+2025-07-24T11:38:46.203843+00:00 app[web.1]:     { fincode: 'FAEX-PF-30256', trndate: '04.07.2025' },
+2025-07-24T11:38:46.203844+00:00 app[web.1]:     { fincode: 'FAEX-PF-30257', trndate: '04.07.2025' },
+2025-07-24T11:38:46.203844+00:00 app[web.1]:     { fincode: 'FAEX-PF-30343', trndate: '11.07.2025' },
+2025-07-24T11:38:46.203844+00:00 app[web.1]:     { fincode: 'FAEX-PF-30344', trndate: '11.07.2025' },
+2025-07-24T11:38:46.203844+00:00 app[web.1]:     { fincode: 'FAEX-PF-30553', trndate: '23.07.2025' },
+2025-07-24T11:38:46.203845+00:00 app[web.1]:     { fincode: 'FAEX-PF-30554', trndate: '23.07.2025' }
+2025-07-24T11:38:46.203845+00:00 app[web.1]:   ],
+2025-07-24T11:38:46.203845+00:00 app[web.1]:   total: 9
+2025-07-24T11:38:46.203845+00:00 app[web.1]: }
+2025-07-24T11:38:46.271104+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:38:48.624747+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:38:48.624800+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:38:48.624801+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:38:48.624824+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:38:48.624828+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:38:48.624840+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:38:53.920528+00:00 app[web.1]: scanning for orders...
+2025-07-24T11:38:53.936035+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTP].* from [CCCSFTP] where [TRDR_RETAILER] = @p1 order by [CCCSFTP].[TRDR_RET...
+2025-07-24T11:38:54.002260+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTP].[TRDR_RETAILER]) as [total] from [CCCSFTP] where [TRDR_RETAILER] = @p0
+2025-07-24T11:38:55.629059+00:00 app[web.1]: Connected
+2025-07-24T11:38:56.650547+00:00 app[web.1]: No files on server
+2025-07-24T11:38:56.661596+00:00 app[web.1]: 📊 SQL Query: insert into [CCCORDERSLOG] ([CCCSFTPXML], [MESSAGETEXT], [ORDERID], [TRDR_CLIENT], [TRDR_RETAILER]) ...
+2025-07-24T11:38:56.733923+00:00 app[web.1]: 📊 SQL Query: select [CCCORDERSLOG].* from [CCCORDERSLOG] where [CCCORDERSLOG].[CCCORDERSLOG] = @p0
+2025-07-24T11:38:56.800164+00:00 app[web.1]: storing xml in S1 DB for retailer 11639
+2025-07-24T11:38:56.800259+00:00 app[web.1]: storing filename in S1 DB .gitkeep
+2025-07-24T11:38:56.800277+00:00 app[web.1]: not an xml file .gitkeep
+2025-07-24T11:38:56.800313+00:00 app[web.1]: List of inserted files []
+2025-07-24T11:38:56.800335+00:00 app[web.1]: Creating orders...
+2025-07-24T11:38:56.800640+00:00 app[web.1]: sqlQuery WITH cte1 AS (SELECT (SELECT a.xmldata.query('/Order/ID') ) AS OrderIdTag ,* FROM CCCSFTPXML a WHERE a.findoc IS NULL AND a.trdr_retailer IN (11639,12349,13249,78631,11322,12664,38804,11654) AND a.xmldate > DATEADD(day, -30, GETDATE()) ) SELECT  findoc1, OrderId, TRDR_RETAILER, (select name from trdr where trdr=TRDR_RETAILER) Client, XMLFILENAME, XMLDATA, FORMAT(XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, CCCSFTPXML FROM ( SELECT f.findoc findoc1, x.* FROM ( SELECT replace(replace(cast(OrderIdTag AS VARCHAR(max)), '<ID>', ''), '</ID>', '') OrderId ,* FROM cte1 ) x LEFT JOIN findoc f ON ( f.num04 = x.OrderId AND f.TRDR = x.TRDR_RETAILER AND f.iscancel = 0 AND f.sosource = 1351 AND f.fprms = 701 ) ) y WHERE findoc1 IS NULL ORDER BY trdr_retailer ,xmldate ASC
+2025-07-24T11:38:57.334753+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:38:57.334777+00:00 app[web.1]: No orders to create
+2025-07-24T11:38:57.335300+00:00 app[web.1]: 📊 SQL Query: insert into [CCCORDERSLOG] ([CCCSFTPXML], [MESSAGETEXT], [ORDERID], [TRDR_CLIENT], [TRDR_RETAILER]) ...
+2025-07-24T11:38:57.406476+00:00 app[web.1]: 📊 SQL Query: select [CCCORDERSLOG].* from [CCCORDERSLOG] where [CCCORDERSLOG].[CCCORDERSLOG] = @p0
+2025-07-24T11:38:57.472248+00:00 app[web.1]: scanning for aperak...
+2025-07-24T11:38:57.473389+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTP].* from [CCCSFTP] where [TRDR_RETAILER] = @p1 order by [CCCSFTP].[TRDR_RET...
+2025-07-24T11:38:57.540353+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTP].[TRDR_RETAILER]) as [total] from [CCCSFTP] where [TRDR_RETAILER] = @p0
+2025-07-24T11:38:59.099355+00:00 app[web.1]: Connected
+2025-07-24T11:39:00.092009+00:00 app[web.1]: No files on server
+2025-07-24T11:39:17.119613+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCORDERSLOG].* from [CCCORDERSLOG] order by [MESSAGEDATE] desc
+2025-07-24T11:39:17.250159+00:00 app[web.1]: 📊 SQL Query: select count([CCCORDERSLOG].[CCCORDERSLOG]) as [total] from [CCCORDERSLOG]
+2025-07-24T11:39:18.624717+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:39:18.624761+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:39:18.624775+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:39:18.624787+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:39:18.624800+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:39:18.624810+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:39:37.360654+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:39:37.434559+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:39:48.624809+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:39:48.624864+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:39:48.624864+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:39:48.624865+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:39:48.624867+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:39:48.624884+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:39:52.140249+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTP].* from [CCCSFTP] where [TRDR_RETAILER] = @p1 order by [CCCSFTP].[TRDR_RET...
+2025-07-24T11:39:52.205172+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTP].[TRDR_RETAILER]) as [total] from [CCCSFTP] where [TRDR_RETAILER] = @p0
+2025-07-24T11:39:53.783222+00:00 app[web.1]: Connected
+2025-07-24T11:39:54.781918+00:00 app[web.1]: No files on server
+2025-07-24T11:40:18.625101+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:40:18.625137+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:40:18.625138+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:40:18.625138+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:40:18.625140+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:40:18.625155+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:40:36.414979+00:00 heroku[router]: at=info method=GET path="/" host=retailers1-0691020d207c.herokuapp.com request_id=b2a42f4c-9884-b120-0957-f626764611c2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=3ms status=200 bytes=44387 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:36.483582+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=AUYWriecz6WCb0CLAAAG" host=retailers1-0691020d207c.herokuapp.com request_id=4aa143fc-8bff-6ea8-21f4-d2e524f68e54 fwd="86.122.68.77" dyno=web.1 connect=0ms service=111866ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:36.527182+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=048f2af6-2f87-9333-cb9b-9c6613605bc9 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:36.413145+00:00 app[web.1]: GET 200 / - 1ms
+2025-07-24T11:40:36.525936+00:00 app[web.1]: GET 200 /css/sandstone.css - 0ms
+2025-07-24T11:40:37.064967+00:00 heroku[router]: at=info method=GET path="/js/abc-bi-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=fc638642-9e5e-fcbb-2468-58b99a89ba8b fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=29828 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.066200+00:00 heroku[router]: at=info method=GET path="/js/abc-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=2bc9359b-9815-b2a8-08b3-beff20a31176 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=15163 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.063640+00:00 app[web.1]: GET 200 /js/abc-bi-module.js - 1ms
+2025-07-24T11:40:37.065802+00:00 app[web.1]: GET 200 /js/abc-module.js - 0ms
+2025-07-24T11:40:37.334237+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=72ca1a95-3a84-3fbe-f6eb-09841caaa2e2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.337977+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=4b8e20ae-6d3c-cbcf-d886-659e9d169fa0 fwd="86.122.68.77" dyno=web.1 connect=2ms service=2ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.562169+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=cfb9f53a-6586-cc14-5ac9-8ee758b06907 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.333486+00:00 app[web.1]: GET 200 /client.js - 1ms
+2025-07-24T11:40:37.337356+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:40:37.561534+00:00 app[web.1]: GET 200 /modules/retailer.js - 1ms
+2025-07-24T11:40:37.635372+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=3184c541-9dae-d32c-f696-99620216a529 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.637355+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=198ae7e7-9057-d737-5c88-11bec1e25a64 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.642851+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=f142b4b5-8547-bac2-f427-1163cd0d90c6 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.771252+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF3OO" host=retailers1-0691020d207c.herokuapp.com request_id=99aae0d8-834a-2d9a-3800-2f11db79b6c8 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:37.634840+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 0ms
+2025-07-24T11:40:37.635942+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 0ms
+2025-07-24T11:40:37.642277+00:00 app[web.1]: GET 200 /modules/orderTable.js - 1ms
+2025-07-24T11:40:38.011482+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyF3SI&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=8f6fd9e6-af2d-16e3-9733-310fcc5cb6a4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:38.015450+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF3SP&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=1edd6dc2-ff44-02a3-731f-39f385338ae3 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:38.097579+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyF3Tl&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=25e095e1-7c2e-edec-43f3-5c16ae78b55b fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:38.189362+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF3Tk&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=021311e3-c860-55b8-6513-89df4f1c6a75 fwd="86.122.68.77" dyno=web.1 connect=0ms service=94ms status=200 bytes=22 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:38.242586+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyF3V0&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=0f5b2dd7-8ee9-74cd-09db-409d1840675e fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:38.097698+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11639 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.188856+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:40:38.242732+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12349 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.243193+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 13249 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.244576+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 78631 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.246399+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11322 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.248783+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12664 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.250332+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 38804 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.251774+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11654 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.253511+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.255751+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.257747+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.259613+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.261475+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.262991+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.264236+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.265588+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:38.357228+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.357867+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.358416+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.358983+00:00 app[web.1]: { data: '24' }
+2025-07-24T11:40:38.359519+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.360065+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.360550+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.361053+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.361524+00:00 app[web.1]: { data: '21' }
+2025-07-24T11:40:38.361978+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:40:38.362420+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.362902+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:40:38.364059+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:40:38.364638+00:00 app[web.1]: { data: '16' }
+2025-07-24T11:40:38.397887+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:40:39.139069+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=053855c9-ce9a-931b-51e7-bc4156081169 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:39.279184+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF3m1&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=681211ab-6545-4a59-dc4f-07bef38cee7b fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=353 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:39.313804+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=retailers1-0691020d207c.herokuapp.com request_id=9c1846a5-7fee-931e-6d60-88708378550b fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=94 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:40:39.138819+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 0ms
+2025-07-24T11:40:39.313369+00:00 app[web.1]: GET 404 /favicon.ico - 1ms
+2025-07-24T11:40:39.368770+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.368771+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.368776+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.373295+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.373296+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.373297+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.374203+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.374203+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.374204+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.374524+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.374524+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.374525+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.374796+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.374796+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.374796+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.375044+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.375045+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.375045+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.375286+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.375286+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.375286+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.375516+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:40:39.375517+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:40:39.375517+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:40:39.441321+00:00 app[web.1]: {
+2025-07-24T11:40:39.441342+00:00 app[web.1]:   success: true,
+2025-07-24T11:40:39.441343+00:00 app[web.1]:   data: [
+2025-07-24T11:40:39.441344+00:00 app[web.1]:     { fincode: 'FAEX-PF-30172', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441344+00:00 app[web.1]:     { fincode: 'FAEX-PF-30173', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441344+00:00 app[web.1]:     { fincode: 'FAEX-PF-30174', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441345+00:00 app[web.1]:     { fincode: 'FAEX-PF-30175', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441345+00:00 app[web.1]:     { fincode: 'FAEX-PF-30176', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441345+00:00 app[web.1]:     { fincode: 'FAEX-PF-30177', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441346+00:00 app[web.1]:     { fincode: 'FAEX-PF-30178', trndate: '30.06.2025' },
+2025-07-24T11:40:39.441346+00:00 app[web.1]:     { fincode: 'FAEX-PF-30309', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441346+00:00 app[web.1]:     { fincode: 'FAEX-PF-30310', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441347+00:00 app[web.1]:     { fincode: 'FAEX-PF-30311', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441347+00:00 app[web.1]:     { fincode: 'FAEX-PF-30312', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441355+00:00 app[web.1]:     { fincode: 'FAEX-PF-30313', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441355+00:00 app[web.1]:     { fincode: 'FAEX-PF-30314', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441356+00:00 app[web.1]:     { fincode: 'FAEX-PF-30315', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441356+00:00 app[web.1]:     { fincode: 'FAEX-PF-30316', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441356+00:00 app[web.1]:     { fincode: 'FAEX-PF-30317', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441357+00:00 app[web.1]:     { fincode: 'FAEX-PF-30318', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441357+00:00 app[web.1]:     { fincode: 'FAEX-PF-30319', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441357+00:00 app[web.1]:     { fincode: 'FAEX-PF-30320', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441358+00:00 app[web.1]:     { fincode: 'FAEX-PF-30321', trndate: '10.07.2025' },
+2025-07-24T11:40:39.441358+00:00 app[web.1]:     { fincode: 'FAEX-PF-30384', trndate: '16.07.2025' },
+2025-07-24T11:40:39.441358+00:00 app[web.1]:     { fincode: 'FAEX-PF-30385', trndate: '16.07.2025' },
+2025-07-24T11:40:39.441359+00:00 app[web.1]:     { fincode: 'FAEX-PF-30386', trndate: '16.07.2025' },
+2025-07-24T11:40:39.441359+00:00 app[web.1]:     { fincode: 'FAEX-PF-30387', trndate: '16.07.2025' }
+2025-07-24T11:40:39.441359+00:00 app[web.1]:   ],
+2025-07-24T11:40:39.441360+00:00 app[web.1]:   total: 24
+2025-07-24T11:40:39.441360+00:00 app[web.1]: }
+2025-07-24T11:40:39.441888+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:40:39.442773+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:40:39.447382+00:00 app[web.1]: {
+2025-07-24T11:40:39.447383+00:00 app[web.1]:   success: true,
+2025-07-24T11:40:39.447383+00:00 app[web.1]:   data: [
+2025-07-24T11:40:39.447384+00:00 app[web.1]:     { fincode: 'FAEX-PF-30555', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447384+00:00 app[web.1]:     { fincode: 'FAEX-PF-30556', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447384+00:00 app[web.1]:     { fincode: 'FAEX-PF-30557', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447385+00:00 app[web.1]:     { fincode: 'FAEX-PF-30558', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447385+00:00 app[web.1]:     { fincode: 'FAEX-PF-30559', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447385+00:00 app[web.1]:     { fincode: 'FAEX-PF-30560', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447386+00:00 app[web.1]:     { fincode: 'FAEX-PF-30561', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447386+00:00 app[web.1]:     { fincode: 'FAEX-PF-30562', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447386+00:00 app[web.1]:     { fincode: 'FAEX-PF-30563', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447386+00:00 app[web.1]:     { fincode: 'FAEX-PF-30564', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30565', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30566', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30567', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30568', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30569', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30570', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30571', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30572', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447387+00:00 app[web.1]:     { fincode: 'FAEX-PF-30573', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447388+00:00 app[web.1]:     { fincode: 'FAEX-PF-30574', trndate: '23.07.2025' },
+2025-07-24T11:40:39.447388+00:00 app[web.1]:     { fincode: 'FAEX-PF-30575', trndate: '23.07.2025' }
+2025-07-24T11:40:39.447388+00:00 app[web.1]:   ],
+2025-07-24T11:40:39.447388+00:00 app[web.1]:   total: 21
+2025-07-24T11:40:39.447388+00:00 app[web.1]: }
+2025-07-24T11:40:39.449925+00:00 app[web.1]: {
+2025-07-24T11:40:39.449925+00:00 app[web.1]:   success: true,
+2025-07-24T11:40:39.449925+00:00 app[web.1]:   data: [
+2025-07-24T11:40:39.449926+00:00 app[web.1]:     { fincode: 'FAEX-PF-30073', trndate: '26.06.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30170', trndate: '30.06.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30171', trndate: '30.06.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30256', trndate: '04.07.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30257', trndate: '04.07.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30343', trndate: '11.07.2025' },
+2025-07-24T11:40:39.449930+00:00 app[web.1]:     { fincode: 'FAEX-PF-30344', trndate: '11.07.2025' },
+2025-07-24T11:40:39.449931+00:00 app[web.1]:     { fincode: 'FAEX-PF-30553', trndate: '23.07.2025' },
+2025-07-24T11:40:39.449931+00:00 app[web.1]:     { fincode: 'FAEX-PF-30554', trndate: '23.07.2025' }
+2025-07-24T11:40:39.449931+00:00 app[web.1]:   ],
+2025-07-24T11:40:39.449931+00:00 app[web.1]:   total: 9
+2025-07-24T11:40:39.449931+00:00 app[web.1]: }
+2025-07-24T11:40:39.501464+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:40:39.502988+00:00 app[web.1]: {
+2025-07-24T11:40:39.502988+00:00 app[web.1]:   success: true,
+2025-07-24T11:40:39.502989+00:00 app[web.1]:   data: [
+2025-07-24T11:40:39.502989+00:00 app[web.1]:     { fincode: 'FAEX-PF-30074', trndate: '26.06.2025' },
+2025-07-24T11:40:39.502989+00:00 app[web.1]:     { fincode: 'FAEX-PF-30075', trndate: '26.06.2025' },
+2025-07-24T11:40:39.502990+00:00 app[web.1]:     { fincode: 'FAEX-PF-30076', trndate: '26.06.2025' },
+2025-07-24T11:40:39.502990+00:00 app[web.1]:     { fincode: 'FAEX-PF-30077', trndate: '26.06.2025' },
+2025-07-24T11:40:39.502990+00:00 app[web.1]:     { fincode: 'FAEX-PF-30219', trndate: '02.07.2025' },
+2025-07-24T11:40:39.502990+00:00 app[web.1]:     { fincode: 'FAEX-PF-30220', trndate: '02.07.2025' },
+2025-07-24T11:40:39.502991+00:00 app[web.1]:     { fincode: 'FAEX-PF-30221', trndate: '02.07.2025' },
+2025-07-24T11:40:39.502991+00:00 app[web.1]:     { fincode: 'FAEX-PF-30222', trndate: '02.07.2025' },
+2025-07-24T11:40:39.502991+00:00 app[web.1]:     { fincode: 'FAEX-PF-30223', trndate: '02.07.2025' }
+2025-07-24T11:40:39.502991+00:00 app[web.1]:   ],
+2025-07-24T11:40:39.502991+00:00 app[web.1]:   total: 9
+2025-07-24T11:40:39.502992+00:00 app[web.1]: }
+2025-07-24T11:40:39.503231+00:00 app[web.1]: {
+2025-07-24T11:40:39.503231+00:00 app[web.1]:   success: true,
+2025-07-24T11:40:39.503231+00:00 app[web.1]:   data: [
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30160', trndate: '30.06.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30161', trndate: '30.06.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30162', trndate: '30.06.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30163', trndate: '30.06.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30164', trndate: '30.06.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30335', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503232+00:00 app[web.1]:     { fincode: 'FAEX-PF-30336', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30337', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30338', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30339', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30340', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30341', trndate: '10.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30391', trndate: '16.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30392', trndate: '16.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30393', trndate: '16.07.2025' },
+2025-07-24T11:40:39.503233+00:00 app[web.1]:     { fincode: 'FAEX-PF-30394', trndate: '16.07.2025' }
+2025-07-24T11:40:39.503233+00:00 app[web.1]:   ],
+2025-07-24T11:40:39.503233+00:00 app[web.1]:   total: 16
+2025-07-24T11:40:39.503233+00:00 app[web.1]: }
+2025-07-24T11:40:48.625642+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:40:48.625687+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:40:48.625706+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:40:48.625720+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:40:48.625733+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:40:48.625746+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:41:03.141204+00:00 heroku[router]: at=info method=GET path="/" host=retailers1-0691020d207c.herokuapp.com request_id=f4974111-e386-b75b-60cb-55fe8c077924 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=44387 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.205829+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=02ck8ikTyx9tj6_TAAAI" host=retailers1-0691020d207c.herokuapp.com request_id=01de765b-daa4-7908-ef9d-268623a930b2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=25061ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.253592+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=455a7bff-a416-acb5-b35b-2db8c2f6b475 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.139520+00:00 app[web.1]: GET 200 / - 0ms
+2025-07-24T11:41:03.252381+00:00 app[web.1]: GET 200 /css/sandstone.css - 1ms
+2025-07-24T11:41:03.522443+00:00 heroku[router]: at=info method=GET path="/js/abc-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=fc2e6807-2929-0ab0-af71-f5a432196e0b fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=15163 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.524322+00:00 heroku[router]: at=info method=GET path="/js/abc-bi-module.js" host=retailers1-0691020d207c.herokuapp.com request_id=505080cb-5a33-98f6-34f7-997824413cdc fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=29828 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.573764+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=efac51f9-ce84-0043-c58c-6aba494f5187 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.582075+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=5103848f-a71a-55ef-96a8-1985085d703f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.521745+00:00 app[web.1]: GET 200 /js/abc-module.js - 0ms
+2025-07-24T11:41:03.523469+00:00 app[web.1]: GET 200 /js/abc-bi-module.js - 0ms
+2025-07-24T11:41:03.573217+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:41:03.581714+00:00 app[web.1]: GET 200 /client.js - 0ms
+2025-07-24T11:41:03.809377+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=d69d30b2-7bdf-81d4-78ae-811310ccf0dd fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.838631+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=131f25ad-e7c1-ff8a-3eb9-9b34ee4953e4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.838646+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=faaae814-da35-08b5-7780-99e4c013f1f5 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.918716+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF9nD" host=retailers1-0691020d207c.herokuapp.com request_id=736e6525-61e4-c152-ecfa-0a830522a98d fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.839061+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=da4d28bc-06b2-2c8b-49dc-b7df29fbb85d fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.889581+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=749f3f7c-f415-32f9-407f-c1b61b9a3abd fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:04.053880+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyF9pI&sid=eW2pWTvWQa4_YNK8AAAK" host=retailers1-0691020d207c.herokuapp.com request_id=a5abc473-abc7-08e8-db63-b853e7d5c96f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:04.054502+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF9pK&sid=eW2pWTvWQa4_YNK8AAAK" host=retailers1-0691020d207c.herokuapp.com request_id=499776bf-a0cb-6f95-4d19-f99ce9f9c73f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:03.808862+00:00 app[web.1]: GET 200 /modules/retailer.js - 0ms
+2025-07-24T11:41:03.837052+00:00 app[web.1]: GET 200 /modules/orderTable.js - 0ms
+2025-07-24T11:41:03.837817+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 0ms
+2025-07-24T11:41:03.838720+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 0ms
+2025-07-24T11:41:03.889225+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:41:04.633375+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyF9yE&sid=eW2pWTvWQa4_YNK8AAAK" host=retailers1-0691020d207c.herokuapp.com request_id=e34e9a26-4a11-cff2-815e-d3012fbfc452 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:04.662891+00:00 heroku[router]: at=info method=GET path="/favicon.ico" host=retailers1-0691020d207c.herokuapp.com request_id=3133a646-de4f-b61d-1add-0c0ea115b066 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=94 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:04.722801+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyF9yC&sid=eW2pWTvWQa4_YNK8AAAK" host=retailers1-0691020d207c.herokuapp.com request_id=2d3633ff-f114-1a90-e039-b4e2bb05f100 fwd="86.122.68.77" dyno=web.1 connect=0ms service=79ms status=200 bytes=22 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:04.633165+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11639 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.662434+00:00 app[web.1]: GET 404 /favicon.ico - 1ms
+2025-07-24T11:41:04.722560+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:41:04.794102+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12349 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.795525+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 13249 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.797300+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 78631 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.798366+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11322 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.799788+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12664 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.800904+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 38804 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.801957+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11654 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.804341+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.805431+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.806430+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.807440+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.808647+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.809562+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.810456+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.811489+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.860981+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.889039+00:00 app[web.1]: { data: '16' }
+2025-07-24T11:41:04.890832+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.891328+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.893349+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.893798+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.894239+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.894762+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.902590+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.903034+00:00 app[web.1]: { data: '21' }
+2025-07-24T11:41:04.903471+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:41:04.903891+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:41:04.906774+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:41:04.918865+00:00 app[web.1]: { data: '24' }
+2025-07-24T11:41:04.923103+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:04.950044+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:04.950045+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:04.950061+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.952663+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:04.952664+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:04.952665+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.963211+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:04.963211+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:04.963212+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:04.964758+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:04.964759+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:04.964759+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:05.009172+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:05.009174+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:05.009176+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:05.010651+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:05.010653+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:05.010653+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:05.012337+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:05.012337+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:05.012338+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:05.012726+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:05.012727+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:05.012728+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:05.018603+00:00 app[web.1]: {
+2025-07-24T11:41:05.018604+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:05.018605+00:00 app[web.1]:   data: [
+2025-07-24T11:41:05.018605+00:00 app[web.1]:     { fincode: 'FAEX-PF-30160', trndate: '30.06.2025' },
+2025-07-24T11:41:05.018606+00:00 app[web.1]:     { fincode: 'FAEX-PF-30161', trndate: '30.06.2025' },
+2025-07-24T11:41:05.018606+00:00 app[web.1]:     { fincode: 'FAEX-PF-30162', trndate: '30.06.2025' },
+2025-07-24T11:41:05.018606+00:00 app[web.1]:     { fincode: 'FAEX-PF-30163', trndate: '30.06.2025' },
+2025-07-24T11:41:05.018606+00:00 app[web.1]:     { fincode: 'FAEX-PF-30164', trndate: '30.06.2025' },
+2025-07-24T11:41:05.018607+00:00 app[web.1]:     { fincode: 'FAEX-PF-30335', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018607+00:00 app[web.1]:     { fincode: 'FAEX-PF-30336', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018607+00:00 app[web.1]:     { fincode: 'FAEX-PF-30337', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018607+00:00 app[web.1]:     { fincode: 'FAEX-PF-30338', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018607+00:00 app[web.1]:     { fincode: 'FAEX-PF-30339', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30340', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30341', trndate: '10.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30391', trndate: '16.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30392', trndate: '16.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30393', trndate: '16.07.2025' },
+2025-07-24T11:41:05.018608+00:00 app[web.1]:     { fincode: 'FAEX-PF-30394', trndate: '16.07.2025' }
+2025-07-24T11:41:05.018608+00:00 app[web.1]:   ],
+2025-07-24T11:41:05.018608+00:00 app[web.1]:   total: 16
+2025-07-24T11:41:05.018609+00:00 app[web.1]: }
+2025-07-24T11:41:05.076895+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:05.083498+00:00 app[web.1]: {
+2025-07-24T11:41:05.083500+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:05.083500+00:00 app[web.1]:   data: [
+2025-07-24T11:41:05.083501+00:00 app[web.1]:     { fincode: 'FAEX-PF-30073', trndate: '26.06.2025' },
+2025-07-24T11:41:05.083501+00:00 app[web.1]:     { fincode: 'FAEX-PF-30170', trndate: '30.06.2025' },
+2025-07-24T11:41:05.083501+00:00 app[web.1]:     { fincode: 'FAEX-PF-30171', trndate: '30.06.2025' },
+2025-07-24T11:41:05.083502+00:00 app[web.1]:     { fincode: 'FAEX-PF-30256', trndate: '04.07.2025' },
+2025-07-24T11:41:05.083502+00:00 app[web.1]:     { fincode: 'FAEX-PF-30257', trndate: '04.07.2025' },
+2025-07-24T11:41:05.083502+00:00 app[web.1]:     { fincode: 'FAEX-PF-30343', trndate: '11.07.2025' },
+2025-07-24T11:41:05.083503+00:00 app[web.1]:     { fincode: 'FAEX-PF-30344', trndate: '11.07.2025' },
+2025-07-24T11:41:05.083503+00:00 app[web.1]:     { fincode: 'FAEX-PF-30553', trndate: '23.07.2025' },
+2025-07-24T11:41:05.083503+00:00 app[web.1]:     { fincode: 'FAEX-PF-30554', trndate: '23.07.2025' }
+2025-07-24T11:41:05.083504+00:00 app[web.1]:   ],
+2025-07-24T11:41:05.083504+00:00 app[web.1]:   total: 9
+2025-07-24T11:41:05.083504+00:00 app[web.1]: }
+2025-07-24T11:41:05.087295+00:00 app[web.1]: {
+2025-07-24T11:41:05.087295+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:05.087296+00:00 app[web.1]:   data: [
+2025-07-24T11:41:05.087296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30172', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087296+00:00 app[web.1]:     { fincode: 'FAEX-PF-30173', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30174', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30175', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087297+00:00 app[web.1]:     { fincode: 'FAEX-PF-30176', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087298+00:00 app[web.1]:     { fincode: 'FAEX-PF-30177', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087298+00:00 app[web.1]:     { fincode: 'FAEX-PF-30178', trndate: '30.06.2025' },
+2025-07-24T11:41:05.087298+00:00 app[web.1]:     { fincode: 'FAEX-PF-30309', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087298+00:00 app[web.1]:     { fincode: 'FAEX-PF-30310', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087299+00:00 app[web.1]:     { fincode: 'FAEX-PF-30311', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087299+00:00 app[web.1]:     { fincode: 'FAEX-PF-30312', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087299+00:00 app[web.1]:     { fincode: 'FAEX-PF-30313', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087300+00:00 app[web.1]:     { fincode: 'FAEX-PF-30314', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087300+00:00 app[web.1]:     { fincode: 'FAEX-PF-30315', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087300+00:00 app[web.1]:     { fincode: 'FAEX-PF-30316', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087300+00:00 app[web.1]:     { fincode: 'FAEX-PF-30317', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087301+00:00 app[web.1]:     { fincode: 'FAEX-PF-30318', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087302+00:00 app[web.1]:     { fincode: 'FAEX-PF-30319', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087302+00:00 app[web.1]:     { fincode: 'FAEX-PF-30320', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087302+00:00 app[web.1]:     { fincode: 'FAEX-PF-30321', trndate: '10.07.2025' },
+2025-07-24T11:41:05.087303+00:00 app[web.1]:     { fincode: 'FAEX-PF-30384', trndate: '16.07.2025' },
+2025-07-24T11:41:05.087303+00:00 app[web.1]:     { fincode: 'FAEX-PF-30385', trndate: '16.07.2025' },
+2025-07-24T11:41:05.087303+00:00 app[web.1]:     { fincode: 'FAEX-PF-30386', trndate: '16.07.2025' },
+2025-07-24T11:41:05.087303+00:00 app[web.1]:     { fincode: 'FAEX-PF-30387', trndate: '16.07.2025' }
+2025-07-24T11:41:05.087303+00:00 app[web.1]:   ],
+2025-07-24T11:41:05.087304+00:00 app[web.1]:   total: 24
+2025-07-24T11:41:05.087304+00:00 app[web.1]: }
+2025-07-24T11:41:05.088862+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:05.089824+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:05.091703+00:00 app[web.1]: {
+2025-07-24T11:41:05.091704+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:05.091704+00:00 app[web.1]:   data: [
+2025-07-24T11:41:05.091704+00:00 app[web.1]:     { fincode: 'FAEX-PF-30074', trndate: '26.06.2025' },
+2025-07-24T11:41:05.091704+00:00 app[web.1]:     { fincode: 'FAEX-PF-30075', trndate: '26.06.2025' },
+2025-07-24T11:41:05.091704+00:00 app[web.1]:     { fincode: 'FAEX-PF-30076', trndate: '26.06.2025' },
+2025-07-24T11:41:05.091704+00:00 app[web.1]:     { fincode: 'FAEX-PF-30077', trndate: '26.06.2025' },
+2025-07-24T11:41:05.091705+00:00 app[web.1]:     { fincode: 'FAEX-PF-30219', trndate: '02.07.2025' },
+2025-07-24T11:41:05.091705+00:00 app[web.1]:     { fincode: 'FAEX-PF-30220', trndate: '02.07.2025' },
+2025-07-24T11:41:05.091705+00:00 app[web.1]:     { fincode: 'FAEX-PF-30221', trndate: '02.07.2025' },
+2025-07-24T11:41:05.091705+00:00 app[web.1]:     { fincode: 'FAEX-PF-30222', trndate: '02.07.2025' },
+2025-07-24T11:41:05.091705+00:00 app[web.1]:     { fincode: 'FAEX-PF-30223', trndate: '02.07.2025' }
+2025-07-24T11:41:05.091705+00:00 app[web.1]:   ],
+2025-07-24T11:41:05.091705+00:00 app[web.1]:   total: 9
+2025-07-24T11:41:05.091705+00:00 app[web.1]: }
+2025-07-24T11:41:05.096681+00:00 app[web.1]: {
+2025-07-24T11:41:05.096682+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:05.096682+00:00 app[web.1]:   data: [
+2025-07-24T11:41:05.096682+00:00 app[web.1]:     { fincode: 'FAEX-PF-30555', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096683+00:00 app[web.1]:     { fincode: 'FAEX-PF-30556', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096683+00:00 app[web.1]:     { fincode: 'FAEX-PF-30557', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096683+00:00 app[web.1]:     { fincode: 'FAEX-PF-30558', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096683+00:00 app[web.1]:     { fincode: 'FAEX-PF-30559', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096683+00:00 app[web.1]:     { fincode: 'FAEX-PF-30560', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096684+00:00 app[web.1]:     { fincode: 'FAEX-PF-30561', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096684+00:00 app[web.1]:     { fincode: 'FAEX-PF-30562', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096684+00:00 app[web.1]:     { fincode: 'FAEX-PF-30563', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096684+00:00 app[web.1]:     { fincode: 'FAEX-PF-30564', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096684+00:00 app[web.1]:     { fincode: 'FAEX-PF-30565', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30566', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30567', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30568', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30569', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30570', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096685+00:00 app[web.1]:     { fincode: 'FAEX-PF-30571', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096686+00:00 app[web.1]:     { fincode: 'FAEX-PF-30572', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096686+00:00 app[web.1]:     { fincode: 'FAEX-PF-30573', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096686+00:00 app[web.1]:     { fincode: 'FAEX-PF-30574', trndate: '23.07.2025' },
+2025-07-24T11:41:05.096686+00:00 app[web.1]:     { fincode: 'FAEX-PF-30575', trndate: '23.07.2025' }
+2025-07-24T11:41:05.096686+00:00 app[web.1]:   ],
+2025-07-24T11:41:05.096686+00:00 app[web.1]:   total: 21
+2025-07-24T11:41:05.096687+00:00 app[web.1]: }
+2025-07-24T11:41:15.802022+00:00 heroku[router]: at=info method=GET path="/retailer_file_manager.html?trdr=13249&logo=%27https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg%27" host=retailers1-0691020d207c.herokuapp.com request_id=7568ca05-d598-d340-316f-5088d7395984 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=18023 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:15.801445+00:00 app[web.1]: GET 200 /retailer_file_manager.html?trdr=13249&logo=%27https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg%27 - 1ms
+2025-07-24T11:41:16.365648+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=ff68fda3-1292-8523-eb82-0939a0f9083c fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:16.364290+00:00 app[web.1]: GET 200 /css/sandstone.css - 1ms
+2025-07-24T11:41:16.934316+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=eW2pWTvWQa4_YNK8AAAK" host=retailers1-0691020d207c.herokuapp.com request_id=72241cf0-81f6-0b37-eab5-9493a803d334 fwd="86.122.68.77" dyno=web.1 connect=0ms service=12761ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.100295+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=8d56c5b3-a954-4a99-2daa-5cafe838394b fwd="86.122.68.77" dyno=web.1 connect=0ms service=4ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.100125+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=89832866-2b42-039c-7dc2-e392c3bd1ba4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=3ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.105101+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=362a549a-42c2-3f48-8d11-088c0c0ba42c fwd="86.122.68.77" dyno=web.1 connect=0ms service=3ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.106205+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=c42d1e42-d68b-5f4d-ccd4-132ea9c54766 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.197861+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=6f3e9cb7-fdc2-542a-1b65-c9e77c8513f7 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.198348+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=f5fd74e5-963f-6ba9-0c3b-22a7441f9557 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.278763+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFD1z" host=retailers1-0691020d207c.herokuapp.com request_id=f9623f24-0ba1-bd5e-3bf7-d48e3890300d fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.098430+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 2ms
+2025-07-24T11:41:17.099047+00:00 app[web.1]: GET 200 /client.js - 1ms
+2025-07-24T11:41:17.103719+00:00 app[web.1]: GET 200 /modules/orderTable.js - 1ms
+2025-07-24T11:41:17.105710+00:00 app[web.1]: GET 200 /retailers.js - 0ms
+2025-07-24T11:41:17.197039+00:00 app[web.1]: GET 200 /modules/retailer.js - 0ms
+2025-07-24T11:41:17.197925+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 0ms
+2025-07-24T11:41:17.917962+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=79d99128-713d-ad8f-e813-68c41ad8ed92 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.992106+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFDCw&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=1fa96f9b-ffcb-f74c-6be6-d0bde85513ac fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.998221+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFDCy&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=14f0079f-1870-7b3b-be8e-92b4309e4b2d fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:18.083611+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFDEV&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=04be1bf6-31ed-08ac-e353-801ba0dc6454 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:18.153984+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFDFd&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=5cacafcc-44a9-d88b-3cc5-0e5f07ae4880 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:17.917598+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:41:18.085437+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTPXML].* from [CCCSFTPXML] where [TRDR_RETAILER] = @p1 order by [XMLDATE] des...
+2025-07-24T11:41:18.154232+00:00 app[web.1]: {
+2025-07-24T11:41:18.154235+00:00 app[web.1]:   service: 'login',
+2025-07-24T11:41:18.154236+00:00 app[web.1]:   username: 'websitepetfactory',
+2025-07-24T11:41:18.154236+00:00 app[web.1]:   password: 'petfactory4321',
+2025-07-24T11:41:18.154237+00:00 app[web.1]:   appId: 1001
+2025-07-24T11:41:18.154237+00:00 app[web.1]: }
+2025-07-24T11:41:18.156242+00:00 app[web.1]: sqlQuery select name from trdr where sodtype=13 and trdr=13249
+2025-07-24T11:41:18.234287+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFDEU&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=cca6cf32-c061-ac73-2bbb-c1ae0fba10e0 fwd="86.122.68.77" dyno=web.1 connect=0ms service=152ms status=200 bytes=43 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:18.171408+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTPXML].[CCCSFTPXML]) as [total] from [CCCSFTPXML] where [TRDR_RETAILER] = @p0
+2025-07-24T11:41:18.234104+00:00 app[web.1]: { data: 'ROMANIA HYPERMARCHE SA' }
+2025-07-24T11:41:18.311254+00:00 app[web.1]: {
+2025-07-24T11:41:18.311257+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:18.311279+00:00 app[web.1]:   clientID: '9J8pKt90OKWbDZ0bDZ1LM5fLGqbrR6DARa5mM5ybDKHrKrXiSab6H799QcHbHqjKG2KrGbb0OK9uQNDD9JOmI41NG2KtH6HDSN1Z9JL2GoKrGqPMK2KrH4GbDKLLTKCbDKKbDK95HG',
+2025-07-24T11:41:18.311280+00:00 app[web.1]:   objs: [
+2025-07-24T11:41:18.311280+00:00 app[web.1]:     {
+2025-07-24T11:41:18.311280+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:18.311281+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:18.311281+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:18.311282+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:18.311282+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:18.311282+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:18.311283+00:00 app[web.1]:       REFID: '1',
+2025-07-24T11:41:18.311283+00:00 app[web.1]:       REFIDNAME: 'Sorin Fliundra',
+2025-07-24T11:41:18.311283+00:00 app[web.1]:       USERID: '1',
+2025-07-24T11:41:18.311284+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:18.311284+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:18.311284+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:18.311284+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:41:18.311285+00:00 app[web.1]:     },
+2025-07-24T11:41:18.311285+00:00 app[web.1]:     {
+2025-07-24T11:41:18.311285+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:18.311295+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:18.311295+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:18.311295+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:18.311296+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:18.311296+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:18.311296+00:00 app[web.1]:       REFID: '14',
+2025-07-24T11:41:18.311296+00:00 app[web.1]:       REFIDNAME: 'Ana Topirceanu',
+2025-07-24T11:41:18.311297+00:00 app[web.1]:       USERID: '14',
+2025-07-24T11:41:18.311297+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:18.311297+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:18.311297+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:18.311297+00:00 app[web.1]:       EXPTIME: ''
+2025-07-24T11:41:18.311298+00:00 app[web.1]:     },
+2025-07-24T11:41:18.311298+00:00 app[web.1]:     {
+2025-07-24T11:41:18.311298+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:18.311299+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:18.311299+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:18.311299+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:18.311299+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:18.311299+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:18.311300+00:00 app[web.1]:       REFID: '1000',
+2025-07-24T11:41:18.311300+00:00 app[web.1]:       REFIDNAME: 'Admin',
+2025-07-24T11:41:18.311300+00:00 app[web.1]:       USERID: '1000',
+2025-07-24T11:41:18.311300+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:18.311300+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:18.311301+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:18.311301+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:41:18.311301+00:00 app[web.1]:     }
+2025-07-24T11:41:18.311301+00:00 app[web.1]:   ],
+2025-07-24T11:41:18.311301+00:00 app[web.1]:   ver: '6.00.622.11546',
+2025-07-24T11:41:18.311302+00:00 app[web.1]:   sn: '01102476371318',
+2025-07-24T11:41:18.311302+00:00 app[web.1]:   off: false,
+2025-07-24T11:41:18.311302+00:00 app[web.1]:   pin: false,
+2025-07-24T11:41:18.311303+00:00 app[web.1]:   appid: '1001'
+2025-07-24T11:41:18.311303+00:00 app[web.1]: }
+2025-07-24T11:41:18.311307+00:00 app[web.1]: {
+2025-07-24T11:41:18.311307+00:00 app[web.1]:   service: 'authenticate',
+2025-07-24T11:41:18.311308+00:00 app[web.1]:   clientID: '9J8pKt90OKWbDZ0bDZ1LM5fLGqbrR6DARa5mM5ybDKHrKrXiSab6H799QcHbHqjKG2KrGbb0OK9uQNDD9JOmI41NG2KtH6HDSN1Z9JL2GoKrGqPMK2KrH4GbDKLLTKCbDKKbDK95HG',
+2025-07-24T11:41:18.311308+00:00 app[web.1]:   COMPANY: '50',
+2025-07-24T11:41:18.311308+00:00 app[web.1]:   BRANCH: '1000',
+2025-07-24T11:41:18.311308+00:00 app[web.1]:   MODULE: '0',
+2025-07-24T11:41:18.311309+00:00 app[web.1]:   REFID: '1'
+2025-07-24T11:41:18.311309+00:00 app[web.1]: }
+2025-07-24T11:41:18.392254+00:00 app[web.1]: {
+2025-07-24T11:41:18.392256+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:18.392276+00:00 app[web.1]:   clientID: '9J8pGdXKKqvBJ7LL9JT59JT4SambDqPqKajJMMKbDKDHIMHNL6XYIMObDqDHIN5aP4HNS51VIK53G2KrH4L2HsibDKD39JL5Mc55JsTiSrHLMMTLHLb59JL4L553J4DGOab9KLLIRN11NqDuGafjI7TMLNb7It5uOafgM69MSqLrK5LXPqXhH591RKHJKbLbH4zM9JL3PqPhR5LHT5b3LdHvTLG',
+2025-07-24T11:41:18.392276+00:00 app[web.1]:   s1u: 1,
+2025-07-24T11:41:18.392276+00:00 app[web.1]:   hyperlinks: 1,
+2025-07-24T11:41:18.392277+00:00 app[web.1]:   canexport: 1,
+2025-07-24T11:41:18.392278+00:00 app[web.1]:   image: '01102476371318/B9BBBC6FB52C7057.jpg',
+2025-07-24T11:41:18.392289+00:00 app[web.1]:   companyinfo: 'PET FACTORY SRL, Sediu|Sos. Giurgiului Nr. 118, Bl. 12, Sc. 5, Ap.130, Sector 4, 040676|Cod Fiscal: RO25190857 Nr. Reg. Comertului: J2009002551402'
+2025-07-24T11:41:18.392289+00:00 app[web.1]: }
+2025-07-24T11:41:18.566963+00:00 app[web.1]: { success: true, totalcount: 0, rows: [] }
+2025-07-24T11:41:18.625420+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:41:18.625421+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:41:18.625427+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:41:18.625427+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:41:18.625427+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:41:18.625446+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:41:23.668681+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=kiEL1KQJ-h4rGmDBAAAM" host=retailers1-0691020d207c.herokuapp.com request_id=b80c6176-8a5c-a403-ded6-a00b8ef59a11 fwd="86.122.68.77" dyno=web.1 connect=0ms service=5554ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:23.984680+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFEgc" host=retailers1-0691020d207c.herokuapp.com request_id=95104b54-6595-9151-ffb3-bad56fa8cdb4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:24.174191+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFEjX&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=b4c435f8-a2e6-d602-ad9d-3866fe4fce5f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:24.188123+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFEjZ&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=b0c20b45-5471-f233-9792-a8f200ce4018 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:24.802482+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=9d13a41b-14b2-c573-c93c-3b43c57d5200 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:24.920026+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFEu8&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=68b97b74-c87b-5924-ea7a-2539d2cd51f3 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:25.002953+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFEu7&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=56036a33-42c2-dd4c-75ee-4094597394c9 fwd="86.122.68.77" dyno=web.1 connect=0ms service=57ms status=200 bytes=22 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:25.015122+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFEwi&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=6f59efbe-adb0-d7ed-baf2-5c1f6239047e fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:24.802288+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:41:24.920096+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11639 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.002474+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:41:25.015143+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12349 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.015596+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 13249 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.017414+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 78631 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.019042+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11322 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.020569+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 12664 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.022012+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 38804 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.023488+00:00 app[web.1]: sqlQuery SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = 11654 AND COALESCE(FINDOC, 0) = 0 and XMLDATE > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.024915+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.026333+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.027729+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.029239+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.031225+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.032729+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.034136+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.035602+00:00 app[web.1]: sqlQuery select count(*) nrFacturiDeTrimis  from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.119332+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.136455+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.141130+00:00 app[web.1]: { data: '2' }
+2025-07-24T11:41:25.142523+00:00 app[web.1]: { data: '24' }
+2025-07-24T11:41:25.143230+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.143772+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.144599+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:41:25.145122+00:00 app[web.1]: { data: '9' }
+2025-07-24T11:41:25.145630+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.146209+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.146700+00:00 app[web.1]: { data: '21' }
+2025-07-24T11:41:25.147118+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.147546+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.152617+00:00 app[web.1]: { data: '16' }
+2025-07-24T11:41:25.174940+00:00 app[web.1]: { data: '0' }
+2025-07-24T11:41:25.204508+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.204509+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.204512+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11322 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.208468+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.208469+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.208470+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12349 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.212870+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.212871+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.212871+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11639 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.213393+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.213393+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.213394+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=12664 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.254440+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.254442+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.254442+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=13249 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.276642+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:25.276910+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.276911+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.276912+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=78631 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.280456+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.280457+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.280458+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=38804 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.281267+00:00 app[web.1]: sqlQuery select fincode, 
+2025-07-24T11:41:25.281267+00:00 app[web.1]:       format(trndate, 'dd.MM.yyyy') trndate 
+2025-07-24T11:41:25.281267+00:00 app[web.1]:       from findoc f inner join mtrdoc m on (f.findoc=m.findoc) where f.sosource=1351 and f.fprms=712 and f.series=7121 and f.trdr=11654 AND m.CCCXMLSendDate is null and f.iscancel=0 and trndate > DATEADD(day, -30, getdate())
+2025-07-24T11:41:25.344114+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:25.346894+00:00 app[web.1]: {
+2025-07-24T11:41:25.346896+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:25.346896+00:00 app[web.1]:   data: [
+2025-07-24T11:41:25.346897+00:00 app[web.1]:     { fincode: 'FAEX-PF-30074', trndate: '26.06.2025' },
+2025-07-24T11:41:25.346897+00:00 app[web.1]:     { fincode: 'FAEX-PF-30075', trndate: '26.06.2025' },
+2025-07-24T11:41:25.346898+00:00 app[web.1]:     { fincode: 'FAEX-PF-30076', trndate: '26.06.2025' },
+2025-07-24T11:41:25.346898+00:00 app[web.1]:     { fincode: 'FAEX-PF-30077', trndate: '26.06.2025' },
+2025-07-24T11:41:25.346898+00:00 app[web.1]:     { fincode: 'FAEX-PF-30219', trndate: '02.07.2025' },
+2025-07-24T11:41:25.346899+00:00 app[web.1]:     { fincode: 'FAEX-PF-30220', trndate: '02.07.2025' },
+2025-07-24T11:41:25.346899+00:00 app[web.1]:     { fincode: 'FAEX-PF-30221', trndate: '02.07.2025' },
+2025-07-24T11:41:25.346899+00:00 app[web.1]:     { fincode: 'FAEX-PF-30222', trndate: '02.07.2025' },
+2025-07-24T11:41:25.346900+00:00 app[web.1]:     { fincode: 'FAEX-PF-30223', trndate: '02.07.2025' }
+2025-07-24T11:41:25.346900+00:00 app[web.1]:   ],
+2025-07-24T11:41:25.346900+00:00 app[web.1]:   total: 9
+2025-07-24T11:41:25.346900+00:00 app[web.1]: }
+2025-07-24T11:41:25.349619+00:00 app[web.1]: {
+2025-07-24T11:41:25.349620+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:25.349621+00:00 app[web.1]:   data: [
+2025-07-24T11:41:25.349621+00:00 app[web.1]:     { fincode: 'FAEX-PF-30172', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349621+00:00 app[web.1]:     { fincode: 'FAEX-PF-30173', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349622+00:00 app[web.1]:     { fincode: 'FAEX-PF-30174', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349622+00:00 app[web.1]:     { fincode: 'FAEX-PF-30175', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349622+00:00 app[web.1]:     { fincode: 'FAEX-PF-30176', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349623+00:00 app[web.1]:     { fincode: 'FAEX-PF-30177', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349623+00:00 app[web.1]:     { fincode: 'FAEX-PF-30178', trndate: '30.06.2025' },
+2025-07-24T11:41:25.349623+00:00 app[web.1]:     { fincode: 'FAEX-PF-30309', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349623+00:00 app[web.1]:     { fincode: 'FAEX-PF-30310', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30311', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30312', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30313', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30314', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30315', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30316', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349624+00:00 app[web.1]:     { fincode: 'FAEX-PF-30317', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349625+00:00 app[web.1]:     { fincode: 'FAEX-PF-30318', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349625+00:00 app[web.1]:     { fincode: 'FAEX-PF-30319', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349625+00:00 app[web.1]:     { fincode: 'FAEX-PF-30320', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349625+00:00 app[web.1]:     { fincode: 'FAEX-PF-30321', trndate: '10.07.2025' },
+2025-07-24T11:41:25.349626+00:00 app[web.1]:     { fincode: 'FAEX-PF-30384', trndate: '16.07.2025' },
+2025-07-24T11:41:25.349626+00:00 app[web.1]:     { fincode: 'FAEX-PF-30385', trndate: '16.07.2025' },
+2025-07-24T11:41:25.349626+00:00 app[web.1]:     { fincode: 'FAEX-PF-30386', trndate: '16.07.2025' },
+2025-07-24T11:41:25.349626+00:00 app[web.1]:     { fincode: 'FAEX-PF-30387', trndate: '16.07.2025' }
+2025-07-24T11:41:25.349626+00:00 app[web.1]:   ],
+2025-07-24T11:41:25.349626+00:00 app[web.1]:   total: 24
+2025-07-24T11:41:25.349627+00:00 app[web.1]: }
+2025-07-24T11:41:25.355224+00:00 app[web.1]: {
+2025-07-24T11:41:25.355225+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:25.355226+00:00 app[web.1]:   data: [
+2025-07-24T11:41:25.355226+00:00 app[web.1]:     { fincode: 'FAEX-PF-30073', trndate: '26.06.2025' },
+2025-07-24T11:41:25.355226+00:00 app[web.1]:     { fincode: 'FAEX-PF-30170', trndate: '30.06.2025' },
+2025-07-24T11:41:25.355227+00:00 app[web.1]:     { fincode: 'FAEX-PF-30171', trndate: '30.06.2025' },
+2025-07-24T11:41:25.355227+00:00 app[web.1]:     { fincode: 'FAEX-PF-30256', trndate: '04.07.2025' },
+2025-07-24T11:41:25.355227+00:00 app[web.1]:     { fincode: 'FAEX-PF-30257', trndate: '04.07.2025' },
+2025-07-24T11:41:25.355227+00:00 app[web.1]:     { fincode: 'FAEX-PF-30343', trndate: '11.07.2025' },
+2025-07-24T11:41:25.355228+00:00 app[web.1]:     { fincode: 'FAEX-PF-30344', trndate: '11.07.2025' },
+2025-07-24T11:41:25.355228+00:00 app[web.1]:     { fincode: 'FAEX-PF-30553', trndate: '23.07.2025' },
+2025-07-24T11:41:25.355229+00:00 app[web.1]:     { fincode: 'FAEX-PF-30554', trndate: '23.07.2025' }
+2025-07-24T11:41:25.355229+00:00 app[web.1]:   ],
+2025-07-24T11:41:25.355229+00:00 app[web.1]:   total: 9
+2025-07-24T11:41:25.355229+00:00 app[web.1]: }
+2025-07-24T11:41:25.392191+00:00 app[web.1]: { success: true, message: 'Nothing to process.' }
+2025-07-24T11:41:25.395797+00:00 app[web.1]: {
+2025-07-24T11:41:25.395798+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:25.395799+00:00 app[web.1]:   data: [
+2025-07-24T11:41:25.395799+00:00 app[web.1]:     { fincode: 'FAEX-PF-30160', trndate: '30.06.2025' },
+2025-07-24T11:41:25.395799+00:00 app[web.1]:     { fincode: 'FAEX-PF-30161', trndate: '30.06.2025' },
+2025-07-24T11:41:25.395800+00:00 app[web.1]:     { fincode: 'FAEX-PF-30162', trndate: '30.06.2025' },
+2025-07-24T11:41:25.395800+00:00 app[web.1]:     { fincode: 'FAEX-PF-30163', trndate: '30.06.2025' },
+2025-07-24T11:41:25.395801+00:00 app[web.1]:     { fincode: 'FAEX-PF-30164', trndate: '30.06.2025' },
+2025-07-24T11:41:25.395801+00:00 app[web.1]:     { fincode: 'FAEX-PF-30335', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395801+00:00 app[web.1]:     { fincode: 'FAEX-PF-30336', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395802+00:00 app[web.1]:     { fincode: 'FAEX-PF-30337', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395802+00:00 app[web.1]:     { fincode: 'FAEX-PF-30338', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395802+00:00 app[web.1]:     { fincode: 'FAEX-PF-30339', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395802+00:00 app[web.1]:     { fincode: 'FAEX-PF-30340', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395802+00:00 app[web.1]:     { fincode: 'FAEX-PF-30341', trndate: '10.07.2025' },
+2025-07-24T11:41:25.395803+00:00 app[web.1]:     { fincode: 'FAEX-PF-30391', trndate: '16.07.2025' },
+2025-07-24T11:41:25.395803+00:00 app[web.1]:     { fincode: 'FAEX-PF-30392', trndate: '16.07.2025' },
+2025-07-24T11:41:25.395804+00:00 app[web.1]:     { fincode: 'FAEX-PF-30393', trndate: '16.07.2025' },
+2025-07-24T11:41:25.395804+00:00 app[web.1]:     { fincode: 'FAEX-PF-30394', trndate: '16.07.2025' }
+2025-07-24T11:41:25.395804+00:00 app[web.1]:   ],
+2025-07-24T11:41:25.395805+00:00 app[web.1]:   total: 16
+2025-07-24T11:41:25.395805+00:00 app[web.1]: }
+2025-07-24T11:41:25.402912+00:00 app[web.1]: {
+2025-07-24T11:41:25.402913+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:25.402913+00:00 app[web.1]:   data: [
+2025-07-24T11:41:25.402914+00:00 app[web.1]:     { fincode: 'FAEX-PF-30555', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402914+00:00 app[web.1]:     { fincode: 'FAEX-PF-30556', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402914+00:00 app[web.1]:     { fincode: 'FAEX-PF-30557', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402915+00:00 app[web.1]:     { fincode: 'FAEX-PF-30558', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402915+00:00 app[web.1]:     { fincode: 'FAEX-PF-30559', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402915+00:00 app[web.1]:     { fincode: 'FAEX-PF-30560', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402916+00:00 app[web.1]:     { fincode: 'FAEX-PF-30561', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402916+00:00 app[web.1]:     { fincode: 'FAEX-PF-30562', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402916+00:00 app[web.1]:     { fincode: 'FAEX-PF-30563', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30564', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30565', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30566', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30567', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30568', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30569', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402917+00:00 app[web.1]:     { fincode: 'FAEX-PF-30570', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402918+00:00 app[web.1]:     { fincode: 'FAEX-PF-30571', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402918+00:00 app[web.1]:     { fincode: 'FAEX-PF-30572', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402918+00:00 app[web.1]:     { fincode: 'FAEX-PF-30573', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402918+00:00 app[web.1]:     { fincode: 'FAEX-PF-30574', trndate: '23.07.2025' },
+2025-07-24T11:41:25.402918+00:00 app[web.1]:     { fincode: 'FAEX-PF-30575', trndate: '23.07.2025' }
+2025-07-24T11:41:25.402918+00:00 app[web.1]:   ],
+2025-07-24T11:41:25.402919+00:00 app[web.1]:   total: 21
+2025-07-24T11:41:25.402919+00:00 app[web.1]: }
+2025-07-24T11:41:27.149848+00:00 heroku[router]: at=info method=GET path="/retailer_file_manager.html?trdr=78631&logo=%27https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg%27" host=retailers1-0691020d207c.herokuapp.com request_id=ddefee1e-9b01-d985-244c-40ad597479bb fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=18023 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:27.386165+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=18d550b7-25da-44cf-4d47-67ef2fca20cb fwd="86.122.68.77" dyno=web.1 connect=0ms service=3ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:27.148985+00:00 app[web.1]: GET 200 /retailer_file_manager.html?trdr=78631&logo=%27https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg%27 - 0ms
+2025-07-24T11:41:27.383827+00:00 app[web.1]: GET 200 /css/sandstone.css - 0ms
+2025-07-24T11:41:27.694284+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=Kfni1WLwxLHPyfxzAAAO" host=retailers1-0691020d207c.herokuapp.com request_id=53dac47d-99f2-8d38-ea6e-f513d335f6f5 fwd="86.122.68.77" dyno=web.1 connect=0ms service=3379ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.432305+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=26c04ea9-7793-3c0e-cfab-acc4bd454684 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.433244+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=0aeadec4-8b3f-2143-9cf6-f6421b9be765 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.433591+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=bc0b9b91-8456-557c-c626-5e2e376d18a7 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.510672+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=b000fbb2-158c-d0c3-8eea-31c7ea941989 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.434118+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=5f7027e3-ab2d-f733-861b-7085631b2c83 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.444761+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=53832c94-b645-b446-eb86-3bf022b9eb0f fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.509487+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=7d7bb22f-4101-4d27-7b67-7e81b60e5e53 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.590864+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFFog" host=retailers1-0691020d207c.herokuapp.com request_id=c6718dac-510f-3d4a-6ecc-8de29e8e7b09 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:28.431574+00:00 app[web.1]: GET 200 /client.js - 0ms
+2025-07-24T11:41:28.432385+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 1ms
+2025-07-24T11:41:28.433086+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:41:28.433630+00:00 app[web.1]: GET 200 /modules/orderTable.js - 0ms
+2025-07-24T11:41:28.444467+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:41:28.508824+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 1ms
+2025-07-24T11:41:28.510021+00:00 app[web.1]: GET 200 /modules/retailer.js - 0ms
+2025-07-24T11:41:29.183638+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFFxc&sid=699Df5nnJ82jb1UJAAAQ" host=retailers1-0691020d207c.herokuapp.com request_id=c6b66562-4617-93d3-1658-d0eb626b406a fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:29.200619+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFFxf&sid=699Df5nnJ82jb1UJAAAQ" host=retailers1-0691020d207c.herokuapp.com request_id=747b7804-691b-1b5c-e1e2-b6c9133c642f fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:29.273068+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFFzK&sid=699Df5nnJ82jb1UJAAAQ" host=retailers1-0691020d207c.herokuapp.com request_id=8ec704d7-15a3-1f9a-fa96-a084d688e7d0 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:29.347708+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyFF-Z&sid=699Df5nnJ82jb1UJAAAQ" host=retailers1-0691020d207c.herokuapp.com request_id=ccb2f871-b056-0290-241d-ed60db15a66b fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:29.489914+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyFFzJ&sid=699Df5nnJ82jb1UJAAAQ" host=retailers1-0691020d207c.herokuapp.com request_id=a017ec6a-89ea-bcf0-cdea-aaf66207649d fwd="86.122.68.77" dyno=web.1 connect=0ms service=214ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:41:29.273599+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTPXML].* from [CCCSFTPXML] where [TRDR_RETAILER] = @p1 order by [XMLDATE] des...
+2025-07-24T11:41:29.347603+00:00 app[web.1]: {
+2025-07-24T11:41:29.347605+00:00 app[web.1]:   service: 'login',
+2025-07-24T11:41:29.347606+00:00 app[web.1]:   username: 'websitepetfactory',
+2025-07-24T11:41:29.347607+00:00 app[web.1]:   password: 'petfactory4321',
+2025-07-24T11:41:29.347607+00:00 app[web.1]:   appId: 1001
+2025-07-24T11:41:29.347607+00:00 app[web.1]: }
+2025-07-24T11:41:29.348172+00:00 app[web.1]: sqlQuery select name from trdr where sodtype=13 and trdr=78631
+2025-07-24T11:41:29.428600+00:00 app[web.1]: {
+2025-07-24T11:41:29.428601+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:29.428604+00:00 app[web.1]:   clientID: '9J8pIdHmKqfjJ6LLUK5oI7LeS4fPKKLOKLLqKt8bDKD3Ir1uTqLgR7L0Qd1mKYKtH7H0GrH5OqvhL7DVLM5aJK1qKrPNKMPLGYKrH6HKILbZ9JL2H4H6',
+2025-07-24T11:41:29.428604+00:00 app[web.1]:   objs: [
+2025-07-24T11:41:29.428605+00:00 app[web.1]:     {
+2025-07-24T11:41:29.428605+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:29.428605+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:29.428606+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:29.428606+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:29.428606+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:29.428607+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:29.428607+00:00 app[web.1]:       REFID: '1',
+2025-07-24T11:41:29.428607+00:00 app[web.1]:       REFIDNAME: 'Sorin Fliundra',
+2025-07-24T11:41:29.428607+00:00 app[web.1]:       USERID: '1',
+2025-07-24T11:41:29.428608+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:29.428608+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:29.428608+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:29.428608+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:41:29.428608+00:00 app[web.1]:     },
+2025-07-24T11:41:29.428609+00:00 app[web.1]:     {
+2025-07-24T11:41:29.428609+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:29.428609+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:29.428609+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:29.428609+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       REFID: '14',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       REFIDNAME: 'Ana Topirceanu',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       USERID: '14',
+2025-07-24T11:41:29.428610+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:29.428611+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:29.428611+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:29.428611+00:00 app[web.1]:       EXPTIME: ''
+2025-07-24T11:41:29.428611+00:00 app[web.1]:     },
+2025-07-24T11:41:29.428611+00:00 app[web.1]:     {
+2025-07-24T11:41:29.428611+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:41:29.428612+00:00 app[web.1]:       REFID: '1000',
+2025-07-24T11:41:29.428613+00:00 app[web.1]:       REFIDNAME: 'Admin',
+2025-07-24T11:41:29.428613+00:00 app[web.1]:       USERID: '1000',
+2025-07-24T11:41:29.428613+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:41:29.428613+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:41:29.428613+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:41:29.428614+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:41:29.428614+00:00 app[web.1]:     }
+2025-07-24T11:41:29.428614+00:00 app[web.1]:   ],
+2025-07-24T11:41:29.428614+00:00 app[web.1]:   ver: '6.00.622.11546',
+2025-07-24T11:41:29.428614+00:00 app[web.1]:   sn: '01102476371318',
+2025-07-24T11:41:29.428615+00:00 app[web.1]:   off: false,
+2025-07-24T11:41:29.428615+00:00 app[web.1]:   pin: false,
+2025-07-24T11:41:29.428615+00:00 app[web.1]:   appid: '1001'
+2025-07-24T11:41:29.428615+00:00 app[web.1]: }
+2025-07-24T11:41:29.428650+00:00 app[web.1]: {
+2025-07-24T11:41:29.428650+00:00 app[web.1]:   service: 'authenticate',
+2025-07-24T11:41:29.428651+00:00 app[web.1]:   clientID: '9J8pIdHmKqfjJ6LLUK5oI7LeS4fPKKLOKLLqKt8bDKD3Ir1uTqLgR7L0Qd1mKYKtH7H0GrH5OqvhL7DVLM5aJK1qKrPNKMPLGYKrH6HKILbZ9JL2H4H6',
+2025-07-24T11:41:29.428651+00:00 app[web.1]:   COMPANY: '50',
+2025-07-24T11:41:29.428651+00:00 app[web.1]:   BRANCH: '1000',
+2025-07-24T11:41:29.428651+00:00 app[web.1]:   MODULE: '0',
+2025-07-24T11:41:29.428651+00:00 app[web.1]:   REFID: '1'
+2025-07-24T11:41:29.428651+00:00 app[web.1]: }
+2025-07-24T11:41:29.431085+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTPXML].[CCCSFTPXML]) as [total] from [CCCSFTPXML] where [TRDR_RETAILER] = @p0
+2025-07-24T11:41:29.507124+00:00 app[web.1]: { data: 'Supeco Investment S.R.L.' }
+2025-07-24T11:41:29.582411+00:00 app[web.1]: {
+2025-07-24T11:41:29.582432+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:29.582433+00:00 app[web.1]:   clientID: '9J8pM4T8Kqvm9JOmHL1LIL5OGrXYI4bvPrTLKLTLT6XYIMf4SaX7S4L1G4HIK2KrGrXmJrf5SaabDZ10SbHdQK10R51JKYKtH6bbL7DrHLLKKKDF9JT4I4949JL3IMHNG41IIdL4SKjjP4HKGbLLH6D9KKXbS6CbDKDVLLKbDKGbDKLXPKXhT79EQoKrGq1NGtbLH6f8GajKS5LHJtLpKrzDLa0',
+2025-07-24T11:41:29.582433+00:00 app[web.1]:   s1u: 1,
+2025-07-24T11:41:29.582433+00:00 app[web.1]:   hyperlinks: 1,
+2025-07-24T11:41:29.582434+00:00 app[web.1]:   canexport: 1,
+2025-07-24T11:41:29.582434+00:00 app[web.1]:   image: '01102476371318/B9BBBC6FB52C7057.jpg',
+2025-07-24T11:41:29.582437+00:00 app[web.1]:   companyinfo: 'PET FACTORY SRL, Sediu|Sos. Giurgiului Nr. 118, Bl. 12, Sc. 5, Ap.130, Sector 4, 040676|Cod Fiscal: RO25190857 Nr. Reg. Comertului: J2009002551402'
+2025-07-24T11:41:29.582438+00:00 app[web.1]: }
+2025-07-24T11:41:30.454212+00:00 app[web.1]: sqlQuery select a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc a inner join salfprms b on a.fprms=b.fprms where a.sosource=1351 and a.trdr=78631 and a.num04='00134630'
+2025-07-24T11:41:30.454236+00:00 app[web.1]:     and a.TRNDATE > DATEADD(day, -30, GETDATE()) and b.tfprms=201
+2025-07-24T11:41:30.454237+00:00 app[web.1]:     
+2025-07-24T11:41:30.581025+00:00 app[web.1]: {
+2025-07-24T11:41:30.581027+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:30.581028+00:00 app[web.1]:   data: [
+2025-07-24T11:41:30.581028+00:00 app[web.1]:     {
+2025-07-24T11:41:30.581028+00:00 app[web.1]:       FINDOC: 1834249,
+2025-07-24T11:41:30.581029+00:00 app[web.1]:       FINCODE: 'CKEY-00052085',
+2025-07-24T11:41:30.581029+00:00 app[web.1]:       TRNDATE: '24.07.2025'
+2025-07-24T11:41:30.581030+00:00 app[web.1]:     }
+2025-07-24T11:41:30.581030+00:00 app[web.1]:   ],
+2025-07-24T11:41:30.581030+00:00 app[web.1]:   total: 1
+2025-07-24T11:41:30.581030+00:00 app[web.1]: }
+2025-07-24T11:41:30.653560+00:00 app[web.1]: sqlQuery select a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE from findoc a inner join salfprms b on a.fprms=b.fprms where a.sosource=1351 and a.trdr=78631 and a.num04='00134629'
+2025-07-24T11:41:30.653561+00:00 app[web.1]:     and a.TRNDATE > DATEADD(day, -30, GETDATE()) and b.tfprms=201
+2025-07-24T11:41:30.653562+00:00 app[web.1]:     
+2025-07-24T11:41:30.780681+00:00 app[web.1]: {
+2025-07-24T11:41:30.780706+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:30.780707+00:00 app[web.1]:   data: [
+2025-07-24T11:41:30.780707+00:00 app[web.1]:     {
+2025-07-24T11:41:30.780707+00:00 app[web.1]:       FINDOC: 1834247,
+2025-07-24T11:41:30.780708+00:00 app[web.1]:       FINCODE: 'CKEY-00052083',
+2025-07-24T11:41:30.780708+00:00 app[web.1]:       TRNDATE: '24.07.2025'
+2025-07-24T11:41:30.780708+00:00 app[web.1]:     }
+2025-07-24T11:41:30.780709+00:00 app[web.1]:   ],
+2025-07-24T11:41:30.780709+00:00 app[web.1]:   total: 1
+2025-07-24T11:41:30.780709+00:00 app[web.1]: }
+2025-07-24T11:41:31.413648+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].[CCCSFTPXML] from [CCCSFTPXML] where [XMLFILENAME] = @p0 and [TRDR_RETAILER] = @...
+2025-07-24T11:41:31.505025+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].[CCCSFTPXML] from [CCCSFTPXML] where [XMLFILENAME] = @p0 and [TRDR_RETAILER] = @...
+2025-07-24T11:41:31.541524+00:00 app[web.1]: {
+2025-07-24T11:41:31.541535+00:00 app[web.1]:   success: true,
+2025-07-24T11:41:31.541535+00:00 app[web.1]:   totalcount: 21,
+2025-07-24T11:41:31.541535+00:00 app[web.1]:   rows: [
+2025-07-24T11:41:31.541536+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541536+00:00 app[web.1]:       findoc: '1832644',
+2025-07-24T11:41:31.541537+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541537+00:00 app[web.1]:       fincode: 'FAEX-PF-30555',
+2025-07-24T11:41:31.541537+00:00 app[web.1]:       sumamnt: '4826.52'
+2025-07-24T11:41:31.541538+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541538+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541538+00:00 app[web.1]:       findoc: '1832645',
+2025-07-24T11:41:31.541538+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541539+00:00 app[web.1]:       fincode: 'FAEX-PF-30556',
+2025-07-24T11:41:31.541539+00:00 app[web.1]:       sumamnt: '250.9'
+2025-07-24T11:41:31.541539+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541539+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541539+00:00 app[web.1]:       findoc: '1832646',
+2025-07-24T11:41:31.541540+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541540+00:00 app[web.1]:       fincode: 'FAEX-PF-30557',
+2025-07-24T11:41:31.541540+00:00 app[web.1]:       sumamnt: '3341.16'
+2025-07-24T11:41:31.541540+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541540+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541540+00:00 app[web.1]:       findoc: '1832648',
+2025-07-24T11:41:31.541541+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541541+00:00 app[web.1]:       fincode: 'FAEX-PF-30558',
+2025-07-24T11:41:31.541541+00:00 app[web.1]:       sumamnt: '3197.8'
+2025-07-24T11:41:31.541541+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541541+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541541+00:00 app[web.1]:       findoc: '1832649',
+2025-07-24T11:41:31.541542+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541542+00:00 app[web.1]:       fincode: 'FAEX-PF-30559',
+2025-07-24T11:41:31.541542+00:00 app[web.1]:       sumamnt: '5211.38'
+2025-07-24T11:41:31.541542+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541542+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541543+00:00 app[web.1]:       findoc: '1832651',
+2025-07-24T11:41:31.541543+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541543+00:00 app[web.1]:       fincode: 'FAEX-PF-30560',
+2025-07-24T11:41:31.541543+00:00 app[web.1]:       sumamnt: '1576.14'
+2025-07-24T11:41:31.541543+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541543+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541544+00:00 app[web.1]:       findoc: '1832654',
+2025-07-24T11:41:31.541544+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541544+00:00 app[web.1]:       fincode: 'FAEX-PF-30561',
+2025-07-24T11:41:31.541544+00:00 app[web.1]:       sumamnt: '5052.67'
+2025-07-24T11:41:31.541544+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541545+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541545+00:00 app[web.1]:       findoc: '1832655',
+2025-07-24T11:41:31.541545+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541545+00:00 app[web.1]:       fincode: 'FAEX-PF-30562',
+2025-07-24T11:41:31.541545+00:00 app[web.1]:       sumamnt: '2569.3'
+2025-07-24T11:41:31.541545+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541545+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541555+00:00 app[web.1]:       findoc: '1832659',
+2025-07-24T11:41:31.541556+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541556+00:00 app[web.1]:       fincode: 'FAEX-PF-30563',
+2025-07-24T11:41:31.541556+00:00 app[web.1]:       sumamnt: '5077.09'
+2025-07-24T11:41:31.541556+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541556+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541556+00:00 app[web.1]:       findoc: '1832660',
+2025-07-24T11:41:31.541557+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541557+00:00 app[web.1]:       fincode: 'FAEX-PF-30564',
+2025-07-24T11:41:31.541557+00:00 app[web.1]:       sumamnt: '2752.03'
+2025-07-24T11:41:31.541557+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541557+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541557+00:00 app[web.1]:       findoc: '1832663',
+2025-07-24T11:41:31.541557+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541558+00:00 app[web.1]:       fincode: 'FAEX-PF-30565',
+2025-07-24T11:41:31.541558+00:00 app[web.1]:       sumamnt: '4897.15'
+2025-07-24T11:41:31.541558+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541558+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541558+00:00 app[web.1]:       findoc: '1832666',
+2025-07-24T11:41:31.541558+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541558+00:00 app[web.1]:       fincode: 'FAEX-PF-30566',
+2025-07-24T11:41:31.541559+00:00 app[web.1]:       sumamnt: '3768.09'
+2025-07-24T11:41:31.541559+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541559+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541559+00:00 app[web.1]:       findoc: '1832671',
+2025-07-24T11:41:31.541559+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541559+00:00 app[web.1]:       fincode: 'FAEX-PF-30567',
+2025-07-24T11:41:31.541559+00:00 app[web.1]:       sumamnt: '1056.86'
+2025-07-24T11:41:31.541559+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541559+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541560+00:00 app[web.1]:       findoc: '1832675',
+2025-07-24T11:41:31.541560+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541560+00:00 app[web.1]:       fincode: 'FAEX-PF-30568',
+2025-07-24T11:41:31.541560+00:00 app[web.1]:       sumamnt: '3681.76'
+2025-07-24T11:41:31.541560+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541561+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541561+00:00 app[web.1]:       findoc: '1832754',
+2025-07-24T11:41:31.541561+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541561+00:00 app[web.1]:       fincode: 'FAEX-PF-30569',
+2025-07-24T11:41:31.541561+00:00 app[web.1]:       sumamnt: '1569.6'
+2025-07-24T11:41:31.541562+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541562+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541562+00:00 app[web.1]:       findoc: '1832755',
+2025-07-24T11:41:31.541562+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541562+00:00 app[web.1]:       fincode: 'FAEX-PF-30570',
+2025-07-24T11:41:31.541562+00:00 app[web.1]:       sumamnt: '835.03'
+2025-07-24T11:41:31.541562+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541562+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541563+00:00 app[web.1]:       findoc: '1832756',
+2025-07-24T11:41:31.541563+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541563+00:00 app[web.1]:       fincode: 'FAEX-PF-30571',
+2025-07-24T11:41:31.541563+00:00 app[web.1]:       sumamnt: '274.68'
+2025-07-24T11:41:31.541563+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541563+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       findoc: '1832758',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       fincode: 'FAEX-PF-30572',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       sumamnt: '14051.5'
+2025-07-24T11:41:31.541564+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541564+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       findoc: '1832763',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       fincode: 'FAEX-PF-30573',
+2025-07-24T11:41:31.541564+00:00 app[web.1]:       sumamnt: '4069.84'
+2025-07-24T11:41:31.541565+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541565+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       findoc: '1832827',
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       fincode: 'FAEX-PF-30574',
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       sumamnt: '2791.53'
+2025-07-24T11:41:31.541565+00:00 app[web.1]:     },
+2025-07-24T11:41:31.541565+00:00 app[web.1]:     {
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       findoc: '1832830',
+2025-07-24T11:41:31.541565+00:00 app[web.1]:       trndate: '2025-07-23 00:00:00',
+2025-07-24T11:41:31.541566+00:00 app[web.1]:       fincode: 'FAEX-PF-30575',
+2025-07-24T11:41:31.541566+00:00 app[web.1]:       sumamnt: '70.4'
+2025-07-24T11:41:31.541566+00:00 app[web.1]:     }
+2025-07-24T11:41:31.541566+00:00 app[web.1]:   ]
+2025-07-24T11:41:31.541566+00:00 app[web.1]: }
+2025-07-24T11:41:31.580784+00:00 app[web.1]: 📊 SQL Query: update [CCCSFTPXML] set [FINDOC] = @p0 where [CCCSFTPXML].[CCCSFTPXML] in (@p1);select @@rowcount
+2025-07-24T11:41:31.650289+00:00 app[web.1]: 📊 SQL Query: update [CCCSFTPXML] set [FINDOC] = @p0 where [CCCSFTPXML].[CCCSFTPXML] in (@p1);select @@rowcount
+2025-07-24T11:41:31.666248+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.716779+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.730679+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.783300+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.794407+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.850958+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.858370+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.889656+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.896425+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.917553+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.921833+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.926716+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.959469+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.962175+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.984516+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:31.985278+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.000670+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.026168+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.027597+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.050799+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].* from [CCCSFTPXML] where [CCCSFTPXML].[CCCSFTPXML] in (@p0) order by [CCCSFTPXM...
+2025-07-24T11:41:32.051811+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.071956+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCAPERAK].* from [CCCAPERAK] where [FINDOC] = @p1 and [TRDR_RETAILER] = @p2 order...
+2025-07-24T11:41:32.092693+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].* from [CCCSFTPXML] where [CCCSFTPXML].[CCCSFTPXML] in (@p0) order by [CCCSFTPXM...
+2025-07-24T11:41:32.093920+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.118350+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.143728+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.161581+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.174282+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.184452+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.220243+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.221419+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.238822+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.239812+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.250244+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.285737+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.292482+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.303123+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.314113+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.316531+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.353296+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.363354+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.366934+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.380482+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...
+2025-07-24T11:41:32.382671+00:00 app[web.1]: 📊 SQL Query: select count([CCCAPERAK].[CCCAPERAK]) as [total] from [CCCAPERAK] where [FINDOC] = @p0 and [TRDR_RET...

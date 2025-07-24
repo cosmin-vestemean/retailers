@@ -1,0 +1,194 @@
+2025-07-24T11:30:40.585426+00:00 app[web.1]: 📊 SQL Query: select [CCCSFTPXML].* from [CCCSFTPXML] where [CCCSFTPXML].[CCCSFTPXML] in (@p0) order by [CCCSFTPXM...
+2025-07-24T11:30:45.585773+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:30:45.585792+00:00 app[web.1]:   - Total: 5/5
+2025-07-24T11:30:45.585793+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:30:45.585832+00:00 app[web.1]:   - Free: 5
+2025-07-24T11:30:45.585832+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:30:45.585833+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:00.574568+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClYk&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=8fda43f9-1f73-4a71-e026-27cdce4f6bc6 fwd="86.127.118.133" dyno=web.1 connect=0ms service=22141ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:00.789903+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClYu&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=435efcad-bae0-a48b-0e1d-2b812a29644d fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:00.790723+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=f2f6d489-add0-1a1a-cd78-22066663286c fwd="86.127.118.133" dyno=web.1 connect=0ms service=24324ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:15.586332+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:31:15.586366+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:31:15.586367+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:31:15.586368+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:25.790329+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClYu.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=b64223bd-067d-3715-3ab4-9be98df20665 fwd="86.127.118.133" dyno=web.1 connect=1ms service=24998ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:26.005977+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZ2&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=64a02180-5eea-a012-dc66-16df4f9bf3b7 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:45.587999+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:31:45.588029+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:31:45.588029+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:31:45.588030+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:31:51.006280+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZ2.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=f40e2480-fa92-4742-fc79-e7e340e9a991 fwd="86.127.118.133" dyno=web.1 connect=0ms service=24992ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:31:51.223296+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZC&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=e70f5f56-ce11-d169-3461-5b8008b1c946 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:15.588361+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:32:15.588390+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:32:15.588391+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:32:16.223762+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZC.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=77496484-4758-c30d-f784-a3764d7b0552 fwd="86.127.118.133" dyno=web.1 connect=0ms service=24996ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:16.440497+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyClZM&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=da3188a7-da19-d02b-dcaf-617253ac6f54 fwd="86.127.118.133" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:41.440705+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyClZM.0&sid=1tsObopcHQnUQXPZAAAc" host=retailers1-0691020d207c.herokuapp.com request_id=d503d940-bbd0-66dc-94bb-f71aed57a34b fwd="86.127.118.133" dyno=web.1 connect=0ms service=25006ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:32:45.589939+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:32:45.589983+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:32:45.589984+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:32:45.589986+00:00 app[web.1]:   - Pending Creates: 0
+2025-07-24T11:33:13.392759+00:00 heroku[web.1]: Restarting
+2025-07-24T11:33:13.395046+00:00 heroku[web.1]: State changed from up to starting
+2025-07-24T11:33:13.906561+00:00 heroku[web.1]: Stopping all processes with SIGTERM
+2025-07-24T11:33:13.937345+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=Ucfb6aXqmngUf3qjAAAY" host=retailers1-0691020d207c.herokuapp.com request_id=2533781b-1c7d-dfb8-9035-4bf9aac4cda9 fwd="81.196.206.203" dyno=web.1 connect=0ms service=211479ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:13.937628+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=FD9ZOfLZpIVNXoqtAAAe" host=retailers1-0691020d207c.herokuapp.com request_id=f16ab1b6-d441-ea24-e58f-3252d3dc493f fwd="86.122.68.77" dyno=web.1 connect=0ms service=155508ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:13.985340+00:00 heroku[web.1]: Process exited with status 143
+2025-07-24T11:33:16.637204+00:00 heroku[web.1]: Starting process with command `npm start`
+2025-07-24T11:33:17.421345+00:00 app[web.1]: 
+2025-07-24T11:33:17.421367+00:00 app[web.1]: > retailers@1.1.52 start
+2025-07-24T11:33:17.421367+00:00 app[web.1]: > node src
+2025-07-24T11:33:17.421368+00:00 app[web.1]: 
+2025-07-24T11:33:17.550047+00:00 app[web.1]: WARNING: NODE_ENV value of 'production' did not match any deployment config file names.
+2025-07-24T11:33:17.550244+00:00 app[web.1]: WARNING: See https://github.com/node-config/node-config/wiki/Strict-Mode
+2025-07-24T11:33:18.501905+00:00 app[web.1]: [METRICS REPORT 2025-07-24] Requests this month so far: 0
+2025-07-24T11:33:18.505629+00:00 app[web.1]: warn: Publishing all events to all authenticated users. See `channels.js` and https://dove.feathersjs.com/api/channels.html for more information.
+2025-07-24T11:33:18.506170+00:00 app[web.1]: === FIXIE SOCKS CONFIGURATION ===
+2025-07-24T11:33:18.506211+00:00 app[web.1]: Proxy Host: bici.usefixie.com
+2025-07-24T11:33:18.506294+00:00 app[web.1]: Proxy Port: 1080
+2025-07-24T11:33:18.506318+00:00 app[web.1]: Database Target: 37.251.146.15:1433
+2025-07-24T11:33:18.506338+00:00 app[web.1]: Database: PetFactory
+2025-07-24T11:33:18.506546+00:00 app[web.1]: === STARTING PROXY CONNECTION ===
+2025-07-24T11:33:18.620431+00:00 app[web.1]: 🔧 Setting up connection pool monitoring for SOCKS proxy...
+2025-07-24T11:33:18.620484+00:00 app[web.1]: Database client configured and ready
+2025-07-24T11:33:18.633035+00:00 app[web.1]: info: Feathers app listening on http://localhost:51988
+2025-07-24T11:33:18.633147+00:00 app[web.1]: (node:21) [DEP0044] DeprecationWarning: The `util.isArray` API is deprecated. Please use `Array.isArray()` instead.
+2025-07-24T11:33:18.633162+00:00 app[web.1]: (Use `node --trace-deprecation ...` to show where the warning was created)
+2025-07-24T11:33:18.633178+00:00 app[web.1]: (node:21) [DEP0055] DeprecationWarning: The `util.isRegExp` API is deprecated. Please use `arg instanceof RegExp` instead.
+2025-07-24T11:33:18.633196+00:00 app[web.1]: (node:21) [DEP0047] DeprecationWarning: The `util.isDate` API is deprecated.  Please use `arg instanceof Date` instead.
+2025-07-24T11:33:18.633594+00:00 app[web.1]: (node:21) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2025-07-24T11:33:19.057372+00:00 heroku[web.1]: State changed from starting to up
+2025-07-24T11:33:20.477114+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDNrk" host=retailers1-0691020d207c.herokuapp.com request_id=01c99d3e-5e2a-2066-a424-36a7542e6379 fwd="81.196.206.203" dyno=web.1 connect=5001ms service=5ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.550738+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDP87&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=794a65c9-d232-8cf7-a26e-595339920212 fwd="81.196.206.203" dyno=web.1 connect=0ms service=2ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.565824+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDNNF" host=retailers1-0691020d207c.herokuapp.com request_id=e7480f11-4a92-f45a-7bbf-e94ac3dfc458 fwd="86.122.68.77" dyno=web.1 connect=5001ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.612132+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDP89&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=e7b3dc51-e0fa-41e5-816f-0b63bf46d4ad fwd="81.196.206.203" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.633729+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDOgX&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=eef2639e-da46-c511-cb9c-8bfa5c2be8e1 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.697422+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDOga&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=45737513-aec7-a4d1-7da5-7d0d9b7286e7 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.921928+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDPAD&sid=IIg7ujEO3PsJXaetAAAA" host=retailers1-0691020d207c.herokuapp.com request_id=40fa757e-b41a-caae-54ad-a51b32584b76 fwd="81.196.206.203" dyno=web.1 connect=0ms service=238ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:20.921507+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDOia&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=1bf33761-b77d-74bd-b3f5-389f4299903b fwd="86.122.68.77" dyno=web.1 connect=0ms service=158ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.773791+00:00 heroku[router]: at=info method=GET path="/retailer_file_manager.html?trdr=12349&logo=%27https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg%27" host=retailers1-0691020d207c.herokuapp.com request_id=04cbb6ad-a902-7d14-1741-d2e5a85cfe1a fwd="86.122.68.77" dyno=web.1 connect=0ms service=5ms status=200 bytes=18023 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.845671+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=websocket&sid=HDGCEwCLD833_lM-AAAC" host=retailers1-0691020d207c.herokuapp.com request_id=c1ae5e50-dad7-554e-77b8-2da9172d9fe4 fwd="86.122.68.77" dyno=web.1 connect=0ms service=9089ms status=101 bytes=0 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.889870+00:00 heroku[router]: at=info method=GET path="/css/sandstone.css" host=retailers1-0691020d207c.herokuapp.com request_id=05db7e72-903a-7e37-c568-9d45c266d81f fwd="86.122.68.77" dyno=web.1 connect=0ms service=5ms status=200 bytes=229140 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:29.772126+00:00 app[web.1]: GET 200 /retailer_file_manager.html?trdr=12349&logo=%27https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg%27 - 2ms
+2025-07-24T11:33:29.886445+00:00 app[web.1]: GET 200 /css/sandstone.css - 1ms
+2025-07-24T11:33:30.318515+00:00 heroku[router]: at=info method=GET path="/client.js" host=retailers1-0691020d207c.herokuapp.com request_id=54a7a17e-29b2-49ad-38c3-c2bb434f1fc2 fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=13049 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.388749+00:00 heroku[router]: at=info method=GET path="/modules/orderTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=99e047ee-5065-8d30-ce56-3234e57d7e5a fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=26684 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.320006+00:00 heroku[router]: at=info method=GET path="/modules/invoiceTable.js" host=retailers1-0691020d207c.herokuapp.com request_id=234960a3-5d7b-724e-4dcf-560c8b16984b fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=16534 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.442698+00:00 heroku[router]: at=info method=GET path="/retailers.js" host=retailers1-0691020d207c.herokuapp.com request_id=b244e6d8-ca96-413f-ead7-103812d640a6 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=1715 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.444918+00:00 heroku[router]: at=info method=GET path="/modules/feathersjs-client.js" host=retailers1-0691020d207c.herokuapp.com request_id=ab671c9e-6154-d2e2-9979-c1129791ee49 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=3026 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.451362+00:00 heroku[router]: at=info method=GET path="/css/bulmaswatch.min.css.map" host=retailers1-0691020d207c.herokuapp.com request_id=71e9b5e0-93f8-f8e1-7e15-29df18a7e96b fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=404 bytes=110 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.317776+00:00 app[web.1]: GET 200 /client.js - 0ms
+2025-07-24T11:33:30.319194+00:00 app[web.1]: GET 200 /modules/invoiceTable.js - 1ms
+2025-07-24T11:33:30.387896+00:00 app[web.1]: GET 200 /modules/orderTable.js - 0ms
+2025-07-24T11:33:30.442142+00:00 app[web.1]: GET 200 /retailers.js - 1ms
+2025-07-24T11:33:30.444453+00:00 app[web.1]: GET 200 /modules/feathersjs-client.js - 0ms
+2025-07-24T11:33:30.450867+00:00 app[web.1]: GET 404 /css/bulmaswatch.min.css.map - 1ms
+2025-07-24T11:33:30.606018+00:00 heroku[router]: at=info method=GET path="/modules/retailer.js" host=retailers1-0691020d207c.herokuapp.com request_id=8f4536bf-98ca-48a4-80fd-aaa500806d1f fwd="86.122.68.77" dyno=web.1 connect=0ms service=2ms status=200 bytes=9160 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:30.605218+00:00 app[web.1]: GET 200 /modules/retailer.js - 1ms
+2025-07-24T11:33:31.007769+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRCV" host=retailers1-0691020d207c.herokuapp.com request_id=59431e9d-30e7-a556-81e4-f1ad5faf0375 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=118 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.521986+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRKM&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=a6e331d1-ef9b-3de4-072c-d9b721fe3c28 fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.524241+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRKO&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=fa54203c-0627-65b8-5b85-40d93c9f7e62 fwd="86.122.68.77" dyno=web.1 connect=0ms service=0ms status=200 bytes=32 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.594738+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRLm&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=56693676-02f4-b66d-3656-3aa766dea36c fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.677702+00:00 heroku[router]: at=info method=POST path="/socket.io/?EIO=4&transport=polling&t=PWyDRN2&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=55ea56b3-4e95-7a30-d4cc-812f6718479a fwd="86.122.68.77" dyno=web.1 connect=0ms service=1ms status=200 bytes=2 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.813069+00:00 heroku[router]: at=info method=GET path="/socket.io/?EIO=4&transport=polling&t=PWyDRLl&sid=UzGiEJDMRbImwBvRAAAE" host=retailers1-0691020d207c.herokuapp.com request_id=5d9cd59a-2ca2-aaa6-00de-37770d441eb5 fwd="86.122.68.77" dyno=web.1 connect=0ms service=219ms status=200 bytes=1 protocol=http1.1 tls=true tls_version=unknown
+2025-07-24T11:33:31.678001+00:00 app[web.1]: {
+2025-07-24T11:33:31.678013+00:00 app[web.1]:   service: 'login',
+2025-07-24T11:33:31.678014+00:00 app[web.1]:   username: 'websitepetfactory',
+2025-07-24T11:33:31.678014+00:00 app[web.1]:   password: 'petfactory4321',
+2025-07-24T11:33:31.678015+00:00 app[web.1]:   appId: 1001
+2025-07-24T11:33:31.678015+00:00 app[web.1]: }
+2025-07-24T11:33:31.707030+00:00 app[web.1]: sqlQuery select name from trdr where sodtype=13 and trdr=12349
+2025-07-24T11:33:31.913293+00:00 app[web.1]: 📊 SQL Query: select top (@p0) [CCCSFTPXML].* from [CCCSFTPXML] where [TRDR_RETAILER] = @p1 order by [XMLDATE] des...
+2025-07-24T11:33:32.440471+00:00 app[web.1]: 📊 SQL Query: select count([CCCSFTPXML].[CCCSFTPXML]) as [total] from [CCCSFTPXML] where [TRDR_RETAILER] = @p0
+2025-07-24T11:33:32.457405+00:00 app[web.1]: {
+2025-07-24T11:33:32.457407+00:00 app[web.1]:   success: true,
+2025-07-24T11:33:32.457410+00:00 app[web.1]:   clientID: '9J8pLdDOKqTbP5HH9JL5JMDFGoKsC7T5KYKrH4LH9JT69JT4PLTIR598R6nIIsjeLKr4H75I9JT2S7129JL5LIKsC4nnM49MHbL5G7959JOmL5H1H2KrHLXPPIKrGrLjOrHHRKK',
+2025-07-24T11:33:32.457410+00:00 app[web.1]:   objs: [
+2025-07-24T11:33:32.457411+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457411+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457411+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457412+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457412+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       REFID: '1',
+2025-07-24T11:33:32.457413+00:00 app[web.1]:       REFIDNAME: 'Sorin Fliundra',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       USERID: '1',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457414+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457415+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:33:32.457423+00:00 app[web.1]:     },
+2025-07-24T11:33:32.457424+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457424+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       REFID: '14',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       REFIDNAME: 'Ana Topirceanu',
+2025-07-24T11:33:32.457425+00:00 app[web.1]:       USERID: '14',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457426+00:00 app[web.1]:       EXPTIME: ''
+2025-07-24T11:33:32.457426+00:00 app[web.1]:     },
+2025-07-24T11:33:32.457426+00:00 app[web.1]:     {
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       COMPANY: '50',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       COMPANYNAME: 'PET FACTORY SRL',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       BRANCH: '1000',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       BRANCHNAME: 'Sediu',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       MODULE: '0',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       MODULENAME: 'Utilizator',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       REFID: '1000',
+2025-07-24T11:33:32.457427+00:00 app[web.1]:       REFIDNAME: 'Admin',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       USERID: '1000',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       FINALDATE: '',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       ROLES: '',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       XSECURITY: '0',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:       EXPTIME: '0'
+2025-07-24T11:33:32.457428+00:00 app[web.1]:     }
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   ],
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   ver: '6.00.622.11546',
+2025-07-24T11:33:32.457428+00:00 app[web.1]:   sn: '01102476371318',
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   off: false,
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   pin: false,
+2025-07-24T11:33:32.457429+00:00 app[web.1]:   appid: '1001'
+2025-07-24T11:33:32.457429+00:00 app[web.1]: }
+2025-07-24T11:33:32.457709+00:00 app[web.1]: {
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   service: 'authenticate',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   clientID: '9J8pLdDOKqTbP5HH9JL5JMDFGoKsC7T5KYKrH4LH9JT69JT4PLTIR598R6nIIsjeLKr4H75I9JT2S7129JL5LIKsC4nnM49MHbL5G7959JOmL5H1H2KrHLXPPIKrGrLjOrHHRKK',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   COMPANY: '50',
+2025-07-24T11:33:32.457709+00:00 app[web.1]:   BRANCH: '1000',
+2025-07-24T11:33:32.457710+00:00 app[web.1]:   MODULE: '0',
+2025-07-24T11:33:32.457710+00:00 app[web.1]:   REFID: '1'
+2025-07-24T11:33:32.457710+00:00 app[web.1]: }
+2025-07-24T11:33:32.524963+00:00 app[web.1]: { data: 'KAUFLAND ROMANIA SCS ' }
+2025-07-24T11:33:32.757624+00:00 app[web.1]: {
+2025-07-24T11:33:32.757643+00:00 app[web.1]:   success: true,
+2025-07-24T11:33:32.757643+00:00 app[web.1]:   clientID: '9J8pHdbOGq9gU5LNNs5YJtTiK4bEKNKbDKDVLMLNHr1YJNTeOarhU6PHTdH0KanmKa0bDKL1KKzcT5DM9JL4LKLDGKnZKrSbDKH7Lb9PTLbQKL98TYKrGqDFRa50McnaKavV9JT3SaebDKDCPLLV9JT4TKebDqDOGaDYR4DMSYKtH4LLLMr6IoKtGa13J2KtHMnY9JL2GIKsC5PFOqXZGMebDZ159JL4LMrZL5LbPLS',
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   s1u: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   hyperlinks: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   canexport: 1,
+2025-07-24T11:33:32.757644+00:00 app[web.1]:   image: '01102476371318/B9BBBC6FB52C7057.jpg',
+2025-07-24T11:33:32.757647+00:00 app[web.1]:   companyinfo: 'PET FACTORY SRL, Sediu|Sos. Giurgiului Nr. 118, Bl. 12, Sc. 5, Ap.130, Sector 4, 040676|Cod Fiscal: RO25190857 Nr. Reg. Comertului: J2009002551402'
+2025-07-24T11:33:32.757647+00:00 app[web.1]: }
+2025-07-24T11:33:33.248550+00:00 app[web.1]: { success: true, totalcount: 0, rows: [] }
+2025-07-24T11:33:48.620850+00:00 app[web.1]: 📊 Connection Pool Status:
+2025-07-24T11:33:48.620904+00:00 app[web.1]:   - Total: 1/5
+2025-07-24T11:33:48.620917+00:00 app[web.1]:   - Used: 0
+2025-07-24T11:33:48.620930+00:00 app[web.1]:   - Free: 1
+2025-07-24T11:33:48.620941+00:00 app[web.1]:   - Pending: 0
+2025-07-24T11:33:48.620953+00:00 app[web.1]:   - Pending Creates: 0
