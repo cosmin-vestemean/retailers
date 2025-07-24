@@ -73,18 +73,21 @@ export const mssql = (app) => {
     // Enhanced connection pool settings for proxy connections
     config.pool = {
       ...config.pool,
-      acquireTimeoutMillis: 60000, // Increased timeout for proxy connections
-      createTimeoutMillis: 30000,
+      min: 1, // Reduced minimum connections for SOCKS
+      max: 5, // Reduced maximum connections to prevent pool exhaustion
+      acquireTimeoutMillis: 30000, // Reduced timeout
+      createTimeoutMillis: 20000, // Reduced timeout
       destroyTimeoutMillis: 5000,
-      idleTimeoutMillis: 30000,
-      createRetryIntervalMillis: 2000
+      idleTimeoutMillis: 15000, // Shorter idle timeout for SOCKS connections
+      createRetryIntervalMillis: 2000,
+      propagateCreateError: true // Propagate connection creation errors immediately
     }
 
     // Configure SQL Server connection options for proxy connections
     config.connection.options = {
       ...config.connection.options,
-      connectTimeout: 60000, // 60 seconds for initial connection
-      requestTimeout: 60000,  // 60 seconds for queries
+      connectTimeout: 30000, // 30 seconds for initial connection
+      requestTimeout: 30000,  // 30 seconds for queries
       cancelTimeout: 5000,    // 5 seconds for cancel requests
       enableArithAbort: true
     }
@@ -110,6 +113,33 @@ export const mssql = (app) => {
       console.log(`📈 Large result set: ${response.length} rows`)
     }
   })
+
+  // Connection pool monitoring for SOCKS connections
+  if (process.env.FIXIE_SOCKS_HOST) {
+    console.log('🔧 Setting up connection pool monitoring for SOCKS proxy...')
+    
+    // Monitor pool state every 30 seconds
+    setInterval(() => {
+      const pool = db.client.pool
+      console.log(`📊 Connection Pool Status:`)
+      console.log(`  - Total: ${pool.numUsed() + pool.numFree()}/${pool.max}`)
+      console.log(`  - Used: ${pool.numUsed()}`)
+      console.log(`  - Free: ${pool.numFree()}`)
+      console.log(`  - Pending: ${pool.numPendingAcquires()}`)
+      console.log(`  - Pending Creates: ${pool.numPendingCreates()}`)
+    }, 30000)
+
+    // Handle pool errors
+    db.client.pool.on('createError', (err) => {
+      console.error('❌ Pool create error:', err.message)
+      console.error('This may indicate SOCKS connection issues')
+    })
+
+    db.client.pool.on('acquireTimeout', (err) => {
+      console.error('⏰ Pool acquire timeout:', err.message)
+      console.error('Pool may be exhausted due to failed SOCKS connections')
+    })
+  }
 
   console.log('Database client configured and ready')
   app.set('mssqlClient', db)
