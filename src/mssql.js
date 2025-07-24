@@ -79,6 +79,15 @@ export const mssql = (app) => {
       idleTimeoutMillis: 30000,
       createRetryIntervalMillis: 2000
     }
+
+    // Configure SQL Server connection options for proxy connections
+    config.connection.options = {
+      ...config.connection.options,
+      connectTimeout: 60000, // 60 seconds for initial connection
+      requestTimeout: 60000,  // 60 seconds for queries
+      cancelTimeout: 5000,    // 5 seconds for cancel requests
+      enableArithAbort: true
+    }
   }
 
   const db = knex(config)
