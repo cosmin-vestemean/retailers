@@ -120,11 +120,11 @@ async function getNDisplayOrders(retailer) {
     
     console.debug('Orders API result:', JSON.stringify(result, null, 2));
     
-    if (result && result.success && result.data) {
+    if (result && result.success && result.rows) {
       // Transform the data to match the expected format for displayOrdersForRetailers
       const transformedData = {
-        data: result.data,
-        total: result.total || result.data.length
+        data: result.rows,
+        total: result.total || result.rows.length
       };
       
       await displayOrdersForRetailers(transformedData, retailer, 'xmlTableBody');
