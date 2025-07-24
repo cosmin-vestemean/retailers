@@ -102,39 +102,33 @@ async function getNDisplayOrders(retailer) {
       .find()
       .then((result) => result.token);
     
-    // Use the new API endpoint for orders
-    const params = {
-      query: {
-        clientID: clientID,
-        sqlQuery: `SELECT getOrdersData(${JSON.stringify({
+    // Use the new API endpoint for orders - direct call to getOrdersData
+    const result = await client
+      .service('getS1SqlData')
+      .find({
+        query: {
+          clientID: clientID,
+          appID: '1001',
+          SqlName: 'getOrdersData',
           trdr: retailer,
           daysOlder: 30,
           limit: 50
-        })})`
-      }
-    };
+        }
+      });
     
-    const result = await client.service('getDataset').find(params);
+    console.debug('Orders API result:', JSON.stringify(result, null, 2));
     
-    if (result && result.data) {
-      // Parse the result if it's a JSON string
-      let ordersData;
-      try {
-        ordersData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
-      } catch (e) {
-        throw new Error('Failed to parse orders data: ' + e.message);
-      }
-      
+    if (result && result.success && result.data) {
       // Transform the data to match the expected format for displayOrdersForRetailers
       const transformedData = {
-        data: ordersData.data || [],
-        total: ordersData.total || 0
+        data: result.data,
+        total: result.total || result.data.length
       };
       
       await displayOrdersForRetailers(transformedData, retailer, 'xmlTableBody');
       showNotification('Orders loaded successfully via API', 'is-success');
     } else {
-      throw new Error('No data received from API');
+      throw new Error(result.message || 'No data received from API');
     }
   } catch (error) {
     console.error('Error loading orders via API:', error);

@@ -71,11 +71,11 @@ The ERP provides an **Advanced JavaScript Editor** for creating custom business 
 1. Develop and test functions locally in `/S1/JS/AJS/*.js` files
 2. Copy the function code to ERP → Advanced JavaScript Editor
 3. Save and deploy within the ERP system
-4. Functions become available as web service endpoints at: `https://[domain].oncloud.gr/s1services/JS/AJS_[filename]/[function_name]`
+4. Functions become available as web service endpoints at: `https://[domain].oncloud.gr/s1services/JS/[filename]/[function_name]`
 
 **Example**:
 - Local file: `/S1/JS/AJS/JSRetailers.js` containing `getOrdersData` function
-- ERP endpoint: `https://petfactory.oncloud.gr/s1services/JS/AJS_JSRetailers/getOrdersData`
+- ERP endpoint: `https://petfactory.oncloud.gr/s1services/JS/JSRetailers/getOrdersData`
 
 ## FeathersJS Backend Integration
 
