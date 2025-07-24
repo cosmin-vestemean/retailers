@@ -21,53 +21,27 @@ export const mssql = (app) => {
     console.log(`Database: ${config.connection.database}`)
     console.log('=== STARTING PROXY CONNECTION ===')
 
-    // Override the connection with a custom stream
+    // Override the connection with a custom stream (single attempt)
     config.connection.stream = async function() {
-      const maxRetries = 5; // Increased retries
-      const baseDelay = 1000; // Base delay in ms
-      
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          const startTime = Date.now()
-          console.log(`[${new Date().toISOString()}] Attempting SOCKS connection (${attempt}/${maxRetries})...`)
-          
-          const info = await SocksClient.createConnection({
-            proxy: {
-              host: proxyHost,
-              port: parseInt(proxyPort),
-              type: 5, // SOCKS5
-              userId: username,
-              password: password
-            },
-            destination: {
-              host: config.connection.server,
-              port: config.connection.port || 1433
-            },
-            timeout: 20000 // Increased timeout
-          })
-          
-          const connectionTime = Date.now() - startTime
-          console.log(`✅ SUCCESS: SOCKS connection established in ${connectionTime}ms`)
-          console.log(`Database socket ready for SQL Server communication`)
-          return info.socket
-          
-        } catch (error) {
-          const delay = baseDelay * Math.pow(2, attempt - 1) // Exponential backoff
-          console.error(`❌ SOCKS connection attempt ${attempt} failed: ${error.message}`)
-          
-          if (attempt === maxRetries) {
-            console.error('=== TROUBLESHOOTING INFO ===')
-            console.error('1. Verify Fixie static IPs are whitelisted in database firewall')
-            console.error('2. Check database server connectivity on port 1433')
-            console.error('3. Confirm FIXIE_SOCKS_HOST environment variable format')
-            console.error(`4. Database target: ${config.connection.server}:${config.connection.port || 1433}`)
-            throw new Error(`Failed to establish SOCKS connection after ${maxRetries} attempts: ${error.message}`)
-          }
-          
-          console.log(`Retrying in ${delay}ms...`)
-          await new Promise(r => setTimeout(r, delay))
-        }
-      }
+      const startTime = Date.now()
+      console.log(`[${new Date().toISOString()}] Attempting SOCKS connection (single try, 10s timeout)...`)
+      const info = await SocksClient.createConnection({
+        proxy: {
+          host: proxyHost,
+          port: parseInt(proxyPort),
+          type: 5, // SOCKS5
+          userId: username,
+          password: password
+        },
+        destination: {
+          host: config.connection.server,
+          port: config.connection.port || 1433
+        },
+        timeout: 10000 // 10 seconds timeout
+      })
+      const connectionTime = Date.now() - startTime
+      console.log(`✅ SUCCESS: SOCKS connection established in ${connectionTime}ms`)
+      return info.socket
     }
     
     // Enhanced connection pool settings for proxy connections
