@@ -21,27 +21,25 @@ export const mssql = (app) => {
     console.log(`Database: ${config.connection.database}`)
     console.log('=== STARTING PROXY CONNECTION ===')
 
-    // Override the connection with a custom stream (single attempt)
-    config.connection.stream = async function() {
-      const startTime = Date.now()
-      console.log(`[${new Date().toISOString()}] Attempting SOCKS connection (single try, 10s timeout)...`)
-      const info = await SocksClient.createConnection({
-        proxy: {
-          host: proxyHost,
-          port: parseInt(proxyPort),
-          type: 5, // SOCKS5
-          userId: username,
-          password: password
-        },
-        destination: {
-          host: config.connection.server,
-          port: config.connection.port || 1433
-        },
-        timeout: 10000 // 10 seconds timeout
-      })
-      const connectionTime = Date.now() - startTime
-      console.log(`✅ SUCCESS: SOCKS connection established in ${connectionTime}ms`)
-      return info.socket
+    // Override the connection with a custom stream (≥3 încercări)
+    config.connection.stream = async function () {
+      const maxRetries = 3
+      const baseDelay = 1000
+
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const { socket } = await SocksClient.createConnection({
+            proxy: { host: proxyHost, port: +proxyPort, type: 5, userId: username, password },
+            destination: { host: config.connection.server, port: config.connection.port || 1433 },
+            timeout: 15000,
+            command: 'connect'
+          })
+          return socket
+        } catch (err) {
+          if (attempt === maxRetries) throw err
+          await new Promise(r => setTimeout(r, baseDelay * attempt)) // back-off liniar
+        }
+      }
     }
     
     // Enhanced connection pool settings for proxy connections
