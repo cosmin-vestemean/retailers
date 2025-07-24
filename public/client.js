@@ -102,7 +102,7 @@ async function getNDisplayOrders(retailer) {
       .find()
       .then((result) => result.token);
     
-    // Use the new SQL script getOrdersData with standard parameters
+    // Use the new SQL script getOrdersData
     const result = await client
       .service('getS1SqlData')
       .find({
@@ -110,11 +110,7 @@ async function getNDisplayOrders(retailer) {
           clientID: clientID,
           appID: '1001',
           SqlName: 'getOrdersData',
-          trdr: retailer,
-          series: 7121, // Standard series for orders
-          sosource: 1351, // Standard sosource for orders  
-          fprms: 712, // Standard fprms for orders
-          daysOlder: 30
+          trdr: retailer
         }
       });
     
@@ -124,7 +120,7 @@ async function getNDisplayOrders(retailer) {
       // Transform the data to match the expected format for displayOrdersForRetailers
       const transformedData = {
         data: result.rows,
-        total: result.total || result.rows.length
+        total: result.totalcount || result.rows.length
       };
       
       await displayOrdersForRetailers(transformedData, retailer, 'xmlTableBody');
