@@ -80,7 +80,7 @@ export async function getRemoteAperakXmlListToErp() {
   document.getElementById('preluareAperakBtn').innerHTML = 'Preluare APERAK'
 }
 
-// Modified getNDisplayOrders function
+// Modified getNDisplayOrders function to use Soft1 API instead of direct DB
 async function getNDisplayOrders(retailer) {
   //get table body
   let xmlTableBody = document.getElementById('xmlTableBody');
@@ -96,14 +96,59 @@ async function getNDisplayOrders(retailer) {
   showLoading(); // Show loading overlay
   
   try {
-    await getXmlListFromErp(retailer).then(async (data) => {
-      //console.log('getXmlListFromErp', data);
-      await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
-      showNotification('Orders loaded successfully', 'is-success');
-    });
+    // Get authentication token first
+    const clientID = await client
+      .service('connectToS1')
+      .find()
+      .then((result) => result.token);
+    
+    // Use the new API endpoint for orders
+    const params = {
+      query: {
+        clientID: clientID,
+        sqlQuery: `SELECT getOrdersData(${JSON.stringify({
+          trdr: retailer,
+          daysOlder: 30,
+          limit: 50
+        })})`
+      }
+    };
+    
+    const result = await client.service('getDataset').find(params);
+    
+    if (result && result.data) {
+      // Parse the result if it's a JSON string
+      let ordersData;
+      try {
+        ordersData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+      } catch (e) {
+        throw new Error('Failed to parse orders data: ' + e.message);
+      }
+      
+      // Transform the data to match the expected format for displayOrdersForRetailers
+      const transformedData = {
+        data: ordersData.data || [],
+        total: ordersData.total || 0
+      };
+      
+      await displayOrdersForRetailers(transformedData, retailer, 'xmlTableBody');
+      showNotification('Orders loaded successfully via API', 'is-success');
+    } else {
+      throw new Error('No data received from API');
+    }
   } catch (error) {
-    console.error('Error loading orders:', error);
-    showNotification('Failed to load orders: ' + error.message, 'is-danger');
+    console.error('Error loading orders via API:', error);
+    // Fallback to direct DB connection if API fails
+    console.log('Attempting fallback to direct database connection...');
+    try {
+      await getXmlListFromErp(retailer).then(async (data) => {
+        await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
+        showNotification('Orders loaded successfully (fallback)', 'is-warning');
+      });
+    } catch (fallbackError) {
+      console.error('Fallback also failed:', fallbackError);
+      showNotification('Failed to load orders: ' + error.message, 'is-danger');
+    }
   } finally {
     hideLoading(); // Hide loading overlay
   }

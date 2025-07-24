@@ -4,6 +4,7 @@
 - [Key Endpoints](#key-endpoints)
 - [Authentication](#authentication)
 - [Documentation](#documentation)
+- [ERP Development Tools](#erp-development-tools)
 - [FeathersJS Backend Integration](#feathersjs-backend-integration)
 - [Coding Conventions](#coding-conventions)
 - [Code Structure](#code-structure)
@@ -42,6 +43,39 @@ http://[Registered Name or Serial Number].oncloud.gr/s1services
 
 ## Documentation
 For complete API documentation and integration details, visit [Soft1 Web Services Documentation](https://www.softone.gr/ws/)
+
+## ERP Development Tools
+
+### Database Explorer
+The Soft1 ERP includes a powerful **Database Explorer** tool that allows:
+- Direct SQL query execution against the ERP database
+- Real-time testing of database queries
+- Data exploration and validation
+- Performance analysis of SQL statements
+
+**Access**: ERP → Customization tools → Database explorer
+
+### Advanced JavaScript Editor (AJS)
+The ERP provides an **Advanced JavaScript Editor** for creating custom business logic:
+- Server-side JavaScript execution within the ERP context
+- Access to all Soft1 API functions (X.RUNSQL, X.GETSQLDATASET, etc.)
+- Custom endpoint creation for web services
+- Integration with ERP business objects and workflows
+
+**Access**: ERP → Customization tools → Advanced JavaScript Editor
+
+#### Important Note for Development:
+**Functions created in this repository's `/S1/JS/AJS/` directory that start with the comment `//Cod specific S1 - AJS` must be manually transferred to the ERP's Advanced JavaScript Editor to become active endpoints.**
+
+**Workflow**:
+1. Develop and test functions locally in `/S1/JS/AJS/*.js` files
+2. Copy the function code to ERP → Advanced JavaScript Editor
+3. Save and deploy within the ERP system
+4. Functions become available as web service endpoints at: `https://[domain].oncloud.gr/s1services/JS/AJS_[filename]/[function_name]`
+
+**Example**:
+- Local file: `/S1/JS/AJS/JSRetailers.js` containing `getOrdersData` function
+- ERP endpoint: `https://petfactory.oncloud.gr/s1services/JS/AJS_JSRetailers/getOrdersData`
 
 ## FeathersJS Backend Integration
 

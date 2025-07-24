@@ -88,6 +88,53 @@ function var_dump(obj, t) {
   return isArr ? str + ']' : str + '}'
 }
 
+function getOrdersData(params) {
+  // Default values
+  var trdr = params.trdr || 0;
+  var daysOlder = params.daysOlder || 30;
+  var limit = params.limit || 50;
+  
+  if (!trdr || trdr <= 0) {
+    return { success: false, error: 'Invalid retailer ID (trdr) provided.' };
+  }
+  
+  // SQL query to get orders data similar to how invoices are retrieved
+  var sqlQuery = "SELECT TOP " + limit + " " +
+    "c.CCCSFTPXML, " +
+    "c.TRDR_RETAILER, " +
+    "(SELECT name FROM trdr WHERE trdr = c.TRDR_RETAILER) AS RetailerName, " +
+    "c.XMLFILENAME, " +
+    "FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, " +
+    "ISNULL(c.FINDOC, 0) AS FINDOC, " +
+    "CASE WHEN c.FINDOC IS NOT NULL THEN 'Procesat' ELSE 'Neprocesat' END AS Status, " +
+    // Extract OrderID from XML
+    "REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(max)), '<ID>', ''), '</ID>', '') AS OrderId " +
+    "FROM CCCSFTPXML c " +
+    "WHERE c.TRDR_RETAILER = " + trdr + " " +
+    "AND CAST(c.XMLDATE AS DATE) >= DATEADD(day, -" + daysOlder + ", GETDATE()) " +
+    "ORDER BY c.XMLDATE DESC";
+  
+  try {
+    var ds = X.GETSQLDATASET(sqlQuery, null);
+    if (ds.RECORDCOUNT > 0) {
+      return {
+        success: true,
+        data: convertDatasetToArray(ds),
+        total: ds.RECORDCOUNT
+      };
+    } else {
+      return {
+        success: true,
+        message: 'No orders found for the specified criteria.',
+        data: [],
+        total: 0
+      };
+    }
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 function sendEmail(params) {
   var strTO = params.to || ''
   var strCC = params.cc || ''
