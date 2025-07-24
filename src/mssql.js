@@ -14,11 +14,20 @@ export const mssql = (app) => {
     const [username, password] = authPart.split(':')
     const [proxyHost, proxyPort] = hostPart.split(':')
 
-    console.log('Configuring database connection through Fixie SOCKS proxy...')
+    console.log('=== FIXIE SOCKS CONFIGURATION ===')
+    console.log(`Proxy Host: ${proxyHost}`)
+    console.log(`Proxy Port: ${proxyPort}`)
+    console.log(`Database Target: ${config.connection.server}:${config.connection.port || 1433}`)
+    console.log(`Database: ${config.connection.database}`)
+    console.log('=== STARTING PROXY CONNECTION ===')
 
     // Override the connection with a custom stream
     config.connection.stream = async function() {
+      const startTime = Date.now()
+      console.log(`[${new Date().toISOString()}] Attempting SOCKS connection...`)
+      
       try {
+        console.log('Step 1: Connecting to Fixie SOCKS proxy...')
         const info = await SocksClient.createConnection({
           proxy: {
             host: proxyHost,
@@ -35,10 +44,20 @@ export const mssql = (app) => {
           timeout: 15000 
         })
         
-        console.log('SOCKS connection established to database')
+        const connectionTime = Date.now() - startTime
+        console.log(`✅ SUCCESS: SOCKS connection established in ${connectionTime}ms`)
+        console.log(`Database socket ready for SQL Server communication`)
         return info.socket
       } catch (error) {
-        console.error('Failed to establish SOCKS connection:', error)
+        const connectionTime = Date.now() - startTime
+        console.error(`❌ FAILED: SOCKS connection failed after ${connectionTime}ms`)
+        console.error(`Error Type: ${error.name}`)
+        console.error(`Error Message: ${error.message}`)
+        console.error('=== TROUBLESHOOTING INFO ===')
+        console.error('1. Check if Fixie static IPs are whitelisted in database firewall')
+        console.error('2. Verify database server is accepting connections on port 1433')
+        console.error('3. Confirm database server IP is correct: ' + config.connection.server)
+        console.error('===========================')
         throw error
       }
     }
@@ -46,5 +65,16 @@ export const mssql = (app) => {
 
   const db = knex(config)
 
+  // Add connection event logging
+  db.on('query', (queryData) => {
+    console.log(`📊 SQL Query: ${queryData.sql.substring(0, 100)}${queryData.sql.length > 100 ? '...' : ''}`)
+  })
+
+  db.on('query-error', (error, queryData) => {
+    console.error(`❌ SQL Error: ${error.message}`)
+    console.error(`Query: ${queryData.sql.substring(0, 100)}...`)
+  })
+
+  console.log('Database client configured and ready')
   app.set('mssqlClient', db)
 }
