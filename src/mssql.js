@@ -31,7 +31,7 @@ export const mssql = (app) => {
           const { socket } = await SocksClient.createConnection({
             proxy: { host: proxyHost, port: +proxyPort, type: 5, userId: username, password },
             destination: { host: config.connection.server, port: config.connection.port || 1433 },
-            timeout: 15000,
+            timeout: 20000,
             command: 'connect'
           })
           return socket
