@@ -16,38 +16,27 @@ export const trdrRetailerFromUrl = parseInt(url.searchParams.get('trdr'))
 export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
 // Utility functions for UI feedback
-function showNotification(message, type) {
-  console.log(`📢 ${message}`);
-  // Create or update notification element
-  let notification = document.getElementById('dynamicNotification');
-  if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'dynamicNotification';
-    notification.style.cssText = `
-      position: fixed; 
-      top: 20px; 
-      right: 20px; 
-      z-index: 9999; 
-      max-width: 400px; 
-      padding: 1rem; 
-      border-radius: 6px; 
-      box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
-      animation: slideIn 0.3s ease-out;
-    `;
-    document.body.appendChild(notification);
+function showNotification(message, type = 'is-info') {
+  const container = document.getElementById('notification-container');
+  if (!container) {
+    console.error('Notification container not found!');
+    return;
   }
-  
-  notification.className = `notification ${type}`;
+  const notification = document.createElement('div');
+  notification.className = `notification ${type} is-light`;
+  notification.style.animation = 'slideIn 0.5s forwards';
   notification.innerHTML = `
-    <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+    <button class="delete"></button>
     ${message}
   `;
-  notification.style.display = 'block';
   
-  // Auto-hide after 5 seconds
-  setTimeout(() => {
-    if (notification) notification.style.display = 'none';
-  }, 5000);
+  container.appendChild(notification);
+  
+  // Add delete button functionality
+  notification.querySelector('.delete').addEventListener('click', () => {
+    notification.style.opacity = '0';
+    setTimeout(() => notification.remove(), 300);
+  });
 }
 
 function showLoading() {
