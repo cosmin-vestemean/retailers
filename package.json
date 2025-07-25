@@ -40,8 +40,8 @@
   "main": "src/client",
   "type": "module",
   "scripts": {
-    "start": "node src",
-    "dev": "nodemon src/",
+    "start": "bin\\fixie-wrench.exe 1433:37.251.149.207:1433 -- node src",
+    "dev": "bin\\fixie-wrench.exe 1433:37.251.149.207:1433 -- nodemon src/",
     "prettier": "npx prettier \"**/*.js\" --write",
     "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
     "test": "cross-env NODE_ENV=test npm run migrate && npm run mocha",
