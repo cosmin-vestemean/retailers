@@ -28,16 +28,26 @@ export const mssql = (app) => {
 
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
+          const destination = { host: config.connection.server, port: config.connection.port || 1433 };
+          console.log(`[Attempt ${attempt}] Connecting to proxy with destination:`, destination);
+
           const { socket } = await SocksClient.createConnection({
             proxy: { host: proxyHost, port: +proxyPort, type: 5, userId: username, password },
-            destination: { host: config.connection.server, port: config.connection.port || 1433 },
-            timeout: 20000,
+            destination: destination,
+            timeout: 30000, // Increased timeout
             command: 'connect'
           })
+          console.log(`[Attempt ${attempt}] SOCKS connection successful. Returning socket.`);
           return socket
         } catch (err) {
-          if (attempt === maxRetries) throw err
-          await new Promise(r => setTimeout(r, baseDelay * attempt)) // back-off liniar
+          console.error(`[Attempt ${attempt}] SOCKS connection failed:`, err.message);
+          if (attempt === maxRetries) {
+            console.error('All SOCKS connection attempts failed.');
+            throw err;
+          }
+          const delay = baseDelay * attempt;
+          console.log(`Waiting ${delay}ms before retrying...`);
+          await new Promise(r => setTimeout(r, delay)) // back-off liniar
         }
       }
     }
