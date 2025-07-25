@@ -7,15 +7,22 @@ export class IpLoggerService {
   }
 
   async find(params) {
-    // Get the request object from the parameters
-    const { req } = params.connection;
+    // The `params.connection` object is available for Socket.io transports
+    if (!params.connection) {
+      return {
+        ip: 'IP not available (likely an internal server call)'
+      };
+    }
+    
+    // Get the underlying request object from the socket connection
+    const req = params.connection;
     
     // Extract the IP address. 
-    // 'x-forwarded-for' is important for proxies like Heroku.
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+    // 'x-forwarded-for' is crucial for apps behind a proxy (like on Heroku).
+    const ip = req.headers['x-forwarded-for'] || req.remoteAddress;
     
     return {
-      ip: ip
+      ip: ip || 'IP could not be determined'
     };
   }
 }

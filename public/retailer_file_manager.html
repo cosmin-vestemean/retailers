@@ -437,10 +437,12 @@
         testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
         testBtn.disabled = true;
         
+        let realIp = 'N/A'; // Initialize realIp
+        
         try {
           // 1. Get the real IP address first
           const ipResult = await client.service('ip-logger').find();
-          const realIp = ipResult.ip;
+          realIp = ipResult.ip;
           console.log(`📍 Real client IP detected: ${realIp}`);
 
           const startTime = Date.now();
