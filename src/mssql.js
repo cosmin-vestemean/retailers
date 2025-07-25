@@ -1,5 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/databases.html
 import knex from 'knex'
+import { createRequire } from 'module'
 
 export const mssql = (app) => {
   const config = app.get('mssql')
@@ -18,7 +19,8 @@ export const mssql = (app) => {
     console.log(`Proxy: ${fixieValues[2]}:${fixieValues[3]}`)
     console.log(`Target: ${config.connection.server}:${config.connection.port || 1433}`)
 
-    // Use require for CommonJS module (socksjs)
+    // Use createRequire to import CommonJS module (socksjs) in ES module
+    const require = createRequire(import.meta.url)
     const SocksConnection = require('socksjs')
 
     const serverTarget = {
