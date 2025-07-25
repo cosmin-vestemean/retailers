@@ -13,10 +13,14 @@ export class OutboundIpService {
         throw new Error(`Error fetching IP: ${response.statusText}`);
       }
       const data = await response.json();
-      return { ip: data.ip };
+      
+      // Also get the Fixie SOCKS proxy IP from environment variables, if available.
+      const fixieIp = process.env.FIXIE_SOCKS_HOST || 'Not configured';
+
+      return { ip: data.ip, fixieIp: fixieIp.split(',')[0] }; // Return the first IP if there's a list
     } catch (error) {
       console.error('Failed to get outbound IP:', error);
-      return { ip: `Error: ${error.message}` };
+      return { ip: `Error: ${error.message}`, fixieIp: 'Error' };
     }
   }
 }
