@@ -1,80 +1,66 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/databases.html
 import knex from 'knex'
-import { createRequire } from 'module'
+import { SocksClient } from 'socks'
 
 export const mssql = (app) => {
   const config = app.get('mssql')
 
-  // Fixie SOCKS configuration following Heroku official documentation
+  // Bare-minimum Fixie SOCKS configuration to address connection timeouts
   if (process.env.FIXIE_SOCKS_HOST) {
     const fixieUrl = process.env.FIXIE_SOCKS_HOST
     
-    // Parse using Heroku's recommended regex pattern: [/(:\\/@)/]+
-    const fixieValues = fixieUrl.split(new RegExp('[/(:\\/@)/]+'))
-    
-    console.log('=== FIXIE SOCKS CONFIGURATION (Heroku Pattern) ===')
-    console.log(`Raw FIXIE_SOCKS_HOST: ${fixieUrl}`)
-    console.log(`Parsed Values: [${fixieValues.join(', ')}]`)
-    console.log(`User: ${fixieValues[0]}, Pass: ${fixieValues[1]}`)
-    console.log(`Proxy: ${fixieValues[2]}:${fixieValues[3]}`)
+    const [authPart, hostPart] = fixieUrl.split('@')
+    const [username, password] = authPart.split(':')
+    const [proxyHost, proxyPort] = hostPart.split(':')
+
+    console.log('=== BARE MINIMUM FIXIE SOCKS CONFIG ===')
+    console.log(`Proxy: ${proxyHost}:${proxyPort}`)
     console.log(`Target: ${config.connection.server}:${config.connection.port || 1433}`)
 
-    // Use createRequire to import CommonJS module (socksjs) in ES module
-    const require = createRequire(import.meta.url)
-    const SocksConnection = require('socksjs')
-
-    const serverTarget = {
-      host: config.connection.server,
-      port: config.connection.port || 1433
+    // Override the connection with a custom async stream using the modern 'socks' package
+    config.connection.stream = async () => {
+      try {
+        console.log('Attempting SOCKS connection via Fixie...')
+        const { socket } = await SocksClient.createConnection({
+          proxy: {
+            host: proxyHost,
+            port: parseInt(proxyPort),
+            type: 5,
+            userId: username,
+            password
+          },
+          destination: {
+            host: config.connection.server,
+            port: config.connection.port || 1433
+          },
+          command: 'connect'
+        })
+        console.log('✅ SOCKS connection successful.')
+        return socket
+      } catch (err) {
+        console.error('❌ SOCKS connection failed:', err)
+        throw err // Propagate error to knex
+      }
     }
-
-    const fixieConnection = new SocksConnection(serverTarget, {
-      user: fixieValues[0],
-      pass: fixieValues[1], 
-      host: fixieValues[2],
-      port: parseInt(fixieValues[3])
-    })
-
-    // Use the SOCKS connection as stream per Heroku PostgreSQL example
-    config.connection.stream = fixieConnection
     
-    console.log('✅ SOCKS connection configured via socksjs (Heroku pattern)')
-    
-    // Minimal pool for SOCKS connections
+    // Simplified pool with a long timeout to handle SOCKS latency
     config.pool = {
-      min: 1,
-      max: 3,
-      acquireTimeoutMillis: 15000,
-      createTimeoutMillis: 15000,
-      destroyTimeoutMillis: 5000,
-      idleTimeoutMillis: 30000,
-      propagateCreateError: true
+      min: 0, // Start with no connections
+      max: 2, // Keep pool very small
+      acquireTimeoutMillis: 60000, // 60 seconds to acquire a connection
+      createTimeoutMillis: 60000, // 60 seconds to create a connection
     }
+    
+    // Ensure driver options also have a long timeout
+    config.connection.options = {
+      ...config.connection.options,
+      connectTimeout: 60000
+    };
   }
 
   const db = knex(config)
 
-  // Basic connection logging
-  db.on('query', (queryData) => {
-    const truncatedQuery = queryData.sql.substring(0, 100)
-    const suffix = queryData.sql.length > 100 ? '...' : ''
-    console.log(`📊 SQL Query: ${truncatedQuery}${suffix}`)
-  })
-
-  db.on('query-error', (error, queryData) => {
-    console.error(`❌ SQL Error: ${error.message}`)
-  })
-
-  // Simple connection monitoring for SOCKS
-  if (process.env.FIXIE_SOCKS_HOST) {
-    console.log('🔧 SOCKS proxy enabled - all connections will use Fixie static IP')
-    
-    // Log connection pool events that might indicate bypass
-    db.client.pool.on('createError', (err) => {
-      console.error('❌ Connection creation failed - may indicate SOCKS bypass:', err.message)
-    })
-  }
-
-  console.log('Database client configured and ready')
+  // No event listeners for bare-minimum setup
+  console.log('Database client configured.')
   app.set('mssqlClient', db)
 }
