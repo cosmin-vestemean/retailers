@@ -50,7 +50,7 @@ export const mssql = (app) => {
       acquireTimeoutMillis: 30000, // Reduced timeout
       createTimeoutMillis: 20000, // Reduced timeout
       destroyTimeoutMillis: 5000,
-      idleTimeoutMillis: 15000, // Shorter idle timeout for SOCKS connections
+      idleTimeoutMillis: 20000, // Shorter idle timeout for SOCKS connections
       createRetryIntervalMillis: 2000,
       propagateCreateError: true // Propagate connection creation errors immediately
     }
