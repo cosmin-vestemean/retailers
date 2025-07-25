@@ -11,6 +11,7 @@ import { cccdocumentes1Mappings } from './CCCDOCUMENTES1MAPPINGS/CCCDOCUMENTES1M
 import { cccsftpxml } from './CCCSFTPXML/CCCSFTPXML.js'
 
 import { cccsftp } from './CCCSFTP/CCCSFTP.js'
+import { ipLogger } from './ip-logger/ip-logger.service.js'
 
 export const services = (app) => {
   app.configure(cccorderslog)
@@ -26,6 +27,8 @@ export const services = (app) => {
   app.configure(cccsftpxml)
 
   app.configure(cccsftp)
+
+  app.configure(ipLogger)
 
   // All services will be registered here
 }

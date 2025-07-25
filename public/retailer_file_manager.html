@@ -438,26 +438,25 @@
         testBtn.disabled = true;
         
         try {
+          // 1. Get the real IP address first
+          const ipResult = await client.service('ip-logger').find();
+          const realIp = ipResult.ip;
+          console.log(`📍 Real client IP detected: ${realIp}`);
+
+          const startTime = Date.now();
+          let method, result;
+
           if (useDirectDB) {
-            console.log('🧪 Testing DIRECT DB connection (Fixie SOCKS)...');
-            const startTime = Date.now();
-            
-            // Test direct DB connection
-            const result = await client.service('CCCSFTPXML').find({
+            method = 'Direct DB (Fixie SOCKS)';
+            console.log(`🧪 Testing ${method}...`);
+            result = await client.service('CCCSFTPXML').find({
               query: { $limit: 1, TRDR_RETAILER: trdrRetailerFromUrl || 11639 }
             });
-            
-            const duration = Date.now() - startTime;
-            console.log(`✅ Direct DB test successful in ${duration}ms`);
-            showNotification(`Direct DB (Fixie SOCKS) connection OK - ${duration}ms`, 'is-success');
-            
           } else {
-            console.log('🧪 Testing S1 API connection...');
-            const startTime = Date.now();
-            
-            // Test S1 API connection
-            const clientID = await client.service('connectToS1').find().then(result => result.token);
-            const result = await client.service('getS1SqlData').find({
+            method = 'S1 API';
+            console.log(`🧪 Testing ${method}...`);
+            const clientID = await client.service('connectToS1').find().then(res => res.token);
+            result = await client.service('getS1SqlData').find({
               query: {
                 clientID: clientID,
                 appID: '1001',
@@ -465,15 +464,21 @@
                 trdr: trdrRetailerFromUrl || 11639
               }
             });
-            
-            const duration = Date.now() - startTime;
-            console.log(`✅ S1 API test successful in ${duration}ms`);
-            showNotification(`S1 API connection OK - ${duration}ms`, 'is-success');
           }
+          
+          const duration = Date.now() - startTime;
+          const successMessage = `
+            <strong>${method} OK (${duration}ms)</strong><br>
+            <small>IP detectat: <strong>${realIp}</strong></small>
+          `;
+          console.log(`✅ ${method} test successful.`);
+          showNotification(successMessage, 'is-success');
+
         } catch (error) {
           console.error('❌ Connection test failed:', error);
           const method = useDirectDB ? 'Direct DB (Fixie SOCKS)' : 'S1 API';
-          showNotification(`${method} connection FAILED: ${error.message}`, 'is-danger');
+          const ipInfo = realIp ? `<br><small>IP detectat: ${realIp}</small>` : '';
+          showNotification(`<strong>${method} FAILED</strong>: ${error.message}${ipInfo}`, 'is-danger');
         } finally {
           testBtn.innerHTML = '<i class="fas fa-wifi"></i> Test';
           testBtn.disabled = false;
