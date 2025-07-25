@@ -68,6 +68,7 @@
     "mssql": "^9.1.1",
     "node-fetch": "^3.3.2",
     "socket.io-client": "^4.7.4",
+    "socks-proxy-agent": "^8.0.5",
     "ssh2-sftp-client": "^9.1.0",
     "winston": "^3.9.0",
     "xml2js": "^0.6.0"
