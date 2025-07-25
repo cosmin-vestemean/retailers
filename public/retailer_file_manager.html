@@ -447,7 +447,7 @@
           let method, result, serverIp;
 
           if (useDirectDB) {
-            method = 'Direct DB (Fixie SOCKS)';
+            method = 'Direct DB (Fixie SOCKS )';
             serverIp = diagnosticsResult.fixieIp;
             console.log(`🧪 Testing ${method}... Expected IP: ${serverIp}`);
             result = await client.service('CCCSFTPXML').find({
