@@ -1,61 +1,45 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/databases.html
 import knex from 'knex'
-import { SocksClient } from 'socks'
+import { SocksProxyAgent } from 'socks-proxy-agent'
 
 export const mssql = (app) => {
   const config = app.get('mssql')
 
-  // Bare-minimum Fixie SOCKS configuration to address connection timeouts
+  // Final attempt: Use SocksProxyAgent, which is the standard for tunneling TCP in Node.js
   if (process.env.FIXIE_SOCKS_HOST) {
-    const fixieUrl = process.env.FIXIE_SOCKS_HOST
-    
-    const [authPart, hostPart] = fixieUrl.split('@')
-    const [username, password] = authPart.split(':')
-    const [proxyHost, proxyPort] = hostPart.split(':')
+    const fixieUrl = `socks://${process.env.FIXIE_SOCKS_HOST}`
 
-    console.log('=== BARE MINIMUM FIXIE SOCKS CONFIG ===')
-    console.log(`Proxy: ${proxyHost}:${proxyPort}`)
+    console.log('=== FIXIE SOCKS CONFIGURATION (SocksProxyAgent) ===')
+    console.log(`Proxy URL: ${fixieUrl}`)
     console.log(`Target: ${config.connection.server}:${config.connection.port || 1433}`)
 
-    // Override the connection with a custom async stream using the modern 'socks' package
-    config.connection.stream = async () => {
-      try {
-        console.log('Attempting SOCKS connection via Fixie...')
-        const { socket } = await SocksClient.createConnection({
-          proxy: {
-            host: proxyHost,
-            port: parseInt(proxyPort),
-            type: 5,
-            userId: username,
-            password
-          },
-          destination: {
-            host: config.connection.server,
-            port: config.connection.port || 1433
-          },
-          command: 'connect'
-        })
-        console.log('✅ SOCKS connection successful.')
-        return socket
-      } catch (err) {
-        console.error('❌ SOCKS connection failed:', err)
-        throw err // Propagate error to knex
-      }
-    }
-    
-    // Simplified pool with a long timeout to handle SOCKS latency
-    config.pool = {
-      min: 0, // Start with no connections
-      max: 2, // Keep pool very small
-      acquireTimeoutMillis: 60000, // 60 seconds to acquire a connection
-      createTimeoutMillis: 60000, // 60 seconds to create a connection
-    }
-    
-    // Ensure driver options also have a long timeout
+    // Create a SOCKS proxy agent
+    const agent = new SocksProxyAgent(fixieUrl)
+
+    // The 'tedious' driver used by knex for MSSQL does not support a `stream` option.
+    // Instead, we must provide a proxy agent to the driver options.
     config.connection.options = {
       ...config.connection.options,
-      connectTimeout: 60000
-    };
+      agent: agent
+    }
+    
+    // Remove the stream override as it's not supported by the driver
+    delete config.connection.stream
+
+    // Generous timeouts to prevent the pool from giving up on the proxy connection
+    config.pool = {
+      min: 0,
+      max: 5,
+      acquireTimeoutMillis: 60000,
+      createTimeoutMillis: 60000,
+      destroyTimeoutMillis: 10000,
+      idleTimeoutMillis: 30000
+    }
+    
+    // Ensure driver-level connection timeout is also high
+    config.connection.options.connectTimeout = 60000
+    
+    console.log('✅ Configured knex to use SocksProxyAgent.')
   }
 
   const db = knex(config)
