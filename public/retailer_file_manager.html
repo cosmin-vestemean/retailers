@@ -437,26 +437,26 @@
         testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
         testBtn.disabled = true;
         
-        let realIp = 'N/A'; // Initialize realIp
-        
         try {
-          // 1. Get the real IP address first
-          const ipResult = await client.service('ip-logger').find();
-          realIp = ipResult.ip;
-          console.log(`📍 Real client IP detected: ${realIp}`);
+          // 1. Get server outbound IPs for both methods
+          console.log('🔍 Getting server outbound IPs...');
+          const diagnosticsResult = await client.service('diagnostics').find();
+          console.log('� Diagnostics result:', diagnosticsResult);
 
           const startTime = Date.now();
-          let method, result;
+          let method, result, serverIp;
 
           if (useDirectDB) {
             method = 'Direct DB (Fixie SOCKS)';
-            console.log(`🧪 Testing ${method}...`);
+            serverIp = diagnosticsResult.fixieIp;
+            console.log(`🧪 Testing ${method}... Expected IP: ${serverIp}`);
             result = await client.service('CCCSFTPXML').find({
               query: { $limit: 1, TRDR_RETAILER: trdrRetailerFromUrl || 11639 }
             });
           } else {
             method = 'S1 API';
-            console.log(`🧪 Testing ${method}...`);
+            serverIp = diagnosticsResult.standardIp;
+            console.log(`🧪 Testing ${method}... Expected IP: ${serverIp}`);
             const clientID = await client.service('connectToS1').find().then(res => res.token);
             result = await client.service('getS1SqlData').find({
               query: {
@@ -471,7 +471,8 @@
           const duration = Date.now() - startTime;
           const successMessage = `
             <strong>${method} OK (${duration}ms)</strong><br>
-            <small>IP detectat: <strong>${realIp}</strong></small>
+            <small>Server IP: <strong>${serverIp}</strong></small><br>
+            <small>Environment: ${diagnosticsResult.environment?.nodeEnv || 'unknown'}</small>
           `;
           console.log(`✅ ${method} test successful.`);
           showNotification(successMessage, 'is-success');
@@ -479,8 +480,7 @@
         } catch (error) {
           console.error('❌ Connection test failed:', error);
           const method = useDirectDB ? 'Direct DB (Fixie SOCKS)' : 'S1 API';
-          const ipInfo = realIp ? `<br><small>IP detectat: ${realIp}</small>` : '';
-          showNotification(`<strong>${method} FAILED</strong>: ${error.message}${ipInfo}`, 'is-danger');
+          showNotification(`<strong>${method} FAILED</strong>: ${error.message}`, 'is-danger');
         } finally {
           testBtn.innerHTML = '<i class="fas fa-wifi"></i> Test';
           testBtn.disabled = false;
