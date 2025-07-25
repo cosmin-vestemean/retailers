@@ -15,6 +15,69 @@ var url = new URL(window.location.href)
 export const trdrRetailerFromUrl = parseInt(url.searchParams.get('trdr'))
 export const urlLogoRetailerFromUrl = url.searchParams.get('logo')
 
+// Utility functions for UI feedback
+function showNotification(message, type) {
+  console.log(`📢 ${message}`);
+  // Create or update notification element
+  let notification = document.getElementById('dynamicNotification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'dynamicNotification';
+    notification.style.cssText = `
+      position: fixed; 
+      top: 20px; 
+      right: 20px; 
+      z-index: 9999; 
+      max-width: 400px; 
+      padding: 1rem; 
+      border-radius: 6px; 
+      box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
+      animation: slideIn 0.3s ease-out;
+    `;
+    document.body.appendChild(notification);
+  }
+  
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+    ${message}
+  `;
+  notification.style.display = 'block';
+  
+  // Auto-hide after 5 seconds
+  setTimeout(() => {
+    if (notification) notification.style.display = 'none';
+  }, 5000);
+}
+
+function showLoading() {
+  let overlay = document.getElementById('loadingOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.style.cssText = `
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.5); 
+      z-index: 10000; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+    `;
+    overlay.innerHTML = '<div style="color: white; font-size: 1.5rem;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+    document.body.appendChild(overlay);
+  }
+  overlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
 async function getXmlListFromErp(retailer) {
   return new Promise((resolve, reject) => {
     client
@@ -95,7 +158,32 @@ async function getNDisplayOrders(retailer) {
   
   showLoading(); // Show loading overlay
   
+  // Check the data source switch
+  const dataSourceSwitch = document.getElementById('dataSourceSwitch');
+  const useDirectDB = dataSourceSwitch && dataSourceSwitch.value === 'direct';
+  
+  if (useDirectDB) {
+    // Force use of direct DB connection
+    console.log('🔄 Using DIRECT DB connection (Fixie SOCKS) - Testing mode');
+    console.log('🌐 Expected IP: Fixie SOCKS proxy IP (static)');
+    try {
+      await getXmlListFromErp(retailer).then(async (data) => {
+        await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
+        showNotification('Orders loaded via DIRECT DB (Fixie SOCKS)', 'is-warning');
+      });
+    } catch (error) {
+      console.error('Direct DB connection failed:', error);
+      showNotification('Direct DB failed: ' + error.message, 'is-danger');
+    } finally {
+      hideLoading();
+    }
+    return;
+  }
+  
+  // Default: Use S1 API with fallback
   try {
+    console.log('🚀 Using S1 API connection - Primary method');
+    console.log('🌐 Expected IP: Random Heroku/AWS IP (dynamic)');
     // Get authentication token first
     const clientID = await client
       .service('connectToS1')
@@ -124,22 +212,23 @@ async function getNDisplayOrders(retailer) {
       };
       
       await displayOrdersForRetailers(transformedData, retailer, 'xmlTableBody');
-      showNotification('Orders loaded successfully via API', 'is-success');
+      showNotification('Orders loaded successfully via S1 API', 'is-success');
     } else {
       throw new Error(result.message || 'No data received from API');
     }
   } catch (error) {
     console.error('Error loading orders via API:', error);
     // Fallback to direct DB connection if API fails
-    console.log('Attempting fallback to direct database connection...');
+    console.log('🔄 Attempting fallback to direct database connection (Fixie SOCKS)...');
+    console.log('🌐 Fallback IP: Fixie SOCKS proxy IP (static)');
     try {
       await getXmlListFromErp(retailer).then(async (data) => {
         await displayOrdersForRetailers(data, retailer, 'xmlTableBody');
-        showNotification('Orders loaded successfully (fallback)', 'is-warning');
+        showNotification('Orders loaded successfully via FALLBACK (Fixie SOCKS)', 'is-warning');
       });
     } catch (fallbackError) {
       console.error('Fallback also failed:', fallbackError);
-      showNotification('Failed to load orders: ' + error.message, 'is-danger');
+      showNotification('Both methods failed: ' + error.message, 'is-danger');
     }
   } finally {
     hideLoading(); // Hide loading overlay
@@ -458,5 +547,8 @@ export {
   getNDisplayS1Docs,
   toggleComenziNetrimise,
   toggleFacturiNetrimise,
-  loadOrdersLog
+  loadOrdersLog,
+  showNotification,
+  showLoading,
+  hideLoading
 }

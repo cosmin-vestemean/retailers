@@ -98,6 +98,28 @@
       .button {
         transition: transform 0.2s, box-shadow 0.2s;
       }
+      
+      /* Notification animations */
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      
+      /* Data source selector styling */
+      .operatii .field.has-addons {
+        margin-left: auto;
+      }
+      
+      .operatii .field.has-addons .button.is-static {
+        background-color: #f5f5f5;
+        border-color: #dbdbdb;
+      }
 
       .button:hover:not([disabled]) {
         transform: translateY(-1px);
@@ -303,6 +325,28 @@
           <input id="comenziTrimise" type="checkbox" />
           Netrimise
         </label>
+        <div class="field has-addons">
+          <div class="control">
+            <span class="button is-static is-small">
+              <i class="fas fa-database"></i>
+              Data Source:
+            </span>
+          </div>
+          <div class="control">
+            <div class="select is-small">
+              <select id="dataSourceSwitch">
+                <option value="api">S1 API (Default)</option>
+                <option value="direct">Direct DB (Fixie SOCKS)</option>
+              </select>
+            </div>
+          </div>
+          <div class="control">
+            <button id="testConnection" class="button is-info is-small">
+              <i class="fas fa-wifi"></i>
+              Test
+            </button>
+          </div>
+        </div>
       </buttons>
       <div class="table-container">
         <table
@@ -374,11 +418,71 @@
         toggleComenziNetrimise,
         toggleFacturiNetrimise,
         urlLogoRetailerFromUrl,
-        trdrRetailerFromUrl
+        trdrRetailerFromUrl,
+        showNotification,
+        showLoading,
+        hideLoading
       } from './client.js'
       import { sendAllFacturi } from './modules/invoiceTable.js'
       import { trimiteComenzileNetrimise } from './modules/orderTable.js'
       import { retailers } from './retailers.js'
+      import client from './modules/feathersjs-client.js'
+      
+      // Test connection function
+      async function testConnectionMethod() {
+        const testBtn = document.getElementById('testConnection');
+        const dataSourceSwitch = document.getElementById('dataSourceSwitch');
+        const useDirectDB = dataSourceSwitch.value === 'direct';
+        
+        testBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Testing...';
+        testBtn.disabled = true;
+        
+        try {
+          if (useDirectDB) {
+            console.log('🧪 Testing DIRECT DB connection (Fixie SOCKS)...');
+            const startTime = Date.now();
+            
+            // Test direct DB connection
+            const result = await client.service('CCCSFTPXML').find({
+              query: { $limit: 1, TRDR_RETAILER: trdrRetailerFromUrl || 11639 }
+            });
+            
+            const duration = Date.now() - startTime;
+            console.log(`✅ Direct DB test successful in ${duration}ms`);
+            showNotification(`Direct DB (Fixie SOCKS) connection OK - ${duration}ms`, 'is-success');
+            
+          } else {
+            console.log('🧪 Testing S1 API connection...');
+            const startTime = Date.now();
+            
+            // Test S1 API connection
+            const clientID = await client.service('connectToS1').find().then(result => result.token);
+            const result = await client.service('getS1SqlData').find({
+              query: {
+                clientID: clientID,
+                appID: '1001',
+                SqlName: 'getOrdersData',
+                trdr: trdrRetailerFromUrl || 11639
+              }
+            });
+            
+            const duration = Date.now() - startTime;
+            console.log(`✅ S1 API test successful in ${duration}ms`);
+            showNotification(`S1 API connection OK - ${duration}ms`, 'is-success');
+          }
+        } catch (error) {
+          console.error('❌ Connection test failed:', error);
+          const method = useDirectDB ? 'Direct DB (Fixie SOCKS)' : 'S1 API';
+          showNotification(`${method} connection FAILED: ${error.message}`, 'is-danger');
+        } finally {
+          testBtn.innerHTML = '<i class="fas fa-wifi"></i> Test';
+          testBtn.disabled = false;
+        }
+      }
+      
+      // Add event listeners
+      document.getElementById('testConnection').addEventListener('click', testConnectionMethod);
+      
       //console.log('urlLogoRetailerFromUrl', urlLogoRetailerFromUrl)
       //console.log('trdrRetailerFromUrl', trdrRetailerFromUrl)
       //preluareFacturiBtn
