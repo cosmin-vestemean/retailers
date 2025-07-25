@@ -438,15 +438,18 @@
         testBtn.disabled = true;
         
         let outboundIp = 'N/A';
-        let fixieIps = 'N/A';
+        let configuredFixieIps = 'N/A';
+        let actualFixieIp = 'N/A';
         
         try {
           // 1. Get the server's outbound and Fixie IP addresses
           const ipResult = await client.service('outbound-ip').find();
           outboundIp = ipResult.ip;
-          fixieIps = ipResult.fixieIps;
-          console.log(`📍 Server's outbound IP detected: ${outboundIp}`);
-          console.log(`📍 Fixie SOCKS Proxy IPs: ${fixieIps}`);
+          configuredFixieIps = ipResult.configuredFixieIps;
+          actualFixieIp = ipResult.actualFixieIp;
+          console.log(`📍 Server's Standard Outbound IP: ${outboundIp}`);
+          console.log(`⚙️ Configured Fixie SOCKS IPs: ${configuredFixieIps}`);
+          console.log(`🛰️ Actual Outbound IP via Fixie: ${actualFixieIp}`);
 
           const startTime = Date.now();
           let method, result;
@@ -454,7 +457,7 @@
           if (useDirectDB) {
             method = 'Direct DB (Fixie SOCKS)';
             console.log(`🧪 Testing ${method}...`);
-            console.log(`(Traffic to DB should be routed via one of the Fixie IPs: ${fixieIps}, not from server IP: ${outboundIp})`);
+            console.log(`(Traffic to DB should be routed via one of the Fixie IPs: ${actualFixieIp}, not from server IP: ${outboundIp})`);
             result = await client.service('CCCSFTPXML').find({
               query: { $limit: 1, TRDR_RETAILER: trdrRetailerFromUrl || 11639 }
             });
@@ -477,7 +480,8 @@
           const successMessage = `
             <strong>${method} OK (${duration}ms)</strong><br>
             <small>Server Outbound IP: <strong>${outboundIp}</strong></small><br>
-            <small>Fixie SOCKS IPs: <strong>${fixieIps}</strong></small>
+            <small>Actual Fixie IP: <strong>${actualFixieIp}</strong></small><br>
+            <small>Configured Fixie IPs: <strong>${configuredFixieIps}</strong></small>
           `;
           console.log(`✅ ${method} test successful.`);
           showNotification(successMessage, 'is-success');
@@ -486,7 +490,7 @@
           console.error('❌ Connection test failed:', error);
           const method = useDirectDB ? 'Direct DB (Fixie SOCKS)' : 'S1 API';
           const ipInfo = outboundIp !== 'N/A' 
-            ? `<br><small>Server Outbound IP: ${outboundIp}</small><br><small>Fixie SOCKS IPs: ${fixieIps}</small>` 
+            ? `<br><small>Server Outbound IP: <strong>${outboundIp}</strong></small><br><small>Actual Fixie IP: <strong>${actualFixieIp}</strong></small><br><small>Configured Fixie IPs: <strong>${configuredFixieIps}</strong></small>` 
             : '';
           showNotification(`<strong>${method} FAILED</strong>: ${error.message}${ipInfo}`, 'is-danger');
         } finally {
