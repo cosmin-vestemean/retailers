@@ -31,12 +31,17 @@ function showNotification(message, type = 'is-info') {
   `;
   
   container.appendChild(notification);
-  
-  // Add delete button functionality
-  notification.querySelector('.delete').addEventListener('click', () => {
+
+  const closeNotification = () => {
     notification.style.opacity = '0';
     setTimeout(() => notification.remove(), 300);
-  });
+  };
+  
+  // Add delete button functionality
+  notification.querySelector('.delete').addEventListener('click', closeNotification);
+
+  // Autohide after 5 seconds
+  setTimeout(closeNotification, 5000);
 }
 
 function showLoading() {
