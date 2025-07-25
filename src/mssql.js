@@ -52,6 +52,12 @@ export const mssql = (app) => {
       }
     }
     
+    // Set driver-specific connection timeout
+    config.connection.options = {
+      ...config.connection.options,
+      connectTimeout: 30000 // 30 seconds
+    };
+
     // Enhanced connection pool settings for proxy connections
     config.pool = {
       ...config.pool,
