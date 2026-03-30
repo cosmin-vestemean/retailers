@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import { sharedStyles } from '@/styles/shared-styles.js'
 import {
-  getOrders, getOrdersDirect, downloadAndStoreOrders,
+  downloadAndStoreOrders, getOrdersPaged,
   getDataset, getDataset1, sendOrderToS1, getToken, client,
 } from '@/services/api.js'
 import './xml-viewer.js'
@@ -19,11 +19,13 @@ function getValFromXML(xml, node) {
 export class OrdersTable extends LitElement {
   static properties = {
     trdr:       { type: String },
-    dataSource: { type: String },
     _orders:    { state: true },
     _loading:   { state: true },
     _sending:   { state: true },
     _showSent:  { state: true },
+    _page:      { state: true },
+    _pageSize:  { state: true },
+    _total:     { state: true },
   }
 
   static styles = [sharedStyles, css`
@@ -52,6 +54,9 @@ export class OrdersTable extends LitElement {
     this._loading = false
     this._sending = new Set()
     this._showSent = true
+    this._page = 1
+    this._pageSize = 25
+    this._total = 0
   }
 
   connectedCallback() {
@@ -62,23 +67,12 @@ export class OrdersTable extends LitElement {
   async loadOrders() {
     this._loading = true
     try {
-      if (this.dataSource === 'direct') {
-        const res = await getOrdersDirect(this.trdr)
-        this._orders = (res.data || []).map(o => this._normalizeDirectOrder(o))
+      const res = await getOrdersPaged(this.trdr, { page: this._page, pageSize: this._pageSize })
+      if (res?.success) {
+        this._orders = (res.data || []).map(o => this._normalizeOrder(o))
+        this._total = res.total || 0
       } else {
-        try {
-          const res = await getOrders(this.trdr)
-          if (res?.success && res.rows) {
-            this._orders = res.rows.map(o => this._normalizeS1Order(o))
-          } else {
-            throw new Error('S1 API returned no data')
-          }
-        } catch {
-          // Fallback to direct
-          const res = await getOrdersDirect(this.trdr)
-          this._orders = (res.data || []).map(o => this._normalizeDirectOrder(o))
-          this._toast('Orders loaded via Direct DB fallback', 'is-warning')
-        }
+        this._toast('Failed to load orders: ' + (res?.error || 'Unknown error'), 'is-danger')
       }
     } catch (e) {
       this._toast('Failed to load orders: ' + e.message, 'is-danger')
@@ -87,15 +81,15 @@ export class OrdersTable extends LitElement {
     }
   }
 
-  _normalizeDirectOrder(o) {
+  _normalizeOrder(o) {
     return {
       id: o.CCCSFTPXML,
       date: o.XMLDATE,
       filename: o.XMLFILENAME || '',
       xmlData: o.XMLDATA || '',
       findoc: o.FINDOC || null,
-      orderId: o.XMLDATA ? (getValFromXML(o.XMLDATA, '/Order/ID')[0] || '') : '',
-      status: o.FINDOC ? 'sent' : 'pending',
+      orderId: o.OrderId || '',
+      status: (o.FINDOC && o.FINDOC !== 0) ? 'sent' : 'pending',
       error: null,
       fincode: null,
       trndate: null,
@@ -103,20 +97,14 @@ export class OrdersTable extends LitElement {
     }
   }
 
-  _normalizeS1Order(o) {
-    return {
-      id: o.CCCSFTPXML || o.cccsftpxml,
-      date: o.XMLDATE || o.xmldate,
-      filename: o.XMLFILENAME || o.xmlfilename || '',
-      xmlData: o.XMLDATA || o.xmldata || '',
-      findoc: o.FINDOC || o.findoc || null,
-      orderId: (o.XMLDATA || o.xmldata) ? (getValFromXML(o.XMLDATA || o.xmldata, '/Order/ID')[0] || '') : '',
-      status: (o.FINDOC || o.findoc) ? 'sent' : 'pending',
-      error: null,
-      fincode: o.FINCODE || o.fincode || null,
-      trndate: o.TRNDATE || o.trndate || null,
-      _raw: o,
-    }
+  get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
+
+  async _prevPage() {
+    if (this._page > 1) { this._page--; await this.loadOrders() }
+  }
+
+  async _nextPage() {
+    if (this._page < this._totalPages) { this._page++; await this.loadOrders() }
   }
 
   async _downloadOrders() {
@@ -340,15 +328,15 @@ export class OrdersTable extends LitElement {
   render() {
     return html`
       <div class="toolbar">
-        <button class="button is-primary ${this._loading ? 'is-loading' : ''}"
+        <button class="button is-primary is-small ${this._loading ? 'is-loading' : ''}"
                 @click=${this._downloadOrders} ?disabled=${this._loading}>
           Preluare comenzi
         </button>
-        <button class="button is-info" @click=${this.loadOrders} ?disabled=${this._loading}>
+        <button class="button is-info is-small" @click=${this.loadOrders} ?disabled=${this._loading}>
           Refresh
         </button>
         ${this._pendingCount > 0 ? html`
-          <button class="button is-success" @click=${this._sendAllPending}>
+          <button class="button is-success is-small" @click=${this._sendAllPending}>
             Trimite toate (${this._pendingCount})
           </button>
         ` : ''}
@@ -423,6 +411,14 @@ export class OrdersTable extends LitElement {
       ` : html`
         ${!this._loading ? html`<div class="has-text-centered mt-4" style="color:#999;">No orders found</div>` : ''}
       `}
+
+      <div class="is-flex is-justify-content-space-between is-align-items-center mt-3" style="font-size:0.85rem;">
+        <span class="has-text-grey">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
+        <div class="buttons are-small">
+          <button class="button is-small" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
+          <button class="button is-small" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
+        </div>
+      </div>
     `
   }
 }

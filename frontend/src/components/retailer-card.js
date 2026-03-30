@@ -14,25 +14,39 @@ export class RetailerCard extends LitElement {
   }
 
   static styles = [sharedStyles, css`
-    :host { display: block; }
-    .card { height: 100%; display: flex; flex-direction: column; transition: transform 0.15s; }
-    .card:hover { transform: translateY(-2px); }
+    :host { display: block; height: 100%; }
+    .card {
+      height: 100%; display: flex; flex-direction: column;
+      background: #fff; border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: box-shadow 0.15s;
+    }
+    .card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
     a { text-decoration: none; color: inherit; }
 
-    .card-top { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem 0; }
-    .card-top img { max-height: 48px; max-width: 120px; object-fit: contain; }
-    .card-top .name { font-weight: 700; font-size: 1.1rem; }
+    .card-logo {
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.75rem 1.5rem 1rem;
+      min-height: 100px;
+    }
+    .card-logo img { max-height: 72px; max-width: 160px; object-fit: contain; }
 
-    .stats { padding: 0.75rem 1.25rem 1rem; flex: 1; }
+    .card-name {
+      text-align: center; font-weight: 700; font-size: 1.05rem;
+      padding: 0 1.25rem 1rem;
+    }
+
+    .stats { padding: 0 1.25rem 1.25rem; flex: 1; }
     .stats table { width: 100%; font-size: 0.9rem; border: none; }
-    .stats td { border: none; padding: 0.3em 0; }
+    .stats td { border: none; padding: 0.35em 0; }
     .stats td:last-child { text-align: right; }
 
     .card-links {
-      border-top: 1px solid #ededed; display: flex;
+      border-top: 1px solid #ededed;
+      display: flex; height: 44px; flex-shrink: 0;
     }
     .card-links a {
-      flex: 1; text-align: center; padding: 0.6rem 0.5rem;
+      flex: 1; display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; color: #3e8ed0; font-weight: 600;
     }
     .card-links a:hover { background: #f5f5f5; }
@@ -46,11 +60,6 @@ export class RetailerCard extends LitElement {
     .badge.ok      { background: #48c78e; color: #fff; }
     .badge.pending { background: #f14668; color: #fff; }
     .badge.loading { background: #dbdbdb; color: #7a7a7a; min-width: 2em; }
-
-    .invoice-detail {
-      font-size: 0.75rem; color: #666; margin-top: 0.2rem;
-      max-height: 3.5em; overflow: auto;
-    }
   `]
 
   constructor() {
@@ -130,10 +139,10 @@ export class RetailerCard extends LitElement {
     return html`
       <div class="card">
         <a href="/retailer/${this.trdr}">
-          <div class="card-top">
+          <div class="card-logo">
             <img src="${this.logo}" alt="${this.name}" />
-            <span class="name">${this.name}</span>
           </div>
+          <div class="card-name">${this.name}</div>
           <div class="stats">
             <table>
               <tr>
@@ -142,14 +151,9 @@ export class RetailerCard extends LitElement {
               </tr>
               <tr>
                 <td>Facturi de trimis:</td>
-                <td @click=${this._showInvoiceDetail}>
-                  ${this._renderBadge(this._pendingInvoices)}
-                </td>
+                <td>${this._renderBadge(this._pendingInvoices)}</td>
               </tr>
             </table>
-            ${this._invoiceList ? html`
-              <div class="invoice-detail">${this._invoiceList}</div>
-            ` : ''}
           </div>
         </a>
         <div class="card-links">

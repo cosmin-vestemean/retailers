@@ -50,7 +50,10 @@ const SERVICES = {
   's1-users': { methods: ['find'] },
   's1-auth': { methods: ['create'] },
   // Logs
-  'orders-log': { methods: ['find'] },
+  'orders-log': { methods: ['find', 'remove'] },
+  // Paginated data (AJS)
+  'orders-data': { methods: ['find'] },
+  'invoices-data': { methods: ['find'] },
 }
 
 const CRUD_METHODS = ['find', 'get', 'create', 'update', 'patch', 'remove']
@@ -253,6 +256,20 @@ export async function getS1ObjData(params) {
   const clientID = await getToken()
   return client.service('getS1ObjData').find({
     query: { clientID, ...params },
+  })
+}
+
+/** Fetch orders (paginated) via AJS endpoint. */
+export async function getOrdersPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30 } = {}) {
+  return client.service('orders-data').find({
+    query: { trdr, page, pageSize, daysOlder }
+  })
+}
+
+/** Fetch invoices (paginated) via AJS endpoint. */
+export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlder = 7, sosource = 1351, fprms = 712, series = 7121 } = {}) {
+  return client.service('invoices-data').find({
+    query: { trdr, page, pageSize, daysOlder, sosource, fprms, series }
   })
 }
 

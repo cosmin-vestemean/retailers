@@ -3,13 +3,11 @@ import { sharedStyles } from '@/styles/shared-styles.js'
 import { RETAILERS } from '@/state/app-context.js'
 import '@/components/orders-table.js'
 import '@/components/invoice-table.js'
-import '@/components/data-source-toggle.js'
 
 export class RetailerDetail extends LitElement {
   static properties = {
-    trdr:        { type: String },
-    _tab:        { state: true },
-    _dataSource: { state: true },
+    trdr: { type: String },
+    _tab: { state: true },
   }
 
   static styles = [sharedStyles, css`
@@ -30,15 +28,10 @@ export class RetailerDetail extends LitElement {
   constructor() {
     super()
     this._tab = 'orders'
-    this._dataSource = 's1'
   }
 
   get retailer() {
     return RETAILERS.find(r => r.trdr === this.trdr)
-  }
-
-  _onSourceChanged(e) {
-    this._dataSource = e.detail.source
   }
 
   render() {
@@ -50,10 +43,7 @@ export class RetailerDetail extends LitElement {
         <div class="header mb-4">
           <img src="${r.logo}" alt="${r.name}" />
           <h1 class="has-text-weight-bold" style="font-size:1.5rem;">${r.name}</h1>
-          <span class="tag is-info">TRDR ${r.trdr}</span>
           <a href="/" class="button is-small ml-4">← Dashboard</a>
-          <data-source-toggle .source=${this._dataSource}
-                              @source-changed=${this._onSourceChanged}></data-source-toggle>
         </div>
 
         <div class="tabs-bar">
@@ -65,7 +55,7 @@ export class RetailerDetail extends LitElement {
 
         <div class="tab-content">
           ${this._tab === 'orders' ? html`
-            <orders-table .trdr=${this.trdr} .dataSource=${this._dataSource}></orders-table>
+            <orders-table .trdr=${this.trdr}></orders-table>
           ` : html`
             <invoice-table .trdr=${this.trdr}></invoice-table>
           `}

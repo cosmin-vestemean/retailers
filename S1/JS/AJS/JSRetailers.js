@@ -89,47 +89,95 @@ function var_dump(obj, t) {
 }
 
 function getOrdersData(params) {
-  // Default values
-  var trdr = params.trdr || 0;
-  var daysOlder = params.daysOlder || 30;
-  var limit = params.limit || 50;
-  
+  var trdr = parseInt(params.trdr) || 0;
+  var daysOlder = parseInt(params.daysOlder) || 30;
+  var page = parseInt(params.page) || 1;
+  var pageSize = parseInt(params.pageSize) || 25;
+  if (pageSize > 100) pageSize = 100;
+  var offset = (page - 1) * pageSize;
+
   if (!trdr || trdr <= 0) {
     return { success: false, error: 'Invalid retailer ID (trdr) provided.' };
   }
-  
-  // SQL query to get orders data similar to how invoices are retrieved
-  var sqlQuery = "SELECT TOP " + limit + " " +
-    "c.CCCSFTPXML, " +
-    "c.TRDR_RETAILER, " +
-    "(SELECT name FROM trdr WHERE trdr = c.TRDR_RETAILER) AS RetailerName, " +
-    "c.XMLFILENAME, " +
-    "FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, " +
-    "ISNULL(c.FINDOC, 0) AS FINDOC, " +
-    "CASE WHEN c.FINDOC IS NOT NULL THEN 'Procesat' ELSE 'Neprocesat' END AS Status, " +
-    // Extract OrderID from XML
-    "REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(max)), '<ID>', ''), '</ID>', '') AS OrderId " +
-    "FROM CCCSFTPXML c " +
-    "WHERE c.TRDR_RETAILER = " + trdr + " " +
-    "AND CAST(c.XMLDATE AS DATE) >= DATEADD(day, -" + daysOlder + ", GETDATE()) " +
-    "ORDER BY c.XMLDATE DESC";
-  
+
+  var fromClause = 'FROM CCCSFTPXML c WHERE c.TRDR_RETAILER = ' + trdr
+    + ' AND c.XMLDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())';
+
+  var total = 0;
   try {
-    var ds = X.GETSQLDATASET(sqlQuery, null);
-    if (ds.RECORDCOUNT > 0) {
-      return {
-        success: true,
-        data: convertDatasetToArray(ds),
-        total: ds.RECORDCOUNT
-      };
-    } else {
-      return {
-        success: true,
-        message: 'No orders found for the specified criteria.',
-        data: [],
-        total: 0
-      };
-    }
+    total = parseInt(X.SQL('SELECT COUNT(*) ' + fromClause, null)) || 0;
+  } catch (e) {
+    return { success: false, error: 'Count failed: ' + e.message };
+  }
+
+  var sql = 'SELECT c.CCCSFTPXML, c.TRDR_RETAILER, c.XMLFILENAME, '
+    + "FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, "
+    + 'ISNULL(c.FINDOC, 0) AS FINDOC, c.XMLDATA, '
+    + "REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', '') AS OrderId "
+    + fromClause
+    + ' ORDER BY c.XMLDATE DESC'
+    + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
+
+  try {
+    var ds = X.GETSQLDATASET(sql, null);
+    return {
+      success: true,
+      data: convertDatasetToArray(ds),
+      total: total,
+      page: page,
+      pageSize: pageSize
+    };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function getInvoicesData(params) {
+  var trdr = parseInt(params.trdr) || 0;
+  var sosource = parseInt(params.sosource) || 1351;
+  var fprms = parseInt(params.fprms) || 712;
+  var series = parseInt(params.series) || 7121;
+  var daysOlder = parseInt(params.daysOlder) || 7;
+  var page = parseInt(params.page) || 1;
+  var pageSize = parseInt(params.pageSize) || 25;
+  if (pageSize > 100) pageSize = 100;
+  var offset = (page - 1) * pageSize;
+
+  if (!trdr || trdr <= 0) {
+    return { success: false, error: 'Invalid retailer ID (trdr) provided.' };
+  }
+
+  var fromClause = 'FROM findoc f INNER JOIN mtrdoc m ON f.findoc = m.findoc '
+    + 'WHERE f.sosource = ' + sosource
+    + ' AND f.fprms = ' + fprms
+    + ' AND f.series = ' + series
+    + ' AND f.trdr = ' + trdr
+    + ' AND f.iscancel = 0'
+    + ' AND f.trndate >= DATEADD(day, -' + daysOlder + ', GETDATE())';
+
+  var total = 0;
+  try {
+    total = parseInt(X.SQL('SELECT COUNT(*) ' + fromClause, null)) || 0;
+  } catch (e) {
+    return { success: false, error: 'Count failed: ' + e.message };
+  }
+
+  var sql = 'SELECT f.findoc, f.fincode, '
+    + "FORMAT(f.trndate, 'yyyy-MM-dd') AS trndate, "
+    + 'f.sumamnt, m.CCCXMLSendDate, m.CCCXMLFile '
+    + fromClause
+    + ' ORDER BY f.trndate DESC, f.findoc DESC'
+    + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
+
+  try {
+    var ds = X.GETSQLDATASET(sql, null);
+    return {
+      success: true,
+      data: convertDatasetToArray(ds),
+      total: total,
+      page: page,
+      pageSize: pageSize
+    };
   } catch (e) {
     return { success: false, error: e.message };
   }

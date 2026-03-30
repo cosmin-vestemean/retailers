@@ -16,7 +16,7 @@ export class AppShell extends LitElement {
   }
 
   static styles = [sharedStyles, css`
-    :host { display: block; min-height: 100vh; background: #f5f5f5; }
+    :host { display: block; min-height: 100vh; background: #fff; }
 
     nav {
       background: #363636; color: #fff; padding: 0.75rem 1.5rem;

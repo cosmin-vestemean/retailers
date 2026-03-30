@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit'
 import { sharedStyles } from '@/styles/shared-styles.js'
 import {
-  getInvoices, getInvoiceDom, uploadInvoice, markDocumentSent,
+  getInvoicesPaged, getInvoiceDom, uploadInvoice, markDocumentSent,
   downloadAperaks, getAperaks, getToken, client,
 } from '@/services/api.js'
 import './xml-viewer.js'
@@ -17,6 +17,9 @@ export class InvoiceTable extends LitElement {
     _invoices:   { state: true },
     _loading:    { state: true },
     _sending:    { state: true },
+    _page:       { state: true },
+    _pageSize:   { state: true },
+    _total:      { state: true },
   }
 
   static styles = [sharedStyles, css`
@@ -47,6 +50,9 @@ export class InvoiceTable extends LitElement {
     this.sosource = 1351
     this.fprms = 712
     this.series = 7121
+    this._page = 1
+    this._pageSize = 25
+    this._total = 0
   }
 
   connectedCallback() {
@@ -57,15 +63,15 @@ export class InvoiceTable extends LitElement {
   async loadInvoices() {
     this._loading = true
     try {
-      const res = await getInvoices(this.trdr, {
+      const res = await getInvoicesPaged(this.trdr, {
         sosource: this.sosource, fprms: this.fprms,
         series: this.series, daysOlder: this.daysOlder,
+        page: this._page, pageSize: this._pageSize,
       })
-      if (res?.success && res.rows) {
-        // Load aperaks for all invoices in parallel
-        const invoices = res.rows.map(r => ({
+      if (res?.success) {
+        const invoices = (res.data || []).map(r => ({
           findoc: r.findoc,
-          trndate: r.trndate?.replace(' 00:00:00', '') || r.trndate,
+          trndate: r.trndate || '',
           fincode: r.fincode,
           sumamnt: r.sumamnt,
           sent: !!r.CCCXMLSendDate,
@@ -76,28 +82,39 @@ export class InvoiceTable extends LitElement {
           aperak: null,
           _sending: false,
         }))
-        // Fetch aperaks
-        const aperakPromises = invoices.map(inv =>
-          getAperaks({
-            FINDOC: inv.findoc,
-            TRDR_RETAILER: this.trdr,
-            $sort: { MESSAGEDATE: -1, MESSAGETIME: -1 },
-          }).catch(() => ({ data: [], total: 0 }))
+        // Fetch aperaks for current page only
+        const aperakResults = await Promise.all(
+          invoices.map(inv =>
+            getAperaks({
+              FINDOC: inv.findoc,
+              TRDR_RETAILER: this.trdr,
+              $sort: { MESSAGEDATE: -1, MESSAGETIME: -1 },
+            }).catch(() => ({ data: [], total: 0 }))
+          )
         )
-        const aperakResults = await Promise.all(aperakPromises)
-        aperakResults.forEach((res, i) => {
-          if (res.total > 0) invoices[i].aperak = res.data[0]
+        aperakResults.forEach((ar, i) => {
+          if (ar.total > 0) invoices[i].aperak = ar.data[0]
         })
         this._invoices = invoices
+        this._total = res.total || 0
       } else {
-        this._invoices = []
-        this._toast('No invoice data returned', 'is-warning')
+        this._toast('Failed to load invoices: ' + (res?.error || 'Unknown error'), 'is-danger')
       }
     } catch (e) {
       this._toast('Failed to load invoices: ' + e.message, 'is-danger')
     } finally {
       this._loading = false
     }
+  }
+
+  get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
+
+  async _prevPage() {
+    if (this._page > 1) { this._page--; await this.loadInvoices() }
+  }
+
+  async _nextPage() {
+    if (this._page < this._totalPages) { this._page++; await this.loadInvoices() }
   }
 
   async _downloadAperaks() {
@@ -273,21 +290,21 @@ export class InvoiceTable extends LitElement {
   render() {
     return html`
       <div class="toolbar">
-        <button class="button is-info ${this._loading ? 'is-loading' : ''}"
+        <button class="button is-info is-small ${this._loading ? 'is-loading' : ''}"
                 @click=${this.loadInvoices} ?disabled=${this._loading}>
           Refresh
         </button>
         <label style="font-size:0.85rem; display:inline-flex; align-items:center; gap:0.3rem;">
           <input type="number" class="input is-small" style="width:60px;"
                  .value=${String(this.daysOlder)} min="1" max="90"
-                 @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this.loadInvoices() }} />
+                 @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this._page = 1; this.loadInvoices() }} />
           zile
         </label>
-        <button class="button is-primary" @click=${this._downloadAperaks} ?disabled=${this._loading}>
+        <button class="button is-primary is-small" @click=${this._downloadAperaks} ?disabled=${this._loading}>
           Download APERAKs
         </button>
         ${this._unsentCount > 0 ? html`
-          <button class="button is-success" @click=${this._sendAllUnsent}>
+          <button class="button is-success is-small" @click=${this._sendAllUnsent}>
             Trimite toate (${this._unsentCount})
           </button>
         ` : ''}
@@ -372,6 +389,14 @@ export class InvoiceTable extends LitElement {
       ` : html`
         ${!this._loading ? html`<div class="has-text-centered mt-4" style="color:#999;">No invoices found</div>` : ''}
       `}
+
+      <div class="is-flex is-justify-content-space-between is-align-items-center mt-3" style="font-size:0.85rem;">
+        <span class="has-text-grey">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
+        <div class="buttons are-small">
+          <button class="button is-small" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
+          <button class="button is-small" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
+        </div>
+      </div>
     `
   }
 }

@@ -7,7 +7,13 @@ import '@/components/scan-status.js'
 export class RetailerDashboard extends LitElement {
   static styles = [sharedStyles, css`
     :host { display: block; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+    .grid > * { height: 100%; }
   `]
 
   render() {
