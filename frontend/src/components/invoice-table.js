@@ -11,6 +11,9 @@ export class InvoiceTable extends LitElement {
   static properties = {
     trdr:        { type: String },
     daysOlder:   { type: Number },
+    sosource:    { type: Number },
+    fprms:       { type: Number },
+    series:      { type: Number },
     _invoices:   { state: true },
     _loading:    { state: true },
     _sending:    { state: true },
@@ -40,7 +43,10 @@ export class InvoiceTable extends LitElement {
     this._invoices = []
     this._loading = false
     this._sending = new Set()
-    this.daysOlder = 30
+    this.daysOlder = 7
+    this.sosource = 1351
+    this.fprms = 712
+    this.series = 7121
   }
 
   connectedCallback() {
@@ -51,7 +57,10 @@ export class InvoiceTable extends LitElement {
   async loadInvoices() {
     this._loading = true
     try {
-      const res = await getInvoices(this.trdr)
+      const res = await getInvoices(this.trdr, {
+        sosource: this.sosource, fprms: this.fprms,
+        series: this.series, daysOlder: this.daysOlder,
+      })
       if (res?.success && res.rows) {
         // Load aperaks for all invoices in parallel
         const invoices = res.rows.map(r => ({
@@ -268,6 +277,12 @@ export class InvoiceTable extends LitElement {
                 @click=${this.loadInvoices} ?disabled=${this._loading}>
           Refresh
         </button>
+        <label style="font-size:0.85rem; display:inline-flex; align-items:center; gap:0.3rem;">
+          <input type="number" class="input is-small" style="width:60px;"
+                 .value=${String(this.daysOlder)} min="1" max="90"
+                 @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this.loadInvoices() }} />
+          zile
+        </label>
         <button class="button is-primary" @click=${this._downloadAperaks} ?disabled=${this._loading}>
           Download APERAKs
         </button>

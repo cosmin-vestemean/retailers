@@ -134,10 +134,10 @@ export async function sendOrderToS1(data) {
 // --------------- Invoices ---------------
 
 /** Fetch invoices from S1. */
-export async function getInvoices(trdr) {
+export async function getInvoices(trdr, { sosource = 1351, fprms = 712, series = 7121, daysOlder = 7 } = {}) {
   const clientID = await getToken()
   return client.service('getS1SqlData').find({
-    query: { clientID, appID: '1001', SqlName: 'Retailers_Index_Docs', trdr },
+    query: { clientID, appID: '1001', SqlName: 'Retailers_Index_Docs', trdr, sosource, fprms, series, daysOlder },
   })
 }
 
