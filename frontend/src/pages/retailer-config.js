@@ -82,5 +82,3 @@ export class RetailerConfig extends LitElement {
 }
 
 customElements.define('retailer-config', RetailerConfig)
-
-customElements.define('retailer-config', RetailerConfig)
