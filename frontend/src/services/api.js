@@ -31,6 +31,7 @@ const SERVICES = {
   // CRUD services
   retailer: {},
   storeXml: {},
+  CCCSFTP: {},
   CCCDOCUMENTES1MAPPINGS: {},
   CCCXMLS1MAPPINGS: {},
   CCCRETAILERSCLIENTS: {},
@@ -202,6 +203,39 @@ export async function getXmlMappings(query) {
 
 export async function getDocMappings(query) {
   return client.service('CCCDOCUMENTES1MAPPINGS').find({ query })
+}
+
+// --------------- SFTP Config ---------------
+
+export async function getSftpConfig(trdr) {
+  return client.service('CCCSFTP').find({ query: { TRDR_RETAILER: parseInt(trdr) } })
+}
+
+export async function updateSftpConfig(trdr, data) {
+  return client.service('CCCSFTP').update(
+    { query: { TRDR_RETAILER: parseInt(trdr) } },
+    data,
+  )
+}
+
+// --------------- Doc & XML Mapping CRUD ---------------
+
+export async function createDocMapping(data) {
+  return client.service('CCCDOCUMENTES1MAPPINGS').create(data)
+}
+
+export async function removeDocMapping(id) {
+  return client.service('CCCDOCUMENTES1MAPPINGS').remove(id)
+}
+
+export async function createXmlMapping(data) {
+  return client.service('CCCXMLS1MAPPINGS').create(data)
+}
+
+export async function removeXmlMappings(docMappingId) {
+  return client.service('CCCXMLS1MAPPINGS').remove(null, {
+    query: { CCCDOCUMENTES1MAPPINGS: docMappingId },
+  })
 }
 
 // --------------- Generic S1 helpers ---------------

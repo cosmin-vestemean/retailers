@@ -27,9 +27,10 @@
 
 ## Faza 3 — Config & file manager
 
-- [ ] `<retailer-config>` — parametri conexiune, integrator
-- [ ] `<sftp-manager>` — upload/download SFTP, tracking
-- [ ] `<xml-mapping-editor>` — mapping XML → S1 fields
+- [x] `<connection-settings>` — SFTP/FTP connection params + ERP S1 login settings, save
+- [x] `<doc-mappings-editor>` — CRUD tabel documente (FPRMS, SERIES, dirs), select/delete/add
+- [x] `<xml-mapping-table>` — editor mapping XML→S1: load from file, load from DB, pick/req/search, save
+- [x] `<retailer-config>` — pagină cu tabs (Conexiune / Documente asociate)
 
 ## Faza 4 — Hardening
 
