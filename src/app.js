@@ -82,6 +82,7 @@ app.use(cors({ origin: (ctx) => {
   return allowed.includes(reqOrigin) ? reqOrigin : allowed[0] || false
 }}))
 app.use(serveStatic(app.get('public')))
+app.use(serveStatic('./public/'))
 app.use(errorHandler())
 app.use(parseAuthentication())
 app.use(bodyParser())
