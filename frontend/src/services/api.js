@@ -8,11 +8,14 @@ import io from 'socket.io-client'
 
 // --------------- Feathers client setup ---------------
 
+// Use explicit env var, or fall back to the same origin that served the page.
+// This means every Heroku app (retailers1, retailers4, …) automatically
+// connects to its own backend without any hardcoded URL.
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-  || 'https://retailers1-0691020d207c.herokuapp.com'
+  || (typeof window !== 'undefined' ? window.location.origin : '')
 
 // In dev mode, connect to same origin so Vite proxy handles /socket.io.
-// In production, connect directly to the backend.
+// In production, connect directly to the backend (same origin by default).
 const socket = import.meta.env.DEV
   ? io()
   : io(BACKEND_URL)
