@@ -150,17 +150,26 @@ export async function getInvoiceDom(params) {
 }
 
 /** Upload invoice XML via SFTP. */
-export async function uploadInvoice(trdr, xml) {
-  return client.service('sftp').uploadXml({}, {
-    query: { retailer: trdr, rootPath: 'data/invoice', xml },
-  })
+export async function uploadInvoice(findoc, xml, filename, trdr) {
+  return client.service('sftp').uploadXml(
+    { findoc, xml, filename },
+    { query: { retailer: trdr } },
+  )
 }
 
-/** Mark a document as sent in S1. */
-export async function markDocumentSent(objectName, data) {
+/** Mark a document as sent in S1 (setData on SALDOC). */
+export async function markDocumentSent(findoc, xmlFilename) {
   const clientID = await getToken()
   return client.service('setDocument').create({
-    clientID, OBJECT: objectName, DATA: data,
+    service: 'setData',
+    clientID,
+    appId: '1001',
+    OBJECT: 'SALDOC',
+    FORM: 'EFIntegrareRetailers',
+    KEY: findoc,
+    DATA: {
+      MTRDOC: [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }],
+    },
   })
 }
 

@@ -1,0 +1,364 @@
+import { LitElement, html, css } from 'lit'
+import { sharedStyles } from '@/styles/shared-styles.js'
+import {
+  getInvoices, getInvoiceDom, uploadInvoice, markDocumentSent,
+  downloadAperaks, getAperaks, getToken, client,
+} from '@/services/api.js'
+import './xml-viewer.js'
+import './batch-progress.js'
+
+export class InvoiceTable extends LitElement {
+  static properties = {
+    trdr:        { type: String },
+    daysOlder:   { type: Number },
+    _invoices:   { state: true },
+    _loading:    { state: true },
+    _sending:    { state: true },
+  }
+
+  static styles = [sharedStyles, css`
+    :host { display: block; }
+    .toolbar { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { border: 1px solid #dbdbdb; padding: 0.5em 0.75em; vertical-align: top; }
+    th { background: #f5f5f5; font-weight: 600; text-align: left; position: sticky; top: 0; }
+    tr:hover { background: #fafafa; }
+    .badge { display: inline-block; padding: 0.15em 0.5em; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge.sent { background: #48c78e; color: #fff; }
+    .badge.unsent { background: #ffe08a; color: rgba(0,0,0,.7); }
+    .badge.sending { background: #3e8ed0; color: #fff; }
+    .actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+    .aperak-header { cursor: pointer; }
+    .aperak-body { display: none; font-size: 0.8rem; margin-top: 0.3em; }
+    .aperak-body.open { display: block; }
+    .postfix-input { width: 80px; }
+  `]
+
+  constructor() {
+    super()
+    this._invoices = []
+    this._loading = false
+    this._sending = new Set()
+    this.daysOlder = 30
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.loadInvoices()
+  }
+
+  async loadInvoices() {
+    this._loading = true
+    try {
+      const res = await getInvoices(this.trdr)
+      if (res?.success && res.rows) {
+        // Load aperaks for all invoices in parallel
+        const invoices = res.rows.map(r => ({
+          findoc: r.findoc,
+          trndate: r.trndate?.replace(' 00:00:00', '') || r.trndate,
+          fincode: r.fincode,
+          sumamnt: r.sumamnt,
+          sent: !!r.CCCXMLSendDate,
+          sentDate: r.CCCXMLSendDate || null,
+          xmlFile: r.CCCXMLFile || null,
+          postfix: '',
+          xmlData: null,
+          aperak: null,
+          _sending: false,
+        }))
+        // Fetch aperaks
+        const aperakPromises = invoices.map(inv =>
+          getAperaks({
+            FINDOC: inv.findoc,
+            TRDR_RETAILER: this.trdr,
+            $sort: { MESSAGEDATE: -1, MESSAGETIME: -1 },
+          }).catch(() => ({ data: [], total: 0 }))
+        )
+        const aperakResults = await Promise.all(aperakPromises)
+        aperakResults.forEach((res, i) => {
+          if (res.total > 0) invoices[i].aperak = res.data[0]
+        })
+        this._invoices = invoices
+      } else {
+        this._invoices = []
+        this._toast('No invoice data returned', 'is-warning')
+      }
+    } catch (e) {
+      this._toast('Failed to load invoices: ' + e.message, 'is-danger')
+    } finally {
+      this._loading = false
+    }
+  }
+
+  async _downloadAperaks() {
+    this._loading = true
+    try {
+      await downloadAperaks(this.trdr)
+      await this.loadInvoices()
+      this._toast('APERAKs downloaded', 'is-success')
+    } catch (e) {
+      this._toast('APERAK download failed: ' + e.message, 'is-danger')
+    } finally {
+      this._loading = false
+    }
+  }
+
+  async _createXml(inv, index) {
+    try {
+      const domObj = await getInvoiceDom({ appID: '1001', findoc: inv.findoc })
+      this._invoices = this._invoices.map((item, i) =>
+        i === index ? { ...item, xmlData: domObj.dom, _domObj: domObj } : item
+      )
+    } catch (e) {
+      this._toast('Create XML failed: ' + e.message, 'is-danger')
+    }
+  }
+
+  _saveXml(inv) {
+    if (!inv._domObj) return
+    const filename = this._getFilename(inv)
+    const blob = new Blob([inv._domObj.dom], { type: 'text/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = filename + '.xml'; a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  _getFilename(inv) {
+    if (!inv._domObj) return inv.fincode
+    let filename = inv._domObj.filename
+    if (inv.postfix) {
+      const parts = filename.split('_')
+      if (parts.length >= 4) {
+        filename = parts[0] + '_' + parts[1] + inv.postfix + '_' + parts[2] + '_' + parts[3]
+      }
+    }
+    return filename
+  }
+
+  async _sendInvoice(inv, index, override = false) {
+    if (inv.sent && !override) {
+      this._toast('Invoice already sent', 'is-warning')
+      return
+    }
+    this._sending = new Set([...this._sending, index])
+    this._invoices = this._invoices.map((item, i) =>
+      i === index ? { ...item, _sending: true } : item
+    )
+
+    try {
+      // Get DOM if not cached
+      let domObj = inv._domObj
+      if (!domObj) {
+        domObj = await getInvoiceDom({ appID: '1001', findoc: inv.findoc })
+      }
+      if (domObj.trimis && !override) {
+        this._toast(`Invoice ${domObj.filename} already sent`, 'is-warning')
+        return
+      }
+
+      const filename = this._getFilename({ ...inv, _domObj: domObj })
+
+      // Upload via SFTP
+      const res = await uploadInvoice(inv.findoc, domObj.dom, filename, this.trdr)
+      if (res?.success) {
+        // Mark as sent in S1
+        await markDocumentSent(inv.findoc, filename)
+        this._invoices = this._invoices.map((item, i) =>
+          i === index ? {
+            ...item,
+            sent: true,
+            sentDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            _sending: false,
+            _domObj: domObj,
+            xmlData: domObj.dom,
+          } : item
+        )
+        this._toast(`Invoice ${filename} sent`, 'is-success')
+      } else {
+        throw new Error('Upload failed')
+      }
+    } catch (e) {
+      this._toast('Send failed: ' + e.message, 'is-danger')
+    } finally {
+      this._sending = new Set([...this._sending].filter(i => i !== index))
+      this._invoices = this._invoices.map((item, i) =>
+        i === index ? { ...item, _sending: false } : item
+      )
+    }
+  }
+
+  async _markAlreadySent(inv, index) {
+    try {
+      await markDocumentSent(inv.findoc, 'Already sent by other means')
+      this._invoices = this._invoices.map((item, i) =>
+        i === index ? {
+          ...item,
+          sent: true,
+          sentDate: 'Manual',
+        } : item
+      )
+      this._toast('Marked as sent', 'is-success')
+    } catch (e) {
+      this._toast('Mark failed: ' + e.message, 'is-danger')
+    }
+  }
+
+  async _sendAllUnsent() {
+    const unsent = this._invoices
+      .map((inv, i) => ({ inv, i }))
+      .filter(({ inv }) => !inv.sent)
+
+    if (!unsent.length) return
+    const bp = this.shadowRoot.querySelector('batch-progress')
+    bp.start(unsent.length)
+
+    for (const { inv, i } of unsent) {
+      bp.advance(`Sending ${inv.fincode}...`)
+      await this._sendInvoice(inv, i)
+    }
+    bp.finish('All invoices processed')
+    await this.loadInvoices()
+  }
+
+  _toggleAperak(e) {
+    const body = e.currentTarget.nextElementSibling
+    body.classList.toggle('open')
+  }
+
+  _toast(msg, type) {
+    this.dispatchEvent(new CustomEvent('show-toast', {
+      detail: { message: msg, type }, bubbles: true, composed: true,
+    }))
+  }
+
+  get _unsentCount() {
+    return this._invoices.filter(i => !i.sent).length
+  }
+
+  _renderAperak(aperak) {
+    if (!aperak) return html`<span style="color:#999;font-size:0.8rem;">—</span>`
+    const resp = aperak.DOCUMENTRESPONSE?.toLowerCase()
+    const isOk = resp === 'acceptat' || resp === 'receptionat'
+    const color = isOk ? 'is-success' : 'is-danger'
+    const detail = (aperak.DOCUMENTDETAIL || '')
+      .replace('Status', '<br>Status')
+      .replace('Mesaj', '<br>Mesaj')
+      .replace('Nume fisier', '<br>Nume fisier')
+    const dateStr = aperak.MESSAGEDATE
+      ? aperak.MESSAGEDATE.split('T')[0] + ' ' + (aperak.MESSAGETIME?.split('T')[1]?.split('.')[0] || '')
+      : ''
+
+    return html`
+      <article class="message is-small ${color}" style="margin:0;">
+        <div class="message-header aperak-header" @click=${this._toggleAperak} style="padding:0.3em 0.5em; cursor:pointer;">
+          <span>${aperak.DOCUMENTRESPONSE} ${aperak.DOCUMENTREFERENCE || ''}</span>
+        </div>
+        <div class="message-body aperak-body" style="padding:0.5em;" .innerHTML=${detail}></div>
+      </article>
+      ${dateStr ? html`<div style="font-size:0.75rem;color:#666;margin-top:0.2em;">${dateStr}</div>` : ''}
+    `
+  }
+
+  render() {
+    return html`
+      <div class="toolbar">
+        <button class="button is-info ${this._loading ? 'is-loading' : ''}"
+                @click=${this.loadInvoices} ?disabled=${this._loading}>
+          Refresh
+        </button>
+        <button class="button is-primary" @click=${this._downloadAperaks} ?disabled=${this._loading}>
+          Download APERAKs
+        </button>
+        ${this._unsentCount > 0 ? html`
+          <button class="button is-success" @click=${this._sendAllUnsent}>
+            Trimite toate (${this._unsentCount})
+          </button>
+        ` : ''}
+      </div>
+
+      <batch-progress></batch-progress>
+
+      ${this._loading && !this._invoices.length ? html`
+        <div class="has-text-centered mt-4" style="font-size:1.2rem; color:#3e8ed0;">Loading invoices...</div>
+      ` : ''}
+
+      ${this._invoices.length ? html`
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Fincode</th>
+                <th>Amount</th>
+                <th>Actions</th>
+                <th>Sent</th>
+                <th>APERAK</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${this._invoices.map((inv, i) => html`
+                <tr>
+                  <td>${inv.trndate}</td>
+                  <td>
+                    ${inv.fincode}
+                    <input type="text" class="input is-small postfix-input ml-1"
+                           placeholder="postfix"
+                           .value=${inv.postfix}
+                           @input=${(e) => {
+                             this._invoices = this._invoices.map((item, idx) =>
+                               idx === i ? { ...item, postfix: e.target.value } : item
+                             )
+                           }} />
+                  </td>
+                  <td>${inv.sumamnt}</td>
+                  <td>
+                    <div class="actions">
+                      <button class="button is-small is-info"
+                              @click=${() => this._createXml(inv, i)}>Create XML</button>
+                      ${inv.xmlData ? html`
+                        <button class="button is-small is-primary"
+                                @click=${() => this._saveXml(inv)}>Save XML</button>
+                      ` : ''}
+                      <button class="button is-small is-success"
+                              ?disabled=${inv._sending}
+                              @click=${() => this._sendInvoice(inv, i)}>
+                        ${inv._sending ? 'Sending...' : 'Send'}
+                      </button>
+                      ${inv.sent ? html`
+                        <button class="button is-small is-warning"
+                                @click=${() => this._sendInvoice(inv, i, true)}>Resend</button>
+                      ` : ''}
+                    </div>
+                    ${inv.xmlData ? html`<xml-viewer .content=${inv.xmlData}></xml-viewer>` : ''}
+                  </td>
+                  <td>
+                    ${inv.sent ? html`
+                      <span class="badge sent">Sent</span>
+                      <div style="font-size:0.75rem;color:#666;margin-top:0.2em;">${inv.sentDate}</div>
+                    ` : html`
+                      <label style="font-size:0.8rem; cursor:pointer;">
+                        <input type="checkbox" @change=${(e) => {
+                          if (e.target.checked && confirm('Mark invoice as sent by other means?')) {
+                            this._markAlreadySent(inv, i)
+                          } else { e.target.checked = false }
+                        }} />
+                        Already sent
+                      </label>
+                    `}
+                  </td>
+                  <td>${this._renderAperak(inv.aperak)}</td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        </div>
+      ` : html`
+        ${!this._loading ? html`<div class="has-text-centered mt-4" style="color:#999;">No invoices found</div>` : ''}
+      `}
+    `
+  }
+}
+
+customElements.define('invoice-table', InvoiceTable)

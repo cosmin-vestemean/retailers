@@ -18,13 +18,12 @@
 
 ## Faza 2 — Pagina detalii retailer
 
-- [ ] `<orders-table>` — tabel cu sort/filter, acțiuni send/batch
-- [ ] `<order-row>` — stare reactivă per rând (sending, sent, error)
-- [ ] `<invoice-table>` — create XML, send, resend
-- [ ] `<invoice-row>` — stare per factură incl. APERAK
-- [ ] `<xml-viewer>` — shadow DOM, Prism.js encapsulat
-- [ ] `<batch-progress>` — progress bar + log operații bulk
-- [ ] `<data-source-toggle>` — switch S1/DB
+- [x] `<orders-table>` — tabel comenzi, send individual/batch, lookup FINDOC, XML viewer, download & store
+- [x] `<invoice-table>` — tabel facturi, create XML, send/resend SFTP, mark sent, APERAK display, batch send
+- [x] `<xml-viewer>` — collapsible viewer cu syntax highlighting
+- [x] `<batch-progress>` — progress bar + log operații bulk
+- [x] `<data-source-toggle>` — switch S1 API / Direct DB
+- [x] `<retailer-detail>` — pagină cu tabs (Comenzi / Facturi), data source toggle
 
 ## Faza 3 — Config & file manager
 
