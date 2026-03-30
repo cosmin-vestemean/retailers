@@ -299,7 +299,7 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">Log out</a>
+              <button id="logoutBtn" class="button is-primary" type="button">Log out</button>
             </div>
           </div>
         </div>
@@ -560,6 +560,11 @@
     ></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
+        if (!sessionStorage.getItem('s1User')) {
+          window.location.href = './'
+          return
+        }
+
         // Navbar burgers
         const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0)
         if ($navbarBurgers.length > 0) {
@@ -583,6 +588,11 @@
 
         document.querySelector('#deleteModal .modal-background').addEventListener('click', function () {
           document.getElementById('deleteModal').classList.remove('is-active')
+        })
+
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+          sessionStorage.removeItem('s1User')
+          window.location.href = './'
         })
       })
 

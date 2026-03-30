@@ -600,11 +600,7 @@
         loggedUserName.textContent = ''
       }
 
-      // Check sessionStorage on load
-      const savedUser = sessionStorage.getItem('s1User')
-      if (savedUser) {
-        showApp(JSON.parse(savedUser))
-      }
+      showLogin()
 
       // Load users into select
       client.service('s1-users').find().then(result => {
