@@ -340,11 +340,75 @@
             </div>
           </div>
         </div>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link"> More </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item"> About </a>
+              <a class="navbar-item"> Contact </a>
+              <hr class="navbar-divider" />
+              <a class="navbar-item"> Report an issue </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-end">
+          <div class="navbar-item" id="navbarUser" style="display: none;">
+            <span id="loggedUserName" class="mr-3"></span>
+            <button id="logoutBtn" class="button is-small is-light is-danger">
+              <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
-    
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-4">
+            <div class="card">
+              <div class="card-image has-text-centered pt-5">
+                <figure class="image is-128x128" style="margin: 0 auto;">
+                  <img src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png" alt="Pet Factory logo">
+                </figure>
+              </div>
+              <div class="card-content">
+                <h2 class="title is-4 has-text-centered">Integration Portal</h2>
+                <form id="loginForm">
+                  <div class="field">
+                    <label class="label">Utilizator</label>
+                    <div class="control">
+                      <div class="select is-fullwidth">
+                        <select id="loginUser" required>
+                          <option value="">Se incarca...</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Parola</label>
+                    <div class="control">
+                      <input class="input" type="password" id="loginPassword" placeholder="Introduceti parola" required>
+                    </div>
+                  </div>
+                  <div id="loginError" class="notification is-danger is-light" style="display: none;"></div>
+                  <div class="field mt-4">
+                    <div class="control">
+                      <button type="submit" id="loginBtn" class="button is-primary is-fullwidth">Login</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main card selection screen -->
-    <div id="cardSelectionScreen" class="section card-selection">
+    <div id="cardSelectionScreen" class="section card-selection" style="display: none;">
       <div class="container">
         <h1 class="title is-3 has-text-centered mb-5">Select Application</h1>
         
@@ -970,6 +1034,96 @@
     
     <!-- FontAwesome for icons -->
     <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+
+    <!-- Login Module -->
+    <script type="module">
+      import client from './modules/feathersjs-client.js'
+
+      const loginScreen = document.getElementById('loginScreen')
+      const cardSelectionScreen = document.getElementById('cardSelectionScreen')
+      const navbarUser = document.getElementById('navbarUser')
+      const loggedUserName = document.getElementById('loggedUserName')
+
+      function showApp(user) {
+        loginScreen.style.display = 'none'
+        cardSelectionScreen.style.display = 'block'
+        navbarUser.style.display = 'flex'
+        loggedUserName.textContent = user.name
+      }
+
+      function showLogin() {
+        loginScreen.style.display = 'block'
+        cardSelectionScreen.style.display = 'none'
+        document.getElementById('retailersSection').style.display = 'none'
+        document.getElementById('abcSection').style.display = 'none'
+        navbarUser.style.display = 'none'
+        loggedUserName.textContent = ''
+      }
+
+      // Check sessionStorage on load
+      const savedUser = sessionStorage.getItem('s1User')
+      if (savedUser) {
+        showApp(JSON.parse(savedUser))
+      }
+
+      // Load users into select
+      client.service('s1-users').find().then(result => {
+        const select = document.getElementById('loginUser')
+        select.innerHTML = '<option value="">Selectati utilizatorul</option>'
+        if (result.success && result.data) {
+          result.data.forEach(user => {
+            const option = document.createElement('option')
+            option.value = user.userId
+            option.textContent = user.name
+            select.appendChild(option)
+          })
+        }
+      }).catch(err => {
+        console.error('Error loading users:', err)
+        document.getElementById('loginUser').innerHTML = '<option value="">Eroare la incarcare</option>'
+      })
+
+      // Login form submit
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        const loginBtn = document.getElementById('loginBtn')
+        const loginError = document.getElementById('loginError')
+        const userId = document.getElementById('loginUser').value
+        const password = document.getElementById('loginPassword').value
+
+        if (!userId) {
+          loginError.textContent = 'Selectati un utilizator'
+          loginError.style.display = 'block'
+          return
+        }
+
+        loginBtn.classList.add('is-loading')
+        loginError.style.display = 'none'
+
+        try {
+          const result = await client.service('s1-auth').create({ userId: parseInt(userId), password })
+          if (result.success) {
+            sessionStorage.setItem('s1User', JSON.stringify(result.user))
+            showApp(result.user)
+          } else {
+            loginError.textContent = result.message || 'Credentiale invalide'
+            loginError.style.display = 'block'
+          }
+        } catch (err) {
+          loginError.textContent = 'Eroare la autentificare'
+          loginError.style.display = 'block'
+          console.error('Auth error:', err)
+        } finally {
+          loginBtn.classList.remove('is-loading')
+        }
+      })
+
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        sessionStorage.removeItem('s1User')
+        showLogin()
+      })
+    </script>
     
     <!-- ABC Module Scripts -->
     <script type="module" src="/js/abc-module.js"></script>

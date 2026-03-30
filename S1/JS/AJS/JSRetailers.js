@@ -162,3 +162,17 @@ function sendEmail(params) {
     eMailAccount
   )
 }
+
+function validatePassword(params) {
+  var stringToValidate = params.stringToValidate || ''
+  var encryptedPassword = params.encryptedPassword || ''
+  if (!stringToValidate || !encryptedPassword) {
+    return { success: false, valid: false, message: 'Missing required parameters' }
+  }
+  try {
+    var result = X.PASSWORDVALIDATE(stringToValidate, encryptedPassword)
+    return { success: true, valid: result }
+  } catch (e) {
+    return { success: false, valid: false, message: e.message }
+  }
+}

@@ -84,6 +84,14 @@ client.use('abcHelper', socketClient.service('abcHelper'), {
   methods: ['getEmployeesWithDetails', 'saveEmployee', 'getPersons', 'getEmployeesReport'] 
 });
 
+client.use('s1-users', socketClient.service('s1-users'), {
+  methods: ['find']
+});
+
+client.use('s1-auth', socketClient.service('s1-auth'), {
+  methods: ['create']
+});
+
 
 
 export default client

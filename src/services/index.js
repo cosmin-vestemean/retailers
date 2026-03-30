@@ -13,6 +13,8 @@ import { cccsftpxml } from './CCCSFTPXML/CCCSFTPXML.js'
 import { cccsftp } from './CCCSFTP/CCCSFTP.js'
 import { ipLogger } from './ip-logger/ip-logger.service.js'
 import { outboundIp } from './outbound-ip/outbound-ip.service.js'
+import { s1Users } from './s1-users/s1-users.service.js'
+import { s1Auth } from './s1-auth/s1-auth.service.js'
 
 export const services = (app) => {
   app.configure(cccorderslog)
@@ -32,6 +34,10 @@ export const services = (app) => {
   app.configure(ipLogger)
 
   app.configure(outboundIp)
+
+  app.configure(s1Users)
+
+  app.configure(s1Auth)
 
   // All services will be registered here
 }
