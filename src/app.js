@@ -519,6 +519,16 @@ class SftpServiceClass {
     data = {}
     params = { query: { rootPath: aperakPath } }
     await this.storeAperakInErpMessages(data, params)
+
+    // Cleanup logs older than 30 days
+    try {
+      const cleanup = await app.service('orders-log').remove(null, { query: { days: 30 } })
+      if (cleanup.deleted > 0) {
+        console.log(`Cleaned up ${cleanup.deleted} log entries older than 30 days`)
+      }
+    } catch (e) {
+      console.error('Log cleanup failed:', e.message)
+    }
   }
 
   async scanNow(data, params) {

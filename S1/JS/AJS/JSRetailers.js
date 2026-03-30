@@ -176,3 +176,80 @@ function validatePassword(params) {
     return { success: false, valid: false, message: e.message }
   }
 }
+
+function getOrdersLog(params) {
+  var trdr = parseInt(params.trdr) || 0;
+  var orderid = params.orderid || '';
+  var dateFrom = params.dateFrom || '';
+  var dateTo = params.dateTo || '';
+  var page = parseInt(params.page) || 1;
+  var pageSize = parseInt(params.pageSize) || 25;
+  if (pageSize > 100) pageSize = 100;
+  var offset = (page - 1) * pageSize;
+
+  var where = 'WHERE 1=1';
+  if (trdr === -1) {
+    where += ' AND TRDR_RETAILER = -1';
+  } else if (trdr > 0) {
+    where += ' AND TRDR_RETAILER = ' + trdr;
+  }
+  if (orderid) {
+    where += " AND ORDERID = '" + orderid.replace(/'/g, "''") + "'";
+  }
+  if (dateFrom) {
+    where += " AND MESSAGEDATE >= '" + dateFrom.replace(/'/g, "''") + "'";
+  }
+  if (dateTo) {
+    where += " AND MESSAGEDATE <= '" + dateTo.replace(/'/g, "''") + " 23:59:59'";
+  }
+
+  // Count total
+  var countSql = 'SELECT COUNT(*) AS CNT FROM CCCORDERSLOG ' + where;
+  var total = 0;
+  try {
+    total = parseInt(X.SQL(countSql, null)) || 0;
+  } catch (e) {
+    return { success: false, error: 'Count failed: ' + e.message };
+  }
+
+  // Fetch page
+  var sql = 'SELECT CCCORDERSLOG, TRDR_RETAILER, '
+    + "(SELECT NAME FROM TRDR WHERE TRDR = CCCORDERSLOG.TRDR_RETAILER) AS RETAILERNAME, "
+    + 'ORDERID, CCCSFTPXML, '
+    + "FORMAT(MESSAGEDATE, 'yyyy-MM-dd HH:mm:ss') AS MESSAGEDATE, "
+    + 'MESSAGETEXT '
+    + 'FROM CCCORDERSLOG ' + where
+    + ' ORDER BY CCCORDERSLOG DESC'
+    + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
+
+  try {
+    var ds = X.GETSQLDATASET(sql, null);
+    if (ds.RECORDCOUNT > 0) {
+      return {
+        success: true,
+        data: convertDatasetToArray(ds),
+        total: total,
+        page: page,
+        pageSize: pageSize
+      };
+    } else {
+      return { success: true, data: [], total: total, page: page, pageSize: pageSize };
+    }
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function cleanupOrdersLog(params) {
+  var days = parseInt(params.days) || 30;
+  if (days < 1) days = 1;
+  var sql = 'DELETE FROM CCCORDERSLOG WHERE MESSAGEDATE < DATEADD(day, -' + days + ', GETDATE())';
+  try {
+    X.RUNSQL(sql, null);
+    var countSql = 'SELECT @@ROWCOUNT AS DELETED';
+    var deleted = parseInt(X.SQL(countSql, null)) || 0;
+    return { success: true, deleted: deleted, days: days };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}

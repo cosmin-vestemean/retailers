@@ -8,6 +8,7 @@ import './notification-toast.js'
 import '@/pages/retailer-dashboard.js'
 import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
+import '@/pages/logs-page.js'
 
 export class AppShell extends LitElement {
   static properties = {
@@ -86,6 +87,7 @@ export class AppShell extends LitElement {
           return el
         }
       },
+      { path: '/logs',            component: 'logs-page' },
       { path: '(.*)',           redirect: '/' },
     ])
   }
@@ -110,6 +112,7 @@ export class AppShell extends LitElement {
       <nav>
         <a class="brand" href="/">Pet Factory — Retailers</a>
         <a href="/">Dashboard</a>
+        <a href="/logs">Logs</a>
         <div class="user-section">
           <span class="user-name">${this._user.name}</span>
           <button class="logout-btn" @click=${this._logout}>Logout</button>

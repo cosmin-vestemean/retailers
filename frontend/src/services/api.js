@@ -49,6 +49,8 @@ const SERVICES = {
   sendEmail: { methods: ['create'] },
   's1-users': { methods: ['find'] },
   's1-auth': { methods: ['create'] },
+  // Logs
+  'orders-log': { methods: ['find'] },
 }
 
 const CRUD_METHODS = ['find', 'get', 'create', 'update', 'patch', 'remove']
@@ -251,6 +253,29 @@ export async function getS1ObjData(params) {
   const clientID = await getToken()
   return client.service('getS1ObjData').find({
     query: { clientID, ...params },
+  })
+}
+
+// --------------- Scan operations ---------------
+
+/** Trigger a full scan cycle (download + store + create orders + aperaks). */
+export async function scanNow() {
+  return client.service('sftp').scanNow({}, {})
+}
+
+/** Get the last system-level scan entry (TRDR_RETAILER = -1). */
+export async function getLastScan() {
+  return client.service('orders-log').find({
+    query: { trdr: -1, page: 1, pageSize: 1 }
+  })
+}
+
+// --------------- Orders log ---------------
+
+/** Query paginated, filterable orders log via S1 AJS endpoint. */
+export async function getOrdersLog({ trdr, orderid, dateFrom, dateTo, page, pageSize } = {}) {
+  return client.service('orders-log').find({
+    query: { trdr, orderid, dateFrom, dateTo, page, pageSize }
   })
 }
 
