@@ -390,7 +390,7 @@
                   <div class="field">
                     <label class="label">Parola</label>
                     <div class="control">
-                      <input class="input" type="password" id="loginPassword" placeholder="Introduceti parola" required>
+                      <input class="input" type="password" id="loginPassword" placeholder="Introduceti parola S1" required>
                     </div>
                   </div>
                   <div id="loginError" class="notification is-danger is-light" style="display: none;"></div>
@@ -1069,7 +1069,7 @@
       // Load users into select
       client.service('s1-users').find().then(result => {
         const select = document.getElementById('loginUser')
-        select.innerHTML = '<option value="">Selectati utilizatorul</option>'
+        select.innerHTML = '<option value="">Selectati utilizatorul S1</option>'
         if (result.success && result.data) {
           result.data.forEach(user => {
             const option = document.createElement('option')
@@ -1092,7 +1092,7 @@
         const password = document.getElementById('loginPassword').value
 
         if (!userId) {
-          loginError.textContent = 'Selectati un utilizator'
+          loginError.textContent = 'Selectati un utilizator S1'
           loginError.style.display = 'block'
           return
         }
