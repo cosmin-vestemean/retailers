@@ -117,6 +117,12 @@
       /* Card styles */
       .card-selection {
         padding: 2rem 0;
+        min-height: calc(100vh - 52px);
+        display: flex;
+        align-items: center;
+      }
+      .card-selection > .container {
+        width: 100%;
       }
       
       .app-card {
@@ -241,7 +247,7 @@
     </nav>
 
     <!-- Login Screen -->
-    <div id="loginScreen" class="section" style="min-height: 100vh; display: flex; align-items: center;">
+    <div id="loginScreen" class="section" style="min-height: calc(100vh - 52px); display: flex; align-items: center; justify-content: center;">
       <div class="container">
         <div class="columns is-centered is-vcentered">
           <div class="column is-4">
@@ -315,7 +321,7 @@
               <div class="card-content">
                 <div class="content has-text-centered">
                   <h3 class="title is-4">PNL</h3>
-                  <p>Profit &amp; Loss reporting and analytics</p>
+                  <p>Profit &amp; Manage and automate business processes</p>
                 </div>
               </div>
               <footer class="card-footer">
@@ -587,13 +593,13 @@
 
       function showApp(user) {
         loginScreen.style.display = 'none'
-        cardSelectionScreen.style.display = 'block'
+        cardSelectionScreen.style.display = 'flex'
         navbarUser.style.display = 'flex'
         loggedUserName.textContent = user.name
       }
 
       function showLogin() {
-        loginScreen.style.display = 'block'
+        loginScreen.style.display = 'flex'
         cardSelectionScreen.style.display = 'none'
         document.getElementById('retailersSection').style.display = 'none'
         navbarUser.style.display = 'none'
