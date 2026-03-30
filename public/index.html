@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Pet Factory Integration Portal</title>
+    <title>Pet Factory's software hub</title>
     <meta name="description" content="Integrating Pet Factory S1 with various retailers" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
@@ -184,12 +184,7 @@
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" id="navbarBrand">
-          <img
-            src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png"
-            width="90"
-            height="28"
-          />
-          <span class="title is-4">Integration Portal</span>
+          <span class="title is-4">EDI Portal</span>
           <span class="app-context-title" id="contextTitle"></span>
         </a>
 
@@ -247,7 +242,7 @@
     </nav>
 
     <!-- Login Screen -->
-    <div id="loginScreen" class="section" style="min-height: calc(100vh - 52px); display: flex; align-items: center; justify-content: center;">
+    <div id="loginScreen" class="section" style="min-height: calc(100vh - 52px); display: none; align-items: center; justify-content: center;">
       <div class="container">
         <div class="columns is-centered is-vcentered">
           <div class="column is-4">
@@ -258,7 +253,7 @@
                 </figure>
               </div>
               <div class="card-content">
-                <h2 class="title is-4 has-text-centered">Integration Portal</h2>
+                <h2 class="title is-4 has-text-centered">EDI Portal</h2>
                 <form id="loginForm">
                   <div class="field">
                     <label class="label">
@@ -298,7 +293,10 @@
     <!-- Main card selection screen -->
     <div id="cardSelectionScreen" class="section card-selection" style="display: none;">
       <div class="container">
-        <h1 class="title is-3 has-text-centered mb-5">Select Application</h1>
+        <div class="has-text-centered mb-5">
+          <img src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png" alt="Pet Factory" style="max-height: 80px; max-width: 260px;">
+          <h1 class="title is-3 mt-4">Select Application</h1>
+        </div>
         
         <div class="columns is-centered">
           <!-- Retailers Card -->
@@ -606,7 +604,13 @@
         loggedUserName.textContent = ''
       }
 
-      showLogin()
+      // Restore session or show login
+      const savedUser = sessionStorage.getItem('s1User')
+      if (savedUser) {
+        showApp(JSON.parse(savedUser))
+      } else {
+        showLogin()
+      }
 
       // Load users into select
       client.service('s1-users').find().then(result => {
