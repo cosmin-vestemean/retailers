@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit'
+import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 
 /**
  * Displays formatted XML with syntax highlighting.
@@ -64,14 +65,24 @@ export class XmlViewer extends LitElement {
 
   _highlightXml(xml) {
     const formatted = this._formatXml(xml)
-    return formatted
+    // Escape HTML entities first
+    const escaped = formatted
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/&lt;(\/?[\w:-]+)/g, '<span class="bracket">&lt;</span><span class="tag-name">$1</span>')
+      .replace(/"/g, '&quot;')
+
+    // Now colorize on the escaped string
+    return escaped
+      // Opening/closing tags:  &lt;tagName  or  &lt;/tagName
+      .replace(/&lt;(\/?)([\w:-]+)/g,
+        '<span class="bracket">&lt;$1</span><span class="tag-name">$2</span>')
+      // Closing bracket &gt; and self-closing /&gt;
+      .replace(/\/&gt;/g, '<span class="bracket">/&gt;</span>')
       .replace(/&gt;/g, '<span class="bracket">&gt;</span>')
-      .replace(/([\w:-]+)=(&quot;|")(.*?)(\2)/g,
-        '<span class="attr-name">$1</span>=<span class="attr-value">"$3"</span>')
+      // Attributes:  name=&quot;value&quot;
+      .replace(/([\w:-]+)=&quot;([^&]*?)&quot;/g,
+        '<span class="attr-name">$1</span>=<span class="attr-value">&quot;$2&quot;</span>')
   }
 
   render() {
@@ -81,7 +92,7 @@ export class XmlViewer extends LitElement {
         ${this._expanded ? '▼ Hide XML' : '▶ Show XML'}
       </button>
       ${this._expanded ? html`
-        <pre .innerHTML=${this._highlightXml(this.content)}></pre>
+        <pre>${unsafeHTML(this._highlightXml(this.content))}</pre>
       ` : ''}
     `
   }
