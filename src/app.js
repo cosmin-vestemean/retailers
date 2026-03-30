@@ -114,7 +114,7 @@ app.hooks({
 const mainURL = 'https://petfactory.oncloud.gr/s1services'
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
-const retailersArr = [11639, 12349, 13249, 78631, 11322, 12664, 38804, 11654]
+const retailersArr = [11639, 12349, 78631, 11322, 12664, 38804, 11654]
 
 //create a class as feathersjs service
 class SftpServiceClass {
