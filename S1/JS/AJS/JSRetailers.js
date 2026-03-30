@@ -88,6 +88,49 @@ function var_dump(obj, t) {
   return isArr ? str + ']' : str + '}'
 }
 
+/**
+ * Lookup the S1 sales document (FINDOC) for a given order, then update CCCSFTPXML.
+ * Replaces the direct-DB approach used by the old frontend.
+ * params: { trdr, orderId }
+ * returns: { success, findoc, fincode, trndate } or { success: false, error }
+ */
+function lookupFindoc(params) {
+  var trdr = parseInt(params.trdr) || 0;
+  var orderId = params.orderId || '';
+  var xmlFilename = params.xmlFilename || '';
+
+  if (!trdr || !orderId) {
+    return { success: false, error: 'trdr and orderId are required' };
+  }
+
+  try {
+    var sql = "SELECT a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE" +
+      " FROM findoc a INNER JOIN salfprms b ON a.fprms=b.fprms" +
+      " WHERE a.sosource=1351 AND a.trdr=:1 AND a.num04=:2" +
+      " AND a.TRNDATE > DATEADD(day, -30, GETDATE()) AND b.tfprms=201";
+    var ds = X.GETSQLDATASET(sql, trdr, orderId);
+
+    if (ds.RECORDCOUNT === 0) {
+      return { success: false, error: 'No matching sales document found' };
+    }
+
+    var findoc = parseInt(ds.FINDOC);
+    var fincode = ds.FINCODE;
+    var trndate = ds.TRNDATE;
+
+    // Update CCCSFTPXML to link the order XML to the found document
+    if (xmlFilename) {
+      var updateSql = "UPDATE CCCSFTPXML SET FINDOC=:1" +
+        " WHERE XMLFILENAME=:2 AND TRDR_RETAILER=:3";
+      X.RUNSQL(updateSql, findoc, xmlFilename, trdr);
+    }
+
+    return { success: true, findoc: findoc, fincode: fincode, trndate: trndate };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 function getOrdersData(params) {
   var trdr = parseInt(params.trdr) || 0;
   var daysOlder = parseInt(params.daysOlder) || 30;

@@ -57,6 +57,7 @@ const SERVICES = {
   // Paginated data (AJS)
   'orders-data': { methods: ['find'] },
   'invoices-data': { methods: ['find'] },
+  'lookup-findoc': { methods: ['create'] },
 }
 
 const CRUD_METHODS = ['find', 'get', 'create', 'update', 'patch', 'remove']
@@ -105,6 +106,11 @@ export async function getDataset(sqlQuery) {
 /** Run a raw SQL query via getDataset1 (returns rows). */
 export async function getDataset1(sqlQuery) {
   return client.service('getDataset1').find({ query: { sqlQuery } })
+}
+
+/** Lookup FINDOC for an order via S1 AJS (no direct DB access). */
+export async function lookupFindoc(trdr, orderId, xmlFilename) {
+  return client.service('lookup-findoc').create({ trdr, orderId, xmlFilename })
 }
 
 // --------------- Orders ---------------

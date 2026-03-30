@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit'
 import { sharedStyles } from '@/styles/shared-styles.js'
 import {
   downloadAndStoreOrders, getOrdersPaged,
-  getDataset, getDataset1, sendOrderToS1, getToken, client,
+  getDataset, lookupFindoc, sendOrderToS1, getToken, client,
 } from '@/services/api.js'
 import './xml-viewer.js'
 import './batch-progress.js'
@@ -263,21 +263,20 @@ export class OrdersTable extends LitElement {
 
   async _lookupFindoc(order, index) {
     if (!order.orderId) return
-    const sql = `SELECT a.FINDOC, a.FINCODE, FORMAT(a.TRNDATE, 'dd.MM.yyyy') TRNDATE FROM findoc a INNER JOIN salfprms b ON a.fprms=b.fprms WHERE a.sosource=1351 AND a.trdr=${parseInt(this.trdr)} AND a.num04='${order.orderId}' AND a.TRNDATE > DATEADD(day, -30, GETDATE()) AND b.tfprms=201`
-    const res = await getDataset1(sql)
-    if (res.success && res.data?.length) {
-      const d = res.data[0]
-      this._orders[index].fincode = d.FINCODE
-      this._orders[index].trndate = d.TRNDATE
-      this._orders[index].findoc = d.FINDOC
-      this._orders[index].status = 'sent'
-      // Also patch CCCSFTPXML
-      await client.service('CCCSFTPXML').patch(
-        null,
-        { FINDOC: parseInt(d.FINDOC) },
-        { query: { XMLFILENAME: order.filename, TRDR_RETAILER: parseInt(this.trdr) } }
-      )
-      this.requestUpdate()
+    try {
+      const res = await lookupFindoc(this.trdr, order.orderId, order.filename)
+      if (res?.success) {
+        this._orders[index].fincode = res.fincode
+        this._orders[index].trndate = res.trndate
+        this._orders[index].findoc = res.findoc
+        this._orders[index].status = 'sent'
+        this.requestUpdate()
+        this._toast('Document găsit: ' + res.fincode, 'is-success')
+      } else {
+        this._toast('Lookup: ' + (res?.error || 'Document negăsit'), 'is-warning')
+      }
+    } catch (e) {
+      this._toast('Lookup failed: ' + e.message, 'is-danger')
     }
   }
 
