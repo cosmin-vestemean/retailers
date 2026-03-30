@@ -6,5 +6,9 @@
   "host": "HOSTNAME",
   "authentication": {
     "secret": "FEATHERS_SECRET"
+  },
+  "origins": {
+    "__name": "ALLOWED_ORIGINS",
+    "__format": "json"
   }
 }

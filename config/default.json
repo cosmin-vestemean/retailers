@@ -3,7 +3,9 @@
   "port": 5000,
   "public": "./public/",
   "origins": [
-    "https://www.retailers.acct.ro"
+    "https://www.retailers.acct.ro",
+    "https://retailers1-0691020d207c.herokuapp.com",
+    "https://retailers4-4617928ecd76.herokuapp.com"
   ],
   "paginate": {
     "default": 100,
