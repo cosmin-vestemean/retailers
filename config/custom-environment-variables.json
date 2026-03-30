@@ -10,5 +10,13 @@
   "origins": {
     "__name": "ALLOWED_ORIGINS",
     "__format": "json"
+  },
+  "mssql": {
+    "connection": {
+      "server": "MSSQL_SERVER",
+      "user": "MSSQL_USER",
+      "password": "MSSQL_PASSWORD",
+      "database": "MSSQL_DATABASE"
+    }
   }
 }
