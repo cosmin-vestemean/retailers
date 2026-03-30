@@ -10,7 +10,7 @@ export const retailers = [
     'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png', 'Carrefour'
   ),
   new Retailer('12664', 'https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg', 'Metro'),
-  new Retailer('38804', 'https://ro.wikipedia.org/wiki/Mega_Imagehttps://upload.wikimedia.org/wikipedia/ro/thumb/1/1d/Logo_Mega_Image.svg/1280px-Logo_Mega_Image.svg.png', 'Mega Image', false),
+  new Retailer('38804', 'https://ro.wikipedia.org/wiki/Mega_Image#/media/Fi%C8%99ier:Logo_Mega_Image.svg', 'Mega Image', false),
   new Retailer('11654', 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg', 'Dedeman', true),
 ]
 
