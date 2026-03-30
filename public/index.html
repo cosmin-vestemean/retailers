@@ -378,7 +378,12 @@
                 <h2 class="title is-4 has-text-centered">Integration Portal</h2>
                 <form id="loginForm">
                   <div class="field">
-                    <label class="label">Utilizator</label>
+                    <label class="label">
+                      Utilizator
+                      <a id="userInfoBtn" class="has-text-info ml-2" title="Cum adaug/sterg utilizatori?">
+                        <span class="icon is-small"><i class="fas fa-info-circle"></i></span>
+                      </a>
+                    </label>
                     <div class="control">
                       <div class="select is-fullwidth">
                         <select id="loginUser" required>
@@ -986,6 +991,25 @@
         });
       });
     </script>
+
+    <!-- User Info Modal -->
+    <div id="userInfoModal" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card" style="max-width: 900px;">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Gestiune utilizatori - Ghid S1</p>
+          <button class="delete" aria-label="close" id="userInfoModalClose"></button>
+        </header>
+        <section class="modal-card-body">
+          <p class="mb-3">Pentru a adauga, sterge sau consulta utilizatorii disponibili, accesati in ERP Soft1:</p>
+          <p class="mb-3"><strong>Web &amp; Mobile → Conturi web → websitepetfactory → tab Relatii</strong></p>
+          <p class="mb-4">Utilizatorii cu serviciul web <strong>WebSiteService</strong> sunt cei care pot accesa platforma.</p>
+          <figure class="image">
+            <img src="/images/s1_web_accounts_guide.png" alt="Ghid gestiune utilizatori S1">
+          </figure>
+        </section>
+      </div>
+    </div>
     
     <div id="aperakModal" class="modal modal-full-screen modal-fx-slideTop">
       <div class="modal-content modal-card">
@@ -1122,6 +1146,18 @@
       document.getElementById('logoutBtn').addEventListener('click', () => {
         sessionStorage.removeItem('s1User')
         showLogin()
+      })
+
+      // User info modal
+      document.getElementById('userInfoBtn').addEventListener('click', (e) => {
+        e.preventDefault()
+        document.getElementById('userInfoModal').classList.add('is-active')
+      })
+      document.getElementById('userInfoModalClose').addEventListener('click', () => {
+        document.getElementById('userInfoModal').classList.remove('is-active')
+      })
+      document.querySelector('#userInfoModal .modal-background').addEventListener('click', () => {
+        document.getElementById('userInfoModal').classList.remove('is-active')
       })
     </script>
     
