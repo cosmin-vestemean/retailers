@@ -49,8 +49,7 @@ export class S1AuthService {
         success: true,
         user: {
           userId: user.users,
-          name: user.name,
-          username: username
+          name: user.name
         }
       }
     }
