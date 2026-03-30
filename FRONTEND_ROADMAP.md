@@ -10,11 +10,11 @@
 
 ## Faza 1 — Shell + Dashboard
 
-- [ ] `<app-shell>` — layout, navbar, router outlet, login gate
-- [ ] `<login-form>` — auth flow, emite `login-success`
-- [ ] `<retailer-card>` — card cu logo, counters, link la detalii
-- [ ] `<retailer-dashboard>` — grid de carduri, fetch-uri paralele
-- [ ] `<notification-toast>` — toast reusable
+- [x] `<app-shell>` — layout, navbar, router outlet, login gate
+- [x] `<login-form>` — auth flow, emite `login-success`
+- [x] `<retailer-card>` — card cu logo, counters, link la detalii
+- [x] `<retailer-dashboard>` — grid de carduri, fetch-uri paralele
+- [x] `<notification-toast>` — toast reusable
 
 ## Faza 2 — Pagina detalii retailer
 

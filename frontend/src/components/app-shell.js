@@ -2,12 +2,18 @@ import { LitElement, html, css } from 'lit'
 import { Router } from '@vaadin/router'
 import { sharedStyles } from '@/styles/shared-styles.js'
 
-// Import pages so they get registered
+// Import components & pages
+import './login-form.js'
+import './notification-toast.js'
 import '@/pages/retailer-dashboard.js'
 import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
 
 export class AppShell extends LitElement {
+  static properties = {
+    _user: { state: true },
+  }
+
   static styles = [sharedStyles, css`
     :host { display: block; min-height: 100vh; background: #f5f5f5; }
 
@@ -19,11 +25,50 @@ export class AppShell extends LitElement {
     nav a:hover { text-decoration: underline; }
     .brand { font-size: 1.25rem; font-weight: 700; margin-right: auto; }
 
+    .user-section {
+      display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;
+    }
+    .user-name { opacity: 0.85; }
+    .logout-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.4);
+      color: #fff; padding: 0.25em 0.75em; border-radius: 4px;
+      cursor: pointer; font-size: 0.85rem;
+    }
+    .logout-btn:hover { border-color: #fff; }
+
     #outlet { min-height: calc(100vh - 52px); }
   `]
 
+  constructor() {
+    super()
+    // Restore session
+    const saved = sessionStorage.getItem('s1User')
+    this._user = saved ? JSON.parse(saved) : null
+  }
+
   firstUpdated() {
+    if (this._user) {
+      this._initRouter()
+    }
+
+    // Listen for toast events from anywhere in the app
+    this.addEventListener('show-toast', (e) => {
+      const toast = this.shadowRoot.querySelector('notification-toast')
+      if (toast) toast.show(e.detail.message, e.detail.type)
+    })
+  }
+
+  _onLoginSuccess(e) {
+    this._user = e.detail
+    // Need to wait for the outlet to render before initializing router
+    this.updateComplete.then(() => this._initRouter())
+  }
+
+  _initRouter() {
     const outlet = this.shadowRoot.getElementById('outlet')
+    if (!outlet || outlet._routerInitialized) return
+    outlet._routerInitialized = true
+
     const router = new Router(outlet)
     router.setRoutes([
       { path: '/',              component: 'retailer-dashboard' },
@@ -45,13 +90,33 @@ export class AppShell extends LitElement {
     ])
   }
 
+  _logout() {
+    sessionStorage.removeItem('s1User')
+    this._user = null
+  }
+
   render() {
+    if (!this._user) {
+      return html`
+        <nav>
+          <span class="brand">Pet Factory — Retailers</span>
+        </nav>
+        <login-form @login-success=${this._onLoginSuccess}></login-form>
+        <notification-toast></notification-toast>
+      `
+    }
+
     return html`
       <nav>
         <a class="brand" href="/">Pet Factory — Retailers</a>
         <a href="/">Dashboard</a>
+        <div class="user-section">
+          <span class="user-name">${this._user.name}</span>
+          <button class="logout-btn" @click=${this._logout}>Logout</button>
+        </div>
       </nav>
       <div id="outlet"></div>
+      <notification-toast></notification-toast>
     `
   }
 }

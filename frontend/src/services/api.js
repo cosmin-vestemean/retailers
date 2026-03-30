@@ -11,7 +11,11 @@ import io from 'socket.io-client'
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   || 'https://retailers1-0691020d207c.herokuapp.com'
 
-const socket = io(BACKEND_URL)
+// In dev mode, connect to same origin so Vite proxy handles /socket.io.
+// In production, connect directly to the backend.
+const socket = import.meta.env.DEV
+  ? io()
+  : io(BACKEND_URL)
 const client = feathers()
 const socketClient = feathers.socketio(socket)
 client.configure(socketClient)
@@ -77,9 +81,21 @@ export async function getUsers() {
   return client.service('s1-users').find()
 }
 
-/** Authenticate with username + password. */
-export async function login(username, password) {
-  return client.service('s1-auth').create({ username, password })
+/** Authenticate with userId + password. */
+export async function login(userId, password) {
+  return client.service('s1-auth').create({ userId: parseInt(userId), password })
+}
+
+// --------------- Dataset (direct DB) ---------------
+
+/** Run a raw SQL query via getDataset service. */
+export async function getDataset(sqlQuery) {
+  return client.service('getDataset').find({ query: { sqlQuery } })
+}
+
+/** Run a raw SQL query via getDataset1 (returns rows). */
+export async function getDataset1(sqlQuery) {
+  return client.service('getDataset1').find({ query: { sqlQuery } })
 }
 
 // --------------- Orders ---------------
