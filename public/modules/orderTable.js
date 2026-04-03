@@ -160,7 +160,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             errorMsg += '\n'
             errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
               error.sql
-            },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+            },\nNodes: ${(error.nodes && error.nodes.iterateNext()?.parentNode?.innerHTML) || 'N/A'}\n\n`
             sendOrderButton.innerHTML = 'See errors'
             //add text area with errors beneath the buttons
             var textarea = document.createElement('textarea')
