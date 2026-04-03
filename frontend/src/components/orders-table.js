@@ -2,19 +2,10 @@ import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import {
   downloadAndStoreOrders, getOrdersPaged,
-  getDataset, lookupFindoc, sendOrderToS1, getToken, client,
+  lookupFindoc, sendStoredOrder, client,
 } from '@/services/api.js'
 import './xml-viewer.js'
 import './batch-progress.js'
-
-function getValFromXML(xml, node) {
-  const dom = new DOMParser().parseFromString(xml, 'text/xml')
-  const iterator = dom.evaluate(node, dom.documentElement, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null)
-  const results = []
-  let n = iterator.iterateNext()
-  while (n) { results.push(n.textContent); n = iterator.iterateNext() }
-  return results
-}
 
 export class OrdersTable extends LightElement {
   static properties = {
@@ -131,95 +122,13 @@ export class OrdersTable extends LightElement {
   }
 
   async _createAndSendOrderJSON(order) {
-    // Get retailer client config
-    const configRes = await client.service('CCCRETAILERSCLIENTS').find({ query: { TRDR_CLIENT: 1 } })
-    const token = await getToken()
-
-    // Get document mappings  
-    const mapRes = await client.service('CCCDOCUMENTES1MAPPINGS').find({
-      query: { SOSOURCE: 1351, FPRMS: 701, SERIES: 7012, TRDR_RETAILER: parseInt(this.trdr) }
+    return sendStoredOrder({
+      trdr: parseInt(this.trdr),
+      CCCSFTPXML: order.id,
+      xmlData: order.xmlData,
+      filename: order.filename,
+      orderId: order.orderId
     })
-    const mappingId = mapRes.data?.[0]?.CCCDOCUMENTES1MAPPINGS
-    if (!mappingId) {
-      return { success: false, errors: [{ key: 'MAPPING', value: this.trdr, sql: null, message: `No document mapping found for retailer ${this.trdr}` }] }
-    }
-
-    // Get field mappings
-    const fieldsRes = await client.service('CCCXMLS1MAPPINGS').find({
-      query: { CCCDOCUMENTES1MAPPINGS: mappingId }
-    })
-    const mappings = fieldsRes.data
-
-    // Build JSON order
-    const jsonOrder = {
-      service: 'setData', clientID: token, appId: 1001,
-      OBJECT: 'SALDOC', FORM: 'EFIntegrareRetailers',
-    }
-
-    // Group by S1TABLE1
-    const tables = {}
-    mappings.forEach(m => { if (!tables[m.S1TABLE1]) tables[m.S1TABLE1] = [] })
-
-    const errors = []
-    for (const m of mappings) {
-      const xmlVals = getValFromXML(order.xmlData, m.XMLNODE)
-      for (const xmlVal of xmlVals) {
-        let val = xmlVal
-        if (m.SQL) {
-          const sqlQuery = m.SQL.replace('{value}', xmlVal)
-          const res = await getDataset(sqlQuery)
-          if (res.data) { val = res.data }
-          else { errors.push({ key: m.S1FIELD1, value: xmlVal, sql: m.SQL }); continue }
-        }
-        tables[m.S1TABLE1].push({ [m.S1FIELD1]: val })
-      }
-    }
-
-    if (errors.length) return { success: false, errors }
-
-    // Restructure ITELINES — merge field arrays into row objects
-    if (tables.ITELINES) {
-      const fieldNames = [...new Set(tables.ITELINES.map(o => Object.keys(o)[0]))]
-      const arrays = {}
-      fieldNames.forEach(f => arrays[f] = [])
-      tables.ITELINES.forEach(o => { for (const k in o) arrays[k].push(o[k]) })
-      tables.ITELINES = []
-      for (let i = 0; i < arrays[fieldNames[0]].length; i++) {
-        const row = {}
-        fieldNames.forEach(f => row[f] = arrays[f][i])
-        tables.ITELINES.push(row)
-      }
-    }
-
-    // Merge non-ITELINES tables into single objects
-    for (const t in tables) {
-      if (t !== 'ITELINES') {
-        const merged = {}
-        tables[t].forEach(o => { for (const k in o) merged[k] = o[k] })
-        tables[t] = [merged]
-      }
-    }
-
-    // Add series and retailer
-    if (tables.SALDOC?.[0]) {
-      tables.SALDOC[0].SERIES = 7012
-      tables.SALDOC[0].TRDR = parseInt(this.trdr)
-    }
-
-    jsonOrder.DATA = tables
-
-    // Send to S1
-    const setRes = await client.service('setDocument').create(jsonOrder)
-    if (setRes.success) {
-      // Update CCCSFTPXML with FINDOC
-      await client.service('CCCSFTPXML').patch(
-        null,
-        { FINDOC: parseInt(setRes.id) },
-        { query: { XMLFILENAME: order.filename, TRDR_RETAILER: parseInt(this.trdr) } }
-      )
-      return { success: true, id: setRes.id, message: `Order sent, FINDOC: ${setRes.id}` }
-    }
-    return { success: false, message: setRes.error || 'S1 setDocument failed' }
   }
 
   async _sendAllPending() {

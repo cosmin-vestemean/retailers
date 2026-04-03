@@ -8,6 +8,7 @@ export const sftpMethods = [
   'uploadXml',
   'scanPeriodically',
   'createOrders',
+  'sendStoredOrder',
   'scanNow'
 ]
 

@@ -28,7 +28,7 @@ const SERVICES = {
   // SFTP operations
   sftp: {
     methods: ['downloadXml', 'storeXmlInDB', 'uploadXml',
-              'storeAperakInErpMessages', 'createOrders', 'scanNow'],
+              'storeAperakInErpMessages', 'createOrders', 'sendStoredOrder', 'scanNow'],
     events: ['uploadResult'],
   },
   // CRUD services
@@ -44,8 +44,6 @@ const SERVICES = {
   // S1 integration
   connectToS1: {},
   setDocument: {},
-  getDataset: {},
-  getDataset1: {},
   getS1ObjData: {},
   getS1SqlData: {},
   getInvoiceDom: {},
@@ -97,18 +95,6 @@ export async function login(userId, password) {
   return client.service('s1-auth').create({ userId: parseInt(userId), password })
 }
 
-// --------------- Dataset (direct DB) ---------------
-
-/** Run a raw SQL query via getDataset service. */
-export async function getDataset(sqlQuery) {
-  return client.service('getDataset').find({ query: { sqlQuery } })
-}
-
-/** Run a raw SQL query via getDataset1 (returns rows). */
-export async function getDataset1(sqlQuery) {
-  return client.service('getDataset1').find({ query: { sqlQuery } })
-}
-
 /** Lookup FINDOC for an order via S1 AJS (no direct DB access). */
 export async function lookupFindoc(trdr, orderId, xmlFilename) {
   return client.service('lookup-findoc').create({ trdr, orderId, xmlFilename })
@@ -139,6 +125,11 @@ export async function downloadAndStoreOrders(trdr) {
   await client.service('sftp').storeXmlInDB({}, {
     query: { retailer: trdr, rootPath: 'data/order' },
   })
+}
+
+/** Build and send one stored order entirely on the backend. */
+export async function sendStoredOrder(data) {
+  return client.service('sftp').sendStoredOrder(data)
 }
 
 /** Send an order to S1 (setDocument wrapper). */

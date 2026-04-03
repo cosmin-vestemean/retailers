@@ -383,6 +383,55 @@ export class SftpService {
     }
   }
 
+  async sendStoredOrder(data, params) {
+    const retailer = parseInt(data.trdr ?? params?.query?.trdr, 10)
+    const cccsftpxml = parseInt(data.CCCSFTPXML, 10)
+    const xml = data.xmlData
+    const xmlFilename = data.filename
+    const orderId = data.orderId
+    const sosource = 1351
+    const fprms = 701
+    const series = 7012
+
+    if (!Number.isInteger(retailer)) {
+      return { success: false, message: 'Missing retailer' }
+    }
+    if (!xml) {
+      return { success: false, message: 'Missing XML data' }
+    }
+    if (!xmlFilename) {
+      return { success: false, message: 'Missing XML filename' }
+    }
+
+    const resOrder = await this.createOrderJSON(
+      xml,
+      sosource,
+      fprms,
+      series,
+      retailer,
+      orderId,
+      cccsftpxml
+    )
+
+    if (!resOrder.success) {
+      return {
+        success: false,
+        errors: resOrder.errors,
+        message: resOrder.message || 'Failed to create order payload'
+      }
+    }
+
+    const response = await this.sendOrderToServer(
+      resOrder.jsonOrder,
+      xmlFilename,
+      retailer,
+      orderId,
+      cccsftpxml
+    )
+
+    return response
+  }
+
   async scanNow(data, params) {
     await this.scanAndSend()
   }
@@ -536,6 +585,7 @@ export class SftpService {
 
         const response = {
           success: true,
+          id: parseInt(setDocumentRes.id),
           message: 'Marked as sent: ' + patchRes[0].CCCSFTPXML + ' ' + patchRes[0].FINDOC
         }
         console.log('CCCSFTPXML', response)
