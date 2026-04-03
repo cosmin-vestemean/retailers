@@ -14,7 +14,7 @@ Eliminarea accesului direct la MSSQL prin `knex` + Fixie SOCKS si mutarea accesu
 - [x] Frontendul foloseste deja serviciul Feathers [src/services/orders-data/orders-data.class.js](src/services/orders-data/orders-data.class.js), care apeleaza S1 AJS
 - [x] Backendul inca porneste in Heroku prin Fixie, conform [Procfile](Procfile)
 - [x] Backendul inca expune servicii directe pe `knex`, configurate prin [src/mssql.js](src/mssql.js)
-- [x] SFTP scanner protejat cu `ENABLE_SFTP_SCANNER` env flag (default `true`, setat `false` pe retailers4)
+- [x] SFTP scanner protejat cu `ENABLE_SFTP_SCANNER` env flag (default `true`, configurat `false` pe retailers4 in Heroku)
 
 ## Direct DB Services Still To Migrate
 
@@ -30,7 +30,7 @@ Eliminarea accesului direct la MSSQL prin `knex` + Fixie SOCKS si mutarea accesu
 
 **Risc critic:** Fisierele EDI (comenzi, APERAK) dispar de pe serverul SFTP DocProcess imediat dupa download. Daca retailers4 (dev) le descarca inaintea retailers1 (prod), comenzile sunt pierdute definitiv pentru productie.
 
-**Solutie implementata:** Environment variable `ENABLE_SFTP_SCANNER` in [src/app.js](src/app.js#L1365).
+**Solutie implementata:** Environment variable `ENABLE_SFTP_SCANNER` in [src/app.js](src/app.js#L95).
 
 | Instanta | `ENABLE_SFTP_SCANNER` | Comportament |
 |---|---|---|
@@ -42,6 +42,8 @@ Eliminarea accesului direct la MSSQL prin `knex` + Fixie SOCKS si mutarea accesu
 ```bash
 heroku config:set ENABLE_SFTP_SCANNER=false --app retailers4
 ```
+
+**Status:** aplicat pe retailers4. Protectia dev-vs-prod pentru consumul XML din SFTP este activa dupa release/restart-ul Heroku aferent.
 
 **Nota:** Scannerul poate fi activat temporar pe retailers4 doar pentru teste controlate, dar niciodata simultan cu retailers1 pe acelasi server SFTP.
 

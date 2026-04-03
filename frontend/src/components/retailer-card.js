@@ -1,6 +1,6 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
-import { getDataset, getDataset1 } from '@/services/api.js'
+import { getRetailerStats } from '@/services/api.js'
 
 export class RetailerCard extends LightElement {
   static properties = {
@@ -29,45 +29,16 @@ export class RetailerCard extends LightElement {
   async _fetchStats() {
     this._loading = true
     try {
-      await Promise.all([
-        this._fetchOrders(),
-        this._fetchInvoices(),
-        this._fetchInvoiceList(),
-      ])
-    } finally {
-      this._loading = false
-    }
-  }
-
-  async _fetchOrders() {
-    try {
-      const sql = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${parseInt(this.trdr)} AND COALESCE(FINDOC, 0) = 0 AND XMLDATE > DATEADD(day, -30, GETDATE())`
-      const res = await getDataset(sql)
-      this._pendingOrders = res.data || 0
+      const res = await getRetailerStats(parseInt(this.trdr), { daysOlder: 30 })
+      this._pendingOrders = res.pendingOrders ?? 0
+      this._pendingInvoices = res.pendingInvoices ?? 0
+      this._invoiceList = res.invoiceList || ''
     } catch {
       this._pendingOrders = 0
-    }
-  }
-
-  async _fetchInvoices() {
-    try {
-      const sql = `SELECT COUNT(*) nrFacturiDeTrimis FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${parseInt(this.trdr)} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -30, GETDATE())`
-      const res = await getDataset(sql)
-      this._pendingInvoices = res.data || 0
-    } catch {
       this._pendingInvoices = 0
-    }
-  }
-
-  async _fetchInvoiceList() {
-    try {
-      const sql = `SELECT fincode, FORMAT(trndate, 'dd.MM.yyyy') trndate FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${parseInt(this.trdr)} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -30, GETDATE())`
-      const res = await getDataset1(sql)
-      if (res.success && res.data) {
-        this._invoiceList = res.data.map(i => `${i.fincode} ${i.trndate}`).join('; ')
-      }
-    } catch {
       this._invoiceList = ''
+    } finally {
+      this._loading = false
     }
   }
 

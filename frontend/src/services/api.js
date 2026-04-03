@@ -33,6 +33,7 @@ const SERVICES = {
   },
   // CRUD services
   retailer: {},
+  'retailer-stats': { methods: ['find'] },
   storeXml: {},
   CCCSFTP: {},
   CCCDOCUMENTES1MAPPINGS: {},
@@ -217,6 +218,10 @@ export async function getXmlMappings(query) {
 
 export async function getDocMappings(query) {
   return client.service('CCCDOCUMENTES1MAPPINGS').find({ query })
+}
+
+export async function getRetailerStats(trdr, { daysOlder = 30 } = {}) {
+  return client.service('retailer-stats').find({ query: { trdr, daysOlder } })
 }
 
 // --------------- SFTP Config ---------------
