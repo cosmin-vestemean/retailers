@@ -1,6 +1,6 @@
-import { LitElement, html, css } from 'lit'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { Router } from '@vaadin/router'
-import { sharedStyles } from '@/styles/shared-styles.js'
 
 // Import components & pages
 import './login-form.js'
@@ -10,35 +10,10 @@ import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
 import '@/pages/logs-page.js'
 
-export class AppShell extends LitElement {
+export class AppShell extends LightElement {
   static properties = {
     _user: { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; min-height: 100vh; background: #fff; }
-
-    nav {
-      background: #363636; color: #fff; padding: 0.75rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-    }
-    nav a { color: #fff; text-decoration: none; font-weight: 600; }
-    nav a:hover { text-decoration: underline; }
-    .brand { font-size: 1.25rem; font-weight: 700; margin-right: auto; }
-
-    .user-section {
-      display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;
-    }
-    .user-name { opacity: 0.85; }
-    .logout-btn {
-      background: transparent; border: 1px solid rgba(255,255,255,0.4);
-      color: #fff; padding: 0.25em 0.75em; border-radius: 4px;
-      cursor: pointer; font-size: 0.85rem;
-    }
-    .logout-btn:hover { border-color: #fff; }
-
-    #outlet { min-height: calc(100vh - 52px); }
-  `]
 
   constructor() {
     super()
@@ -54,7 +29,7 @@ export class AppShell extends LitElement {
 
     // Listen for toast events from anywhere in the app
     this.addEventListener('show-toast', (e) => {
-      const toast = this.shadowRoot.querySelector('notification-toast')
+      const toast = this.querySelector('notification-toast')
       if (toast) toast.show(e.detail.message, e.detail.type)
     })
   }
@@ -66,7 +41,7 @@ export class AppShell extends LitElement {
   }
 
   _initRouter() {
-    const outlet = this.shadowRoot.getElementById('outlet')
+    const outlet = this.querySelector('#outlet')
     if (!outlet || outlet._routerInitialized) return
     outlet._routerInitialized = true
 

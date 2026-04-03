@@ -1,8 +1,8 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { getDataset, getDataset1 } from '@/services/api.js'
 
-export class RetailerCard extends LitElement {
+export class RetailerCard extends LightElement {
   static properties = {
     trdr:  { type: String },
     name:  { type: String },
@@ -12,55 +12,6 @@ export class RetailerCard extends LitElement {
     _invoiceList:     { state: true },
     _loading:         { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; height: 100%; }
-    .card {
-      height: 100%; display: flex; flex-direction: column;
-      background: #fff; border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      transition: box-shadow 0.15s;
-    }
-    .card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
-    a { text-decoration: none; color: inherit; }
-
-    .card-logo {
-      display: flex; align-items: center; justify-content: center;
-      padding: 1.75rem 1.5rem 1rem;
-      min-height: 100px;
-    }
-    .card-logo img { max-height: 72px; max-width: 160px; object-fit: contain; }
-
-    .card-name {
-      text-align: center; font-weight: 700; font-size: 1.05rem;
-      padding: 0 1.25rem 1rem;
-    }
-
-    .stats { padding: 0 1.25rem 1.25rem; flex: 1; }
-    .stats table { width: 100%; font-size: 0.9rem; border: none; }
-    .stats td { border: none; padding: 0.35em 0; }
-    .stats td:last-child { text-align: right; }
-
-    .card-links {
-      border-top: 1px solid #ededed;
-      display: flex; height: 44px; flex-shrink: 0;
-    }
-    .card-links a {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; color: #3e8ed0; font-weight: 600;
-    }
-    .card-links a:hover { background: #f5f5f5; }
-    .card-links a + a { border-left: 1px solid #ededed; }
-
-    .badge {
-      display: inline-flex; align-items: center; padding: 0 0.6em;
-      height: 1.7em; border-radius: 4px; font-size: 0.8rem; font-weight: 700;
-      cursor: default;
-    }
-    .badge.ok      { background: #48c78e; color: #fff; }
-    .badge.pending { background: #f14668; color: #fff; }
-    .badge.loading { background: #dbdbdb; color: #7a7a7a; min-width: 2em; }
-  `]
 
   constructor() {
     super()

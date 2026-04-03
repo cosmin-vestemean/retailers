@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import {
   downloadAndStoreOrders, getOrdersPaged,
   getDataset, lookupFindoc, sendOrderToS1, getToken, client,
@@ -16,7 +16,7 @@ function getValFromXML(xml, node) {
   return results
 }
 
-export class OrdersTable extends LitElement {
+export class OrdersTable extends LightElement {
   static properties = {
     trdr:       { type: String },
     _orders:    { state: true },
@@ -27,26 +27,6 @@ export class OrdersTable extends LitElement {
     _pageSize:  { state: true },
     _total:     { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .toolbar { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { border: 1px solid #dbdbdb; padding: 0.5em 0.75em; vertical-align: top; }
-    th { background: #f5f5f5; font-weight: 600; text-align: left; position: sticky; top: 0; }
-    tr:hover { background: #fafafa; }
-    tr.sent { opacity: 0.6; }
-    .badge { display: inline-block; padding: 0.15em 0.5em; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
-    .badge.ok { background: #48c78e; color: #fff; }
-    .badge.pending { background: #ffe08a; color: rgba(0,0,0,.7); }
-    .badge.error { background: #f14668; color: #fff; }
-    .badge.sending { background: #3e8ed0; color: #fff; }
-    .actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-    .error-box { background: #feecf0; border-radius: 4px; padding: 0.5em; margin-top: 0.5em; font-size: 0.8rem; color: #cc0f35; max-height: 150px; overflow: auto; }
-    .details-box { font-size: 0.8rem; margin-top: 0.3em; color: #666; }
-    .hidden { display: none; }
-  `]
 
   constructor() {
     super()
@@ -249,7 +229,7 @@ export class OrdersTable extends LitElement {
       .map(({ i }) => i)
 
     if (!pendingIndices.length) return
-    const bp = this.shadowRoot.querySelector('batch-progress')
+    const bp = this.querySelector('batch-progress')
     bp.start(pendingIndices.length)
 
     for (const i of pendingIndices) {

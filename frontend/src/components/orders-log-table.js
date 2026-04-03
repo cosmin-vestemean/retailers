@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import { getOrdersLog } from '@/services/api.js'
 import { RETAILERS } from '@/state/app-context.js'
@@ -12,7 +12,7 @@ const OP_OPTIONS = [
   { value: 'system', label: 'System' },
 ]
 
-export class OrdersLogTable extends LitElement {
+export class OrdersLogTable extends LightElement {
   static properties = {
     _logs: { state: true },
     _total: { state: true },
@@ -27,32 +27,6 @@ export class OrdersLogTable extends LitElement {
     _dateFrom: { state: true },
     _dateTo: { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .filters { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
-    .filters .field { margin-bottom: 0; }
-    table { width: 100%; font-size: 0.85rem; }
-    th { white-space: nowrap; }
-    td { vertical-align: top; }
-    .msg-cell { max-width: 500px; word-break: break-word; }
-    .msg-cell pre { white-space: pre-wrap; font-size: 0.75rem; max-height: 120px; overflow: auto; margin: 0; }
-    .pagination-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; }
-    .refresh-btn { cursor: pointer; background: none; border: none; font-size: 1.1rem; padding: 0.25em; }
-    .refresh-btn:hover { opacity: 0.7; }
-    .spinner-inline {
-      display: inline-block; width: 1em; height: 1em;
-      border: 2px solid hsl(0, 0%, 86%);
-      border-top-color: hsl(204, 86%, 53%);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .placeholder {
-      text-align: center; padding: 3rem 1rem; color: hsl(0, 0%, 48%);
-    }
-  `]
 
   constructor() {
     super()

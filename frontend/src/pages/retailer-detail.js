@@ -1,29 +1,14 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { RETAILERS } from '@/state/app-context.js'
 import '@/components/orders-table.js'
 import '@/components/invoice-table.js'
 
-export class RetailerDetail extends LitElement {
+export class RetailerDetail extends LightElement {
   static properties = {
     trdr: { type: String },
     _tab: { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .header { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .header img { max-height: 48px; object-fit: contain; }
-    .tabs-bar { display: flex; gap: 0; border-bottom: 2px solid #dbdbdb; margin-bottom: 1rem; }
-    .tab-btn {
-      padding: 0.6em 1.2em; cursor: pointer; font-weight: 600;
-      border: none; background: none; font-size: 0.95rem; color: #666;
-      border-bottom: 3px solid transparent; transition: all 0.15s;
-    }
-    .tab-btn:hover { color: #363636; }
-    .tab-btn.active { color: #3e8ed0; border-bottom-color: #3e8ed0; }
-    .tab-content { min-height: 300px; }
-  `]
 
   constructor() {
     super()

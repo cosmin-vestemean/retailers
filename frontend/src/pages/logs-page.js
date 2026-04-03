@@ -1,11 +1,8 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import '@/components/orders-log-table.js'
 
-export class LogsPage extends LitElement {
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-  `]
+export class LogsPage extends LightElement {
 
   render() {
     return html`

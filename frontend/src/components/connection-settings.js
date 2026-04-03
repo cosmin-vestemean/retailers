@@ -1,8 +1,8 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { getSftpConfig, updateSftpConfig, getRetailerClients } from '@/services/api.js'
 
-export class ConnectionSettings extends LitElement {
+export class ConnectionSettings extends LightElement {
   static properties = {
     trdr: { type: String },
     _sftp: { state: true },
@@ -10,20 +10,6 @@ export class ConnectionSettings extends LitElement {
     _loading: { state: true },
     _saving:  { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .form-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem;
-    }
-    .form-grid.single { grid-template-columns: 1fr; }
-    .field-label { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; color: #363636; }
-    .erp-section {
-      background: #eff5fb; border-radius: 6px; padding: 1rem; margin-top: 1.5rem;
-    }
-    .erp-section h3 { color: #3e8ed0; margin-bottom: 0.75rem; }
-    h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
-  `]
 
   constructor() {
     super()

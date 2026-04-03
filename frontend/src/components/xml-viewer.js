@@ -1,36 +1,16 @@
-import { LitElement, html, css } from 'lit'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 
 /**
  * Displays formatted XML with syntax highlighting.
  * Usage: <xml-viewer .content=${xmlString}></xml-viewer>
  */
-export class XmlViewer extends LitElement {
+export class XmlViewer extends LightElement {
   static properties = {
     content: { type: String },
     _expanded: { state: true },
   }
-
-  static styles = css`
-    :host { display: block; }
-    pre {
-      background: #1e1e1e; color: #d4d4d4; padding: 1rem;
-      border-radius: 6px; overflow: auto; max-height: 400px;
-      font-size: 0.8rem; line-height: 1.5; font-family: 'Consolas', 'Monaco', monospace;
-      margin: 0; white-space: pre-wrap; word-break: break-all;
-    }
-    .tag-name { color: #569cd6; }
-    .attr-name { color: #9cdcfe; }
-    .attr-value { color: #ce9178; }
-    .bracket { color: #808080; }
-    .text-content { color: #d4d4d4; }
-    .toggle {
-      background: transparent; border: 1px solid #dbdbdb; border-radius: 4px;
-      padding: 0.25em 0.5em; cursor: pointer; font-size: 0.75rem; color: #666;
-      margin-bottom: 0.25rem;
-    }
-    .toggle:hover { border-color: #999; }
-  `
 
   constructor() {
     super()

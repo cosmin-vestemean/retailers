@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import {
   getInvoicesPaged, getInvoiceDom, uploadInvoice, markDocumentSent,
   downloadAperaks, getAperaks, getToken, client,
@@ -7,7 +7,7 @@ import {
 import './xml-viewer.js'
 import './batch-progress.js'
 
-export class InvoiceTable extends LitElement {
+export class InvoiceTable extends LightElement {
   static properties = {
     trdr:        { type: String },
     daysOlder:   { type: Number },
@@ -21,25 +21,6 @@ export class InvoiceTable extends LitElement {
     _pageSize:   { state: true },
     _total:      { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .toolbar { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { border: 1px solid #dbdbdb; padding: 0.5em 0.75em; vertical-align: top; }
-    th { background: #f5f5f5; font-weight: 600; text-align: left; position: sticky; top: 0; }
-    tr:hover { background: #fafafa; }
-    .badge { display: inline-block; padding: 0.15em 0.5em; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
-    .badge.sent { background: #48c78e; color: #fff; }
-    .badge.unsent { background: #ffe08a; color: rgba(0,0,0,.7); }
-    .badge.sending { background: #3e8ed0; color: #fff; }
-    .actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-    .aperak-header { cursor: pointer; }
-    .aperak-body { display: none; font-size: 0.8rem; margin-top: 0.3em; }
-    .aperak-body.open { display: block; }
-    .postfix-input { width: 80px; }
-  `]
 
   constructor() {
     super()
@@ -237,7 +218,7 @@ export class InvoiceTable extends LitElement {
       .filter(({ inv }) => !inv.sent)
 
     if (!unsent.length) return
-    const bp = this.shadowRoot.querySelector('batch-progress')
+    const bp = this.querySelector('batch-progress')
     bp.start(unsent.length)
 
     for (const { inv, i } of unsent) {

@@ -1,28 +1,14 @@
-import { LitElement, html, css } from 'lit'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 
 /**
  * Toggle between S1 API and Direct DB data source.
  * Fires 'source-changed' event with detail: { source: 's1' | 'direct' }
  */
-export class DataSourceToggle extends LitElement {
+export class DataSourceToggle extends LightElement {
   static properties = {
     source: { type: String, reflect: true },
   }
-
-  static styles = css`
-    :host { display: inline-flex; align-items: center; gap: 0.5rem; }
-    .toggle-group {
-      display: inline-flex; border: 1px solid #dbdbdb; border-radius: 4px; overflow: hidden;
-    }
-    button {
-      padding: 0.35em 0.75em; border: none; background: #fff; cursor: pointer;
-      font-size: 0.8rem; color: #666; transition: all 0.15s;
-    }
-    button + button { border-left: 1px solid #dbdbdb; }
-    button.active { background: #3e8ed0; color: #fff; }
-    button:hover:not(.active) { background: #f5f5f5; }
-    .label { font-size: 0.8rem; color: #888; }
-  `
 
   constructor() {
     super()

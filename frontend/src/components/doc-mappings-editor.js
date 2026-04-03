@@ -1,11 +1,11 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import {
   getDocMappings, createDocMapping, removeDocMapping,
   removeXmlMappings,
 } from '@/services/api.js'
 
-export class DocMappingsEditor extends LitElement {
+export class DocMappingsEditor extends LightElement {
   static properties = {
     trdr:     { type: String },
     _docs:    { state: true },
@@ -13,18 +13,6 @@ export class DocMappingsEditor extends LitElement {
     _selectedId: { state: true },
   }
 
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { border: 1px solid #dbdbdb; padding: 0.4em 0.6em; vertical-align: middle; }
-    th { background: #f5f5f5; font-weight: 600; text-align: left; }
-    tr:hover { background: #fafafa; cursor: pointer; }
-    tr.selected { background: #eff5fb; }
-    .actions { display: flex; gap: 0.25rem; }
-    .new-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.75rem; }
-    .new-row input { width: 120px; }
-  `]
 
   constructor() {
     super()
@@ -59,10 +47,10 @@ export class DocMappingsEditor extends LitElement {
   }
 
   async _addDoc() {
-    const fprms = this.shadowRoot.querySelector('#newFprms')?.value
-    const series = this.shadowRoot.querySelector('#newSeries')?.value
-    const dirIn = this.shadowRoot.querySelector('#newDirIn')?.value || ''
-    const dirOut = this.shadowRoot.querySelector('#newDirOut')?.value || ''
+    const fprms = this.querySelector('#newFprms')?.value
+    const series = this.querySelector('#newSeries')?.value
+    const dirIn = this.querySelector('#newDirIn')?.value || ''
+    const dirOut = this.querySelector('#newDirOut')?.value || ''
     if (!fprms || !series) {
       this._toast('FPRMS and SERIES are required', 'is-warning')
       return

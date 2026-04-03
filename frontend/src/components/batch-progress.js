@@ -1,14 +1,15 @@
-import { LitElement, html, css } from 'lit'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 
 /**
  * Shows batch operation progress.
  * Usage:
- *   const bp = this.shadowRoot.querySelector('batch-progress')
+ *   const bp = this.querySelector('batch-progress')
  *   bp.start(total)
  *   bp.advance('Sending order X...')
  *   bp.finish('All done!')
  */
-export class BatchProgress extends LitElement {
+export class BatchProgress extends LightElement {
   static properties = {
     _total:    { state: true },
     _current:  { state: true },
@@ -16,23 +17,6 @@ export class BatchProgress extends LitElement {
     _active:   { state: true },
     _log:      { state: true },
   }
-
-  static styles = css`
-    :host { display: block; }
-    .wrapper { background: #f5f5f5; border-radius: 6px; padding: 1rem; margin-bottom: 1rem; }
-    .bar-container {
-      background: #dbdbdb; border-radius: 4px; height: 20px; overflow: hidden;
-      margin-bottom: 0.5rem;
-    }
-    .bar {
-      background: #3e8ed0; height: 100%; border-radius: 4px;
-      transition: width 0.3s ease;
-    }
-    .bar.done { background: #48c78e; }
-    .message { font-size: 0.85rem; color: #666; }
-    .log { max-height: 120px; overflow: auto; font-size: 0.8rem; color: #555; margin-top: 0.5rem; }
-    .log div { padding: 0.1rem 0; border-bottom: 1px solid #eee; }
-  `
 
   constructor() {
     super()

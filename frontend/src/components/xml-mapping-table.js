@@ -1,5 +1,5 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import {
   getXmlMappings, createXmlMapping, removeXmlMappings,
   createDocMapping, removeDocMapping, getDocMappings,
@@ -52,7 +52,7 @@ function xmlElement2json(el) {
   return obj
 }
 
-export class XmlMappingTable extends LitElement {
+export class XmlMappingTable extends LightElement {
   static properties = {
     trdr:       { type: String },
     docId:      { type: Number },
@@ -68,26 +68,6 @@ export class XmlMappingTable extends LitElement {
     _xmlRoot:   { state: true },
     _lineDelim: { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; align-items: center; }
-    .table-wrap { overflow-x: auto; max-height: 70vh; overflow-y: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th, td { border: 1px solid #dbdbdb; padding: 0.3em 0.5em; vertical-align: top; }
-    th { background: #e6e6e6; font-weight: 600; text-align: left; position: sticky; top: 0; z-index: 1; }
-    tr:hover { background: #fafafa; }
-    tr.selected-row { background: #eff5fb; }
-    tr.hidden-row { display: none; }
-    .pick-col { text-align: center; width: 40px; }
-    .xmlpath-col { max-width: 280px; word-wrap: break-word; font-family: monospace; font-size: 0.75rem; }
-    input.cell-input { width: 100%; min-width: 80px; }
-    textarea.cell-sql { width: 260px; min-height: 1.5em; font-size: 0.75rem; font-family: monospace; }
-    .col-hidden { display: none; }
-    .file-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .file-row label { font-size: 0.8rem; font-weight: 600; }
-    select { font-size: 0.85rem; padding: 0.3em 0.5em; }
-  `]
 
   constructor() {
     super()

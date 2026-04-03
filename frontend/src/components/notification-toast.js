@@ -1,4 +1,5 @@
-import { LitElement, html, css } from 'lit'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 
 /**
  * Usage:
@@ -13,41 +14,10 @@ import { LitElement, html, css } from 'lit'
  *
  * <app-shell> listens for 'show-toast' and forwards to this component.
  */
-export class NotificationToast extends LitElement {
+export class NotificationToast extends LightElement {
   static properties = {
     _toasts: { state: true },
   }
-
-  static styles = css`
-    :host {
-      position: fixed; top: 1rem; right: 1rem; z-index: 10000;
-      display: flex; flex-direction: column; gap: 0.5rem;
-      pointer-events: none; max-width: 400px;
-    }
-    .toast {
-      pointer-events: auto;
-      padding: 0.85rem 2.5rem 0.85rem 1rem;
-      border-radius: 6px; font-size: 0.95rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
-      animation: slideIn 0.35s ease-out;
-      position: relative;
-    }
-    .toast.removing { animation: slideOut 0.3s ease-in forwards; }
-    .close {
-      position: absolute; top: 0.5rem; right: 0.5rem;
-      background: transparent; border: none; cursor: pointer;
-      font-size: 1.1rem; line-height: 1; color: inherit; opacity: 0.7;
-    }
-    .close:hover { opacity: 1; }
-
-    .is-info    { background: #eff5fb; color: #296fa8; }
-    .is-success { background: #effaf5; color: #257953; }
-    .is-warning { background: #fffaeb; color: #946c00; }
-    .is-danger  { background: #feecf0; color: #cc0f35; }
-
-    @keyframes slideIn  { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes slideOut { from { opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-  `
 
   constructor() {
     super()

@@ -1,30 +1,13 @@
-import { LitElement, html, css } from 'lit'
-import { sharedStyles } from '@/styles/shared-styles.js'
+import { html } from 'lit'
+import { LightElement } from '@/light-element.js'
 import { scanNow, getLastScan } from '@/services/api.js'
 
-export class ScanStatus extends LitElement {
+export class ScanStatus extends LightElement {
   static properties = {
     _scanning: { state: true },
     _lastRun: { state: true },
     _error: { state: true },
   }
-
-  static styles = [sharedStyles, css`
-    :host { display: block; }
-    .scan-card { border-left: 4px solid hsl(204, 86%, 53%); }
-    .scan-card.is-error { border-left-color: hsl(348, 100%, 61%); }
-    .meta { font-size: 0.85rem; color: hsl(0, 0%, 48%); }
-    .spinner-inline {
-      display: inline-block; width: 1em; height: 1em;
-      border: 2px solid hsl(0, 0%, 86%);
-      border-top-color: hsl(204, 86%, 53%);
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-      margin-right: 0.4em;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  `]
 
   constructor() {
     super()
