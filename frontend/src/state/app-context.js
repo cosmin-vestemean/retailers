@@ -24,6 +24,6 @@ export const RETAILERS = [
   { trdr: '78631', name: 'Supeco',     logo: 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg' },
   { trdr: '11322', name: 'Carrefour',  logo: 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png' },
   { trdr: '12664', name: 'Metro',      logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg' },
-  { trdr: '38804', name: 'Mega Image', logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg' },
+  { trdr: '12649', name: 'Mega Image', logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg' },
   { trdr: '11654', name: 'Dedeman',    logo: 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg' },
 ]
