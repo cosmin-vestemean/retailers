@@ -64,6 +64,13 @@ export class OrdersTable extends LitElement {
     this.loadOrders()
   }
 
+  updated(changedProps) {
+    if (changedProps.has('trdr') && this.trdr) {
+      this._page = 1
+      this.loadOrders()
+    }
+  }
+
   async loadOrders() {
     this._loading = true
     try {
