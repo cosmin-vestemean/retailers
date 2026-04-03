@@ -160,7 +160,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
             errorMsg += '\n'
             errorMsg += `Error in converting ${error.key} code ${error.value} to S1 value.\nSQL: ${
               error.sql
-            },\nNodes: ${error.nodes.iterateNext().parentNode.innerHTML}\n\n`
+            },\nNodes: ${(error.nodes && error.nodes.iterateNext()?.parentNode?.innerHTML) || 'N/A'}\n\n`
             sendOrderButton.innerHTML = 'See errors'
             //add text area with errors beneath the buttons
             var textarea = document.createElement('textarea')
@@ -257,8 +257,12 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
         var { orderId, res } = await getFindocForOrder(orderId, xml)
         //nicely display res.data[0].FINDOC, res.data[0].FINCODE, res.data[0].TRNDATE in same td as detailsIcon
         var details = document.createElement('div')
-        var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
-        details.innerHTML = detailsText
+        if (res.success && res.data && res.data.length > 0) {
+          var detailsText = `${res.data[0].FINCODE}<br>${res.data[0].TRNDATE}`
+          details.innerHTML = detailsText
+        } else {
+          details.innerHTML = 'No details found'
+        }
         //add class to details
         details.className = 'is-info is-small'
         findoc.appendChild(details)
@@ -267,7 +271,7 @@ export async function displayOrdersForRetailers(data, retailer, tableBodyId) {
     } else {
       var { orderId, res } = await getFindocForOrder(orderId, xml)
       //console.log('getDataset1', res)
-      if (res.success == true && res.data.length > 0) {
+      if (res.success == true && res.data && res.data.length > 0) {
         //update CCCSFTPXML with order internal number as findoc
         client
           .service('CCCSFTPXML')
@@ -448,6 +452,9 @@ async function createOrderJSON(xml, sosource, fprms, series, retailer) {
   })
   //console.log('CCCDOCUMENTES1MAPPINGS', res)
 
+  if (!res.data || res.data.length === 0) {
+    return { success: false, error: `No document mapping found for retailer ${retailer} (SOSOURCE=${sosource}, FPRMS=${fprms}, SERIES=${series})` }
+  }
   var CCCDOCUMENTES1MAPPINGS = res.data[0].CCCDOCUMENTES1MAPPINGS
   //get CCCXMLS1MAPPINGS for CCCDOCUMENTES1MAPPINGS
   var res = await client.service('CCCXMLS1MAPPINGS').find({

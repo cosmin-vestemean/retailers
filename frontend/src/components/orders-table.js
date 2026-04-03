@@ -152,7 +152,10 @@ export class OrdersTable extends LitElement {
     const mapRes = await client.service('CCCDOCUMENTES1MAPPINGS').find({
       query: { SOSOURCE: 1351, FPRMS: 701, SERIES: 7012, TRDR_RETAILER: parseInt(this.trdr) }
     })
-    const mappingId = mapRes.data[0].CCCDOCUMENTES1MAPPINGS
+    const mappingId = mapRes.data?.[0]?.CCCDOCUMENTES1MAPPINGS
+    if (!mappingId) {
+      return { success: false, errors: [{ key: 'MAPPING', value: this.trdr, sql: null, message: `No document mapping found for retailer ${this.trdr}` }] }
+    }
 
     // Get field mappings
     const fieldsRes = await client.service('CCCXMLS1MAPPINGS').find({
