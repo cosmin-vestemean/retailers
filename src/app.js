@@ -1361,7 +1361,13 @@ app.use('retailer', new retailerServiceClass())
 //app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
 //scanPeriodically run
-app.service('sftp').scanPeriodically({}, {})
+const enableScanner = (process.env.ENABLE_SFTP_SCANNER || 'true').toLowerCase() === 'true';
+if (enableScanner) {
+  console.log('SFTP scanner ENABLED – will poll for EDI files');
+  app.service('sftp').scanPeriodically({}, {});
+} else {
+  console.log('SFTP scanner DISABLED (ENABLE_SFTP_SCANNER=' + process.env.ENABLE_SFTP_SCANNER + ')');
+}
 
 // Modified middleware to track only database requests
 app.use(async (ctx, next) => {
