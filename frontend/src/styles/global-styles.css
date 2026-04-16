@@ -159,33 +159,9 @@ batch-progress .log div { padding: 0.1rem 0; border-bottom: 1px solid var(--tblr
    retailer-card
    ============================================================ */
 retailer-card { display: block; height: 100%; }
-retailer-card .card { height: 100%; display: flex; flex-direction: column; transition: box-shadow 0.15s; }
+retailer-card .card { transition: box-shadow 0.15s; }
 retailer-card .card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
-retailer-card a { text-decoration: none; color: inherit; }
-retailer-card .card-logo {
-  display: flex; align-items: center; justify-content: center;
-  padding: 1.75rem 1.5rem 1rem; min-height: 100px;
-}
-retailer-card .card-logo img { max-height: 72px; max-width: 160px; object-fit: contain; }
-retailer-card .card-name {
-  text-align: center; font-weight: 700; font-size: 1.05rem; padding: 0 1.25rem 1rem;
-}
-retailer-card .stats { padding: 0 1.25rem 1.25rem; flex: 1; }
-retailer-card .stats table { width: 100%; font-size: 0.9rem; border: none; }
-retailer-card .stats td { border: none; padding: 0.35em 0; }
-retailer-card .stats td:last-child { text-align: right; }
-retailer-card .card-links {
-  border-top: 1px solid var(--tblr-border-color); display: flex; height: 44px; flex-shrink: 0;
-}
-retailer-card .card-links a {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; color: var(--tblr-primary); font-weight: 600;
-}
-retailer-card .card-links a:hover { background: var(--tblr-bg-surface-secondary); }
-retailer-card .card-links a + a { border-left: 1px solid var(--tblr-border-color); }
-retailer-card .badge-ok      { background: var(--tblr-success); color: #fff; }
-retailer-card .badge-pending { background: var(--tblr-danger); color: #fff; }
-retailer-card .badge-loading { background: var(--tblr-border-color); color: var(--tblr-secondary); min-width: 2em; }
+retailer-card .card-footer a:hover { background: var(--bs-tertiary-bg, #f0f0f0); }
 
 /* ============================================================
    data-source-toggle

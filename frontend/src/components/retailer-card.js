@@ -44,9 +44,9 @@ export class RetailerCard extends LightElement {
   }
 
   _renderBadge(value) {
-    if (value === null) return html`<span class="badge badge-loading">...</span>`
-    if (value > 0) return html`<span class="badge badge-pending" title="Ultimele 30 zile">${value}</span>`
-    return html`<span class="badge badge-ok">${value}</span>`
+    if (value === null) return html`<span class="badge bg-secondary">...</span>`
+    if (value > 0) return html`<span class="badge bg-danger" title="Ultimele 30 zile">${value}</span>`
+    return html`<span class="badge bg-success">${value}</span>`
   }
 
   _showInvoiceDetail() {
@@ -62,29 +62,34 @@ export class RetailerCard extends LightElement {
     const detailsHref = retailerUrl(this.trdr)
     const configHref = configUrl(this.trdr)
 
+    const hasAlerts = this._pendingOrders > 0 || this._pendingInvoices > 0
+
     return html`
-      <div class="card">
-        <a href="${detailsHref}">
-          <div class="card-logo">
-            <img src="${this.logo}" alt="${this.name}" />
+      <div class="card h-100 ${hasAlerts ? 'border-danger border-2' : ''}" style="position:relative;">
+        ${hasAlerts ? html`<span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+          <span class="visually-hidden">Documente de trimis</span>
+        </span>` : ''}
+        <a href="${detailsHref}" class="text-decoration-none text-reset">
+          <div class="card-body text-center">
+            <div class="d-flex align-items-center justify-content-center mb-3" style="min-height:100px;">
+              <img src="${this.logo}" alt="${this.name}" style="max-height:72px; max-width:160px; object-fit:contain;" />
+            </div>
+            <h5 class="card-title">${this.name}</h5>
           </div>
-          <div class="card-name">${this.name}</div>
-          <div class="stats">
-            <table>
-              <tr>
-                <td>Comenzi de trimis:</td>
-                <td>${this._renderBadge(this._pendingOrders)}</td>
-              </tr>
-              <tr>
-                <td>Facturi de trimis:</td>
-                <td>${this._renderBadge(this._pendingInvoices)}</td>
-              </tr>
-            </table>
-          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Comenzi de trimis
+              ${this._renderBadge(this._pendingOrders)}
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              Facturi de trimis
+              ${this._renderBadge(this._pendingInvoices)}
+            </li>
+          </ul>
         </a>
-        <div class="card-links">
-          <a href="${detailsHref}">Detalii</a>
-          <a href="${configHref}">Configurează</a>
+        <div class="card-footer d-flex p-0">
+          <a href="${detailsHref}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none" style="font-size:0.85rem;">Detalii</a>
+          <a href="${configHref}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none border-start" style="font-size:0.85rem;">Configurează</a>
         </div>
       </div>
     `
