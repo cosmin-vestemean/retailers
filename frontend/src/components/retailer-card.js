@@ -1,6 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { getRetailerStats } from '@/services/api.js'
+import { configUrl, retailerUrl } from '@/routing/ui-routes.js'
 
 export class RetailerCard extends LightElement {
   static properties = {
@@ -58,9 +59,12 @@ export class RetailerCard extends LightElement {
   }
 
   render() {
+    const detailsHref = retailerUrl(this.trdr)
+    const configHref = configUrl(this.trdr)
+
     return html`
       <div class="card">
-        <a href="/retailer/${this.trdr}">
+        <a href="${detailsHref}">
           <div class="card-logo">
             <img src="${this.logo}" alt="${this.name}" />
           </div>
@@ -79,8 +83,8 @@ export class RetailerCard extends LightElement {
           </div>
         </a>
         <div class="card-links">
-          <a href="/retailer/${this.trdr}">Detalii</a>
-          <a href="/config/${this.trdr}">Configurează</a>
+          <a href="${detailsHref}">Detalii</a>
+          <a href="${configHref}">Configurează</a>
         </div>
       </div>
     `

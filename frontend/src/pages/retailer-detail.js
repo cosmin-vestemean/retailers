@@ -1,5 +1,6 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
+import { dashboardUrl } from '@/routing/ui-routes.js'
 import { RETAILERS } from '@/state/app-context.js'
 import '@/components/orders-table.js'
 import '@/components/invoice-table.js'
@@ -28,7 +29,7 @@ export class RetailerDetail extends LightElement {
         <div class="header mb-4">
           <img src="${r.logo}" alt="${r.name}" />
           <h1 class="fw-bold" style="font-size:1.5rem;">${r.name}</h1>
-          <a href="/" class="btn btn-sm ms-3">&larr; Dashboard</a>
+          <a href="${dashboardUrl()}" class="btn btn-sm ms-3">&larr; Dashboard</a>
         </div>
 
         <ul class="nav nav-tabs mb-3">

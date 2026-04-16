@@ -14,6 +14,7 @@ import { services } from './services/index.js'
 import { channels } from './channels.js'
 
 const app = koa(feathers())
+const UI_PREFIX = '/app'
 
 // --- Start of new metrics logic ---
 
@@ -67,12 +68,14 @@ app.use(async (ctx, next) => {
 app.configure(configuration(configurationValidator))
 
 const spaEntryPath = resolve(app.get('public'), 'index.html')
-const spaRoutes = [
-  /^\/$/,
-  /^\/retailer\/[^/]+$/,
-  /^\/config\/[^/]+$/,
-  /^\/logs$/
+const legacyUiRedirects = [
+  { pattern: /^\/$/, target: () => UI_PREFIX },
+  { pattern: /^\/retailer\/([^/]+)$/, target: ([, trdr]) => `${UI_PREFIX}/retailer/${trdr}` },
+  { pattern: /^\/config\/([^/]+)$/, target: ([, trdr]) => `${UI_PREFIX}/config/${trdr}` },
+  { pattern: /^\/logs$/, target: () => `${UI_PREFIX}/logs` },
 ]
+
+const uiRoutePattern = new RegExp(`^${UI_PREFIX}(?:$|/)`)
 
 const isSpaNavigationRequest = (ctx) => {
   if (ctx.method !== 'GET') return false
@@ -80,7 +83,21 @@ const isSpaNavigationRequest = (ctx) => {
   if (ctx.path.startsWith('/assets/') || ctx.path.startsWith('/socket.io/')) return false
   if (/\.[a-z0-9]+$/i.test(ctx.path)) return false
 
-  return spaRoutes.some((route) => route.test(ctx.path))
+  return uiRoutePattern.test(ctx.path)
+}
+
+const getLegacyUiRedirect = (ctx) => {
+  if (ctx.method !== 'GET') return null
+  if (!ctx.accepts('html')) return null
+
+  for (const route of legacyUiRedirects) {
+    const match = ctx.path.match(route.pattern)
+    if (match) {
+      return route.target(match)
+    }
+  }
+
+  return null
 }
 
 // Set up Koa middleware
@@ -90,6 +107,12 @@ app.use(cors({ origin: (ctx) => {
   return allowed.includes(reqOrigin) ? reqOrigin : allowed[0] || false
 }}))
 app.use(async (ctx, next) => {
+  const redirectTarget = getLegacyUiRedirect(ctx)
+  if (redirectTarget) {
+    ctx.redirect(redirectTarget)
+    return
+  }
+
   if (!isSpaNavigationRequest(ctx)) {
     return next()
   }

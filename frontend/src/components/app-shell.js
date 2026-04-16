@@ -1,6 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { Router } from '@vaadin/router'
+import { UI_ROUTES, dashboardUrl, logsUrl } from '@/routing/ui-routes.js'
 
 // Import components & pages
 import './login-form.js'
@@ -47,23 +48,23 @@ export class AppShell extends LightElement {
 
     const router = new Router(outlet)
     router.setRoutes([
-      { path: '/',              component: 'retailer-dashboard' },
-      { path: '/retailer/:trdr', component: 'retailer-detail',
+      { path: UI_ROUTES.dashboard, component: 'retailer-dashboard' },
+      { path: UI_ROUTES.retailer, component: 'retailer-detail',
         action: (ctx, commands) => {
           const el = commands.component('retailer-detail')
           el.trdr = ctx.params.trdr
           return el
         }
       },
-      { path: '/config/:trdr',  component: 'retailer-config',
+      { path: UI_ROUTES.config, component: 'retailer-config',
         action: (ctx, commands) => {
           const el = commands.component('retailer-config')
           el.trdr = ctx.params.trdr
           return el
         }
       },
-      { path: '/logs',            component: 'logs-page' },
-      { path: '(.*)',           redirect: '/' },
+      { path: UI_ROUTES.logs, component: 'logs-page' },
+      { path: '(.*)', redirect: UI_ROUTES.fallback },
     ])
   }
 
@@ -88,10 +89,10 @@ export class AppShell extends LightElement {
     return html`
       <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
         <div class="container-xl">
-          <a class="navbar-brand" href="/">Pet Factory — Retailers</a>
+          <a class="navbar-brand" href="${dashboardUrl()}">Pet Factory — Retailers</a>
           <div class="navbar-nav flex-row ms-auto">
-            <a class="nav-link" href="/">Dashboard</a>
-            <a class="nav-link" href="/logs">Logs</a>
+            <a class="nav-link" href="${dashboardUrl()}">Dashboard</a>
+            <a class="nav-link" href="${logsUrl()}">Logs</a>
           </div>
           <div class="navbar-nav flex-row ms-3 align-items-center">
             <span class="text-white opacity-75 me-2">${this._user.name}</span>

@@ -17,20 +17,52 @@ describe('Feathers application tests', () => {
     await app.teardown()
   })
 
-  it('starts and shows the index page', async () => {
-    const { data } = await axios.get(appUrl)
+  it('redirects the root URL to the UI prefix', async () => {
+    try {
+      await axios.get(appUrl, {
+        headers: {
+          Accept: 'text/html'
+        },
+        maxRedirects: 0
+      })
+      assert.fail('should never get here')
+    } catch (error) {
+      const { response } = error
+      assert.strictEqual(response?.status, 302)
+      assert.strictEqual(response?.headers.location, '/app')
+    }
+  })
+
+  it('starts and shows the UI shell under the UI prefix', async () => {
+    const { data } = await axios.get(`${appUrl}/app`)
 
     assert.ok(data.indexOf('<html lang="ro">') !== -1)
   })
 
   it('serves the SPA shell for retailer detail refreshes', async () => {
-    const { data } = await axios.get(`${appUrl}/retailer/11322`, {
+    const { data } = await axios.get(`${appUrl}/app/retailer/11322`, {
       headers: {
         Accept: 'text/html'
       }
     })
 
     assert.ok(data.indexOf('<app-shell></app-shell>') !== -1)
+  })
+
+  it('redirects legacy retailer URLs to the UI prefix', async () => {
+    try {
+      await axios.get(`${appUrl}/retailer/11322`, {
+        headers: {
+          Accept: 'text/html'
+        },
+        maxRedirects: 0
+      })
+      assert.fail('should never get here')
+    } catch (error) {
+      const { response } = error
+      assert.strictEqual(response?.status, 302)
+      assert.strictEqual(response?.headers.location, '/app/retailer/11322')
+    }
   })
 
   it('shows a 404 JSON error', async () => {

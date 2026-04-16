@@ -1,6 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { scanNow, getLastScan } from '@/services/api.js'
+import { logsUrl } from '@/routing/ui-routes.js'
 
 export class ScanStatus extends LightElement {
   static properties = {
@@ -88,7 +89,7 @@ export class ScanStatus extends LightElement {
             &nbsp;|&nbsp;
             Următoarea: <strong>${this._formatNext()}</strong>
             &nbsp;|&nbsp;
-            <a href="/logs">Vezi log-uri &rarr;</a>
+            <a href="${logsUrl()}">Vezi log-uri &rarr;</a>
           </div>
         </div>
       </div>

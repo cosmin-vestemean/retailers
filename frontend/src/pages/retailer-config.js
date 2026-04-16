@@ -1,6 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { RETAILERS } from '@/state/app-context.js'
+import { retailerUrl } from '@/routing/ui-routes.js'
 import '@/components/connection-settings.js'
 import '@/components/doc-mappings-editor.js'
 import '@/components/xml-mapping-table.js'
@@ -39,7 +40,7 @@ export class RetailerConfig extends LightElement {
           <img src="${r.logo}" alt="${r.name}" />
           <h1 class="fw-bold" style="font-size:1.5rem;">Config &mdash; ${r.name}</h1>
           <span class="badge bg-info">TRDR ${r.trdr}</span>
-          <a href="/retailer/${r.trdr}" class="btn btn-sm ms-3">&larr; Back</a>
+          <a href="${retailerUrl(r.trdr)}" class="btn btn-sm ms-3">&larr; Back</a>
         </div>
 
         <ul class="nav nav-tabs mb-3 mt-3">
