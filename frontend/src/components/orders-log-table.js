@@ -1,6 +1,5 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
-import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import { getOrdersLog } from '@/services/api.js'
 import { RETAILERS } from '@/state/app-context.js'
 
@@ -9,7 +8,19 @@ const OP_OPTIONS = [
   { value: 'downloadXml', label: 'Download XML' },
   { value: 'storeXmlInDB', label: 'Store in DB' },
   { value: 'createOrders', label: 'Create orders' },
+  { value: 'processOrder', label: 'Process order' },
+  { value: 'createDocument', label: 'Create document' },
+  { value: 'mappingError', label: 'Mapping error' },
+  { value: 'emailNotify', label: 'Email notify' },
   { value: 'system', label: 'System' },
+]
+
+const LEVEL_OPTIONS = [
+  { value: '', label: 'Toate' },
+  { value: 'info', label: 'Info' },
+  { value: 'success', label: 'Success' },
+  { value: 'warn', label: 'Warning' },
+  { value: 'error', label: 'Error' },
 ]
 
 export class OrdersLogTable extends LightElement {
@@ -23,6 +34,8 @@ export class OrdersLogTable extends LightElement {
     _error: { state: true },
     // filters
     _trdr: { state: true },
+    _operation: { state: true },
+    _level: { state: true },
     _orderid: { state: true },
     _dateFrom: { state: true },
     _dateTo: { state: true },
@@ -38,6 +51,8 @@ export class OrdersLogTable extends LightElement {
     this._loaded = false
     this._error = null
     this._trdr = ''
+    this._operation = ''
+    this._level = ''
     this._orderid = ''
     this._dateFrom = ''
     this._dateTo = ''
@@ -58,6 +73,8 @@ export class OrdersLogTable extends LightElement {
     try {
       const res = await getOrdersLog({
         trdr: this._trdr === '' ? undefined : parseInt(this._trdr),
+        operation: this._operation || undefined,
+        level: this._level || undefined,
         orderid: this._orderid || undefined,
         dateFrom: this._dateFrom || undefined,
         dateTo: this._dateTo || undefined,
@@ -92,9 +109,18 @@ export class OrdersLogTable extends LightElement {
     return r ? r.name : String(trdr)
   }
 
-  _opLabel(orderid) {
-    const op = OP_OPTIONS.find(o => o.value === orderid)
-    return op ? op.label : orderid
+  _opLabel(op) {
+    const o = OP_OPTIONS.find(o => o.value === op)
+    return o ? o.label : op
+  }
+
+  _levelClass(level) {
+    switch (level) {
+      case 'error': return 'text-danger'
+      case 'warn': return 'text-warning'
+      case 'success': return 'text-success'
+      default: return 'text-secondary'
+    }
   }
 
   render() {
@@ -131,8 +157,17 @@ export class OrdersLogTable extends LightElement {
 
             <div class="col-12 col-md-6 col-xl-3">
               <label class="form-label small">Operație</label>
-            <select class="form-select form-select-sm" @change=${e => this._orderid = e.target.value}>
+            <select class="form-select form-select-sm" @change=${e => this._operation = e.target.value}>
               ${OP_OPTIONS.map(o => html`
+                <option value=${o.value}>${o.label}</option>
+              `)}
+            </select>
+            </div>
+
+            <div class="col-12 col-md-6 col-xl-2">
+              <label class="form-label small">Nivel</label>
+            <select class="form-select form-select-sm" @change=${e => this._level = e.target.value}>
+              ${LEVEL_OPTIONS.map(o => html`
                 <option value=${o.value}>${o.label}</option>
               `)}
             </select>
@@ -184,20 +219,22 @@ export class OrdersLogTable extends LightElement {
                     <th>Data</th>
                     <th>Retailer</th>
                     <th>Operație</th>
+                    <th>Nivel</th>
                     <th>Mesaj</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${this._logs.length === 0 ? html`
-                    <tr><td colspan="4" class="text-center text-secondary py-4">
+                    <tr><td colspan="5" class="text-center text-secondary py-4">
                       Niciun rezultat.
                     </td></tr>
                   ` : this._logs.map(log => html`
                     <tr>
                       <td class="text-nowrap">${log.MESSAGEDATE ?? ''}</td>
                       <td>${this._retailerName(log.TRDR_RETAILER)}</td>
-                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.ORDERID)}</span></td>
-                      <td class="msg-cell">${unsafeHTML(log.MESSAGETEXT ?? '')}</td>
+                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION || log.ORDERID)}</span></td>
+                      <td><span class="fw-semibold ${this._levelClass(log.LEVEL)}">${log.LEVEL || '—'}</span></td>
+                      <td class="msg-cell">${log.MESSAGETEXT ?? ''}</td>
                     </tr>
                   `)}
                 </tbody>

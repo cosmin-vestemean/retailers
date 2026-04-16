@@ -338,29 +338,29 @@ export class SftpService {
     let data = {}
     let params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
     const dwlRes = await this.downloadXml(data, params)
+    const dwlNoFiles = dwlRes.length === 1 && dwlRes[0].message === 'No files on server'
     await this.app.service('CCCORDERSLOG').create({
       TRDR_CLIENT: 1,
       TRDR_RETAILER: -1,
-      ORDERID: 'downloadXml',
+      ORDERID: '',
       CCCSFTPXML: -1,
-      MESSAGETEXT: '<pre><code>' + JSON.stringify(dwlRes) + '</code></pre>'
+      OPERATION: 'downloadXml',
+      LEVEL: dwlNoFiles ? 'info' : 'success',
+      MESSAGETEXT: dwlNoFiles ? 'No files on server' : JSON.stringify(dwlRes)
     })
     data = {}
     params = { query: { retailer: 11639, rootPath: orderPath } }
     const storeRes = await this.storeXmlInDB(data, params)
-    if (
-      dwlRes.length === 1 &&
-      dwlRes[0].message === 'No files on server' &&
-      storeRes.length === 1 &&
-      storeRes[0].message === 'No files inserted'
-    ) {
-    } else {
+    const storeNoFiles = storeRes.length === 1 && storeRes[0].message === 'No files inserted'
+    if (!(dwlNoFiles && storeNoFiles)) {
       await this.app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'storeXmlInDB',
+        ORDERID: '',
         CCCSFTPXML: -1,
-        MESSAGETEXT: '<pre><code>' + JSON.stringify(storeRes.XMLDATA) + '</code></pre>'
+        OPERATION: 'storeXmlInDB',
+        LEVEL: storeNoFiles ? 'info' : 'success',
+        MESSAGETEXT: storeNoFiles ? 'No files to store' : JSON.stringify(storeRes)
       })
     }
     console.log('Creating orders...')
@@ -468,7 +468,9 @@ export class SftpService {
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
               CCCSFTPXML: item.CCCSFTPXML,
-              MESSAGETEXT: `Processing order <span class="tag is-primary">${item.OrderId}</span> ${item.XMLDATE} from <span class="tag is-primary">${item.Client}</span>, <span class="tag is-success">${count}/${res.total}</span>`
+              OPERATION: 'processOrder',
+              LEVEL: 'info',
+              MESSAGETEXT: `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
             })
           } catch (error) {
             console.error('Error inserting into CCCORDERSLOG:', error)
@@ -510,8 +512,10 @@ export class SftpService {
         await this.app.service('CCCORDERSLOG').create({
           TRDR_CLIENT: 1,
           TRDR_RETAILER: -1,
-          ORDERID: 'createOrders',
+          ORDERID: '',
           CCCSFTPXML: -1,
+          OPERATION: 'createOrders',
+          LEVEL: 'info',
           MESSAGETEXT: 'No orders to create'
         })
       }
@@ -524,9 +528,11 @@ export class SftpService {
       await this.app.service('CCCORDERSLOG').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
-        ORDERID: 'system',
+        ORDERID: '',
         CCCSFTPXML: -1,
-        MESSAGETEXT: 'Error fetching data: ' + JSON.stringify(res)
+        OPERATION: 'system',
+        LEVEL: 'error',
+        MESSAGETEXT: 'Error fetching orders data: ' + JSON.stringify({ errorcode: res.errorcode, message: res.message })
       })
     }
   }
@@ -568,6 +574,8 @@ export class SftpService {
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
             CCCSFTPXML: CCCSFTPXML,
+            OPERATION: 'createDocument',
+            LEVEL: 'success',
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename}`
           })
         } catch (error) {
@@ -692,7 +700,7 @@ export class SftpService {
                   const index = BuyersItemIdentifications.indexOf(item[field].value)
                   const BuyersItemIdentification = BuyersItemIdentifications[index]
                   const Description = this.getValFromXML(xmlJson, 'OrderLine/Item/Description')[index]
-                  const message = `Error fetching data for BuyersItemIdentification <span class="tag is-danger">${BuyersItemIdentification}</span> with Description ${Description} for field ${field} <pre><code>${sqlQuery}</code></pre>`
+                  const message = `Error fetching data for BuyersItemIdentification ${BuyersItemIdentification} with Description ${Description} for field ${field} — SQL: ${sqlQuery}`
                   errors.push({
                     message: message,
                     sqlQuery: sqlQuery,
@@ -705,6 +713,8 @@ export class SftpService {
                       TRDR_RETAILER: retailer,
                       ORDERID: OrderId,
                       CCCSFTPXML: CCCSFTPXML,
+                      OPERATION: 'mappingError',
+                      LEVEL: 'error',
                       MESSAGETEXT: message
                     })
                   } catch (error) {
@@ -723,7 +733,9 @@ export class SftpService {
                       TRDR_RETAILER: retailer,
                       ORDERID: OrderId,
                       CCCSFTPXML: CCCSFTPXML,
-                      MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} with SQL ${sqlQuery}`
+                      OPERATION: 'mappingError',
+                      LEVEL: 'error',
+                      MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} — SQL: ${sqlQuery}`
                     })
                   } catch (error) {
                     console.error('Error inserting into CCCORDERSLOG:', error)
@@ -756,7 +768,9 @@ export class SftpService {
         TRDR_RETAILER: retailer,
         ORDERID: OrderId,
         CCCSFTPXML: CCCSFTPXML,
-        MESSAGETEXT: 'Errors sent by email' + JSON.stringify(sendEmRes)
+        OPERATION: 'emailNotify',
+        LEVEL: 'warn',
+        MESSAGETEXT: (sendEmRes === 'True' ? 'Errors sent by email' : 'Errors NOT sent by email') + ' — ' + errors.length + ' errors'
       })
       const retMessage = sendEmRes === 'True' ? 'Errors sent by email' : 'Errors not sent by email'
       return { success: false, errors: errors, message: retMessage }

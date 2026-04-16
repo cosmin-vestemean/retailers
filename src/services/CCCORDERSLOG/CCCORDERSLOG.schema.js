@@ -11,6 +11,8 @@ export const cccorderslogSchema = Type.Object(
     TRDR_RETAILER: Type.Number(),
     ORDERID: Type.String(),
     CCCSFTPXML: Type.Number(),
+    OPERATION: Type.String(),
+    LEVEL: Type.String(),
     MESSAGEDATE: Type.Optional(Type.String()),
     MESSAGETEXT: Type.String()
   },
@@ -22,7 +24,7 @@ export const cccorderslogResolver = resolve({})
 export const cccorderslogExternalResolver = resolve({})
 
 // Schema for creating new entries
-export const cccorderslogDataSchema = Type.Pick(cccorderslogSchema, ['TRDR_CLIENT', 'TRDR_RETAILER', 'ORDERID', 'CCCSFTPXML', 'MESSAGEDATE', 'MESSAGETEXT'], {
+export const cccorderslogDataSchema = Type.Pick(cccorderslogSchema, ['TRDR_CLIENT', 'TRDR_RETAILER', 'ORDERID', 'CCCSFTPXML', 'OPERATION', 'LEVEL', 'MESSAGEDATE', 'MESSAGETEXT'], {
   $id: 'CccorderslogData'
 })
 export const cccorderslogDataValidator = getValidator(cccorderslogDataSchema, dataValidator)
@@ -36,7 +38,7 @@ export const cccorderslogPatchValidator = getValidator(cccorderslogPatchSchema, 
 export const cccorderslogPatchResolver = resolve({})
 
 // Schema for allowed query properties
-export const cccorderslogQueryProperties = Type.Pick(cccorderslogSchema, ['TRDR_CLIENT', 'TRDR_RETAILER', 'ORDERID', 'CCCSFTPXML', 'MESSAGEDATE', 'MESSAGETEXT'])
+export const cccorderslogQueryProperties = Type.Pick(cccorderslogSchema, ['TRDR_CLIENT', 'TRDR_RETAILER', 'ORDERID', 'CCCSFTPXML', 'OPERATION', 'LEVEL', 'MESSAGEDATE', 'MESSAGETEXT'])
 export const cccorderslogQuerySchema = Type.Intersect(
   [
     querySyntax(cccorderslogQueryProperties),
@@ -46,6 +48,8 @@ export const cccorderslogQuerySchema = Type.Intersect(
       TRDR_RETAILER: Type.Number(),
       ORDERID: Type.String(),
       CCCSFTPXML: Type.Number(),
+      OPERATION: Type.String(),
+      LEVEL: Type.String(),
       MESSAGEDATE: Type.String(),
       MESSAGETEXT: Type.String()
     }, { additionalProperties: false })

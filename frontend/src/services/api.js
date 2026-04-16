@@ -295,9 +295,9 @@ export async function getLastScan() {
 // --------------- Orders log ---------------
 
 /** Query paginated, filterable orders log via S1 AJS endpoint. */
-export async function getOrdersLog({ trdr, orderid, dateFrom, dateTo, page, pageSize } = {}) {
+export async function getOrdersLog({ trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize } = {}) {
   return client.service('orders-log').find({
-    query: { trdr, orderid, dateFrom, dateTo, page, pageSize }
+    query: { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize }
   })
 }
 

@@ -276,6 +276,8 @@ function validatePassword(params) {
 function getOrdersLog(params) {
   var trdr = parseInt(params.trdr) || 0;
   var orderid = params.orderid || '';
+  var operation = params.operation || '';
+  var level = params.level || '';
   var dateFrom = params.dateFrom || '';
   var dateTo = params.dateTo || '';
   var page = parseInt(params.page) || 1;
@@ -291,6 +293,12 @@ function getOrdersLog(params) {
   }
   if (orderid) {
     where += " AND ORDERID = '" + orderid.replace(/'/g, "''") + "'";
+  }
+  if (operation) {
+    where += " AND OPERATION = '" + operation.replace(/'/g, "''") + "'";
+  }
+  if (level) {
+    where += " AND LEVEL = '" + level.replace(/'/g, "''") + "'";
   }
   if (dateFrom) {
     where += " AND MESSAGEDATE >= '" + dateFrom.replace(/'/g, "''") + "'";
@@ -311,7 +319,7 @@ function getOrdersLog(params) {
   // Fetch page
   var sql = 'SELECT CCCORDERSLOG, TRDR_RETAILER, '
     + "(SELECT NAME FROM TRDR WHERE TRDR = CCCORDERSLOG.TRDR_RETAILER) AS RETAILERNAME, "
-    + 'ORDERID, CCCSFTPXML, '
+    + 'ORDERID, OPERATION, LEVEL, CCCSFTPXML, '
     + "FORMAT(MESSAGEDATE, 'yyyy-MM-dd HH:mm:ss') AS MESSAGEDATE, "
     + 'MESSAGETEXT '
     + 'FROM CCCORDERSLOG ' + where

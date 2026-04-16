@@ -8,12 +8,12 @@ export class OrdersLogService {
   }
 
   async find(params) {
-    const { trdr, orderid, dateFrom, dateTo, page, pageSize } = params.query || {}
+    const { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize } = params.query || {}
 
     const url = mainURL + '/JS/JSRetailers/getOrdersLog'
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ trdr, orderid, dateFrom, dateTo, page, pageSize })
+      body: JSON.stringify({ trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize })
     })
     return response.json()
   }
