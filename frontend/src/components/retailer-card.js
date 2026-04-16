@@ -62,13 +62,8 @@ export class RetailerCard extends LightElement {
     const detailsHref = retailerUrl(this.trdr)
     const configHref = configUrl(this.trdr)
 
-    const hasAlerts = this._pendingOrders > 0 || this._pendingInvoices > 0
-
     return html`
-      <div class="card h-100 ${hasAlerts ? 'border-danger border-2' : ''}" style="position:relative;">
-        ${hasAlerts ? html`<span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-          <span class="visually-hidden">Documente de trimis</span>
-        </span>` : ''}
+      <div class="card h-100">
         <a href="${detailsHref}" class="text-decoration-none text-reset">
           <div class="card-body text-center">
             <div class="d-flex align-items-center justify-content-center mb-3" style="min-height:100px;">
