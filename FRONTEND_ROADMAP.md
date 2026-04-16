@@ -5,7 +5,7 @@
 - [x] Vite + Lit scaffold în `/frontend`
 - [x] API Service Layer (`services/api.js`) — wrappează FeathersJS client
 - [x] App State cu Lit Context (`state/app-context.js`)
-- [x] Vaadin Router — 3 rute: `/`, `/retailer/:trdr`, `/config/:trdr`
+- [x] Vaadin Router — 4 rute: `/app`, `/app/retailer/:trdr`, `/app/config/:trdr`, `/app/logs`
 - [x] Shared Bulma styles (`styles/shared-styles.js`)
 
 ## Faza 1 — Shell + Dashboard
@@ -25,7 +25,7 @@
 - [x] `<data-source-toggle>` — switch S1 API / Direct DB
 - [x] `<retailer-detail>` — pagină cu tabs (Comenzi / Facturi), data source toggle
 
-## Faza 3 — Config & file manager
+## Faza 3 — Config
 
 - [x] `<connection-settings>` — SFTP/FTP connection params + ERP S1 login settings, save
 - [x] `<doc-mappings-editor>` — CRUD tabel documente (FPRMS, SERIES, dirs), select/delete/add

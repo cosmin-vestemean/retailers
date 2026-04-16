@@ -14,6 +14,50 @@
 app-shell { display: block; min-height: 100vh; background: var(--tblr-body-bg); }
 app-shell .page-wrapper { min-height: calc(100vh - 52px); }
 app-shell #outlet { min-height: calc(100vh - 52px); }
+app-shell .app-shell-header {
+  gap: 0.75rem;
+}
+app-shell .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+app-shell .theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+app-shell .theme-switcher-label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+app-shell .theme-switcher select {
+  min-width: 9.5rem;
+}
+
+@media (max-width: 767.98px) {
+  app-shell .app-shell-header {
+    flex-wrap: wrap;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  app-shell .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  app-shell .theme-switcher {
+    flex: 1 1 12rem;
+  }
+
+  app-shell .theme-switcher select {
+    min-width: 0;
+    width: 100%;
+  }
+}
 
 /* ============================================================
    notification-toast

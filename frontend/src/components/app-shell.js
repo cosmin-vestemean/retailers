@@ -2,6 +2,11 @@ import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { Router } from '@vaadin/router'
 import { UI_ROUTES, dashboardUrl, logsUrl } from '@/routing/ui-routes.js'
+import {
+  applyTheme,
+  getActiveThemeId,
+  getAvailableThemes,
+} from '@/styles/theme-manager.js'
 
 // Import components & pages
 import './login-form.js'
@@ -14,6 +19,8 @@ import '@/pages/logs-page.js'
 export class AppShell extends LightElement {
   static properties = {
     _user: { state: true },
+    _theme: { state: true },
+    _themes: { state: true },
   }
 
   constructor() {
@@ -21,6 +28,8 @@ export class AppShell extends LightElement {
     // Restore session
     const saved = sessionStorage.getItem('s1User')
     this._user = saved ? JSON.parse(saved) : null
+    this._theme = getActiveThemeId()
+    this._themes = getAvailableThemes()
   }
 
   firstUpdated() {
@@ -73,33 +82,72 @@ export class AppShell extends LightElement {
     this._user = null
   }
 
+  _onThemeChange(e) {
+    this._theme = applyTheme(e.target.value)
+  }
+
+  _renderThemeSwitcher() {
+    return html`
+      <div class="theme-switcher" data-bs-theme="dark">
+        <label class="theme-switcher-label" for="theme-select">Tema</label>
+        <select
+          id="theme-select"
+          class="form-select form-select-sm"
+          .value=${this._theme}
+          @change=${this._onThemeChange}
+        >
+          ${this._themes.map((theme) => html`
+            <option value=${theme.id}>${theme.label}</option>
+          `)}
+        </select>
+      </div>
+    `
+  }
+
+  _renderHeader() {
+    return html`
+      <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
+        <div class="container-xl app-shell-header">
+          ${this._user
+            ? html`<a class="navbar-brand" href="${dashboardUrl()}">Pet Factory — Retailers</a>`
+            : html`<span class="navbar-brand">Pet Factory — Retailers</span>`}
+
+          ${this._user
+            ? html`
+                <div class="navbar-nav flex-row ms-auto">
+                  <a class="nav-link" href="${dashboardUrl()}">Dashboard</a>
+                  <a class="nav-link" href="${logsUrl()}">Logs</a>
+                </div>
+              `
+            : html`<div class="ms-auto"></div>`}
+
+          <div class="header-actions ${this._user ? 'ms-3' : 'ms-2'}">
+            ${this._renderThemeSwitcher()}
+            ${this._user
+              ? html`
+                  <div class="navbar-nav flex-row align-items-center">
+                    <span class="text-white opacity-75 me-2">${this._user.name}</span>
+                    <button class="btn btn-sm btn-outline-light" @click=${this._logout}>Logout</button>
+                  </div>
+                `
+              : null}
+          </div>
+        </div>
+      </header>
+    `
+  }
+
   render() {
     if (!this._user) {
       return html`
-        <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
-          <div class="container-xl">
-            <span class="navbar-brand">Pet Factory — Retailers</span>
-          </div>
-        </header>
+        ${this._renderHeader()}
         <login-form @login-success=${this._onLoginSuccess}></login-form>
         <notification-toast></notification-toast>
       `
     }
 
     return html`
-      <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
-        <div class="container-xl">
-          <a class="navbar-brand" href="${dashboardUrl()}">Pet Factory — Retailers</a>
-          <div class="navbar-nav flex-row ms-auto">
-            <a class="nav-link" href="${dashboardUrl()}">Dashboard</a>
-            <a class="nav-link" href="${logsUrl()}">Logs</a>
-          </div>
-          <div class="navbar-nav flex-row ms-3 align-items-center">
-            <span class="text-white opacity-75 me-2">${this._user.name}</span>
-            <button class="btn btn-sm btn-outline-light" @click=${this._logout}>Logout</button>
-          </div>
-        </div>
-      </header>
+      ${this._renderHeader()}
       <div class="page-wrapper">
         <div id="outlet"></div>
       </div>
