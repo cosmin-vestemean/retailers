@@ -65,6 +65,19 @@ describe('Feathers application tests', () => {
     }
   })
 
+  it('does not serve removed legacy frontend pages', async () => {
+    try {
+      await axios.get(`${appUrl}/retailer_config.html`, {
+        responseType: 'json'
+      })
+      assert.fail('should never get here')
+    } catch (error) {
+      const { response } = error
+      assert.strictEqual(response?.status, 404)
+      assert.strictEqual(response?.data?.name, 'NotFound')
+    }
+  })
+
   it('shows a 404 JSON error', async () => {
     try {
       await axios.get(`${appUrl}/path/to/nowhere`, {
