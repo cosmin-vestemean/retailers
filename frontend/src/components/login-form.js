@@ -130,10 +130,9 @@ export class LoginForm extends LightElement {
                 <strong>Web &amp; Mobile → Conturi web → websitepetfactory → tab Relații</strong>
               </div>
               <p>Utilizatorii cu serviciul web <strong>WebSiteService</strong> sunt cei care pot accesa platforma.</p>
-              <figure style="margin-top:1rem; border-radius:6px; overflow:hidden; border:1px solid #e8e8e8;">
+              <figure class="modal-figure">
                 <img src="/images/s1_web_accounts_guide.png"
-                     alt="Ghid gestiune utilizatori S1"
-                     style="width:100%; display:block;" />
+                     alt="Ghid gestiune utilizatori S1" />
               </figure>
             </div>
           </div>

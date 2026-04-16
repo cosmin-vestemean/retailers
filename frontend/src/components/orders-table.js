@@ -326,7 +326,7 @@ export class OrdersTable extends LightElement {
           </table>
         </div>
       ` : html`
-        ${!this._loading ? html`<div class="text-center mt-3" style="color:#999;">No orders found</div>` : ''}
+        ${!this._loading ? html`<div class="text-center text-secondary mt-3">No orders found</div>` : ''}
       `}
 
       <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">

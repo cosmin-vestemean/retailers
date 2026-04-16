@@ -245,10 +245,9 @@ export class InvoiceTable extends LightElement {
   }
 
   _renderAperak(aperak) {
-    if (!aperak) return html`<span style="color:#999;font-size:0.8rem;">—</span>`
+    if (!aperak) return html`<span class="text-secondary invoice-aperak-empty">—</span>`
     const resp = aperak.DOCUMENTRESPONSE?.toLowerCase()
     const isOk = resp === 'acceptat' || resp === 'receptionat'
-    const color = isOk ? 'text-bg-success' : 'text-bg-danger'
     const detail = (aperak.DOCUMENTDETAIL || '')
       .replace('Status', '<br>Status')
       .replace('Mesaj', '<br>Mesaj')
@@ -258,13 +257,13 @@ export class InvoiceTable extends LightElement {
       : ''
 
     return html`
-      <div class="card card-sm ${isOk ? '' : 'border-danger'}" style="margin:0;">
-        <div class="card-header aperak-header" @click=${this._toggleAperak} style="padding:0.3em 0.5em; cursor:pointer;">
+      <div class="card card-sm invoice-aperak-card ${isOk ? '' : 'border-danger'}">
+        <div class="card-header aperak-header" @click=${this._toggleAperak}>
           <span>${aperak.DOCUMENTRESPONSE} ${aperak.DOCUMENTREFERENCE || ''}</span>
         </div>
-        <div class="aperak-body" style="padding:0.5em;" .innerHTML=${detail}></div>
+        <div class="aperak-body" .innerHTML=${detail}></div>
       </div>
-      ${dateStr ? html`<div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${dateStr}</div>` : ''}
+      ${dateStr ? html`<div class="invoice-aperak-meta">${dateStr}</div>` : ''}
     `
   }
 
@@ -275,8 +274,8 @@ export class InvoiceTable extends LightElement {
                 @click=${this.loadInvoices} ?disabled=${this._loading}>
           Refresh
         </button>
-        <label style="font-size:0.85rem; display:inline-flex; align-items:center; gap:0.3rem;">
-          <input type="number" class="form-control form-control-sm" style="width:60px;"
+        <label class="invoice-days-filter">
+          <input type="number" class="form-control form-control-sm invoice-days-input"
                  .value=${String(this.daysOlder)} min="1" max="90"
                  @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this._page = 1; this.loadInvoices() }} />
           zile
@@ -294,7 +293,7 @@ export class InvoiceTable extends LightElement {
       <batch-progress></batch-progress>
 
       ${this._loading && !this._invoices.length ? html`
-        <div class="text-center mt-3" style="font-size:1.2rem; color:var(--tblr-primary);">Loading invoices...</div>
+        <div class="invoice-loading text-center mt-3">Loading invoices...</div>
       ` : ''}
 
       ${this._invoices.length ? html`
@@ -349,9 +348,9 @@ export class InvoiceTable extends LightElement {
                   <td>
                     ${inv.sent ? html`
                       <span class="badge badge-sent">Sent</span>
-                      <div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${inv.sentDate}</div>
+                      <div class="invoice-sent-meta">${inv.sentDate}</div>
                     ` : html`
-                      <label style="font-size:0.8rem; cursor:pointer;">
+                      <label class="invoice-mark-sent-label">
                         <input type="checkbox" @change=${(e) => {
                           if (e.target.checked && confirm('Mark invoice as sent by other means?')) {
                             this._markAlreadySent(inv, i)
@@ -368,10 +367,10 @@ export class InvoiceTable extends LightElement {
           </table>
         </div>
       ` : html`
-        ${!this._loading ? html`<div class="text-center mt-3" style="color:#999;">No invoices found</div>` : ''}
+        ${!this._loading ? html`<div class="text-center text-secondary mt-3">No invoices found</div>` : ''}
       `}
 
-      <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">
+      <div class="d-flex justify-content-between align-items-center mt-3 invoice-pagination-row">
         <span class="text-secondary">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
         <div class="btn-list">
           <button class="btn btn-sm" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>

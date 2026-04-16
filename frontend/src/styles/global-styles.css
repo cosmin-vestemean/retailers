@@ -11,9 +11,24 @@
 /* ============================================================
    app-shell
    ============================================================ */
-app-shell { display: block; min-height: 100vh; background: var(--tblr-body-bg); }
+app-shell { display: block; min-height: 100vh; background: var(--bs-body-bg); color: var(--bs-body-color); }
 app-shell .page-wrapper { min-height: calc(100vh - 52px); }
 app-shell #outlet { min-height: calc(100vh - 52px); }
+app-shell .app-navbar {
+  background: var(--bs-tertiary-bg);
+}
+app-shell .app-navbar .navbar-brand {
+  color: var(--bs-emphasis-color);
+}
+app-shell .app-navbar .nav-link {
+  color: var(--bs-secondary-color);
+}
+app-shell .app-navbar .nav-link:hover,
+app-shell .app-navbar .nav-link:focus,
+app-shell .app-navbar .navbar-brand:hover,
+app-shell .app-navbar .navbar-brand:focus {
+  color: var(--bs-emphasis-color);
+}
 app-shell .app-shell-header {
   gap: 0.75rem;
 }
@@ -31,7 +46,7 @@ app-shell .theme-switcher {
 app-shell .theme-switcher-label {
   margin: 0;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--bs-secondary-color);
 }
 app-shell .theme-switcher select {
   min-width: 9.5rem;
@@ -117,7 +132,7 @@ login-form .modal-overlay {
   z-index: 1000;
 }
 login-form .modal-box {
-  background: #fff; border-radius: 10px; max-width: 520px; width: 90%;
+  background: var(--bs-body-bg); color: var(--bs-body-color); border-radius: 10px; max-width: 520px; width: 90%;
   box-shadow: 0 12px 40px rgba(0,0,0,0.18); overflow: hidden;
 }
 login-form .modal-head {
@@ -135,6 +150,12 @@ login-form .modal-body strong { color: var(--tblr-body-color); }
 login-form .modal-path {
   background: var(--tblr-bg-surface-secondary); border-radius: 6px; padding: 0.6rem 0.9rem;
   margin: 0.75rem 0; font-size: 0.88rem; color: var(--tblr-body-color);
+}
+login-form .modal-figure {
+  margin-top: 1rem; border-radius: 6px; overflow: hidden; border: 1px solid var(--tblr-border-color);
+}
+login-form .modal-figure img {
+  width: 100%; display: block;
 }
 
 /* ============================================================
@@ -176,7 +197,7 @@ data-source-toggle .toggle-group {
   display: inline-flex; border: 1px solid var(--tblr-border-color); border-radius: 4px; overflow: hidden;
 }
 data-source-toggle button {
-  padding: 0.35em 0.75em; border: none; background: #fff; cursor: pointer;
+  padding: 0.35em 0.75em; border: none; background: var(--bs-body-bg); cursor: pointer;
   font-size: 0.8rem; color: var(--tblr-secondary); transition: all 0.15s;
 }
 data-source-toggle button + button { border-left: 1px solid var(--tblr-border-color); }
@@ -225,9 +246,18 @@ invoice-table .badge-sent { background: var(--tblr-success); color: #fff; }
 invoice-table .badge-unsent { background: var(--tblr-warning); color: rgba(0,0,0,.7); }
 invoice-table .badge-sending { background: var(--tblr-primary); color: #fff; }
 invoice-table .actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-invoice-table .aperak-header { cursor: pointer; }
-invoice-table .aperak-body { display: none; font-size: 0.8rem; margin-top: 0.3em; }
+invoice-table .invoice-days-filter { font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+invoice-table .invoice-days-input { width: 60px; }
+invoice-table .invoice-loading { font-size: 1.2rem; color: var(--tblr-primary); }
+invoice-table .aperak-header { cursor: pointer; padding: 0.3em 0.5em; }
+invoice-table .aperak-body { display: none; font-size: 0.8rem; margin-top: 0.3em; padding: 0.5em; }
 invoice-table .aperak-body.open { display: block; }
+invoice-table .invoice-aperak-card { margin: 0; }
+invoice-table .invoice-aperak-empty { font-size: 0.8rem; }
+invoice-table .invoice-aperak-meta { font-size: 0.75rem; color: var(--tblr-secondary); margin-top: 0.2em; }
+invoice-table .invoice-sent-meta { font-size: 0.75rem; color: var(--tblr-secondary); margin-top: 0.2em; }
+invoice-table .invoice-mark-sent-label { font-size: 0.8rem; cursor: pointer; }
+invoice-table .invoice-pagination-row { font-size: 0.85rem; }
 invoice-table .postfix-input { width: 80px; }
 
 /* ============================================================

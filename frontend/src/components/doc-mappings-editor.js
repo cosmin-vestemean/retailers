@@ -124,7 +124,7 @@ export class DocMappingsEditor extends LightElement {
             </tr>
           `)}
           ${!this._docs.length ? html`
-            <tr><td colspan="5" style="text-align:center; color:#999;">No document mappings</td></tr>
+            <tr><td colspan="5" class="text-center text-secondary">No document mappings</td></tr>
           ` : ''}
         </tbody>
       </table>

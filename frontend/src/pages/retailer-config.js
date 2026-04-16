@@ -61,7 +61,7 @@ export class RetailerConfig extends LightElement {
           <doc-mappings-editor .trdr=${this.trdr}
                                @doc-selected=${this._onDocSelected}></doc-mappings-editor>
 
-          <h3>XML → S1 Mapping ${this._selectedDocId ? html`<span style="font-weight:normal;color:#999;">(Doc ID: ${this._selectedDocId})</span>` : ''}</h3>
+          <h3>XML → S1 Mapping ${this._selectedDocId ? html`<span class="fw-normal text-secondary">(Doc ID: ${this._selectedDocId})</span>` : ''}</h3>
           <xml-mapping-table .trdr=${this.trdr}
                              .docId=${this._selectedDocId}
                              .doc=${this._selectedDoc}></xml-mapping-table>

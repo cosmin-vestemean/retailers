@@ -74,10 +74,9 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 <strong>Web &amp; Mobile → Conturi web → websitepetfactory → tab Relații</strong>
               </div>
               <p>Utilizatorii cu serviciul web <strong>WebSiteService</strong> sunt cei care pot accesa platforma.</p>
-              <figure style="margin-top:1rem; border-radius:6px; overflow:hidden; border:1px solid #e8e8e8;">
+              <figure class="modal-figure">
                 <img src="/images/s1_web_accounts_guide.png"
-                     alt="Ghid gestiune utilizatori S1"
-                     style="width:100%; display:block;" />
+                     alt="Ghid gestiune utilizatori S1" />
               </figure>
             </div>
           </div>
@@ -273,7 +272,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           </table>
         </div>
       `:U`
-        ${this._loading?``:U`<div class="text-center mt-3" style="color:#999;">No orders found</div>`}
+        ${this._loading?``:U`<div class="text-center text-secondary mt-3">No orders found</div>`}
       `}
 
       <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">
@@ -283,22 +282,22 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           <button class="btn btn-sm" ?disabled=${this._page>=this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
         </div>
       </div>
-    `}};customElements.define(`orders-table`,Zi);var Qi=class extends G{static properties={trdr:{type:String},daysOlder:{type:Number},sosource:{type:Number},fprms:{type:Number},series:{type:Number},_invoices:{state:!0},_loading:{state:!0},_sending:{state:!0},_page:{state:!0},_pageSize:{state:!0},_total:{state:!0}};constructor(){super(),this._invoices=[],this._loading=!1,this._sending=new Set,this.daysOlder=7,this.sosource=1351,this.fprms=712,this.series=7121,this._page=1,this._pageSize=25,this._total=0}connectedCallback(){super.connectedCallback(),this.loadInvoices()}async loadInvoices(){this._loading=!0;try{let e=await Pi(this.trdr,{sosource:this.sosource,fprms:this.fprms,series:this.series,daysOlder:this.daysOlder,page:this._page,pageSize:this._pageSize});if(e?.success){let t=(e.data||[]).map(e=>({findoc:e.findoc,trndate:e.trndate||``,fincode:e.fincode,sumamnt:e.sumamnt,sent:!!e.CCCXMLSendDate,sentDate:e.CCCXMLSendDate||null,xmlFile:e.CCCXMLFile||null,postfix:``,xmlData:null,aperak:null,_sending:!1}));(await Promise.all(t.map(e=>Si({FINDOC:e.findoc,TRDR_RETAILER:this.trdr,$sort:{MESSAGEDATE:-1,MESSAGETIME:-1}}).catch(()=>({data:[],total:0}))))).forEach((e,n)=>{e.total>0&&(t[n].aperak=e.data[0])}),this._invoices=t,this._total=e.total||0}else this._toast(`Failed to load invoices: `+(e?.error||`Unknown error`),`is-danger`)}catch(e){this._toast(`Failed to load invoices: `+e.message,`is-danger`)}finally{this._loading=!1}}get _totalPages(){return Math.max(1,Math.ceil(this._total/this._pageSize))}async _prevPage(){this._page>1&&(this._page--,await this.loadInvoices())}async _nextPage(){this._page<this._totalPages&&(this._page++,await this.loadInvoices())}async _downloadAperaks(){this._loading=!0;try{await xi(this.trdr),await this.loadInvoices(),this._toast(`APERAKs downloaded`,`is-success`)}catch(e){this._toast(`APERAK download failed: `+e.message,`is-danger`)}finally{this._loading=!1}}async _createXml(e,t){try{let n=await vi({appID:`1001`,findoc:e.findoc});this._invoices=this._invoices.map((e,r)=>r===t?{...e,xmlData:n.dom,_domObj:n}:e)}catch(e){this._toast(`Create XML failed: `+e.message,`is-danger`)}}_saveXml(e){if(!e._domObj)return;let t=this._getFilename(e),n=new Blob([e._domObj.dom],{type:`text/xml`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=t+`.xml`,i.click(),URL.revokeObjectURL(r)}_getFilename(e){if(!e._domObj)return e.fincode;let t=e._domObj.filename;if(e.postfix){let n=t.split(`_`);n.length>=4&&(t=n[0]+`_`+n[1]+e.postfix+`_`+n[2]+`_`+n[3])}return t}async _sendInvoice(e,t,n=!1){if(e.sent&&!n){this._toast(`Invoice already sent`,`is-warning`);return}this._sending=new Set([...this._sending,t]),this._invoices=this._invoices.map((e,n)=>n===t?{...e,_sending:!0}:e);try{let r=e._domObj;if(r||=await vi({appID:`1001`,findoc:e.findoc}),r.trimis&&!n){this._toast(`Invoice ${r.filename} already sent`,`is-warning`);return}let i=this._getFilename({...e,_domObj:r});if((await yi(e.findoc,r.dom,i,this.trdr))?.success)await bi(e.findoc,i),this._invoices=this._invoices.map((e,n)=>n===t?{...e,sent:!0,sentDate:new Date().toISOString().slice(0,19).replace(`T`,` `),_sending:!1,_domObj:r,xmlData:r.dom}:e),this._toast(`Invoice ${i} sent`,`is-success`);else throw Error(`Upload failed`)}catch(e){this._toast(`Send failed: `+e.message,`is-danger`)}finally{this._sending=new Set([...this._sending].filter(e=>e!==t)),this._invoices=this._invoices.map((e,n)=>n===t?{...e,_sending:!1}:e)}}async _markAlreadySent(e,t){try{await bi(e.findoc,`Already sent by other means`),this._invoices=this._invoices.map((e,n)=>n===t?{...e,sent:!0,sentDate:`Manual`}:e),this._toast(`Marked as sent`,`is-success`)}catch(e){this._toast(`Mark failed: `+e.message,`is-danger`)}}async _sendAllUnsent(){let e=this._invoices.map((e,t)=>({inv:e,i:t})).filter(({inv:e})=>!e.sent);if(!e.length)return;let t=this.querySelector(`batch-progress`);t.start(e.length);for(let{inv:n,i:r}of e)t.advance(`Sending ${n.fincode}...`),await this._sendInvoice(n,r);t.finish(`All invoices processed`),await this.loadInvoices()}_toggleAperak(e){e.currentTarget.nextElementSibling.classList.toggle(`open`)}_toast(e,t){this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:e,type:t},bubbles:!0,composed:!0}))}get _unsentCount(){return this._invoices.filter(e=>!e.sent).length}_renderAperak(e){if(!e)return U`<span style="color:#999;font-size:0.8rem;">—</span>`;let t=e.DOCUMENTRESPONSE?.toLowerCase(),n=t===`acceptat`||t===`receptionat`,r=(e.DOCUMENTDETAIL||``).replace(`Status`,`<br>Status`).replace(`Mesaj`,`<br>Mesaj`).replace(`Nume fisier`,`<br>Nume fisier`),i=e.MESSAGEDATE?e.MESSAGEDATE.split(`T`)[0]+` `+(e.MESSAGETIME?.split(`T`)[1]?.split(`.`)[0]||``):``;return U`
-      <div class="card card-sm ${n?``:`border-danger`}" style="margin:0;">
-        <div class="card-header aperak-header" @click=${this._toggleAperak} style="padding:0.3em 0.5em; cursor:pointer;">
+    `}};customElements.define(`orders-table`,Zi);var Qi=class extends G{static properties={trdr:{type:String},daysOlder:{type:Number},sosource:{type:Number},fprms:{type:Number},series:{type:Number},_invoices:{state:!0},_loading:{state:!0},_sending:{state:!0},_page:{state:!0},_pageSize:{state:!0},_total:{state:!0}};constructor(){super(),this._invoices=[],this._loading=!1,this._sending=new Set,this.daysOlder=7,this.sosource=1351,this.fprms=712,this.series=7121,this._page=1,this._pageSize=25,this._total=0}connectedCallback(){super.connectedCallback(),this.loadInvoices()}async loadInvoices(){this._loading=!0;try{let e=await Pi(this.trdr,{sosource:this.sosource,fprms:this.fprms,series:this.series,daysOlder:this.daysOlder,page:this._page,pageSize:this._pageSize});if(e?.success){let t=(e.data||[]).map(e=>({findoc:e.findoc,trndate:e.trndate||``,fincode:e.fincode,sumamnt:e.sumamnt,sent:!!e.CCCXMLSendDate,sentDate:e.CCCXMLSendDate||null,xmlFile:e.CCCXMLFile||null,postfix:``,xmlData:null,aperak:null,_sending:!1}));(await Promise.all(t.map(e=>Si({FINDOC:e.findoc,TRDR_RETAILER:this.trdr,$sort:{MESSAGEDATE:-1,MESSAGETIME:-1}}).catch(()=>({data:[],total:0}))))).forEach((e,n)=>{e.total>0&&(t[n].aperak=e.data[0])}),this._invoices=t,this._total=e.total||0}else this._toast(`Failed to load invoices: `+(e?.error||`Unknown error`),`is-danger`)}catch(e){this._toast(`Failed to load invoices: `+e.message,`is-danger`)}finally{this._loading=!1}}get _totalPages(){return Math.max(1,Math.ceil(this._total/this._pageSize))}async _prevPage(){this._page>1&&(this._page--,await this.loadInvoices())}async _nextPage(){this._page<this._totalPages&&(this._page++,await this.loadInvoices())}async _downloadAperaks(){this._loading=!0;try{await xi(this.trdr),await this.loadInvoices(),this._toast(`APERAKs downloaded`,`is-success`)}catch(e){this._toast(`APERAK download failed: `+e.message,`is-danger`)}finally{this._loading=!1}}async _createXml(e,t){try{let n=await vi({appID:`1001`,findoc:e.findoc});this._invoices=this._invoices.map((e,r)=>r===t?{...e,xmlData:n.dom,_domObj:n}:e)}catch(e){this._toast(`Create XML failed: `+e.message,`is-danger`)}}_saveXml(e){if(!e._domObj)return;let t=this._getFilename(e),n=new Blob([e._domObj.dom],{type:`text/xml`}),r=URL.createObjectURL(n),i=document.createElement(`a`);i.href=r,i.download=t+`.xml`,i.click(),URL.revokeObjectURL(r)}_getFilename(e){if(!e._domObj)return e.fincode;let t=e._domObj.filename;if(e.postfix){let n=t.split(`_`);n.length>=4&&(t=n[0]+`_`+n[1]+e.postfix+`_`+n[2]+`_`+n[3])}return t}async _sendInvoice(e,t,n=!1){if(e.sent&&!n){this._toast(`Invoice already sent`,`is-warning`);return}this._sending=new Set([...this._sending,t]),this._invoices=this._invoices.map((e,n)=>n===t?{...e,_sending:!0}:e);try{let r=e._domObj;if(r||=await vi({appID:`1001`,findoc:e.findoc}),r.trimis&&!n){this._toast(`Invoice ${r.filename} already sent`,`is-warning`);return}let i=this._getFilename({...e,_domObj:r});if((await yi(e.findoc,r.dom,i,this.trdr))?.success)await bi(e.findoc,i),this._invoices=this._invoices.map((e,n)=>n===t?{...e,sent:!0,sentDate:new Date().toISOString().slice(0,19).replace(`T`,` `),_sending:!1,_domObj:r,xmlData:r.dom}:e),this._toast(`Invoice ${i} sent`,`is-success`);else throw Error(`Upload failed`)}catch(e){this._toast(`Send failed: `+e.message,`is-danger`)}finally{this._sending=new Set([...this._sending].filter(e=>e!==t)),this._invoices=this._invoices.map((e,n)=>n===t?{...e,_sending:!1}:e)}}async _markAlreadySent(e,t){try{await bi(e.findoc,`Already sent by other means`),this._invoices=this._invoices.map((e,n)=>n===t?{...e,sent:!0,sentDate:`Manual`}:e),this._toast(`Marked as sent`,`is-success`)}catch(e){this._toast(`Mark failed: `+e.message,`is-danger`)}}async _sendAllUnsent(){let e=this._invoices.map((e,t)=>({inv:e,i:t})).filter(({inv:e})=>!e.sent);if(!e.length)return;let t=this.querySelector(`batch-progress`);t.start(e.length);for(let{inv:n,i:r}of e)t.advance(`Sending ${n.fincode}...`),await this._sendInvoice(n,r);t.finish(`All invoices processed`),await this.loadInvoices()}_toggleAperak(e){e.currentTarget.nextElementSibling.classList.toggle(`open`)}_toast(e,t){this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:e,type:t},bubbles:!0,composed:!0}))}get _unsentCount(){return this._invoices.filter(e=>!e.sent).length}_renderAperak(e){if(!e)return U`<span class="text-secondary invoice-aperak-empty">—</span>`;let t=e.DOCUMENTRESPONSE?.toLowerCase(),n=t===`acceptat`||t===`receptionat`,r=(e.DOCUMENTDETAIL||``).replace(`Status`,`<br>Status`).replace(`Mesaj`,`<br>Mesaj`).replace(`Nume fisier`,`<br>Nume fisier`),i=e.MESSAGEDATE?e.MESSAGEDATE.split(`T`)[0]+` `+(e.MESSAGETIME?.split(`T`)[1]?.split(`.`)[0]||``):``;return U`
+      <div class="card card-sm invoice-aperak-card ${n?``:`border-danger`}">
+        <div class="card-header aperak-header" @click=${this._toggleAperak}>
           <span>${e.DOCUMENTRESPONSE} ${e.DOCUMENTREFERENCE||``}</span>
         </div>
-        <div class="aperak-body" style="padding:0.5em;" .innerHTML=${r}></div>
+        <div class="aperak-body" .innerHTML=${r}></div>
       </div>
-      ${i?U`<div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${i}</div>`:``}
+      ${i?U`<div class="invoice-aperak-meta">${i}</div>`:``}
     `}render(){return U`
       <div class="toolbar">
         <button class="btn btn-info btn-sm ${this._loading?`btn-loading`:``}"
                 @click=${this.loadInvoices} ?disabled=${this._loading}>
           Refresh
         </button>
-        <label style="font-size:0.85rem; display:inline-flex; align-items:center; gap:0.3rem;">
-          <input type="number" class="form-control form-control-sm" style="width:60px;"
+        <label class="invoice-days-filter">
+          <input type="number" class="form-control form-control-sm invoice-days-input"
                  .value=${String(this.daysOlder)} min="1" max="90"
                  @change=${e=>{this.daysOlder=parseInt(e.target.value)||7,this._page=1,this.loadInvoices()}} />
           zile
@@ -316,7 +315,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       <batch-progress></batch-progress>
 
       ${this._loading&&!this._invoices.length?U`
-        <div class="text-center mt-3" style="font-size:1.2rem; color:var(--tblr-primary);">Loading invoices...</div>
+        <div class="invoice-loading text-center mt-3">Loading invoices...</div>
       `:``}
 
       ${this._invoices.length?U`
@@ -367,9 +366,9 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                   <td>
                     ${e.sent?U`
                       <span class="badge badge-sent">Sent</span>
-                      <div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${e.sentDate}</div>
+                      <div class="invoice-sent-meta">${e.sentDate}</div>
                     `:U`
-                      <label style="font-size:0.8rem; cursor:pointer;">
+                      <label class="invoice-mark-sent-label">
                         <input type="checkbox" @change=${n=>{n.target.checked&&confirm(`Mark invoice as sent by other means?`)?this._markAlreadySent(e,t):n.target.checked=!1}} />
                         Already sent
                       </label>
@@ -382,10 +381,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           </table>
         </div>
       `:U`
-        ${this._loading?``:U`<div class="text-center mt-3" style="color:#999;">No invoices found</div>`}
+        ${this._loading?``:U`<div class="text-center text-secondary mt-3">No invoices found</div>`}
       `}
 
-      <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">
+      <div class="d-flex justify-content-between align-items-center mt-3 invoice-pagination-row">
         <span class="text-secondary">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
         <div class="btn-list">
           <button class="btn btn-sm" ?disabled=${this._page<=1} @click=${this._prevPage}>&larr; Prev</button>
@@ -488,7 +487,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
             </tr>
           `)}
           ${this._docs.length?``:U`
-            <tr><td colspan="5" style="text-align:center; color:#999;">No document mappings</td></tr>
+            <tr><td colspan="5" class="text-center text-secondary">No document mappings</td></tr>
           `}
         </tbody>
       </table>
@@ -500,7 +499,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         <input id="newDirOut" class="form-control form-control-sm" type="text" placeholder="Dir OUT" style="width:160px;" />
         <button class="btn btn-sm btn-success" @click=${this._addDoc}>Add Document</button>
       </div>
-    `}};customElements.define(`doc-mappings-editor`,ta);function na(e,t,n,r){for(let i in e)if(e[i]!==null&&typeof e[i]==`object`)Array.isArray(e[i])?e[i].length>0&&typeof e[i][0]==`object`&&na(e[i][0],[...t,i],n,r):na(e[i],[...t,i],n,r);else{let a=n+`/`+(t.length?t.join(`/`)+`/`:``)+i;r.push({xmlPath:a,value:e[i]??``})}}function ra(e){let t={};for(let n of e.children){let e=n.tagName;if(n.children.length>0){let r=ra(n);t[e]?(Array.isArray(t[e])||(t[e]=[t[e]]),t[e].push(r)):t[e]=r}else t[e]?(Array.isArray(t[e])||(t[e]=[t[e]]),t[e].push(n.textContent)):t[e]=n.textContent}return t}var ia=class extends G{static properties={trdr:{type:String},docId:{type:Number},doc:{type:Object},_rows:{state:!0},_loading:{state:!0},_saving:{state:!0},_hideUnsel:{state:!0},_hideTbl2:{state:!0},_hideVal:{state:!0},_hideObs:{state:!0},_search:{state:!0},_xmlRoot:{state:!0},_lineDelim:{state:!0}};constructor(){super(),this._rows=[],this._loading=!1,this._saving=!1,this._hideUnsel=!1,this._hideTbl2=!0,this._hideVal=!0,this._hideObs=!0,this._search=``,this._xmlRoot=`Order`,this._lineDelim=`OrderLine`}updated(e){e.has(`docId`)&&this.docId&&this._loadMappings()}async _loadMappings(){if(this.docId){this._loading=!0;try{this._rows=((await wi({CCCDOCUMENTES1MAPPINGS:this.docId,$sort:{XMLORDER:1}})).data||[]).map(e=>({xmlOrder:e.XMLORDER||0,picked:!0,mandatory:e.MANDATORY===1,xmlPath:e.XMLNODE,s1Table1:e.S1TABLE1||``,s1Field1:e.S1FIELD1||``,s1Table2:e.S1TABLE2||``,s1Field2:e.S1FIELD2||``,sql:e.SQL||``,value:``,observatii:e.OBSERVATII||``,_fromDb:!0}))}catch(e){this._toast(`Failed to load mappings: `+e.message,`is-danger`)}finally{this._loading=!1}}}_loadXmlFile(e){let t=e.target.files?.[0];if(!t)return;let n=new FileReader;n.onload=e=>{let t=new DOMParser().parseFromString(e.target.result,`text/xml`).getElementsByTagName(this._xmlRoot)[0];if(!t){this._toast(`Root element <${this._xmlRoot}> not found in XML`,`is-warning`);return}let n=ra(t),r={},i=null;for(let e in n)e===this._lineDelim?i=Array.isArray(n[e])?n[e][0]:n[e]:r[e]=n[e];let a=[];na(r,[],this._xmlRoot,a),i&&na(i,[],this._xmlRoot+`/`+this._lineDelim,a),this._rows=a.map((e,t)=>({xmlOrder:t+1,picked:!1,mandatory:!1,xmlPath:e.xmlPath,s1Table1:``,s1Field1:``,s1Table2:``,s1Field2:``,sql:``,value:e.value,observatii:``,_fromDb:!1})),this._toast(`Loaded ${a.length} XML nodes`,`is-info`)},n.readAsText(t)}async _save(){if(!this.doc){this._toast(`No document selected`,`is-warning`);return}let e=this._rows.filter(e=>e.picked);if(!e.length){this._toast(`Select at least one row`,`is-warning`);return}this._saving=!0;try{let t=await Ti({FPRMS:this.doc.FPRMS,SERIES:this.doc.SERIES}),n=this.docId;if(t.data?.length&&t.data[0].CCCDOCUMENTES1MAPPINGS!==this.docId){if(!confirm(`Mapping with same FPRMS/SERIES exists. Overwrite?`)){this._saving=!1;return}await Mi(t.data[0].CCCDOCUMENTES1MAPPINGS),await Ai(t.data[0].CCCDOCUMENTES1MAPPINGS)}else this.docId&&await Mi(this.docId);n||=(await ki({TRDR_RETAILER:parseInt(this.trdr),TRDR_CLIENT:1,SOSOURCE:1351,FPRMS:this.doc.FPRMS,SERIES:this.doc.SERIES,INITIALDIRIN:this.doc.INITIALDIRIN||``,INITIALDIROUT:this.doc.INITIALDIROUT||``})).CCCDOCUMENTES1MAPPINGS;for(let t of e)await ji({CCCDOCUMENTES1MAPPINGS:n,XMLNODE:t.xmlPath,XMLORDER:t.xmlOrder,MANDATORY:+!!t.mandatory,S1TABLE1:t.s1Table1,S1FIELD1:t.s1Field1,S1TABLE2:t.s1Table2||null,S1FIELD2:t.s1Field2||null,SQL:t.sql||null,OBSERVATII:t.observatii||null});this._toast(`Saved ${e.length} mappings`,`is-success`)}catch(e){this._toast(`Save failed: `+e.message,`is-danger`)}finally{this._saving=!1}}_updateRow(e,t,n){this._rows=this._rows.map((r,i)=>i===e?{...r,[t]:n}:r)}_isVisible(e){return!(this._hideUnsel&&!e.picked||this._search&&!e.xmlPath.toLowerCase().includes(this._search.toLowerCase()))}_toast(e,t){this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:e,type:t},bubbles:!0,composed:!0}))}render(){return this._loading?U`<div style="color:var(--tblr-primary);">Loading mappings...</div>`:!this.docId&&!this._rows.length?U`<p style="color:#999;">Select a document above or load an XML file to begin mapping.</p>`:U`
+    `}};customElements.define(`doc-mappings-editor`,ta);function na(e,t,n,r){for(let i in e)if(e[i]!==null&&typeof e[i]==`object`)Array.isArray(e[i])?e[i].length>0&&typeof e[i][0]==`object`&&na(e[i][0],[...t,i],n,r):na(e[i],[...t,i],n,r);else{let a=n+`/`+(t.length?t.join(`/`)+`/`:``)+i;r.push({xmlPath:a,value:e[i]??``})}}function ra(e){let t={};for(let n of e.children){let e=n.tagName;if(n.children.length>0){let r=ra(n);t[e]?(Array.isArray(t[e])||(t[e]=[t[e]]),t[e].push(r)):t[e]=r}else t[e]?(Array.isArray(t[e])||(t[e]=[t[e]]),t[e].push(n.textContent)):t[e]=n.textContent}return t}var ia=class extends G{static properties={trdr:{type:String},docId:{type:Number},doc:{type:Object},_rows:{state:!0},_loading:{state:!0},_saving:{state:!0},_hideUnsel:{state:!0},_hideTbl2:{state:!0},_hideVal:{state:!0},_hideObs:{state:!0},_search:{state:!0},_xmlRoot:{state:!0},_lineDelim:{state:!0}};constructor(){super(),this._rows=[],this._loading=!1,this._saving=!1,this._hideUnsel=!1,this._hideTbl2=!0,this._hideVal=!0,this._hideObs=!0,this._search=``,this._xmlRoot=`Order`,this._lineDelim=`OrderLine`}updated(e){e.has(`docId`)&&this.docId&&this._loadMappings()}async _loadMappings(){if(this.docId){this._loading=!0;try{this._rows=((await wi({CCCDOCUMENTES1MAPPINGS:this.docId,$sort:{XMLORDER:1}})).data||[]).map(e=>({xmlOrder:e.XMLORDER||0,picked:!0,mandatory:e.MANDATORY===1,xmlPath:e.XMLNODE,s1Table1:e.S1TABLE1||``,s1Field1:e.S1FIELD1||``,s1Table2:e.S1TABLE2||``,s1Field2:e.S1FIELD2||``,sql:e.SQL||``,value:``,observatii:e.OBSERVATII||``,_fromDb:!0}))}catch(e){this._toast(`Failed to load mappings: `+e.message,`is-danger`)}finally{this._loading=!1}}}_loadXmlFile(e){let t=e.target.files?.[0];if(!t)return;let n=new FileReader;n.onload=e=>{let t=new DOMParser().parseFromString(e.target.result,`text/xml`).getElementsByTagName(this._xmlRoot)[0];if(!t){this._toast(`Root element <${this._xmlRoot}> not found in XML`,`is-warning`);return}let n=ra(t),r={},i=null;for(let e in n)e===this._lineDelim?i=Array.isArray(n[e])?n[e][0]:n[e]:r[e]=n[e];let a=[];na(r,[],this._xmlRoot,a),i&&na(i,[],this._xmlRoot+`/`+this._lineDelim,a),this._rows=a.map((e,t)=>({xmlOrder:t+1,picked:!1,mandatory:!1,xmlPath:e.xmlPath,s1Table1:``,s1Field1:``,s1Table2:``,s1Field2:``,sql:``,value:e.value,observatii:``,_fromDb:!1})),this._toast(`Loaded ${a.length} XML nodes`,`is-info`)},n.readAsText(t)}async _save(){if(!this.doc){this._toast(`No document selected`,`is-warning`);return}let e=this._rows.filter(e=>e.picked);if(!e.length){this._toast(`Select at least one row`,`is-warning`);return}this._saving=!0;try{let t=await Ti({FPRMS:this.doc.FPRMS,SERIES:this.doc.SERIES}),n=this.docId;if(t.data?.length&&t.data[0].CCCDOCUMENTES1MAPPINGS!==this.docId){if(!confirm(`Mapping with same FPRMS/SERIES exists. Overwrite?`)){this._saving=!1;return}await Mi(t.data[0].CCCDOCUMENTES1MAPPINGS),await Ai(t.data[0].CCCDOCUMENTES1MAPPINGS)}else this.docId&&await Mi(this.docId);n||=(await ki({TRDR_RETAILER:parseInt(this.trdr),TRDR_CLIENT:1,SOSOURCE:1351,FPRMS:this.doc.FPRMS,SERIES:this.doc.SERIES,INITIALDIRIN:this.doc.INITIALDIRIN||``,INITIALDIROUT:this.doc.INITIALDIROUT||``})).CCCDOCUMENTES1MAPPINGS;for(let t of e)await ji({CCCDOCUMENTES1MAPPINGS:n,XMLNODE:t.xmlPath,XMLORDER:t.xmlOrder,MANDATORY:+!!t.mandatory,S1TABLE1:t.s1Table1,S1FIELD1:t.s1Field1,S1TABLE2:t.s1Table2||null,S1FIELD2:t.s1Field2||null,SQL:t.sql||null,OBSERVATII:t.observatii||null});this._toast(`Saved ${e.length} mappings`,`is-success`)}catch(e){this._toast(`Save failed: `+e.message,`is-danger`)}finally{this._saving=!1}}_updateRow(e,t,n){this._rows=this._rows.map((r,i)=>i===e?{...r,[t]:n}:r)}_isVisible(e){return!(this._hideUnsel&&!e.picked||this._search&&!e.xmlPath.toLowerCase().includes(this._search.toLowerCase()))}_toast(e,t){this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:e,type:t},bubbles:!0,composed:!0}))}render(){return this._loading?U`<div style="color:var(--tblr-primary);">Loading mappings...</div>`:!this.docId&&!this._rows.length?U`<p class="text-secondary">Select a document above or load an XML file to begin mapping.</p>`:U`
       <div class="file-row">
         <div>
           <label>XML Root:</label>
@@ -637,7 +636,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           <doc-mappings-editor .trdr=${this.trdr}
                                @doc-selected=${this._onDocSelected}></doc-mappings-editor>
 
-          <h3>XML → S1 Mapping ${this._selectedDocId?U`<span style="font-weight:normal;color:#999;">(Doc ID: ${this._selectedDocId})</span>`:``}</h3>
+          <h3>XML → S1 Mapping ${this._selectedDocId?U`<span class="fw-normal text-secondary">(Doc ID: ${this._selectedDocId})</span>`:``}</h3>
           <xml-mapping-table .trdr=${this.trdr}
                              .docId=${this._selectedDocId}
                              .doc=${this._selectedDoc}></xml-mapping-table>
@@ -767,8 +766,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         <orders-log-table></orders-log-table>
       </div>
     `}};customElements.define(`logs-page`,ca);var la=class extends G{static properties={_user:{state:!0},_theme:{state:!0},_themes:{state:!0}};constructor(){super();let e=sessionStorage.getItem(`s1User`);this._user=e?JSON.parse(e):null,this._theme=h(),this._themes=p()}firstUpdated(){this._user&&this._initRouter(),this.addEventListener(`show-toast`,e=>{let t=this.querySelector(`notification-toast`);t&&t.show(e.detail.message,e.detail.type)})}_onLoginSuccess(e){this._user=e.detail,this.updateComplete.then(()=>this._initRouter())}_initRouter(){let e=this.querySelector(`#outlet`);!e||e._routerInitialized||(e._routerInitialized=!0,new tn(e).setRoutes([{path:hn.dashboard,component:`retailer-dashboard`},{path:hn.retailer,component:`retailer-detail`,action:(e,t)=>{let n=t.component(`retailer-detail`);return n.trdr=e.params.trdr,n}},{path:hn.config,component:`retailer-config`,action:(e,t)=>{let n=t.component(`retailer-config`);return n.trdr=e.params.trdr,n}},{path:hn.logs,component:`logs-page`},{path:`(.*)`,redirect:hn.fallback}]))}_logout(){sessionStorage.removeItem(`s1User`),this._user=null}_onThemeChange(e){this._theme=g(e.target.value)}_renderThemeSwitcher(){return U`
-      <div class="theme-switcher" data-bs-theme="dark">
-        <label class="theme-switcher-label" for="theme-select">Tema</label>
+      <div class="theme-switcher">
+        <label class="theme-switcher-label" for="theme-select">Temă</label>
         <select
           id="theme-select"
           class="form-select form-select-sm"
@@ -781,14 +780,14 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         </select>
       </div>
     `}_renderHeader(){return U`
-      <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
+      <header class="navbar navbar-expand-md d-print-none app-navbar border-bottom shadow-sm">
         <div class="container-xl app-shell-header">
-          ${this._user?U`<a class="navbar-brand" href="${gn()}">Pet Factory — Retailers</a>`:U`<span class="navbar-brand">Pet Factory — Retailers</span>`}
+          ${this._user?U`<a class="navbar-brand fw-semibold" href="${gn()}">Pet Factory — Retailers</a>`:U`<span class="navbar-brand fw-semibold">Pet Factory — Retailers</span>`}
 
           ${this._user?U`
-                <div class="navbar-nav flex-row ms-auto">
-                  <a class="nav-link" href="${gn()}">Dashboard</a>
-                  <a class="nav-link" href="${yn()}">Logs</a>
+                <div class="navbar-nav flex-row ms-auto gap-2">
+                  <a class="nav-link px-2" href="${gn()}">Dashboard</a>
+                  <a class="nav-link px-2" href="${yn()}">Logs</a>
                 </div>
               `:U`<div class="ms-auto"></div>`}
 
@@ -796,8 +795,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
             ${this._renderThemeSwitcher()}
             ${this._user?U`
                   <div class="navbar-nav flex-row align-items-center">
-                    <span class="text-white opacity-75 me-2">${this._user.name}</span>
-                    <button class="btn btn-sm btn-outline-light" @click=${this._logout}>Logout</button>
+                    <span class="text-body-secondary me-2">${this._user.name}</span>
+                    <button class="btn btn-sm btn-outline-secondary" @click=${this._logout}>Logout</button>
                   </div>
                 `:null}
           </div>

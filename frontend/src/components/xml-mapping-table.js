@@ -253,7 +253,7 @@ export class XmlMappingTable extends LightElement {
   render() {
     if (this._loading) return html`<div style="color:var(--tblr-primary);">Loading mappings...</div>`
     if (!this.docId && !this._rows.length) {
-      return html`<p style="color:#999;">Select a document above or load an XML file to begin mapping.</p>`
+      return html`<p class="text-secondary">Select a document above or load an XML file to begin mapping.</p>`
     }
 
     return html`
