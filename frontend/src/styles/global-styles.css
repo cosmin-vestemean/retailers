@@ -300,22 +300,17 @@ xml-viewer .toggle:hover { border-color: var(--tblr-secondary); }
    orders-log-table
    ============================================================ */
 orders-log-table { display: block; }
-orders-log-table .filters { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
 orders-log-table .msg-cell { max-width: 500px; word-break: break-word; }
-orders-log-table .msg-cell pre { white-space: pre-wrap; font-size: 0.75rem; max-height: 120px; overflow: auto; margin: 0; }
-orders-log-table .pagination-row { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; }
-orders-log-table .refresh-btn { cursor: pointer; background: none; border: none; font-size: 1.1rem; padding: 0.25em; }
-orders-log-table .refresh-btn:hover { opacity: 0.7; }
-orders-log-table .spinner-inline {
-  display: inline-block; width: 1em; height: 1em;
-  border: 2px solid var(--tblr-border-color);
-  border-top-color: var(--tblr-primary);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
+orders-log-table .msg-cell pre {
+  white-space: pre-wrap; font-size: 0.75rem; max-height: 120px; overflow: auto; margin: 0;
+  padding: 0.75rem; border-radius: 0.5rem; background: var(--bs-tertiary-bg, var(--tblr-bg-surface-secondary));
 }
+orders-log-table .pagination-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 0.75rem; flex-wrap: wrap; }
+orders-log-table .orders-log-summary { display: inline-flex; align-items: center; min-height: 31px; }
 orders-log-table .placeholder {
   text-align: center; padding: 3rem 1rem; color: var(--tblr-secondary);
+  background: var(--bs-tertiary-bg, var(--tblr-bg-surface-secondary));
+  border: 1px dashed var(--tblr-border-color); border-radius: 0.75rem;
 }
 
 /* ============================================================

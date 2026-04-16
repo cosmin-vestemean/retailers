@@ -99,11 +99,27 @@ export class OrdersLogTable extends LightElement {
 
   render() {
     return html`
-      <div class="card card-body">
-        <!-- Filters -->
-        <div class="filters mb-4">
-          <div>
-            <label class="form-label small">Retailer</label>
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-body-tertiary border-0 py-3 px-4">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <h2 class="h5 mb-1">Logs procesare</h2>
+              <p class="text-secondary small mb-0">Filtrează după retailer, operație și interval.</p>
+            </div>
+
+            ${this._loaded ? html`
+              <button class="btn btn-outline-secondary btn-sm" title="Reîncarcă"
+                @click=${() => this._fetchLogs()} ?disabled=${this._loading} type="button">
+                Reîncarcă
+              </button>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          <div class="row g-3 align-items-end mb-4">
+            <div class="col-12 col-md-6 col-xl-3">
+              <label class="form-label small">Retailer</label>
             <select class="form-select form-select-sm" @change=${e => this._trdr = e.target.value}>
               <option value="">Toți</option>
               <option value="-1">System</option>
@@ -111,105 +127,96 @@ export class OrdersLogTable extends LightElement {
                 <option value=${r.trdr}>${r.name}</option>
               `)}
             </select>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">Operație</label>
+            <div class="col-12 col-md-6 col-xl-3">
+              <label class="form-label small">Operație</label>
             <select class="form-select form-select-sm" @change=${e => this._orderid = e.target.value}>
               ${OP_OPTIONS.map(o => html`
                 <option value=${o.value}>${o.label}</option>
               `)}
             </select>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">De la</label>
+            <div class="col-12 col-md-6 col-xl-2">
+              <label class="form-label small">De la</label>
             <input class="form-control form-control-sm" type="date"
               .value=${this._dateFrom}
               @change=${e => this._dateFrom = e.target.value}>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">Până la</label>
+            <div class="col-12 col-md-6 col-xl-2">
+              <label class="form-label small">Până la</label>
             <input class="form-control form-control-sm" type="date"
               .value=${this._dateTo}
               @change=${e => this._dateTo = e.target.value}>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">&nbsp;</label>
+            <div class="col-12 col-xl-2">
+              <label class="form-label small d-none d-xl-block">&nbsp;</label>
             <button class="btn btn-info btn-sm" @click=${this._search}
-              ?disabled=${this._loading}>
+              ?disabled=${this._loading} type="button">
               ${this._loading
-                ? html`<span class="spinner-inline"></span>`
+                ? html`<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Caută`
                 : 'Caută'}
             </button>
+            </div>
           </div>
 
+          ${this._error ? html`
+            <div class="alert alert-danger py-2 px-3 small mb-3" role="alert">
+            ${this._error}
+            </div>
+          ` : ''}
+
+          ${!this._loaded && !this._loading && !this._error ? html`
+            <div class="placeholder">
+              <p class="fs-5 mb-2">&#x1f50d;</p>
+              <p class="mb-0">Selectează filtrele dorite și apasă <strong>Caută</strong>.</p>
+            </div>
+          ` : ''}
+
           ${this._loaded ? html`
-            <div>
-              <label class="form-label small">&nbsp;</label>
-              <button class="refresh-btn" title="Reîncarcă"
-                @click=${() => this._fetchLogs()} ?disabled=${this._loading}>
-                &#x21bb;
-              </button>
+            <div class="table-responsive border rounded-3 bg-body">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Data</th>
+                    <th>Retailer</th>
+                    <th>Operație</th>
+                    <th>Mesaj</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${this._logs.length === 0 ? html`
+                    <tr><td colspan="4" class="text-center text-secondary py-4">
+                      Niciun rezultat.
+                    </td></tr>
+                  ` : this._logs.map(log => html`
+                    <tr>
+                      <td class="text-nowrap">${log.MESSAGEDATE ?? ''}</td>
+                      <td>${this._retailerName(log.TRDR_RETAILER)}</td>
+                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.ORDERID)}</span></td>
+                      <td class="msg-cell">${unsafeHTML(log.MESSAGETEXT ?? '')}</td>
+                    </tr>
+                  `)}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination-row">
+              <span class="small text-secondary orders-log-summary">
+                ${this._total} rezultate — pagina ${this._page}/${this._totalPages}
+              </span>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Paginare loguri">
+                <button class="btn btn-outline-secondary" ?disabled=${this._page <= 1}
+                  @click=${this._prevPage} type="button">&#8592; Prev</button>
+                <button class="btn btn-outline-secondary" ?disabled=${this._page >= this._totalPages}
+                  @click=${this._nextPage} type="button">Next &#8594;</button>
+              </div>
             </div>
           ` : ''}
         </div>
-
-        ${this._error ? html`
-          <div class="alert alert-danger py-2 px-3 mb-3" style="font-size:0.85rem;">
-            ${this._error}
-          </div>
-        ` : ''}
-
-        ${!this._loaded && !this._loading && !this._error ? html`
-          <div class="placeholder">
-            <p class="fs-5 mb-2">&#x1f50d;</p>
-            <p>Selectează filtrele dorite și apasă <strong>Caută</strong>.</p>
-          </div>
-        ` : ''}
-
-        ${this._loaded ? html`
-          <div class="table-responsive">
-            <table class="table table-hover table-striped">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Retailer</th>
-                  <th>Operație</th>
-                  <th>Mesaj</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${this._logs.length === 0 ? html`
-                  <tr><td colspan="4" class="text-center text-secondary">
-                    Niciun rezultat.
-                  </td></tr>
-                ` : this._logs.map(log => html`
-                  <tr>
-                    <td style="white-space:nowrap;">${log.MESSAGEDATE ?? ''}</td>
-                    <td>${this._retailerName(log.TRDR_RETAILER)}</td>
-                    <td><span class="badge bg-secondary-lt">${this._opLabel(log.ORDERID)}</span></td>
-                    <td class="msg-cell">${unsafeHTML(log.MESSAGETEXT ?? '')}</td>
-                  </tr>
-                `)}
-              </tbody>
-            </table>
-          </div>
-
-          <div class="pagination-row">
-            <span class="small text-secondary">
-              ${this._total} rezultate — pagina ${this._page}/${this._totalPages}
-            </span>
-            <div class="btn-list">
-              <button class="btn btn-sm" ?disabled=${this._page <= 1}
-                @click=${this._prevPage}>&#8592; Prev</button>
-              <button class="btn btn-sm" ?disabled=${this._page >= this._totalPages}
-                @click=${this._nextPage}>Next &#8594;</button>
-            </div>
-          </div>
-        ` : ''}
       </div>
     `
   }

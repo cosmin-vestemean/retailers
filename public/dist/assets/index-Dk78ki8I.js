@@ -637,11 +637,27 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         `}
       </div>
     `:U`<div class="container-xl py-4"><p>Retailer not found.</p></div>`}};customElements.define(`retailer-config`,aa);var oa=[{value:``,label:`Toate`},{value:`downloadXml`,label:`Download XML`},{value:`storeXmlInDB`,label:`Store in DB`},{value:`createOrders`,label:`Create orders`},{value:`system`,label:`System`}],sa=class extends G{static properties={_logs:{state:!0},_total:{state:!0},_page:{state:!0},_pageSize:{state:!0},_loading:{state:!0},_loaded:{state:!0},_error:{state:!0},_trdr:{state:!0},_orderid:{state:!0},_dateFrom:{state:!0},_dateTo:{state:!0}};constructor(){super(),this._logs=[],this._total=0,this._page=1,this._pageSize=25,this._loading=!1,this._loaded=!1,this._error=null,this._trdr=``,this._orderid=``,this._dateFrom=``,this._dateTo=``}get _totalPages(){return Math.max(1,Math.ceil(this._total/this._pageSize))}async _search(){this._page=1,await this._fetchLogs()}async _fetchLogs(){this._loading=!0,this._error=null;try{let e=await Li({trdr:this._trdr===``?void 0:parseInt(this._trdr),orderid:this._orderid||void 0,dateFrom:this._dateFrom||void 0,dateTo:this._dateTo||void 0,page:this._page,pageSize:this._pageSize});e.success?(this._logs=e.data||[],this._total=e.total||0,this._loaded=!0):this._error=e.error||`Eroare necunoscută`}catch(e){this._error=e.message}finally{this._loading=!1}}_prevPage(){this._page>1&&(this._page--,this._fetchLogs())}_nextPage(){this._page<this._totalPages&&(this._page++,this._fetchLogs())}_retailerName(e){if(e===-1)return`System`;let t=Bi.find(t=>t.trdr===e);return t?t.name:String(e)}_opLabel(e){let t=oa.find(t=>t.value===e);return t?t.label:e}render(){return U`
-      <div class="card card-body">
-        <!-- Filters -->
-        <div class="filters mb-4">
-          <div>
-            <label class="form-label small">Retailer</label>
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-body-tertiary border-0 py-3 px-4">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+              <h2 class="h5 mb-1">Logs procesare</h2>
+              <p class="text-secondary small mb-0">Filtrează după retailer, operație și interval.</p>
+            </div>
+
+            ${this._loaded?U`
+              <button class="btn btn-outline-secondary btn-sm" title="Reîncarcă"
+                @click=${()=>this._fetchLogs()} ?disabled=${this._loading} type="button">
+                Reîncarcă
+              </button>
+            `:``}
+          </div>
+        </div>
+
+        <div class="card-body p-4">
+          <div class="row g-3 align-items-end mb-4">
+            <div class="col-12 col-md-6 col-xl-3">
+              <label class="form-label small">Retailer</label>
             <select class="form-select form-select-sm" @change=${e=>this._trdr=e.target.value}>
               <option value="">Toți</option>
               <option value="-1">System</option>
@@ -649,103 +665,94 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                 <option value=${e.trdr}>${e.name}</option>
               `)}
             </select>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">Operație</label>
+            <div class="col-12 col-md-6 col-xl-3">
+              <label class="form-label small">Operație</label>
             <select class="form-select form-select-sm" @change=${e=>this._orderid=e.target.value}>
               ${oa.map(e=>U`
                 <option value=${e.value}>${e.label}</option>
               `)}
             </select>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">De la</label>
+            <div class="col-12 col-md-6 col-xl-2">
+              <label class="form-label small">De la</label>
             <input class="form-control form-control-sm" type="date"
               .value=${this._dateFrom}
               @change=${e=>this._dateFrom=e.target.value}>
-          </div>
+            </div>
 
-          <div>
-            <label class="form-label small">Până la</label>
+            <div class="col-12 col-md-6 col-xl-2">
+              <label class="form-label small">Până la</label>
             <input class="form-control form-control-sm" type="date"
               .value=${this._dateTo}
               @change=${e=>this._dateTo=e.target.value}>
+            </div>
+
+            <div class="col-12 col-xl-2">
+              <label class="form-label small d-none d-xl-block">&nbsp;</label>
+            <button class="btn btn-info btn-sm" @click=${this._search}
+              ?disabled=${this._loading} type="button">
+              ${this._loading?U`<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Caută`:`Caută`}
+            </button>
+            </div>
           </div>
 
-          <div>
-            <label class="form-label small">&nbsp;</label>
-            <button class="btn btn-info btn-sm" @click=${this._search}
-              ?disabled=${this._loading}>
-              ${this._loading?U`<span class="spinner-inline"></span>`:`Caută`}
-            </button>
-          </div>
+          ${this._error?U`
+            <div class="alert alert-danger py-2 px-3 small mb-3" role="alert">
+            ${this._error}
+            </div>
+          `:``}
+
+          ${!this._loaded&&!this._loading&&!this._error?U`
+            <div class="placeholder">
+              <p class="fs-5 mb-2">&#x1f50d;</p>
+              <p class="mb-0">Selectează filtrele dorite și apasă <strong>Caută</strong>.</p>
+            </div>
+          `:``}
 
           ${this._loaded?U`
-            <div>
-              <label class="form-label small">&nbsp;</label>
-              <button class="refresh-btn" title="Reîncarcă"
-                @click=${()=>this._fetchLogs()} ?disabled=${this._loading}>
-                &#x21bb;
-              </button>
+            <div class="table-responsive border rounded-3 bg-body">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Data</th>
+                    <th>Retailer</th>
+                    <th>Operație</th>
+                    <th>Mesaj</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${this._logs.length===0?U`
+                    <tr><td colspan="4" class="text-center text-secondary py-4">
+                      Niciun rezultat.
+                    </td></tr>
+                  `:this._logs.map(e=>U`
+                    <tr>
+                      <td class="text-nowrap">${e.MESSAGEDATE??``}</td>
+                      <td>${this._retailerName(e.TRDR_RETAILER)}</td>
+                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(e.ORDERID)}</span></td>
+                      <td class="msg-cell">${Ji(e.MESSAGETEXT??``)}</td>
+                    </tr>
+                  `)}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination-row">
+              <span class="small text-secondary orders-log-summary">
+                ${this._total} rezultate — pagina ${this._page}/${this._totalPages}
+              </span>
+              <div class="btn-group btn-group-sm" role="group" aria-label="Paginare loguri">
+                <button class="btn btn-outline-secondary" ?disabled=${this._page<=1}
+                  @click=${this._prevPage} type="button">&#8592; Prev</button>
+                <button class="btn btn-outline-secondary" ?disabled=${this._page>=this._totalPages}
+                  @click=${this._nextPage} type="button">Next &#8594;</button>
+              </div>
             </div>
           `:``}
         </div>
-
-        ${this._error?U`
-          <div class="alert alert-danger py-2 px-3 mb-3" style="font-size:0.85rem;">
-            ${this._error}
-          </div>
-        `:``}
-
-        ${!this._loaded&&!this._loading&&!this._error?U`
-          <div class="placeholder">
-            <p class="fs-5 mb-2">&#x1f50d;</p>
-            <p>Selectează filtrele dorite și apasă <strong>Caută</strong>.</p>
-          </div>
-        `:``}
-
-        ${this._loaded?U`
-          <div class="table-responsive">
-            <table class="table table-hover table-striped">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Retailer</th>
-                  <th>Operație</th>
-                  <th>Mesaj</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${this._logs.length===0?U`
-                  <tr><td colspan="4" class="text-center text-secondary">
-                    Niciun rezultat.
-                  </td></tr>
-                `:this._logs.map(e=>U`
-                  <tr>
-                    <td style="white-space:nowrap;">${e.MESSAGEDATE??``}</td>
-                    <td>${this._retailerName(e.TRDR_RETAILER)}</td>
-                    <td><span class="badge bg-secondary-lt">${this._opLabel(e.ORDERID)}</span></td>
-                    <td class="msg-cell">${Ji(e.MESSAGETEXT??``)}</td>
-                  </tr>
-                `)}
-              </tbody>
-            </table>
-          </div>
-
-          <div class="pagination-row">
-            <span class="small text-secondary">
-              ${this._total} rezultate — pagina ${this._page}/${this._totalPages}
-            </span>
-            <div class="btn-list">
-              <button class="btn btn-sm" ?disabled=${this._page<=1}
-                @click=${this._prevPage}>&#8592; Prev</button>
-              <button class="btn btn-sm" ?disabled=${this._page>=this._totalPages}
-                @click=${this._nextPage}>Next &#8594;</button>
-            </div>
-          </div>
-        `:``}
       </div>
     `}};customElements.define(`orders-log-table`,sa);var ca=class extends G{render(){return U`
       <div class="container-xl py-4">
