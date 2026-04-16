@@ -269,7 +269,7 @@ export class OrdersTable extends LightElement {
               ${this._filteredOrders.map((order, i) => {
                 const realIndex = this._orders.indexOf(order)
                 return html`
-                <tr class=${order.status === 'sent' ? 'sent' : ''}>
+                <tr>
                   <td>${new Date(order.date).toLocaleString()}</td>
                   <td>
                     ${order.filename}
