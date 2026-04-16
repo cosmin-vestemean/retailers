@@ -86,13 +86,21 @@ export class AppShell extends LightElement {
     this._theme = applyTheme(e.target.value)
   }
 
+  _getActiveThemeLabel() {
+    return this._themes.find((theme) => theme.id === this._theme)?.label || this._theme
+  }
+
   _renderThemeSwitcher() {
     return html`
       <div class="theme-switcher" data-bs-theme="dark">
         <label class="theme-switcher-label" for="theme-select">Tema</label>
+        <span class="theme-switcher-current" title="Tema activa la acest acces">
+          ${this._getActiveThemeLabel()}
+        </span>
         <select
           id="theme-select"
           class="form-select form-select-sm"
+          aria-label="Selecteaza tema interfetei"
           .value=${this._theme}
           @change=${this._onThemeChange}
         >

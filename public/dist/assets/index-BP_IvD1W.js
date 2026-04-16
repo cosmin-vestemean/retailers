@@ -752,12 +752,16 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         <h1 class="fw-bold mb-4" style="font-size:1.5rem;">Logs</h1>
         <orders-log-table></orders-log-table>
       </div>
-    `}};customElements.define(`logs-page`,ma);var ha=class extends G{static properties={_user:{state:!0},_theme:{state:!0},_themes:{state:!0}};constructor(){super();let e=sessionStorage.getItem(`s1User`);this._user=e?JSON.parse(e):null,this._theme=x(),this._themes=y()}firstUpdated(){this._user&&this._initRouter(),this.addEventListener(`show-toast`,e=>{let t=this.querySelector(`notification-toast`);t&&t.show(e.detail.message,e.detail.type)})}_onLoginSuccess(e){this._user=e.detail,this.updateComplete.then(()=>this._initRouter())}_initRouter(){let e=this.querySelector(`#outlet`);!e||e._routerInitialized||(e._routerInitialized=!0,new cn(e).setRoutes([{path:xn.dashboard,component:`retailer-dashboard`},{path:xn.retailer,component:`retailer-detail`,action:(e,t)=>{let n=t.component(`retailer-detail`);return n.trdr=e.params.trdr,n}},{path:xn.config,component:`retailer-config`,action:(e,t)=>{let n=t.component(`retailer-config`);return n.trdr=e.params.trdr,n}},{path:xn.logs,component:`logs-page`},{path:`(.*)`,redirect:xn.fallback}]))}_logout(){sessionStorage.removeItem(`s1User`),this._user=null}_onThemeChange(e){this._theme=S(e.target.value)}_renderThemeSwitcher(){return U`
+    `}};customElements.define(`logs-page`,ma);var ha=class extends G{static properties={_user:{state:!0},_theme:{state:!0},_themes:{state:!0}};constructor(){super();let e=sessionStorage.getItem(`s1User`);this._user=e?JSON.parse(e):null,this._theme=x(),this._themes=y()}firstUpdated(){this._user&&this._initRouter(),this.addEventListener(`show-toast`,e=>{let t=this.querySelector(`notification-toast`);t&&t.show(e.detail.message,e.detail.type)})}_onLoginSuccess(e){this._user=e.detail,this.updateComplete.then(()=>this._initRouter())}_initRouter(){let e=this.querySelector(`#outlet`);!e||e._routerInitialized||(e._routerInitialized=!0,new cn(e).setRoutes([{path:xn.dashboard,component:`retailer-dashboard`},{path:xn.retailer,component:`retailer-detail`,action:(e,t)=>{let n=t.component(`retailer-detail`);return n.trdr=e.params.trdr,n}},{path:xn.config,component:`retailer-config`,action:(e,t)=>{let n=t.component(`retailer-config`);return n.trdr=e.params.trdr,n}},{path:xn.logs,component:`logs-page`},{path:`(.*)`,redirect:xn.fallback}]))}_logout(){sessionStorage.removeItem(`s1User`),this._user=null}_onThemeChange(e){this._theme=S(e.target.value)}_getActiveThemeLabel(){return this._themes.find(e=>e.id===this._theme)?.label||this._theme}_renderThemeSwitcher(){return U`
       <div class="theme-switcher" data-bs-theme="dark">
         <label class="theme-switcher-label" for="theme-select">Tema</label>
+        <span class="theme-switcher-current" title="Tema activa la acest acces">
+          ${this._getActiveThemeLabel()}
+        </span>
         <select
           id="theme-select"
           class="form-select form-select-sm"
+          aria-label="Selecteaza tema interfetei"
           .value=${this._theme}
           @change=${this._onThemeChange}
         >
