@@ -27,26 +27,11 @@ app-shell .theme-switcher {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
 }
 app-shell .theme-switcher-label {
   margin: 0;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.7);
-}
-app-shell .theme-switcher-current {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0.15rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
 }
 app-shell .theme-switcher select {
   min-width: 9.5rem;
@@ -66,10 +51,6 @@ app-shell .theme-switcher select {
 
   app-shell .theme-switcher {
     flex: 1 1 12rem;
-  }
-
-  app-shell .theme-switcher-current {
-    order: 3;
   }
 
   app-shell .theme-switcher select {
