@@ -89,7 +89,6 @@ export class AppShell extends LightElement {
   _renderThemeSwitcher() {
     return html`
       <div class="theme-switcher" data-bs-theme="dark">
-        <label class="theme-switcher-label" for="theme-select">Tema</label>
         <select
           id="theme-select"
           class="form-select form-select-sm"
