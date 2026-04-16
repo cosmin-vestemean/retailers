@@ -90,29 +90,29 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
           ${e.message}
         </div>
       `)}
-    `}};customElements.define(`notification-toast`,Bi);var Vi=[{trdr:`11639`,name:`eMAG`,logo:`https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg`},{trdr:`12349`,name:`Kaufland`,logo:`https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg`},{trdr:`78631`,name:`Supeco`,logo:`https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg`},{trdr:`11322`,name:`Carrefour`,logo:`https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png`},{trdr:`12664`,name:`Metro`,logo:`https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg`},{trdr:`12649`,name:`Mega Image`,logo:`https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg`},{trdr:`11654`,name:`Dedeman`,logo:`https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg`}],Hi=class extends G{static properties={trdr:{type:String},name:{type:String},logo:{type:String},_pendingOrders:{state:!0},_pendingInvoices:{state:!0},_invoiceList:{state:!0},_loading:{state:!0}};constructor(){super(),this._pendingOrders=null,this._pendingInvoices=null,this._invoiceList=``,this._loading=!0}connectedCallback(){super.connectedCallback(),this._fetchStats()}async _fetchStats(){this._loading=!0;try{let e=await Di(parseInt(this.trdr),{daysOlder:30});this._pendingOrders=e.pendingOrders??0,this._pendingInvoices=e.pendingInvoices??0,this._invoiceList=e.invoiceList||``}catch{this._pendingOrders=0,this._pendingInvoices=0,this._invoiceList=``}finally{this._loading=!1}}_renderBadge(e){return e===null?U`<span class="badge bg-secondary">...</span>`:e>0?U`<span class="badge bg-danger" title="Ultimele 30 zile">${e}</span>`:U`<span class="badge bg-success">${e}</span>`}_showInvoiceDetail(){this._invoiceList&&this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:this._invoiceList,type:`is-info`},bubbles:!0,composed:!0}))}render(){let e=vn(this.trdr),t=yn(this.trdr);return U`
-      <div class="card h-100">
+    `}};customElements.define(`notification-toast`,Bi);var Vi=[{trdr:`11639`,name:`eMAG`,logo:`https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg`},{trdr:`12349`,name:`Kaufland`,logo:`https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg`},{trdr:`78631`,name:`Supeco`,logo:`https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg`},{trdr:`11322`,name:`Carrefour`,logo:`https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png`},{trdr:`12664`,name:`Metro`,logo:`https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg`},{trdr:`12649`,name:`Mega Image`,logo:`https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg`},{trdr:`11654`,name:`Dedeman`,logo:`https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg`}],Hi=class extends G{static properties={trdr:{type:String},name:{type:String},logo:{type:String},_pendingOrders:{state:!0},_pendingInvoices:{state:!0},_invoiceList:{state:!0},_loading:{state:!0}};constructor(){super(),this._pendingOrders=null,this._pendingInvoices=null,this._invoiceList=``,this._loading=!0}connectedCallback(){super.connectedCallback(),this._fetchStats()}async _fetchStats(){this._loading=!0;try{let e=await Di(parseInt(this.trdr),{daysOlder:30});this._pendingOrders=e.pendingOrders??0,this._pendingInvoices=e.pendingInvoices??0,this._invoiceList=e.invoiceList||``}catch{this._pendingOrders=0,this._pendingInvoices=0,this._invoiceList=``}finally{this._loading=!1}}_renderBadge(e){return e===null?U`<span class="badge rounded-pill text-bg-secondary">...</span>`:e>0?U`<span class="badge rounded-pill text-bg-danger" title="Ultimele 30 zile">${e}</span>`:U`<span class="badge rounded-pill text-bg-success">${e}</span>`}_showInvoiceDetail(){this._invoiceList&&this.dispatchEvent(new CustomEvent(`show-toast`,{detail:{message:this._invoiceList,type:`is-info`},bubbles:!0,composed:!0}))}render(){let e=vn(this.trdr),t=yn(this.trdr);return U`
+      <div class="card h-100 shadow-sm retailer-card-shell">
         <a href="${e}" class="text-decoration-none text-reset">
-          <div class="card-body text-center">
-            <div class="d-flex align-items-center justify-content-center mb-3" style="min-height:100px;">
-              <img src="${this.logo}" alt="${this.name}" style="max-height:72px; max-width:160px; object-fit:contain;" />
+          <div class="card-body text-center p-4">
+            <div class="retailer-card-logo d-flex align-items-center justify-content-center mb-3">
+              <img src="${this.logo}" alt="${this.name}" class="img-fluid retailer-card-logo-image" />
             </div>
-            <h5 class="card-title">${this.name}</h5>
+            <h5 class="card-title mb-0">${this.name}</h5>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Comenzi de trimis
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+              <span class="fw-medium">Comenzi de trimis</span>
               ${this._renderBadge(this._pendingOrders)}
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Facturi de trimis
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+              <span class="fw-medium">Facturi de trimis</span>
               ${this._renderBadge(this._pendingInvoices)}
             </li>
           </ul>
         </a>
         <div class="card-footer d-flex p-0">
-          <a href="${e}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none" style="font-size:0.85rem;">Detalii</a>
-          <a href="${t}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none border-start" style="font-size:0.85rem;">Configurează</a>
+          <a href="${e}" class="retailer-card-footer-link flex-fill text-center py-2 text-primary fw-semibold text-decoration-none">Detalii</a>
+          <a href="${t}" class="retailer-card-footer-link flex-fill text-center py-2 text-primary fw-semibold text-decoration-none border-start">Configurează</a>
         </div>
       </div>
     `}};customElements.define(`retailer-card`,Hi);var Ui=class extends G{static properties={_scanning:{state:!0},_lastRun:{state:!0},_error:{state:!0}};constructor(){super(),this._scanning=!1,this._lastRun=null,this._error=null}connectedCallback(){super.connectedCallback(),this._loadLastRun()}async _loadLastRun(){try{let e=await Li();e?.success&&e.data?.length&&(this._lastRun=e.data[0].MESSAGEDATE)}catch{}}_nextRun(){if(!this._lastRun)return null;let e=new Date(this._lastRun);return isNaN(e.getTime())?null:new Date(e.getTime()+1800*1e3)}_formatNext(){let e=this._nextRun();if(!e)return`—`;let t=new Date,n=e.getTime()-t.getTime();if(n<=0)return`iminentă`;let r=Math.ceil(n/6e4);return r<=60?`~${r} min`:e.toLocaleString(`ro-RO`)}async _handleScan(){this._scanning=!0,this._error=null;try{await Ii(),await this._loadLastRun()}catch(e){this._error=e.message}finally{this._scanning=!1}}render(){return U`

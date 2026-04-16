@@ -44,9 +44,9 @@ export class RetailerCard extends LightElement {
   }
 
   _renderBadge(value) {
-    if (value === null) return html`<span class="badge bg-secondary">...</span>`
-    if (value > 0) return html`<span class="badge bg-danger" title="Ultimele 30 zile">${value}</span>`
-    return html`<span class="badge bg-success">${value}</span>`
+    if (value === null) return html`<span class="badge rounded-pill text-bg-secondary">...</span>`
+    if (value > 0) return html`<span class="badge rounded-pill text-bg-danger" title="Ultimele 30 zile">${value}</span>`
+    return html`<span class="badge rounded-pill text-bg-success">${value}</span>`
   }
 
   _showInvoiceDetail() {
@@ -63,28 +63,28 @@ export class RetailerCard extends LightElement {
     const configHref = configUrl(this.trdr)
 
     return html`
-      <div class="card h-100">
+      <div class="card h-100 shadow-sm retailer-card-shell">
         <a href="${detailsHref}" class="text-decoration-none text-reset">
-          <div class="card-body text-center">
-            <div class="d-flex align-items-center justify-content-center mb-3" style="min-height:100px;">
-              <img src="${this.logo}" alt="${this.name}" style="max-height:72px; max-width:160px; object-fit:contain;" />
+          <div class="card-body text-center p-4">
+            <div class="retailer-card-logo d-flex align-items-center justify-content-center mb-3">
+              <img src="${this.logo}" alt="${this.name}" class="img-fluid retailer-card-logo-image" />
             </div>
-            <h5 class="card-title">${this.name}</h5>
+            <h5 class="card-title mb-0">${this.name}</h5>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Comenzi de trimis
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+              <span class="fw-medium">Comenzi de trimis</span>
               ${this._renderBadge(this._pendingOrders)}
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Facturi de trimis
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+              <span class="fw-medium">Facturi de trimis</span>
               ${this._renderBadge(this._pendingInvoices)}
             </li>
           </ul>
         </a>
         <div class="card-footer d-flex p-0">
-          <a href="${detailsHref}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none" style="font-size:0.85rem;">Detalii</a>
-          <a href="${configHref}" class="flex-fill text-center py-2 text-primary fw-semibold text-decoration-none border-start" style="font-size:0.85rem;">Configurează</a>
+          <a href="${detailsHref}" class="retailer-card-footer-link flex-fill text-center py-2 text-primary fw-semibold text-decoration-none">Detalii</a>
+          <a href="${configHref}" class="retailer-card-footer-link flex-fill text-center py-2 text-primary fw-semibold text-decoration-none border-start">Configurează</a>
         </div>
       </div>
     `

@@ -159,8 +159,13 @@ batch-progress .log div { padding: 0.1rem 0; border-bottom: 1px solid var(--tblr
    retailer-card
    ============================================================ */
 retailer-card { display: block; height: 100%; }
-retailer-card .card { transition: box-shadow 0.15s; }
+retailer-card .card { transition: box-shadow 0.15s, transform 0.15s; }
 retailer-card .card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.13); }
+retailer-card .card:hover { transform: translateY(-1px); }
+retailer-card .retailer-card-shell { border-color: var(--bs-border-color-translucent); }
+retailer-card .retailer-card-logo { min-height: 100px; }
+retailer-card .retailer-card-logo-image { max-height: 72px; max-width: 160px; object-fit: contain; }
+retailer-card .retailer-card-footer-link { font-size: 0.85rem; }
 retailer-card .card-footer a:hover { background: var(--bs-tertiary-bg, #f0f0f0); }
 
 /* ============================================================
