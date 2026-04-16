@@ -13,7 +13,7 @@ export class OrdersTable extends LightElement {
     _orders:    { state: true },
     _loading:   { state: true },
     _sending:   { state: true },
-    _pendingOnly: { state: true },
+    _showSent:  { state: true },
     _page:      { state: true },
     _pageSize:  { state: true },
     _total:     { state: true },
@@ -24,7 +24,7 @@ export class OrdersTable extends LightElement {
     this._orders = []
     this._loading = false
     this._sending = new Set()
-    this._pendingOnly = false
+    this._showSent = true
     this._page = 1
     this._pageSize = 25
     this._total = 0
@@ -45,7 +45,11 @@ export class OrdersTable extends LightElement {
   async loadOrders() {
     this._loading = true
     try {
-      const res = await getOrdersPaged(this.trdr, { page: this._page, pageSize: this._pageSize, pendingOnly: this._pendingOnly })
+      const res = await getOrdersPaged(this.trdr, {
+        page: this._page,
+        pageSize: this._pageSize,
+        includeSent: this._showSent,
+      })
       if (res?.success) {
         this._orders = (res.data || []).map(o => this._normalizeOrder(o))
         this._total = res.total || 0
@@ -185,6 +189,12 @@ export class OrdersTable extends LightElement {
     this.requestUpdate()
   }
 
+  async _toggleShowSent(e) {
+    this._showSent = e.target.checked
+    this._page = 1
+    await this.loadOrders()
+  }
+
   _saveXml(order) {
     const blob = new Blob([order.xmlData], { type: 'text/xml' })
     const url = URL.createObjectURL(blob)
@@ -238,9 +248,9 @@ export class OrdersTable extends LightElement {
           </button>
         ` : ''}
         <label style="font-size:0.85rem; margin-left:auto;">
-          <input type="checkbox" .checked=${this._pendingOnly}
-                 @change=${(e) => { this._pendingOnly = e.target.checked; this._page = 1; this.loadOrders() }} />
-          Doar netrimise
+          <input type="checkbox" .checked=${this._showSent}
+                 @change=${this._toggleShowSent} />
+          Arată trimise
         </label>
       </div>
 

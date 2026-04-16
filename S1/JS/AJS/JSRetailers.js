@@ -136,7 +136,7 @@ function getOrdersData(params) {
   var daysOlder = parseInt(params.daysOlder) || 30;
   var page = parseInt(params.page) || 1;
   var pageSize = parseInt(params.pageSize) || 25;
-  var pendingOnly = params.pendingOnly ? true : false;
+  var includeSent = !(params.includeSent === false || params.includeSent === 'false' || params.includeSent === 0 || params.includeSent === '0');
   if (pageSize > 100) pageSize = 100;
   var offset = (page - 1) * pageSize;
 
@@ -147,8 +147,8 @@ function getOrdersData(params) {
   var fromClause = 'FROM CCCSFTPXML c WHERE c.TRDR_RETAILER = ' + trdr
     + ' AND c.XMLDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())';
 
-  if (pendingOnly) {
-    fromClause += ' AND COALESCE(c.FINDOC, 0) = 0';
+  if (!includeSent) {
+    fromClause += ' AND ISNULL(c.FINDOC, 0) = 0';
   }
 
   var total = 0;

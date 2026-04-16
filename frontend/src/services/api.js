@@ -265,9 +265,9 @@ export async function getS1ObjData(params) {
 }
 
 /** Fetch orders (paginated) via AJS endpoint. */
-export async function getOrdersPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30, pendingOnly = false } = {}) {
+export async function getOrdersPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30, includeSent = true } = {}) {
   return client.service('orders-data').find({
-    query: { trdr, page, pageSize, daysOlder, pendingOnly }
+    query: { trdr, page, pageSize, daysOlder, includeSent }
   })
 }
 

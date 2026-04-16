@@ -8,11 +8,11 @@ export class OrdersDataService {
   }
 
   async find(params) {
-    const { trdr, page, pageSize, daysOlder, pendingOnly } = params.query || {}
+    const { trdr, page, pageSize, daysOlder, includeSent } = params.query || {}
     const url = mainURL + '/JS/JSRetailers/getOrdersData'
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ trdr, page, pageSize, daysOlder, pendingOnly })
+      body: JSON.stringify({ trdr, page, pageSize, daysOlder, includeSent })
     })
     return response.json()
   }
