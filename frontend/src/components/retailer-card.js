@@ -63,7 +63,7 @@ export class RetailerCard extends LightElement {
     const configHref = configUrl(this.trdr)
 
     return html`
-      <div class="card h-100 shadow-sm retailer-card-shell">
+      <div class="card h-100 shadow-sm border-0 retailer-card-shell">
         <a href="${detailsHref}" class="text-decoration-none text-reset">
           <div class="card-body text-center p-4">
             <div class="retailer-card-logo d-flex align-items-center justify-content-center mb-3">
