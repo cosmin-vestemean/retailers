@@ -273,7 +273,7 @@ export class OrdersTable extends LightElement {
                   <td>${new Date(order.date).toLocaleString()}</td>
                   <td>
                     ${order.filename}
-                    ${order.orderId ? html`<br><span class="badge bg-info">${order.orderId}</span>` : ''}
+                    ${order.orderId ? html`<br><span class="badge text-bg-secondary">${order.orderId}</span>` : ''}
                   </td>
                   <td>
                     <div class="actions">

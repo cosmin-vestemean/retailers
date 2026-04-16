@@ -1,4 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/application.html
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { feathers } from '@feathersjs/feathers'
 import configuration from '@feathersjs/configuration'
 import { koa, rest, bodyParser, errorHandler, parseAuthentication, cors, serveStatic } from '@feathersjs/koa'
@@ -64,12 +66,37 @@ app.use(async (ctx, next) => {
 // Load our app configuration (see config/ folder)
 app.configure(configuration(configurationValidator))
 
+const spaEntryPath = resolve(app.get('public'), 'index.html')
+const spaRoutes = [
+  /^\/$/,
+  /^\/retailer\/[^/]+$/,
+  /^\/config\/[^/]+$/,
+  /^\/logs$/
+]
+
+const isSpaNavigationRequest = (ctx) => {
+  if (ctx.method !== 'GET') return false
+  if (!ctx.accepts('html')) return false
+  if (ctx.path.startsWith('/assets/') || ctx.path.startsWith('/socket.io/')) return false
+  if (/\.[a-z0-9]+$/i.test(ctx.path)) return false
+
+  return spaRoutes.some((route) => route.test(ctx.path))
+}
+
 // Set up Koa middleware
 app.use(cors({ origin: (ctx) => {
   const reqOrigin = ctx.get('Origin')
   const allowed = app.get('origins') || []
   return allowed.includes(reqOrigin) ? reqOrigin : allowed[0] || false
 }}))
+app.use(async (ctx, next) => {
+  if (!isSpaNavigationRequest(ctx)) {
+    return next()
+  }
+
+  ctx.type = 'html'
+  ctx.body = await readFile(spaEntryPath, 'utf8')
+})
 app.use(serveStatic(app.get('public')))
 app.use(serveStatic('./public/'))
 app.use(errorHandler())
