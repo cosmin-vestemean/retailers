@@ -43,9 +43,9 @@ export class RetailerCard extends LightElement {
   }
 
   _renderBadge(value) {
-    if (value === null) return html`<span class="badge loading">...</span>`
-    if (value > 0) return html`<span class="badge pending" title="Ultimele 30 zile">${value}</span>`
-    return html`<span class="badge ok">${value}</span>`
+    if (value === null) return html`<span class="badge badge-loading">...</span>`
+    if (value > 0) return html`<span class="badge badge-pending" title="Ultimele 30 zile">${value}</span>`
+    return html`<span class="badge badge-ok">${value}</span>`
   }
 
   _showInvoiceDetail() {

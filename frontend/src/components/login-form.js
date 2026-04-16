@@ -72,7 +72,7 @@ export class LoginForm extends LightElement {
   render() {
     return html`
       <div class="card login-card">
-        <div class="card-content">
+        <div class="card-body">
           <img class="logo"
             src="https://www.petfactory.ro/wp-content/uploads/2022/06/sigla-pet-factory.ro_.png"
             alt="Pet Factory" />
@@ -80,14 +80,14 @@ export class LoginForm extends LightElement {
           <hr class="divider" />
 
           <form @submit=${this._handleSubmit}>
-            <div class="field">
-              <label class="label">
+            <div class="mb-3">
+              <label class="form-label">
                 Utilizator
                 <button type="button" class="info-btn"
                         title="Cum adaug/șterg utilizatori?"
                         @click=${() => this._showInfo = true}>&#9432;</button>
               </label>
-              <select name="userId" required>
+              <select name="userId" class="form-select" required>
                 <option value="">
                   ${this._users.length ? 'Selectați utilizatorul S1' : 'Se încarcă...'}
                 </option>
@@ -97,19 +97,19 @@ export class LoginForm extends LightElement {
               </select>
             </div>
 
-            <div class="field">
-              <label class="label">Parolă</label>
-              <input class="input" type="password" name="password"
+            <div class="mb-3">
+              <label class="form-label">Parolă</label>
+              <input class="form-control" type="password" name="password"
                      autocomplete="current-password"
                      placeholder="Introduceți parola S1" required />
             </div>
 
             ${this._error ? html`
-              <div class="notification is-danger" style="margin-bottom:1rem;">${this._error}</div>
+              <div class="alert alert-danger mb-3">${this._error}</div>
             ` : ''}
 
             <button type="submit"
-              class="btn-login ${this._loading ? 'is-loading' : ''}"
+              class="btn btn-primary w-100 ${this._loading ? 'btn-loading' : ''}"
               ?disabled=${this._loading}>
               Login
             </button>

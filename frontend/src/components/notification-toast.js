@@ -25,9 +25,12 @@ export class NotificationToast extends LightElement {
     this._id = 0
   }
 
-  show(message, type = 'is-info', duration = 5000) {
+  show(message, type = 'toast-info', duration = 5000) {
     const id = ++this._id
-    this._toasts = [...this._toasts, { id, message, type }]
+    // Normalize old Bulma-style type names to new ones
+    const typeMap = { 'is-info': 'toast-info', 'is-success': 'toast-success', 'is-warning': 'toast-warning', 'is-danger': 'toast-danger' }
+    const cssType = typeMap[type] || type
+    this._toasts = [...this._toasts, { id, message, type: cssType }]
 
     setTimeout(() => this._remove(id), duration)
   }
@@ -47,7 +50,7 @@ export class NotificationToast extends LightElement {
     return html`
       ${this._toasts.map(t => html`
         <div class="toast ${t.type} ${t.removing ? 'removing' : ''}">
-          <button class="close" @click=${() => this._remove(t.id)}>&times;</button>
+          <button class="toast-close" @click=${() => this._remove(t.id)}>&times;</button>
           ${t.message}
         </div>
       `)}

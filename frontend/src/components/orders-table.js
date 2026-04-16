@@ -206,10 +206,10 @@ export class OrdersTable extends LightElement {
 
   _statusBadge(order) {
     const map = {
-      sent: html`<span class="badge ok">Sent</span>`,
-      pending: html`<span class="badge pending">Pending</span>`,
-      sending: html`<span class="badge sending">Sending...</span>`,
-      error: html`<span class="badge error">Error</span>`,
+      sent: html`<span class="badge badge-ok">Sent</span>`,
+      pending: html`<span class="badge badge-pending">Pending</span>`,
+      sending: html`<span class="badge badge-sending">Sending...</span>`,
+      error: html`<span class="badge badge-error">Error</span>`,
     }
     return map[order.status] || ''
   }
@@ -226,15 +226,15 @@ export class OrdersTable extends LightElement {
   render() {
     return html`
       <div class="toolbar">
-        <button class="button is-primary is-small ${this._loading ? 'is-loading' : ''}"
+        <button class="btn btn-primary btn-sm ${this._loading ? 'btn-loading' : ''}"
                 @click=${this._downloadOrders} ?disabled=${this._loading}>
           Preluare comenzi
         </button>
-        <button class="button is-info is-small" @click=${this.loadOrders} ?disabled=${this._loading}>
+        <button class="btn btn-info btn-sm" @click=${this.loadOrders} ?disabled=${this._loading}>
           Refresh
         </button>
         ${this._pendingCount > 0 ? html`
-          <button class="button is-success is-small" @click=${this._sendAllPending}>
+          <button class="btn btn-success btn-sm" @click=${this._sendAllPending}>
             Trimite toate (${this._pendingCount})
           </button>
         ` : ''}
@@ -248,14 +248,14 @@ export class OrdersTable extends LightElement {
       <batch-progress></batch-progress>
 
       ${this._loading && !this._orders.length ? html`
-        <div class="has-text-centered mt-4" style="font-size:1.2rem; color:#3e8ed0;">
+        <div class="text-center mt-3" style="font-size:1.2rem; color:var(--tblr-primary);">
           Loading orders...
         </div>
       ` : ''}
 
       ${this._filteredOrders.length ? html`
         <div class="table-wrap">
-          <table>
+          <table class="table table-hover table-vcenter">
             <thead>
               <tr>
                 <th>Date</th>
@@ -273,22 +273,22 @@ export class OrdersTable extends LightElement {
                   <td>${new Date(order.date).toLocaleString()}</td>
                   <td>
                     ${order.filename}
-                    ${order.orderId ? html`<br><span class="badge" style="background:#3e8ed0;color:#fff;">${order.orderId}</span>` : ''}
+                    ${order.orderId ? html`<br><span class="badge bg-primary">${order.orderId}</span>` : ''}
                   </td>
                   <td>
                     <div class="actions">
-                      <button class="button is-small is-info" @click=${() => this._saveXml(order)}>Save</button>
-                      <button class="button is-small is-primary" @click=${() => this._copyXml(order)}>Copy</button>
+                      <button class="btn btn-sm btn-info" @click=${() => this._saveXml(order)}>Save</button>
+                      <button class="btn btn-sm btn-primary" @click=${() => this._copyXml(order)}>Copy</button>
                       ${order.status === 'pending' ? html`
-                        <button class="button is-small is-success"
+                        <button class="btn btn-sm btn-success"
                                 ?disabled=${this._sending.has(realIndex)}
                                 @click=${() => this._sendOrder(order, realIndex)}>
                           ${this._sending.has(realIndex) ? 'Sending...' : 'Send'}
                         </button>
-                        <button class="button is-small is-danger" @click=${() => this._deleteOrder(order, realIndex)}>Delete</button>
+                        <button class="btn btn-sm btn-danger" @click=${() => this._deleteOrder(order, realIndex)}>Delete</button>
                       ` : ''}
                       ${order.status === 'sent' && !order.fincode ? html`
-                        <button class="button is-small" @click=${() => this._lookupFindoc(order, realIndex)}>Lookup</button>
+                        <button class="btn btn-sm" @click=${() => this._lookupFindoc(order, realIndex)}>Lookup</button>
                       ` : ''}
                     </div>
                     ${order.error ? html`<div class="error-box">${order.error}</div>` : ''}
@@ -307,14 +307,14 @@ export class OrdersTable extends LightElement {
           </table>
         </div>
       ` : html`
-        ${!this._loading ? html`<div class="has-text-centered mt-4" style="color:#999;">No orders found</div>` : ''}
+        ${!this._loading ? html`<div class="text-center mt-3" style="color:#999;">No orders found</div>` : ''}
       `}
 
-      <div class="is-flex is-justify-content-space-between is-align-items-center mt-3" style="font-size:0.85rem;">
-        <span class="has-text-grey">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
-        <div class="buttons are-small">
-          <button class="button is-small" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
-          <button class="button is-small" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
+      <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">
+        <span class="text-secondary">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
+        <div class="btn-list">
+          <button class="btn btn-sm" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
+          <button class="btn btn-sm" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
         </div>
       </div>
     `

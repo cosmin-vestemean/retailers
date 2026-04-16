@@ -92,10 +92,10 @@ export class DocMappingsEditor extends LightElement {
   }
 
   render() {
-    if (this._loading) return html`<div style="color:#3e8ed0;">Loading documents...</div>`
+    if (this._loading) return html`<div style="color:var(--tblr-primary);">Loading documents...</div>`
 
     return html`
-      <table>
+      <table class="table table-hover table-vcenter">
         <thead>
           <tr>
             <th>FPRMS</th>
@@ -115,9 +115,9 @@ export class DocMappingsEditor extends LightElement {
               <td>${doc.INITIALDIROUT || ''}</td>
               <td>
                 <div class="actions">
-                  <button class="button is-small is-info"
+                  <button class="btn btn-sm btn-info"
                           @click=${(e) => { e.stopPropagation(); this._selectDoc(doc) }}>Load</button>
-                  <button class="button is-small is-danger"
+                  <button class="btn btn-sm btn-danger"
                           @click=${(e) => { e.stopPropagation(); this._deleteDoc(doc) }}>Delete</button>
                 </div>
               </td>
@@ -130,11 +130,11 @@ export class DocMappingsEditor extends LightElement {
       </table>
 
       <div class="new-row">
-        <input id="newFprms" class="input is-small" type="number" placeholder="FPRMS" />
-        <input id="newSeries" class="input is-small" type="number" placeholder="SERIES" />
-        <input id="newDirIn" class="input is-small" type="text" placeholder="Dir IN" style="width:160px;" />
-        <input id="newDirOut" class="input is-small" type="text" placeholder="Dir OUT" style="width:160px;" />
-        <button class="button is-small is-success" @click=${this._addDoc}>Add Document</button>
+        <input id="newFprms" class="form-control form-control-sm" type="number" placeholder="FPRMS" />
+        <input id="newSeries" class="form-control form-control-sm" type="number" placeholder="SERIES" />
+        <input id="newDirIn" class="form-control form-control-sm" type="text" placeholder="Dir IN" style="width:160px;" />
+        <input id="newDirOut" class="form-control form-control-sm" type="text" placeholder="Dir OUT" style="width:160px;" />
+        <button class="btn btn-sm btn-success" @click=${this._addDoc}>Add Document</button>
       </div>
     `
   }

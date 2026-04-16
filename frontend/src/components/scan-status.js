@@ -62,32 +62,34 @@ export class ScanStatus extends LightElement {
 
   render() {
     return html`
-      <div class="box scan-card ${this._error ? 'is-error' : ''}">
-        <div class="is-flex is-justify-content-space-between is-align-items-center mb-2">
-          <strong>Scan &amp; Send</strong>
-          <button
-            class="button is-info is-small"
-            ?disabled=${this._scanning}
-            @click=${this._handleScan}
-          >
-            ${this._scanning
-              ? html`<span class="spinner-inline"></span> Se execută…`
-              : 'Scan Now'}
-          </button>
-        </div>
-
-        ${this._error ? html`
-          <div class="notification is-danger is-light py-2 px-3 mb-2" style="font-size:0.85rem;">
-            ${this._error}
+      <div class="card scan-card ${this._error ? 'is-error' : ''}">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong>Scan &amp; Send</strong>
+            <button
+              class="btn btn-info btn-sm"
+              ?disabled=${this._scanning}
+              @click=${this._handleScan}
+            >
+              ${this._scanning
+                ? html`<span class="spinner-inline"></span> Se execută…`
+                : 'Scan Now'}
+            </button>
           </div>
-        ` : ''}
 
-        <div class="meta">
-          Ultima rulare: <strong>${this._lastRun ?? '—'}</strong>
-          &nbsp;|&nbsp;
-          Următoarea: <strong>${this._formatNext()}</strong>
-          &nbsp;|&nbsp;
-          <a href="/logs">Vezi log-uri &rarr;</a>
+          ${this._error ? html`
+            <div class="alert alert-danger py-2 px-3 mb-2" style="font-size:0.85rem;">
+              ${this._error}
+            </div>
+          ` : ''}
+
+          <div class="meta">
+            Ultima rulare: <strong>${this._lastRun ?? '—'}</strong>
+            &nbsp;|&nbsp;
+            Următoarea: <strong>${this._formatNext()}</strong>
+            &nbsp;|&nbsp;
+            <a href="/logs">Vezi log-uri &rarr;</a>
+          </div>
         </div>
       </div>
     `

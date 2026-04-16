@@ -99,96 +99,80 @@ export class OrdersLogTable extends LightElement {
 
   render() {
     return html`
-      <div class="box">
+      <div class="card card-body">
         <!-- Filters -->
         <div class="filters mb-4">
-          <div class="field">
-            <label class="label is-small">Retailer</label>
-            <div class="control">
-              <div class="select is-small">
-                <select @change=${e => this._trdr = e.target.value}>
-                  <option value="">Toți</option>
-                  <option value="-1">System</option>
-                  ${RETAILERS.map(r => html`
-                    <option value=${r.trdr}>${r.name}</option>
-                  `)}
-                </select>
-              </div>
-            </div>
+          <div>
+            <label class="form-label small">Retailer</label>
+            <select class="form-select form-select-sm" @change=${e => this._trdr = e.target.value}>
+              <option value="">Toți</option>
+              <option value="-1">System</option>
+              ${RETAILERS.map(r => html`
+                <option value=${r.trdr}>${r.name}</option>
+              `)}
+            </select>
           </div>
 
-          <div class="field">
-            <label class="label is-small">Operație</label>
-            <div class="control">
-              <div class="select is-small">
-                <select @change=${e => this._orderid = e.target.value}>
-                  ${OP_OPTIONS.map(o => html`
-                    <option value=${o.value}>${o.label}</option>
-                  `)}
-                </select>
-              </div>
-            </div>
+          <div>
+            <label class="form-label small">Operație</label>
+            <select class="form-select form-select-sm" @change=${e => this._orderid = e.target.value}>
+              ${OP_OPTIONS.map(o => html`
+                <option value=${o.value}>${o.label}</option>
+              `)}
+            </select>
           </div>
 
-          <div class="field">
-            <label class="label is-small">De la</label>
-            <div class="control">
-              <input class="input is-small" type="date"
-                .value=${this._dateFrom}
-                @change=${e => this._dateFrom = e.target.value}>
-            </div>
+          <div>
+            <label class="form-label small">De la</label>
+            <input class="form-control form-control-sm" type="date"
+              .value=${this._dateFrom}
+              @change=${e => this._dateFrom = e.target.value}>
           </div>
 
-          <div class="field">
-            <label class="label is-small">Până la</label>
-            <div class="control">
-              <input class="input is-small" type="date"
-                .value=${this._dateTo}
-                @change=${e => this._dateTo = e.target.value}>
-            </div>
+          <div>
+            <label class="form-label small">Până la</label>
+            <input class="form-control form-control-sm" type="date"
+              .value=${this._dateTo}
+              @change=${e => this._dateTo = e.target.value}>
           </div>
 
-          <div class="field">
-            <label class="label is-small">&nbsp;</label>
-            <div class="control">
-              <button class="button is-info is-small" @click=${this._search}
-                ?disabled=${this._loading}>
-                ${this._loading
-                  ? html`<span class="spinner-inline"></span>`
-                  : 'Caută'}
-              </button>
-            </div>
+          <div>
+            <label class="form-label small">&nbsp;</label>
+            <button class="btn btn-info btn-sm" @click=${this._search}
+              ?disabled=${this._loading}>
+              ${this._loading
+                ? html`<span class="spinner-inline"></span>`
+                : 'Caută'}
+            </button>
           </div>
 
           ${this._loaded ? html`
-            <div class="field">
-              <label class="label is-small">&nbsp;</label>
-              <div class="control">
-                <button class="refresh-btn" title="Reîncarcă"
-                  @click=${() => this._fetchLogs()} ?disabled=${this._loading}>
-                  &#x21bb;
-                </button>
-              </div>
+            <div>
+              <label class="form-label small">&nbsp;</label>
+              <button class="refresh-btn" title="Reîncarcă"
+                @click=${() => this._fetchLogs()} ?disabled=${this._loading}>
+                &#x21bb;
+              </button>
             </div>
           ` : ''}
         </div>
 
         ${this._error ? html`
-          <div class="notification is-danger is-light py-2 px-3 mb-3" style="font-size:0.85rem;">
+          <div class="alert alert-danger py-2 px-3 mb-3" style="font-size:0.85rem;">
             ${this._error}
           </div>
         ` : ''}
 
         ${!this._loaded && !this._loading && !this._error ? html`
           <div class="placeholder">
-            <p class="is-size-5 mb-2">&#x1f50d;</p>
+            <p class="fs-5 mb-2">&#x1f50d;</p>
             <p>Selectează filtrele dorite și apasă <strong>Caută</strong>.</p>
           </div>
         ` : ''}
 
         ${this._loaded ? html`
-          <div class="table-container">
-            <table class="table is-hoverable is-fullwidth is-striped">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped">
               <thead>
                 <tr>
                   <th>Data</th>
@@ -199,14 +183,14 @@ export class OrdersLogTable extends LightElement {
               </thead>
               <tbody>
                 ${this._logs.length === 0 ? html`
-                  <tr><td colspan="4" class="has-text-centered has-text-grey">
+                  <tr><td colspan="4" class="text-center text-secondary">
                     Niciun rezultat.
                   </td></tr>
                 ` : this._logs.map(log => html`
                   <tr>
                     <td style="white-space:nowrap;">${log.MESSAGEDATE ?? ''}</td>
                     <td>${this._retailerName(log.TRDR_RETAILER)}</td>
-                    <td><span class="tag is-light">${this._opLabel(log.ORDERID)}</span></td>
+                    <td><span class="badge bg-secondary-lt">${this._opLabel(log.ORDERID)}</span></td>
                     <td class="msg-cell">${unsafeHTML(log.MESSAGETEXT ?? '')}</td>
                   </tr>
                 `)}
@@ -215,13 +199,13 @@ export class OrdersLogTable extends LightElement {
           </div>
 
           <div class="pagination-row">
-            <span class="is-size-7 has-text-grey">
+            <span class="small text-secondary">
               ${this._total} rezultate — pagina ${this._page}/${this._totalPages}
             </span>
-            <div class="buttons are-small">
-              <button class="button is-small" ?disabled=${this._page <= 1}
+            <div class="btn-list">
+              <button class="btn btn-sm" ?disabled=${this._page <= 1}
                 @click=${this._prevPage}>&#8592; Prev</button>
-              <button class="button is-small" ?disabled=${this._page >= this._totalPages}
+              <button class="btn btn-sm" ?disabled=${this._page >= this._totalPages}
                 @click=${this._nextPage}>Next &#8594;</button>
             </div>
           </div>

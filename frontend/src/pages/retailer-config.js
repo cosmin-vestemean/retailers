@@ -31,23 +31,27 @@ export class RetailerConfig extends LightElement {
 
   render() {
     const r = this.retailer
-    if (!r) return html`<div class="section"><p>Retailer not found.</p></div>`
+    if (!r) return html`<div class="container-xl py-4"><p>Retailer not found.</p></div>`
 
     return html`
-      <div class="section">
+      <div class="container-xl py-4">
         <div class="header">
           <img src="${r.logo}" alt="${r.name}" />
-          <h1 class="has-text-weight-bold" style="font-size:1.5rem;">Config — ${r.name}</h1>
-          <span class="tag is-info">TRDR ${r.trdr}</span>
-          <a href="/retailer/${r.trdr}" class="button is-small ml-4">← Back</a>
+          <h1 class="fw-bold" style="font-size:1.5rem;">Config &mdash; ${r.name}</h1>
+          <span class="badge bg-info">TRDR ${r.trdr}</span>
+          <a href="/retailer/${r.trdr}" class="btn btn-sm ms-3">&larr; Back</a>
         </div>
 
-        <div class="tabs-bar">
-          <button class="tab-btn ${this._tab === 'connection' ? 'active' : ''}"
-                  @click=${() => this._tab = 'connection'}>Conexiune</button>
-          <button class="tab-btn ${this._tab === 'documents' ? 'active' : ''}"
-                  @click=${() => this._tab = 'documents'}>Documente asociate</button>
-        </div>
+        <ul class="nav nav-tabs mb-3 mt-3">
+          <li class="nav-item">
+            <a class="nav-link ${this._tab === 'connection' ? 'active' : ''}"
+               href="#" @click=${(e) => { e.preventDefault(); this._tab = 'connection' }}>Conexiune</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ${this._tab === 'documents' ? 'active' : ''}"
+               href="#" @click=${(e) => { e.preventDefault(); this._tab = 'documents' }}>Documente asociate</a>
+          </li>
+        </ul>
 
         ${this._tab === 'connection' ? html`
           <connection-settings .trdr=${this.trdr}></connection-settings>

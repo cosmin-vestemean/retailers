@@ -248,7 +248,7 @@ export class InvoiceTable extends LightElement {
     if (!aperak) return html`<span style="color:#999;font-size:0.8rem;">—</span>`
     const resp = aperak.DOCUMENTRESPONSE?.toLowerCase()
     const isOk = resp === 'acceptat' || resp === 'receptionat'
-    const color = isOk ? 'is-success' : 'is-danger'
+    const color = isOk ? 'text-bg-success' : 'text-bg-danger'
     const detail = (aperak.DOCUMENTDETAIL || '')
       .replace('Status', '<br>Status')
       .replace('Mesaj', '<br>Mesaj')
@@ -258,34 +258,34 @@ export class InvoiceTable extends LightElement {
       : ''
 
     return html`
-      <article class="message is-small ${color}" style="margin:0;">
-        <div class="message-header aperak-header" @click=${this._toggleAperak} style="padding:0.3em 0.5em; cursor:pointer;">
+      <div class="card card-sm ${isOk ? '' : 'border-danger'}" style="margin:0;">
+        <div class="card-header aperak-header" @click=${this._toggleAperak} style="padding:0.3em 0.5em; cursor:pointer;">
           <span>${aperak.DOCUMENTRESPONSE} ${aperak.DOCUMENTREFERENCE || ''}</span>
         </div>
-        <div class="message-body aperak-body" style="padding:0.5em;" .innerHTML=${detail}></div>
-      </article>
-      ${dateStr ? html`<div style="font-size:0.75rem;color:#666;margin-top:0.2em;">${dateStr}</div>` : ''}
+        <div class="aperak-body" style="padding:0.5em;" .innerHTML=${detail}></div>
+      </div>
+      ${dateStr ? html`<div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${dateStr}</div>` : ''}
     `
   }
 
   render() {
     return html`
       <div class="toolbar">
-        <button class="button is-info is-small ${this._loading ? 'is-loading' : ''}"
+        <button class="btn btn-info btn-sm ${this._loading ? 'btn-loading' : ''}"
                 @click=${this.loadInvoices} ?disabled=${this._loading}>
           Refresh
         </button>
         <label style="font-size:0.85rem; display:inline-flex; align-items:center; gap:0.3rem;">
-          <input type="number" class="input is-small" style="width:60px;"
+          <input type="number" class="form-control form-control-sm" style="width:60px;"
                  .value=${String(this.daysOlder)} min="1" max="90"
                  @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this._page = 1; this.loadInvoices() }} />
           zile
         </label>
-        <button class="button is-primary is-small" @click=${this._downloadAperaks} ?disabled=${this._loading}>
+        <button class="btn btn-primary btn-sm" @click=${this._downloadAperaks} ?disabled=${this._loading}>
           Download APERAKs
         </button>
         ${this._unsentCount > 0 ? html`
-          <button class="button is-success is-small" @click=${this._sendAllUnsent}>
+          <button class="btn btn-success btn-sm" @click=${this._sendAllUnsent}>
             Trimite toate (${this._unsentCount})
           </button>
         ` : ''}
@@ -294,12 +294,12 @@ export class InvoiceTable extends LightElement {
       <batch-progress></batch-progress>
 
       ${this._loading && !this._invoices.length ? html`
-        <div class="has-text-centered mt-4" style="font-size:1.2rem; color:#3e8ed0;">Loading invoices...</div>
+        <div class="text-center mt-3" style="font-size:1.2rem; color:var(--tblr-primary);">Loading invoices...</div>
       ` : ''}
 
       ${this._invoices.length ? html`
         <div class="table-wrap">
-          <table>
+          <table class="table table-hover table-vcenter">
             <thead>
               <tr>
                 <th>Date</th>
@@ -316,7 +316,7 @@ export class InvoiceTable extends LightElement {
                   <td>${inv.trndate}</td>
                   <td>
                     ${inv.fincode}
-                    <input type="text" class="input is-small postfix-input ml-1"
+                    <input type="text" class="form-control form-control-sm postfix-input ms-1"
                            placeholder="postfix"
                            .value=${inv.postfix}
                            @input=${(e) => {
@@ -328,19 +328,19 @@ export class InvoiceTable extends LightElement {
                   <td>${inv.sumamnt}</td>
                   <td>
                     <div class="actions">
-                      <button class="button is-small is-info"
+                      <button class="btn btn-sm btn-info"
                               @click=${() => this._createXml(inv, i)}>Create XML</button>
                       ${inv.xmlData ? html`
-                        <button class="button is-small is-primary"
+                        <button class="btn btn-sm btn-primary"
                                 @click=${() => this._saveXml(inv)}>Save XML</button>
                       ` : ''}
-                      <button class="button is-small is-success"
+                      <button class="btn btn-sm btn-success"
                               ?disabled=${inv._sending}
                               @click=${() => this._sendInvoice(inv, i)}>
                         ${inv._sending ? 'Sending...' : 'Send'}
                       </button>
                       ${inv.sent ? html`
-                        <button class="button is-small is-warning"
+                        <button class="btn btn-sm btn-warning"
                                 @click=${() => this._sendInvoice(inv, i, true)}>Resend</button>
                       ` : ''}
                     </div>
@@ -348,8 +348,8 @@ export class InvoiceTable extends LightElement {
                   </td>
                   <td>
                     ${inv.sent ? html`
-                      <span class="badge sent">Sent</span>
-                      <div style="font-size:0.75rem;color:#666;margin-top:0.2em;">${inv.sentDate}</div>
+                      <span class="badge badge-sent">Sent</span>
+                      <div style="font-size:0.75rem;color:var(--tblr-secondary);margin-top:0.2em;">${inv.sentDate}</div>
                     ` : html`
                       <label style="font-size:0.8rem; cursor:pointer;">
                         <input type="checkbox" @change=${(e) => {
@@ -368,14 +368,14 @@ export class InvoiceTable extends LightElement {
           </table>
         </div>
       ` : html`
-        ${!this._loading ? html`<div class="has-text-centered mt-4" style="color:#999;">No invoices found</div>` : ''}
+        ${!this._loading ? html`<div class="text-center mt-3" style="color:#999;">No invoices found</div>` : ''}
       `}
 
-      <div class="is-flex is-justify-content-space-between is-align-items-center mt-3" style="font-size:0.85rem;">
-        <span class="has-text-grey">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
-        <div class="buttons are-small">
-          <button class="button is-small" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
-          <button class="button is-small" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
+      <div class="d-flex justify-content-between align-items-center mt-3" style="font-size:0.85rem;">
+        <span class="text-secondary">${this._total} rezultate — pagina ${this._page}/${this._totalPages}</span>
+        <div class="btn-list">
+          <button class="btn btn-sm" ?disabled=${this._page <= 1} @click=${this._prevPage}>&larr; Prev</button>
+          <button class="btn btn-sm" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
         </div>
       </div>
     `

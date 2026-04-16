@@ -251,7 +251,7 @@ export class XmlMappingTable extends LightElement {
   }
 
   render() {
-    if (this._loading) return html`<div style="color:#3e8ed0;">Loading mappings...</div>`
+    if (this._loading) return html`<div style="color:var(--tblr-primary);">Loading mappings...</div>`
     if (!this.docId && !this._rows.length) {
       return html`<p style="color:#999;">Select a document above or load an XML file to begin mapping.</p>`
     }
@@ -260,48 +260,48 @@ export class XmlMappingTable extends LightElement {
       <div class="file-row">
         <div>
           <label>XML Root:</label>
-          <select .value=${this._xmlRoot} @change=${(e) => this._xmlRoot = e.target.value}>
+          <select class="form-select form-select-sm" style="width:auto; display:inline-block;" .value=${this._xmlRoot} @change=${(e) => this._xmlRoot = e.target.value}>
             <option value="Order">Order</option>
             <option value="DXInvoice">DXInvoice</option>
           </select>
         </div>
         <div>
           <label>Line delimiter:</label>
-          <select .value=${this._lineDelim} @change=${(e) => this._lineDelim = e.target.value}>
+          <select class="form-select form-select-sm" style="width:auto; display:inline-block;" .value=${this._lineDelim} @change=${(e) => this._lineDelim = e.target.value}>
             <option value="OrderLine">OrderLine</option>
             <option value="InvoiceLine">InvoiceLine</option>
           </select>
         </div>
         <div>
           <label>Load XML file:</label>
-          <input type="file" accept=".xml" @change=${this._loadXmlFile} />
+          <input type="file" accept=".xml" class="form-control form-control-sm" style="width:auto; display:inline-block;" @change=${this._loadXmlFile} />
         </div>
       </div>
 
       <div class="toolbar">
-        <button class="button is-small ${this._hideUnsel ? 'is-warning' : 'is-info'}"
+        <button class="btn btn-sm ${this._hideUnsel ? 'btn-warning' : 'btn-info'}"
                 @click=${() => this._hideUnsel = !this._hideUnsel}>
           ${this._hideUnsel ? 'Show all rows' : 'Hide unselected'}
         </button>
-        <button class="button is-small is-info" @click=${() => this._hideTbl2 = !this._hideTbl2}>
+        <button class="btn btn-sm btn-info" @click=${() => this._hideTbl2 = !this._hideTbl2}>
           ${this._hideTbl2 ? 'Show' : 'Hide'} Table 2
         </button>
-        <button class="button is-small is-info" @click=${() => this._hideVal = !this._hideVal}>
+        <button class="btn btn-sm btn-info" @click=${() => this._hideVal = !this._hideVal}>
           ${this._hideVal ? 'Show' : 'Hide'} Value
         </button>
-        <button class="button is-small is-info" @click=${() => this._hideObs = !this._hideObs}>
+        <button class="btn btn-sm btn-info" @click=${() => this._hideObs = !this._hideObs}>
           ${this._hideObs ? 'Show' : 'Hide'} Notes
         </button>
-        <input class="input is-small" style="width:180px;" placeholder="Search nodes..."
+        <input class="form-control form-control-sm" style="width:180px;" placeholder="Search nodes..."
                .value=${this._search} @input=${(e) => this._search = e.target.value} />
-        <button class="button is-small is-success ${this._saving ? 'is-loading' : ''}"
+        <button class="btn btn-sm btn-success ${this._saving ? 'btn-loading' : ''}"
                 @click=${this._save} ?disabled=${this._saving}>
           Save mapping
         </button>
       </div>
 
       <div class="table-wrap">
-        <table>
+        <table class="table table-hover table-vcenter">
           <thead>
             <tr>
               <th style="width:50px;">Ord.</th>
@@ -321,7 +321,7 @@ export class XmlMappingTable extends LightElement {
             ${this._rows.map((row, i) => html`
               <tr class="${!this._isVisible(row) ? 'hidden-row' : ''} ${row.picked ? 'selected-row' : ''}">
                 <td>
-                  <input class="input is-small cell-input" type="number" style="width:50px;"
+                  <input class="form-control form-control-sm cell-input" type="number" style="width:50px;"
                          .value=${String(row.xmlOrder)}
                          @input=${(e) => this._updateRow(i, 'xmlOrder', parseInt(e.target.value) || 0)} />
                 </td>
@@ -335,29 +335,29 @@ export class XmlMappingTable extends LightElement {
                 </td>
                 <td class="xmlpath-col">${row.xmlPath}</td>
                 <td>
-                  <input class="input is-small cell-input" .value=${row.s1Table1}
+                  <input class="form-control form-control-sm cell-input" .value=${row.s1Table1}
                          placeholder="Table" @input=${(e) => this._updateRow(i, 's1Table1', e.target.value)} />
                 </td>
                 <td>
-                  <input class="input is-small cell-input" .value=${row.s1Field1}
+                  <input class="form-control form-control-sm cell-input" .value=${row.s1Field1}
                          placeholder="Field" @input=${(e) => this._updateRow(i, 's1Field1', e.target.value)} />
                 </td>
                 <td class=${this._hideTbl2 ? 'col-hidden' : ''}>
-                  <input class="input is-small cell-input" .value=${row.s1Table2}
+                  <input class="form-control form-control-sm cell-input" .value=${row.s1Table2}
                          placeholder="Table 2" @input=${(e) => this._updateRow(i, 's1Table2', e.target.value)} />
                 </td>
                 <td class=${this._hideTbl2 ? 'col-hidden' : ''}>
-                  <input class="input is-small cell-input" .value=${row.s1Field2}
+                  <input class="form-control form-control-sm cell-input" .value=${row.s1Field2}
                          placeholder="Field 2" @input=${(e) => this._updateRow(i, 's1Field2', e.target.value)} />
                 </td>
                 <td>
-                  <textarea class="textarea is-small cell-sql" rows="1" spellcheck="false"
+                  <textarea class="form-control form-control-sm cell-sql" rows="1" spellcheck="false"
                             .value=${row.sql}
                             @input=${(e) => this._updateRow(i, 'sql', e.target.value)}></textarea>
                 </td>
                 <td class=${this._hideVal ? 'col-hidden' : ''}>${row.value}</td>
                 <td class=${this._hideObs ? 'col-hidden' : ''}>
-                  <textarea class="textarea is-small" rows="1" style="width:180px;" spellcheck="false"
+                  <textarea class="form-control form-control-sm" rows="1" style="width:180px;" spellcheck="false"
                             .value=${row.observatii}
                             @input=${(e) => this._updateRow(i, 'observatii', e.target.value)}></textarea>
                 </td>

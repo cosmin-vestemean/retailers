@@ -21,22 +21,26 @@ export class RetailerDetail extends LightElement {
 
   render() {
     const r = this.retailer
-    if (!r) return html`<div class="section"><p>Retailer not found (TRDR: ${this.trdr})</p></div>`
+    if (!r) return html`<div class="container-xl py-4"><p>Retailer not found (TRDR: ${this.trdr})</p></div>`
 
     return html`
-      <div class="section">
+      <div class="container-xl py-4">
         <div class="header mb-4">
           <img src="${r.logo}" alt="${r.name}" />
-          <h1 class="has-text-weight-bold" style="font-size:1.5rem;">${r.name}</h1>
-          <a href="/" class="button is-small ml-4">← Dashboard</a>
+          <h1 class="fw-bold" style="font-size:1.5rem;">${r.name}</h1>
+          <a href="/" class="btn btn-sm ms-3">&larr; Dashboard</a>
         </div>
 
-        <div class="tabs-bar">
-          <button class="tab-btn ${this._tab === 'orders' ? 'active' : ''}"
-                  @click=${() => this._tab = 'orders'}>Comenzi</button>
-          <button class="tab-btn ${this._tab === 'invoices' ? 'active' : ''}"
-                  @click=${() => this._tab = 'invoices'}>Facturi</button>
-        </div>
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item">
+            <a class="nav-link ${this._tab === 'orders' ? 'active' : ''}"
+               href="#" @click=${(e) => { e.preventDefault(); this._tab = 'orders' }}>Comenzi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ${this._tab === 'invoices' ? 'active' : ''}"
+               href="#" @click=${(e) => { e.preventDefault(); this._tab = 'invoices' }}>Facturi</a>
+          </li>
+        </ul>
 
         <div class="tab-content">
           ${this._tab === 'orders' ? html`

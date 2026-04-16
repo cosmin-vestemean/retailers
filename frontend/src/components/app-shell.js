@@ -75,25 +75,33 @@ export class AppShell extends LightElement {
   render() {
     if (!this._user) {
       return html`
-        <nav>
-          <span class="brand">Pet Factory — Retailers</span>
-        </nav>
+        <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
+          <div class="container-xl">
+            <span class="navbar-brand">Pet Factory — Retailers</span>
+          </div>
+        </header>
         <login-form @login-success=${this._onLoginSuccess}></login-form>
         <notification-toast></notification-toast>
       `
     }
 
     return html`
-      <nav>
-        <a class="brand" href="/">Pet Factory — Retailers</a>
-        <a href="/">Dashboard</a>
-        <a href="/logs">Logs</a>
-        <div class="user-section">
-          <span class="user-name">${this._user.name}</span>
-          <button class="logout-btn" @click=${this._logout}>Logout</button>
+      <header class="navbar navbar-expand-md navbar-dark d-print-none" data-bs-theme="dark">
+        <div class="container-xl">
+          <a class="navbar-brand" href="/">Pet Factory — Retailers</a>
+          <div class="navbar-nav flex-row ms-auto">
+            <a class="nav-link" href="/">Dashboard</a>
+            <a class="nav-link" href="/logs">Logs</a>
+          </div>
+          <div class="navbar-nav flex-row ms-3 align-items-center">
+            <span class="text-white opacity-75 me-2">${this._user.name}</span>
+            <button class="btn btn-sm btn-outline-light" @click=${this._logout}>Logout</button>
+          </div>
         </div>
-      </nav>
-      <div id="outlet"></div>
+      </header>
+      <div class="page-wrapper">
+        <div id="outlet"></div>
+      </div>
       <notification-toast></notification-toast>
     `
   }

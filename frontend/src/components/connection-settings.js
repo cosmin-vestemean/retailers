@@ -79,7 +79,7 @@ export class ConnectionSettings extends LightElement {
     return html`
       <div>
         <div class="field-label">${label}</div>
-        <input class="input is-small" type="${opts.type || 'text'}"
+        <input class="form-control form-control-sm" type="${opts.type || 'text'}"
                .value=${String(val)}
                ?readonly=${opts.readonly}
                placeholder=${label}
@@ -89,7 +89,7 @@ export class ConnectionSettings extends LightElement {
   }
 
   render() {
-    if (this._loading) return html`<div style="padding:1rem; color:#3e8ed0;">Loading configuration...</div>`
+    if (this._loading) return html`<div style="padding:1rem; color:var(--tblr-primary);">Loading configuration...</div>`
 
     return html`
       <h2>SFTP / FTP Connection</h2>
@@ -116,7 +116,7 @@ export class ConnectionSettings extends LightElement {
       </div>
 
       <div style="margin-top:1rem;">
-        <button class="button is-success ${this._saving ? 'is-loading' : ''}"
+        <button class="btn btn-success ${this._saving ? 'btn-loading' : ''}"
                 @click=${this._save} ?disabled=${this._saving}>
           Save Connection Settings
         </button>

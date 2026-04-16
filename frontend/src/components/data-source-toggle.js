@@ -25,7 +25,7 @@ export class DataSourceToggle extends LightElement {
 
   render() {
     return html`
-      <span class="label">Data:</span>
+      <span class="toggle-label">Data:</span>
       <div class="toggle-group">
         <button class=${this.source === 's1' ? 'active' : ''} @click=${() => this._setSource('s1')}>S1 API</button>
         <button class=${this.source === 'direct' ? 'active' : ''} @click=${() => this._setSource('direct')}>Direct DB</button>
