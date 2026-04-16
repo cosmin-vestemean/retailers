@@ -233,6 +233,9 @@ export class OrdersTable extends LightElement {
   }
 
   render() {
+    const showSentLabel = this._showSent ? 'Arată trimise' : 'Ascunde trimise'
+    const showSentId = `show-sent-switch-${this.trdr || 'default'}`
+
     return html`
       <div class="toolbar">
         <button class="btn btn-primary btn-sm ${this._loading ? 'btn-loading' : ''}"
@@ -247,11 +250,18 @@ export class OrdersTable extends LightElement {
             Trimite toate (${this._pendingCount})
           </button>
         ` : ''}
-        <label style="font-size:0.85rem; margin-left:auto;">
-          <input type="checkbox" .checked=${this._showSent}
-                 @change=${this._toggleShowSent} />
-          Arată trimise
-        </label>
+        <div class="form-check form-switch form-check-reverse ms-auto mb-0">
+          <input
+            id="${showSentId}"
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            .checked=${this._showSent}
+            aria-checked=${this._showSent ? 'true' : 'false'}
+            @change=${this._toggleShowSent}
+          />
+          <label class="form-check-label small" for="${showSentId}">${showSentLabel}</label>
+        </div>
       </div>
 
       <batch-progress></batch-progress>
