@@ -43,10 +43,10 @@ export class RetailerCard extends LightElement {
     }
   }
 
-  _renderBadge(value) {
-    if (value === null) return html`<span class="badge rounded-pill text-bg-secondary">...</span>`
-    if (value > 0) return html`<span class="badge rounded-pill text-bg-danger" title="Ultimele 30 zile">${value}</span>`
-    return html`<span class="badge rounded-pill text-bg-success">${value}</span>`
+  _renderValue(value) {
+    if (value === null) return html`<span class="retailer-card-stat text-secondary">...</span>`
+    if (value > 0) return html`<span class="retailer-card-stat text-danger" title="Ultimele 30 zile">${value}</span>`
+    return html`<span class="retailer-card-stat text-success">${value}</span>`
   }
 
   _showInvoiceDetail() {
@@ -74,11 +74,11 @@ export class RetailerCard extends LightElement {
           <ul class="list-group list-group-flush">
             <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
               <span class="fw-medium">Comenzi de trimis</span>
-              ${this._renderBadge(this._pendingOrders)}
+              ${this._renderValue(this._pendingOrders)}
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
               <span class="fw-medium">Facturi de trimis</span>
-              ${this._renderBadge(this._pendingInvoices)}
+              ${this._renderValue(this._pendingInvoices)}
             </li>
           </ul>
         </a>

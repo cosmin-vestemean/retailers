@@ -186,6 +186,7 @@ retailer-card .card:hover { transform: translateY(-1px); }
 retailer-card .retailer-card-shell { border: 0; }
 retailer-card .retailer-card-logo { min-height: 100px; }
 retailer-card .retailer-card-logo-image { max-height: 72px; max-width: 160px; object-fit: contain; }
+retailer-card .retailer-card-stat { font-weight: 700; font-variant-numeric: tabular-nums; }
 retailer-card .retailer-card-footer-link { font-size: 0.85rem; }
 retailer-card .card-footer a:hover { background: var(--bs-tertiary-bg, #f0f0f0); }
 
