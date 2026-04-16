@@ -232,7 +232,7 @@ export class OrdersLogTable extends LightElement {
                     <tr>
                       <td class="text-nowrap">${log.MESSAGEDATE ?? ''}</td>
                       <td>${this._retailerName(log.TRDR_RETAILER)}</td>
-                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION || log.ORDERID)}</span></td>
+                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION)}</span></td>
                       <td><span class="fw-semibold ${this._levelClass(log.LEVEL)}">${log.LEVEL || '—'}</span></td>
                       <td class="msg-cell">${log.MESSAGETEXT ?? ''}</td>
                     </tr>

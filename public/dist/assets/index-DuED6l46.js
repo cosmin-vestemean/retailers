@@ -736,27 +736,20 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     <th>Retailer</th>
                     <th>Operație</th>
                     <th>Nivel</th>
-                    <th>Comandă</th>
-                    <th>Doc. S1</th>
                     <th>Mesaj</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${this._logs.length===0?U`
-                    <tr><td colspan="7" class="text-center text-secondary py-4">
+                    <tr><td colspan="5" class="text-center text-secondary py-4">
                       Niciun rezultat.
                     </td></tr>
                   `:this._logs.map(e=>U`
                     <tr>
                       <td class="text-nowrap">${e.MESSAGEDATE??``}</td>
                       <td>${this._retailerName(e.TRDR_RETAILER)}</td>
-                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(e.OPERATION||e.ORDERID)}</span></td>
+                      <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(e.OPERATION)}</span></td>
                       <td><span class="fw-semibold ${this._levelClass(e.LEVEL)}">${e.LEVEL||`—`}</span></td>
-                      <td>${e.ORDERID?U`<span class="badge text-bg-secondary">${e.ORDERID}</span>`:``}</td>
-                      <td>${e.S1_FINDOC?U`
-                        <strong>${e.S1_FINDOC}</strong>
-                        ${e.S1_FINCODE?U`<div class="small text-secondary">${e.S1_FINCODE}<br>${e.S1_TRNDATE}</div>`:``}
-                      `:``}</td>
                       <td class="msg-cell">${e.MESSAGETEXT??``}</td>
                     </tr>
                   `)}
