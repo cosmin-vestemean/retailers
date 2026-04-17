@@ -339,7 +339,7 @@ export class SftpService {
     let params = { query: { retailer: 11639, rootPath: orderPath, startsWith: 'ORDERS_' } }
     const dwlRes = await this.downloadXml(data, params)
     const dwlNoFiles = dwlRes.length === 1 && dwlRes[0].message === 'No files on server'
-    await this.app.service('CCCORDERSLOG').create({
+    await this.app.service('orders-log').create({
       TRDR_CLIENT: 1,
       TRDR_RETAILER: -1,
       ORDERID: '',
@@ -353,7 +353,7 @@ export class SftpService {
     const storeRes = await this.storeXmlInDB(data, params)
     const storeNoFiles = storeRes.length === 1 && storeRes[0].message === 'No files inserted'
     if (!(dwlNoFiles && storeNoFiles)) {
-      await this.app.service('CCCORDERSLOG').create({
+      await this.app.service('orders-log').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: '',
@@ -463,7 +463,7 @@ export class SftpService {
             `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
           )
           try {
-            this.app.service('CCCORDERSLOG').create({
+            this.app.service('orders-log').create({
               TRDR_CLIENT: 1,
               TRDR_RETAILER: item.TRDR_RETAILER,
               ORDERID: item.OrderId,
@@ -473,7 +473,7 @@ export class SftpService {
               MESSAGETEXT: `Processing order ${item.OrderId} ${item.XMLDATE} from ${item.Client}, ${count}/${res.total}`
             })
           } catch (error) {
-            console.error('Error inserting into CCCORDERSLOG:', error)
+            console.error('Error inserting into orders-log:', error)
           }
           const xml = item.XMLDATA
           const sosource = 1351
@@ -509,7 +509,7 @@ export class SftpService {
         }
       } else {
         console.log('No orders to create')
-        await this.app.service('CCCORDERSLOG').create({
+        await this.app.service('orders-log').create({
           TRDR_CLIENT: 1,
           TRDR_RETAILER: -1,
           ORDERID: '',
@@ -525,7 +525,7 @@ export class SftpService {
         errorcode: res.errorcode,
         message: res.message
       })
-      await this.app.service('CCCORDERSLOG').create({
+      await this.app.service('orders-log').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: -1,
         ORDERID: '',
@@ -569,7 +569,7 @@ export class SftpService {
         )
 
         try {
-          await this.app.service('CCCORDERSLOG').create({
+          await this.app.service('orders-log').create({
             TRDR_CLIENT: 1,
             TRDR_RETAILER: retailer,
             ORDERID: OrderId,
@@ -579,7 +579,7 @@ export class SftpService {
             MESSAGETEXT: `Document created successfully: ${setDocumentRes.id} from ${xmlFilename}`
           })
         } catch (error) {
-          console.error('Error inserting into CCCORDERSLOG:', error)
+          console.error('Error inserting into orders-log:', error)
         }
 
         const patchRes = await this.app
@@ -708,7 +708,7 @@ export class SftpService {
                     value: item[field].value
                   })
                   try {
-                    await this.app.service('CCCORDERSLOG').create({
+                    await this.app.service('orders-log').create({
                       TRDR_CLIENT: 1,
                       TRDR_RETAILER: retailer,
                       ORDERID: OrderId,
@@ -718,7 +718,7 @@ export class SftpService {
                       MESSAGETEXT: message
                     })
                   } catch (error) {
-                    console.error('Error inserting into CCCORDERSLOG:', error)
+                    console.error('Error inserting into orders-log:', error)
                   }
                 } else {
                   errors.push({
@@ -728,7 +728,7 @@ export class SftpService {
                     value: item[field].value
                   })
                   try {
-                    await this.app.service('CCCORDERSLOG').create({
+                    await this.app.service('orders-log').create({
                       TRDR_CLIENT: 1,
                       TRDR_RETAILER: retailer,
                       ORDERID: OrderId,
@@ -738,7 +738,7 @@ export class SftpService {
                       MESSAGETEXT: `Error fetching data for field ${field} with value ${item[field].value} — SQL: ${sqlQuery}`
                     })
                   } catch (error) {
-                    console.error('Error inserting into CCCORDERSLOG:', error)
+                    console.error('Error inserting into orders-log:', error)
                   }
                 }
               }
@@ -763,7 +763,7 @@ export class SftpService {
       const bodyHTML = 'Urmatoarele erori au fost intalnite la crearea comenzii:<br><br>' + message + '<br>'
       const fromName = 'Comenzi EDI - PetFactory'
       const sendEmRes = await this.app.service('sendEmail').create({ to, cc, subject, bodyPlain, bodyHTML, fromName })
-      this.app.service('CCCORDERSLOG').create({
+      this.app.service('orders-log').create({
         TRDR_CLIENT: 1,
         TRDR_RETAILER: retailer,
         ORDERID: OrderId,

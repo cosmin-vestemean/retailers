@@ -516,6 +516,19 @@ function CreatePurchase() {
 }
 ```
 
+## Session Memory
+
+- Session-memory workflow rules live in `.github/instructions/session-memory.instructions.md`.
+- Session handoff state lives in `.copilot/context/current-focus.md`.
+- Cross-session open threads backlog lives in `.copilot/context/open-threads.md`.
+
+## Session Prompt Workflows
+
+- Use `session-resume` prompt to restart work from the current session state.
+- Use `session-handoff` prompt to produce the next session snapshot.
+- Use `session-analysis` prompt to analyse session quality and feed tangential open threads into `.copilot/context/open-threads.md`.
+- Keep `.copilot/context/current-focus.md` aligned with the latest stable session outcome so the memory workflow stays useful.
+
 ### Database Operations
 
 Core functions for performing CRUD operations within SoftOne's business logic.

@@ -1,13 +1,25 @@
-import { KnexService } from '@feathersjs/knex'
+import fetch from 'node-fetch'
 
-// By default calls the standard Knex adapter service methods but can be customized with your own functionality.
-export class CccretailersclientsService extends KnexService {}
+const mainURL = 'https://petfactory.oncloud.gr/s1services'
+
+export class CccretailersclientsService {
+  constructor(options) {
+    this.options = options
+  }
+
+  async find(params) {
+    const query = params.query || {}
+    const url = mainURL + '/JS/JSRetailers/getRetailersClients'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(query)
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'getRetailersClients failed')
+    return { data: result.data, total: result.total }
+  }
+}
 
 export const getOptions = (app) => {
-  return {
-    id: 'TRDR_CLIENT',
-    paginate: app.get('paginate'),
-    Model: app.get('mssqlClient'),
-    name: 'CCCRETAILERSCLIENTS'
-  }
+  return { app }
 }

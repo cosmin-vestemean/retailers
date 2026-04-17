@@ -275,48 +275,47 @@ function validatePassword(params) {
 
 function getOrdersLog(params) {
   var trdr = parseInt(params.trdr) || 0;
-  var orderid = params.orderid || '';
-  var operation = params.operation || '';
-  var level = params.level || '';
-  var dateFrom = params.dateFrom || '';
-  var dateTo = params.dateTo || '';
+  var orderid = (params.orderid || '').toString().substring(0, 100);
+  var operation = (params.operation || '').toString().substring(0, 50);
+  var level = (params.level || '').toString().substring(0, 10);
+  var dateFrom = (params.dateFrom || '').toString().substring(0, 10);
+  var dateTo = (params.dateTo || '').toString().substring(0, 10);
   var page = parseInt(params.page) || 1;
   var pageSize = parseInt(params.pageSize) || 25;
   if (pageSize > 100) pageSize = 100;
+  if (page < 1) page = 1;
   var offset = (page - 1) * pageSize;
 
+  // Append time to dateTo so it covers the full day
+  if (dateTo) {
+    dateTo = dateTo + ' 23:59:59';
+  }
+
+  // 5 fixed positional params — when empty, the (:N = '' OR ...) pattern skips the filter
+  // :1 = orderid, :2 = operation, :3 = level, :4 = dateFrom, :5 = dateTo
+  // trdr is a safe parseInt result, inlined directly
   var where = 'WHERE 1=1';
   if (trdr === -1) {
     where += ' AND TRDR_RETAILER = -1';
   } else if (trdr > 0) {
     where += ' AND TRDR_RETAILER = ' + trdr;
   }
-  if (orderid) {
-    where += " AND ORDERID = '" + orderid.replace(/'/g, "''") + "'";
-  }
-  if (operation) {
-    where += " AND OPERATION = '" + operation.replace(/'/g, "''") + "'";
-  }
-  if (level) {
-    where += " AND LEVEL = '" + level.replace(/'/g, "''") + "'";
-  }
-  if (dateFrom) {
-    where += " AND MESSAGEDATE >= '" + dateFrom.replace(/'/g, "''") + "'";
-  }
-  if (dateTo) {
-    where += " AND MESSAGEDATE <= '" + dateTo.replace(/'/g, "''") + " 23:59:59'";
-  }
+  where += " AND (:1 = '' OR ORDERID = :1)";
+  where += " AND (:2 = '' OR OPERATION = :2)";
+  where += " AND (:3 = '' OR LEVEL = :3)";
+  where += " AND (:4 = '' OR MESSAGEDATE >= :4)";
+  where += " AND (:5 = '' OR MESSAGEDATE <= :5)";
 
   // Count total
   var countSql = 'SELECT COUNT(*) AS CNT FROM CCCORDERSLOG ' + where;
   var total = 0;
   try {
-    total = parseInt(X.SQL(countSql, null)) || 0;
+    total = parseInt(X.SQL(countSql, orderid, operation, level, dateFrom, dateTo)) || 0;
   } catch (e) {
     return { success: false, error: 'Count failed: ' + e.message };
   }
 
-  // Fetch page
+  // Fetch page — offset/pageSize are safe integers
   var sql = 'SELECT CCCORDERSLOG, TRDR_RETAILER, '
     + "(SELECT NAME FROM TRDR WHERE TRDR = CCCORDERSLOG.TRDR_RETAILER) AS RETAILERNAME, "
     + 'OPERATION, LEVEL, '
@@ -327,7 +326,7 @@ function getOrdersLog(params) {
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
 
   try {
-    var ds = X.GETSQLDATASET(sql, null);
+    var ds = X.GETSQLDATASET(sql, orderid, operation, level, dateFrom, dateTo);
     if (ds.RECORDCOUNT > 0) {
       return {
         success: true,
@@ -339,6 +338,26 @@ function getOrdersLog(params) {
     } else {
       return { success: true, data: [], total: total, page: page, pageSize: pageSize };
     }
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function createOrderLog(params) {
+  var trdrClient = parseInt(params.TRDR_CLIENT) || 1;
+  var trdrRetailer = parseInt(params.TRDR_RETAILER) || -1;
+  var orderid = (params.ORDERID || '').toString().substring(0, 100);
+  var cccsftpxml = parseInt(params.CCCSFTPXML) || -1;
+  var operation = (params.OPERATION || '').toString().substring(0, 50);
+  var level = (params.LEVEL || 'info').toString().substring(0, 10);
+  var messagetext = (params.MESSAGETEXT || '').toString();
+
+  var sql = 'INSERT INTO CCCORDERSLOG (TRDR_CLIENT, TRDR_RETAILER, ORDERID, CCCSFTPXML, OPERATION, LEVEL, MESSAGETEXT) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7)';
+
+  try {
+    X.RUNSQL(sql, trdrClient, trdrRetailer, orderid, cccsftpxml, operation, level, messagetext);
+    return { success: true };
   } catch (e) {
     return { success: false, error: e.message };
   }
@@ -434,4 +453,325 @@ function cleanupOrdersLogHtml() {
   stats.emptyOp = parseInt(X.SQL("SELECT COUNT(*) FROM CCCORDERSLOG WHERE ISNULL(OPERATION, '') = ''", null)) || 0;
 
   return stats;
+}
+
+// =====================================================
+// Config / Mapping endpoints (replace direct DB access)
+// =====================================================
+
+function getSftpConfig(params) {
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
+  if (!trdr) return { success: false, error: 'Missing TRDR_RETAILER' };
+
+  var sql = 'SELECT CCCSFTP, TRDR_RETAILER, URL, PORT, USERNAME, PASSPHRASE, '
+    + 'INITIALDIRIN, INITIALDIROUT, FINGERPRINT, PRIVATEKEY, EDIPROVIDER '
+    + 'FROM CCCSFTP WHERE TRDR_RETAILER = :1';
+  try {
+    var ds = X.GETSQLDATASET(sql, trdr);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function updateSftpConfig(params) {
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
+  if (!trdr) return { success: false, error: 'Missing TRDR_RETAILER' };
+
+  var sql = 'UPDATE CCCSFTP SET '
+    + 'URL = :1, PORT = :2, USERNAME = :3, PASSPHRASE = :4, '
+    + 'INITIALDIRIN = :5, INITIALDIROUT = :6, FINGERPRINT = :7, '
+    + 'PRIVATEKEY = :8, EDIPROVIDER = :9 '
+    + 'WHERE TRDR_RETAILER = :10';
+
+  try {
+    X.RUNSQL(sql,
+      (params.URL || '').toString(),
+      parseInt(params.PORT) || 22,
+      (params.USERNAME || '').toString(),
+      (params.PASSPHRASE || '').toString(),
+      (params.INITIALDIRIN || '').toString(),
+      (params.INITIALDIROUT || '').toString(),
+      (params.FINGERPRINT || '').toString(),
+      (params.PRIVATEKEY || '').toString(),
+      (params.EDIPROVIDER || '').toString(),
+      trdr
+    );
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function getRetailersClients(params) {
+  var trdrClient = parseInt(params.TRDR_CLIENT) || 0;
+  var sql = 'SELECT CCCRETAILERSCLIENTS, TRDR_CLIENT, WSURL, WSUSER, WSPASS, COMPANY, BRANCH '
+    + 'FROM CCCRETAILERSCLIENTS';
+  if (trdrClient > 0) {
+    sql += ' WHERE TRDR_CLIENT = :1';
+  }
+  try {
+    var ds = trdrClient > 0
+      ? X.GETSQLDATASET(sql, trdrClient)
+      : X.GETSQLDATASET(sql, null);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function getDocumentMappings(params) {
+  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
+  var sosource = (parseInt(params.SOSOURCE) || 0).toString();
+  var fprms = (parseInt(params.FPRMS) || 0).toString();
+  var series = (parseInt(params.SERIES) || 0).toString();
+
+  var sql = 'SELECT CCCDOCUMENTES1MAPPINGS, TRDR_RETAILER, TRDR_CLIENT, SOSOURCE, FPRMS, SERIES, '
+    + 'INITIALDIRIN, INITIALDIROUT '
+    + 'FROM CCCDOCUMENTES1MAPPINGS WHERE '
+    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
+    + '(:2 = \'0\' OR SOSOURCE = :2) AND '
+    + '(:3 = \'0\' OR FPRMS = :3) AND '
+    + '(:4 = \'0\' OR SERIES = :4)';
+  try {
+    var ds = X.GETSQLDATASET(sql, trdr, sosource, fprms, series);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function createDocumentMapping(params) {
+  var sql = 'INSERT INTO CCCDOCUMENTES1MAPPINGS (TRDR_RETAILER, TRDR_CLIENT, SOSOURCE, FPRMS, SERIES, INITIALDIRIN, INITIALDIROUT) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7)';
+  try {
+    X.RUNSQL(sql,
+      parseInt(params.TRDR_RETAILER) || 0,
+      parseInt(params.TRDR_CLIENT) || 1,
+      parseInt(params.SOSOURCE) || 0,
+      parseInt(params.FPRMS) || 0,
+      parseInt(params.SERIES) || 0,
+      (params.INITIALDIRIN || '').toString(),
+      (params.INITIALDIROUT || '').toString()
+    );
+    var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    return { success: true, id: newId };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function removeDocumentMapping(params) {
+  var id = parseInt(params.id) || 0;
+  if (!id) return { success: false, error: 'Missing id' };
+  try {
+    X.RUNSQL('DELETE FROM CCCDOCUMENTES1MAPPINGS WHERE CCCDOCUMENTES1MAPPINGS = :1', id);
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function getXmlMappings(params) {
+  var docId = parseInt(params.CCCDOCUMENTES1MAPPINGS) || 0;
+  var sql = 'SELECT CCCXMLS1MAPPINGS, XMLNODE, MANDATORY, S1TABLE1, S1FIELD1, S1TABLE2, S1FIELD2, '
+    + 'SQL, OBSERVATII, XMLORDER, CCCDOCUMENTES1MAPPINGS '
+    + 'FROM CCCXMLS1MAPPINGS';
+  if (docId > 0) {
+    sql += ' WHERE CCCDOCUMENTES1MAPPINGS = :1';
+  }
+  sql += ' ORDER BY XMLORDER';
+  try {
+    var ds = docId > 0
+      ? X.GETSQLDATASET(sql, docId)
+      : X.GETSQLDATASET(sql, null);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function createXmlMapping(params) {
+  var sql = 'INSERT INTO CCCXMLS1MAPPINGS (XMLNODE, MANDATORY, S1TABLE1, S1FIELD1, S1TABLE2, S1FIELD2, SQL, OBSERVATII, XMLORDER, CCCDOCUMENTES1MAPPINGS) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)';
+  try {
+    X.RUNSQL(sql,
+      (params.XMLNODE || '').toString(),
+      parseInt(params.MANDATORY) || 0,
+      (params.S1TABLE1 || '').toString(),
+      (params.S1FIELD1 || '').toString(),
+      (params.S1TABLE2 || '').toString(),
+      (params.S1FIELD2 || '').toString(),
+      (params.SQL || '').toString(),
+      (params.OBSERVATII || '').toString(),
+      parseFloat(params.XMLORDER) || 0,
+      parseInt(params.CCCDOCUMENTES1MAPPINGS) || 0
+    );
+    var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    return { success: true, id: newId };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function removeXmlMappings(params) {
+  var docId = parseInt(params.CCCDOCUMENTES1MAPPINGS) || 0;
+  var singleId = parseInt(params.id) || 0;
+  if (!docId && !singleId) return { success: false, error: 'Missing id or CCCDOCUMENTES1MAPPINGS' };
+  try {
+    if (singleId) {
+      X.RUNSQL('DELETE FROM CCCXMLS1MAPPINGS WHERE CCCXMLS1MAPPINGS = :1', singleId);
+    } else {
+      X.RUNSQL('DELETE FROM CCCXMLS1MAPPINGS WHERE CCCDOCUMENTES1MAPPINGS = :1', docId);
+    }
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// =====================================================
+// CCCSFTPXML endpoints (replace direct DB access)
+// =====================================================
+
+function getSftpXml(params) {
+  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
+  var filename = (params.XMLFILENAME || '').toString();
+  var limit = parseInt(params.$limit) || 50;
+  var sortDir = (params.$sortDir || 'DESC').toString().toUpperCase();
+  if (sortDir !== 'ASC') sortDir = 'DESC';
+
+  var sql = 'SELECT TOP ' + limit + ' CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, '
+    + 'XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
+    + 'FROM CCCSFTPXML WHERE '
+    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
+    + '(:2 = \'\' OR XMLFILENAME = :2) '
+    + 'ORDER BY XMLDATE ' + sortDir;
+  try {
+    var ds = X.GETSQLDATASET(sql, trdr, filename);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function createSftpXml(params) {
+  var sql = 'INSERT INTO CCCSFTPXML (TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, XMLFILENAME) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8)';
+  try {
+    X.RUNSQL(sql,
+      parseInt(params.TRDR_CLIENT) || 1,
+      parseInt(params.TRDR_RETAILER) || 0,
+      (params.XMLDATA || '').toString(),
+      (params.JSONDATA || '').toString(),
+      (params.XMLDATE || '').toString(),
+      (params.XMLSTATUS || 'NEW').toString(),
+      (params.XMLERROR || '').toString(),
+      (params.XMLFILENAME || '').toString()
+    );
+    var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    // Return the inserted row so callers get the full record
+    var row = {};
+    if (newId > 0) {
+      var ds2 = X.GETSQLDATASET('SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME FROM CCCSFTPXML WHERE CCCSFTPXML = :1', newId);
+      var rows = convertDatasetToArray(ds2);
+      if (rows.length > 0) row = rows[0];
+    }
+    return { success: true, id: newId, data: row };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function patchSftpXml(params) {
+  var findoc = parseInt(params.FINDOC);
+  var filename = (params.XMLFILENAME || '').toString();
+  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
+  var id = (parseInt(params.id) || 0).toString();
+
+  if (isNaN(findoc)) return { success: false, error: 'Missing FINDOC' };
+  if (!filename && !id) return { success: false, error: 'Missing XMLFILENAME or id' };
+
+  var sql = 'UPDATE CCCSFTPXML SET FINDOC = :1 WHERE '
+    + '(:2 = \'0\' OR CCCSFTPXML = :2) AND '
+    + '(:3 = \'\' OR XMLFILENAME = :3) AND '
+    + '(:4 = \'0\' OR TRDR_RETAILER = :4)';
+  try {
+    X.RUNSQL(sql, findoc, id, filename, trdr);
+    // Return patched rows for callers that use patchRes[0].CCCSFTPXML
+    var selectSql = 'SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
+      + 'FROM CCCSFTPXML WHERE '
+      + '(:1 = \'0\' OR CCCSFTPXML = :1) AND '
+      + '(:2 = \'\' OR XMLFILENAME = :2) AND '
+      + '(:3 = \'0\' OR TRDR_RETAILER = :3)';
+    var ds = X.GETSQLDATASET(selectSql, id, filename, trdr);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function removeSftpXml(params) {
+  var id = parseInt(params.id) || 0;
+  if (!id) return { success: false, error: 'Missing id' };
+  try {
+    X.RUNSQL('DELETE FROM CCCSFTPXML WHERE CCCSFTPXML = :1', id);
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// =====================================================
+// CCCAPERAK endpoints (replace direct DB access)
+// =====================================================
+
+function getAperaks(params) {
+  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
+  var trdrClient = (parseInt(params.TRDR_CLIENT) || 0).toString();
+  var findoc = (parseInt(params.FINDOC) || 0).toString();
+  var limit = parseInt(params.$limit) || 50;
+
+  var sql = 'SELECT TOP ' + limit + ' CCCAPERAK, TRDR_RETAILER, TRDR_CLIENT, FINDOC, '
+    + 'XMLFILENAME, XMLSENTDATE, MESSAGEDATE, MESSAGETIME, MESSAGEORIGIN, '
+    + 'DOCUMENTREFERENCE, DOCUMENTUID, SUPPLIERRECEIVERCODE, DOCUMENTRESPONSE, DOCUMENTDETAIL '
+    + 'FROM CCCAPERAK WHERE '
+    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
+    + '(:2 = \'0\' OR TRDR_CLIENT = :2) AND '
+    + '(:3 = \'0\' OR FINDOC = :3) '
+    + 'ORDER BY CCCAPERAK DESC';
+  try {
+    var ds = X.GETSQLDATASET(sql, trdr, trdrClient, findoc);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function createAperak(params) {
+  var sql = 'INSERT INTO CCCAPERAK (TRDR_RETAILER, TRDR_CLIENT, FINDOC, XMLFILENAME, XMLSENTDATE, '
+    + 'MESSAGEDATE, MESSAGETIME, MESSAGEORIGIN, DOCUMENTREFERENCE, DOCUMENTUID, '
+    + 'SUPPLIERRECEIVERCODE, DOCUMENTRESPONSE, DOCUMENTDETAIL) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13)';
+  try {
+    X.RUNSQL(sql,
+      parseInt(params.TRDR_RETAILER) || 0,
+      parseInt(params.TRDR_CLIENT) || 1,
+      parseInt(params.FINDOC) || 0,
+      (params.XMLFILENAME || '').toString(),
+      (params.XMLSENTDATE || '').toString(),
+      (params.MESSAGEDATE || '').toString(),
+      (params.MESSAGETIME || '').toString(),
+      (params.MESSAGEORIGIN || '').toString(),
+      (params.DOCUMENTREFERENCE || '').toString(),
+      (params.DOCUMENTUID || '').toString(),
+      (params.SUPPLIERRECEIVERCODE || '').toString(),
+      (params.DOCUMENTRESPONSE || '').toString(),
+      (params.DOCUMENTDETAIL || '').toString()
+    );
+    var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    return { success: true, CCCAPERAK: newId };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
 }

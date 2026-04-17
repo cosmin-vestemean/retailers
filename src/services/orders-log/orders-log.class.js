@@ -18,6 +18,15 @@ export class OrdersLogService {
     return response.json()
   }
 
+  async create(data, params) {
+    const url = mainURL + '/JS/JSRetailers/createOrderLog'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    return response.json()
+  }
+
   async remove(id, params) {
     const days = params?.query?.days || 30
     const url = mainURL + '/JS/JSRetailers/cleanupOrdersLog'

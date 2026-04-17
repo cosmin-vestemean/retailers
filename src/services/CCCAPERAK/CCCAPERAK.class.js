@@ -1,13 +1,37 @@
-import { KnexService } from '@feathersjs/knex'
+import fetch from 'node-fetch'
 
-// By default calls the standard Knex adapter service methods but can be customized with your own functionality.
-export class CccaperakService extends KnexService {}
+const mainURL = 'https://petfactory.oncloud.gr/s1services'
+
+export class CccaperakService {
+  constructor(options) {
+    this.options = options
+  }
+
+  async find(params) {
+    const query = params.query || {}
+    const url = mainURL + '/JS/JSRetailers/getAperaks'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(query)
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'getAperaks failed')
+    return { data: result.data, total: result.total }
+  }
+
+  async create(data) {
+    const url = mainURL + '/JS/JSRetailers/createAperak'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'createAperak failed')
+    // Caller checks result.CCCAPERAK (the PK)
+    return { CCCAPERAK: result.CCCAPERAK, ...data }
+  }
+}
 
 export const getOptions = (app) => {
-  return {
-    paginate: app.get('paginate'),
-    Model: app.get('mssqlClient'),
-    name: 'CCCAPERAK',
-    id: 'CCCAPERAK'
-  }
+  return { app }
 }

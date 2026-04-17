@@ -8,7 +8,6 @@ import socketio from '@feathersjs/socketio'
 
 import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
-import { mssql } from './mssql.js'
 
 import { services } from './services/index.js'
 import { channels } from './channels.js'
@@ -136,7 +135,6 @@ app.configure(
   })
 )
 app.configure(channels)
-app.configure(mssql)
 
 app.configure(services)
 
@@ -171,7 +169,7 @@ app.use(async (ctx, next) => {
   const ms = Date.now() - start
 
   // Only log database-related services
-  const dbServices = ['CCCORDERSLOG', 'CCCSFTPXML', 'getDataset', 'getS1SqlData']
+  const dbServices = ['getDataset', 'getS1SqlData']
   if (dbServices.some(service => ctx.url.includes(service))) {
     console.log(`DB ${ctx.method} ${ctx.status} ${ctx.url} - ${ms}ms`)
   }

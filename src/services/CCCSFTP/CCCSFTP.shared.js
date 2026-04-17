@@ -1,6 +1,6 @@
 export const cccsftpPath = 'CCCSFTP'
 
-export const cccsftpMethods = ['find', 'get', 'create', 'patch', 'remove']
+export const cccsftpMethods = ['find', 'update', 'patch']
 
 export const cccsftpClient = (client) => {
   const connection = client.get('connection')

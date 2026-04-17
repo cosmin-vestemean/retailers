@@ -1,6 +1,6 @@
 export const cccxmls1MappingsPath = 'CCCXMLS1MAPPINGS'
 
-export const cccxmls1MappingsMethods = ['find', 'get', 'create', 'patch', 'remove']
+export const cccxmls1MappingsMethods = ['find', 'create', 'remove']
 
 export const cccxmls1MappingsClient = (client) => {
   const connection = client.get('connection')

@@ -1,6 +1,6 @@
 export const cccaperakPath = 'CCCAPERAK'
 
-export const cccaperakMethods = ['find', 'get', 'create', 'patch', 'remove']
+export const cccaperakMethods = ['find', 'create']
 
 export const cccaperakClient = (client) => {
   const connection = client.get('connection')

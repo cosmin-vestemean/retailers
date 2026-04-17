@@ -1,6 +1,6 @@
 export const cccretailersclientsPath = 'CCCRETAILERSCLIENTS'
 
-export const cccretailersclientsMethods = ['find', 'get', 'create', 'patch', 'remove']
+export const cccretailersclientsMethods = ['find']
 
 export const cccretailersclientsClient = (client) => {
   const connection = client.get('connection')
