@@ -18,7 +18,7 @@
       "database": "PetFactory",
       "options": {
         "encrypt": true,
-        "trustServerCertificate": false
+        "trustServerCertificate": true
       }
     },
     "pool": {
