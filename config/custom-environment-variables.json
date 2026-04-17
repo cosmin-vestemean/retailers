@@ -6,5 +6,13 @@
   "host": "HOSTNAME",
   "authentication": {
     "secret": "FEATHERS_SECRET"
+  },
+  "mssql": {
+    "connection": {
+      "server": "MSSQL_SERVER",
+      "user": "MSSQL_USER",
+      "password": "MSSQL_PASSWORD",
+      "database": "MSSQL_DATABASE"
+    }
   }
 }
