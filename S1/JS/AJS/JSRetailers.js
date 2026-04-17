@@ -357,3 +357,81 @@ function cleanupOrdersLog(params) {
     return { success: false, error: e.message };
   }
 }
+
+/**
+ * One-time cleanup: strip HTML formatting from CCCORDERSLOG.MESSAGETEXT
+ * Removes: <pre><code>...</code></pre>, <span class="tag is-*">...</span>
+ * Also back-fills OPERATION from ORDERID where possible.
+ * Run manually from AJS, then delete.
+ */
+function cleanupOrdersLogHtml() {
+  var stats = { preCode: 0, span: 0, operation: 0, errors: [] };
+
+  // 1. Strip <pre><code>...</code></pre>
+  try {
+    X.RUNSQL(
+      "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(REPLACE(MESSAGETEXT, '<pre><code>', ''), '</code></pre>', '') WHERE MESSAGETEXT LIKE '%<pre><code>%'",
+      null
+    );
+    stats.preCode = parseInt(X.SQL("SELECT @@ROWCOUNT", null)) || 0;
+  } catch (e) {
+    stats.errors.push('preCode: ' + e.message);
+  }
+
+  // 2. Strip <span class="tag is-*">...</span> (all variants)
+  //    SQL Server doesn't have regex replace, so we loop until none remain
+  var maxIter = 20;
+  var iter = 0;
+  while (iter < maxIter) {
+    iter++;
+    try {
+      var remaining = parseInt(X.SQL("SELECT COUNT(*) FROM CCCORDERSLOG WHERE MESSAGETEXT LIKE '%<span class=%'", null)) || 0;
+      if (remaining === 0) break;
+      // Remove opening tags: <span class="tag is-primary">, <span class="tag is-success">, etc.
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '<span class=\"tag is-primary\">', '') WHERE MESSAGETEXT LIKE '%<span class=\"tag is-primary\">%'",
+        null
+      );
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '<span class=\"tag is-success\">', '') WHERE MESSAGETEXT LIKE '%<span class=\"tag is-success\">%'",
+        null
+      );
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '<span class=\"tag is-danger\">', '') WHERE MESSAGETEXT LIKE '%<span class=\"tag is-danger\">%'",
+        null
+      );
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '<span class=\"tag is-warning\">', '') WHERE MESSAGETEXT LIKE '%<span class=\"tag is-warning\">%'",
+        null
+      );
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '<span class=\"tag is-info\">', '') WHERE MESSAGETEXT LIKE '%<span class=\"tag is-info\">%'",
+        null
+      );
+      // Remove closing </span>
+      X.RUNSQL(
+        "UPDATE CCCORDERSLOG SET MESSAGETEXT = REPLACE(MESSAGETEXT, '</span>', '') WHERE MESSAGETEXT LIKE '%</span>%'",
+        null
+      );
+    } catch (e) {
+      stats.errors.push('span iter ' + iter + ': ' + e.message);
+      break;
+    }
+  }
+  stats.span = iter;
+
+  // 3. Back-fill OPERATION from ORDERID pattern where OPERATION is empty
+  try {
+    X.RUNSQL("UPDATE CCCORDERSLOG SET OPERATION = ORDERID WHERE ISNULL(OPERATION, '') = '' AND ORDERID IN ('downloadXml','storeXmlInDB','createOrders','processOrder','createDocument','mappingError','emailNotify','system')", null);
+    stats.operation = parseInt(X.SQL("SELECT @@ROWCOUNT", null)) || 0;
+  } catch (e) {
+    stats.errors.push('operation: ' + e.message);
+  }
+
+  // 4. Verify
+  var remainingHtml = parseInt(X.SQL("SELECT COUNT(*) FROM CCCORDERSLOG WHERE MESSAGETEXT LIKE '%<span class=%' OR MESSAGETEXT LIKE '%<pre><code>%'", null)) || 0;
+  stats.remainingHtml = remainingHtml;
+  stats.emptyOp = parseInt(X.SQL("SELECT COUNT(*) FROM CCCORDERSLOG WHERE ISNULL(OPERATION, '') = ''", null)) || 0;
+
+  return stats;
+}
