@@ -306,11 +306,14 @@ function getOrdersLog(params) {
   where += " AND (:4 = '' OR MESSAGEDATE >= :4)";
   where += " AND (:5 = '' OR MESSAGEDATE <= :5)";
 
-  // Count total
+  // Count total — use GETSQLDATASET because X.SQL does not accept multiple params (throws EVariantBadIndexError)
   var countSql = 'SELECT COUNT(*) AS CNT FROM CCCORDERSLOG ' + where;
   var total = 0;
   try {
-    total = parseInt(X.SQL(countSql, orderid, operation, level, dateFrom, dateTo)) || 0;
+    var dsCount = X.GETSQLDATASET(countSql, orderid, operation, level, dateFrom, dateTo);
+    if (dsCount.RECORDCOUNT > 0) {
+      total = parseInt(dsCount.CNT) || 0;
+    }
   } catch (e) {
     return { success: false, error: 'Count failed: ' + e.message };
   }
