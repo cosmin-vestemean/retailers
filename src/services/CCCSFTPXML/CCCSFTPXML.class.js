@@ -43,6 +43,8 @@ export class CccsftpxmlService {
     const body = {
       id: id,
       FINDOC: data.FINDOC,
+      XMLSTATUS: data.XMLSTATUS,
+      XMLERROR: data.XMLERROR,
       XMLFILENAME: query.XMLFILENAME,
       TRDR_RETAILER: query.TRDR_RETAILER
     }
@@ -52,8 +54,37 @@ export class CccsftpxmlService {
     })
     const result = await response.json()
     if (!result.success) throw new Error(result.error || 'patchSftpXml failed')
-    // Knex multi-patch returns array — callers use patchRes[0].CCCSFTPXML
     return result.data || []
+  }
+
+  /** Atomic NEW → PROCESSING transition. Returns true if this caller owns the row. */
+  async claim(id) {
+    const url = mainURL + '/JS/JSRetailers/claimSftpXml'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ id })
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'claimSftpXml failed')
+    return !!result.claimed
+  }
+
+  /** List CCCSFTPXML rows in XMLSTATUS='NEW' ready to be processed. */
+  async pending({ retailers = [], doctype = 'ORDERS', daysOld = 30, limit = 50 } = {}) {
+    const url = mainURL + '/JS/JSRetailers/getPendingSftpXml'
+    const body = {
+      TRDR_RETAILERS: Array.isArray(retailers) ? retailers.join(',') : String(retailers || ''),
+      EDIDOCTYPE: doctype,
+      daysOld,
+      $limit: limit
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'getPendingSftpXml failed')
+    return { data: result.data || [], total: result.total || 0 }
   }
 
   async remove(id) {

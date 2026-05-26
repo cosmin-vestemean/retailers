@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { resolveS1BaseUrl } from '../../s1-base-url.js'
 
 export class SetDocumentService {
   constructor(options) {
@@ -8,7 +7,7 @@ export class SetDocumentService {
   }
 
   async create(data, params) {
-    const url = mainURL
+    const url = resolveS1BaseUrl(params?.query?.url)
     const method = 'POST'
     const body = data
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })

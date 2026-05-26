@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { resolveS1BaseUrl } from '../../s1-base-url.js'
 
 export class ConnectToS1Service {
   constructor(options) {
@@ -8,9 +7,9 @@ export class ConnectToS1Service {
   }
 
   async find(params) {
-    const url = mainURL
-    const username = 'websitepetfactory'
-    const password = 'petfactory4321'
+    const url = resolveS1BaseUrl(params?.query?.url)
+    const username = params?.query?.username || process.env.S1_USERNAME || 'websitepetfactory'
+    const password = params?.query?.password || process.env.S1_PASSWORD || 'petfactory4321'
     const method = 'POST'
     const body = {
       service: 'login',

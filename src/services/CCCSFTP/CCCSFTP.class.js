@@ -35,6 +35,22 @@ export class CccsftpService {
     const trdr = id || (params?.query || {}).TRDR_RETAILER
     return this.update(trdr, data)
   }
+
+  /**
+   * List all SFTP/FTP configs joined with their CCCEDIPROVIDER row.
+   * Returns rows shaped for the EDI scanner: includes PROVIDER_CODE,
+   * PROVIDER_NAME, PROVIDER_CONNTYPE.
+   */
+  async list({ onlyActive = true } = {}) {
+    const url = mainURL + '/JS/JSRetailers/listEdiConfigs'
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({ onlyActive })
+    })
+    const result = await response.json()
+    if (!result.success) throw new Error(result.error || 'listEdiConfigs failed')
+    return { data: result.data || [], total: result.total || 0 }
+  }
 }
 
 export const getOptions = (app) => {

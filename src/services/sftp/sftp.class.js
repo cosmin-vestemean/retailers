@@ -1,6 +1,7 @@
 import Client from 'ssh2-sftp-client'
 import * as fs from 'fs'
 import { parseString } from 'xml2js'
+import { disabledScanControlResult, isScannerEnabled } from '../../edi/scanner-flags.js'
 
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
@@ -433,13 +434,17 @@ export class SftpService {
   }
 
   async scanNow(data, params) {
+    if (!isScannerEnabled()) return disabledScanControlResult()
     await this.scanAndSend()
+    return { started: true }
   }
 
   async scanPeriodically(data, params) {
+    if (!isScannerEnabled()) return disabledScanControlResult()
     const min = 30
     const period = min * 60 * 1000
     setInterval(this.scanAndSend, period)
+    return { started: true, intervalMs: period }
   }
 
   async createOrders(data, params) {

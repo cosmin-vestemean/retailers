@@ -549,6 +549,28 @@ function updateSftpConfig(params) {
   }
 }
 
+// Enumerate all SFTP/FTP configs joined with their EDI provider.
+// Used by the EDI scanner to dispatch downloads per provider/transport.
+function listEdiConfigs(params) {
+  var onlyActive = params && (params.onlyActive === false || params.onlyActive === 'false') ? 0 : 1;
+  var sql = 'SELECT s.CCCSFTP, s.TRDR_CLIENT, s.TRDR_RETAILER, s.URL, s.PORT, s.USERNAME, '
+    + 's.PASSPHRASE, s.INITIALDIRIN, s.INITIALDIROUT, s.FINGERPRINT, s.PRIVATEKEY, s.EDIPROVIDER, '
+    + 'p.CODE AS PROVIDER_CODE, p.NAME AS PROVIDER_NAME, p.CONNTYPE AS PROVIDER_CONNTYPE, '
+    + 'ISNULL(p.ISACTIVE, 1) AS PROVIDER_ISACTIVE, '
+    + '(SELECT NAME FROM TRDR WHERE TRDR = s.TRDR_RETAILER) AS RETAILER_NAME '
+    + 'FROM CCCSFTP s LEFT JOIN CCCEDIPROVIDER p ON p.CCCEDIPROVIDER = s.EDIPROVIDER';
+  if (onlyActive) {
+    sql += ' WHERE ISNULL(p.ISACTIVE, 1) = 1';
+  }
+  sql += ' ORDER BY s.TRDR_RETAILER';
+  try {
+    var ds = X.GETSQLDATASET(sql, null);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 function getRetailersClients(params) {
   var trdrClient = parseInt(params.TRDR_CLIENT) || 0;
   var sql = 'SELECT CCCRETAILERSCLIENTS, TRDR_CLIENT, WSURL, WSUSER, WSPASS, COMPANY, BRANCH '
@@ -683,6 +705,30 @@ function removeXmlMappings(params) {
 // CCCSFTPXML endpoints (replace direct DB access)
 // =====================================================
 
+// Execute a CCCXMLS1MAPPINGS template SQL with the XML-extracted value bound
+// as a parameter (closes SQL injection on user-controlled XML input).
+// Template uses the legacy '{value}' placeholder; we rewrite it to :1 before
+// calling X.SQL so the engine binds the value safely.
+function runMappingSql(params) {
+  var sql = (params.sql || '').toString();
+  var value = params.value;
+  if (value === undefined || value === null) value = '';
+  if (!sql) return { success: false, error: 'Missing sql' };
+  // Replace '{value}' (with surrounding quotes) or {value}; X.SQL :1 takes care of escaping.
+  var bound = sql.replace(/'\{value\}'/g, ':1').replace(/\{value\}/g, ':1');
+  try {
+    var data;
+    if (bound.indexOf(':1') >= 0) {
+      data = X.SQL(bound, value.toString());
+    } else {
+      data = X.SQL(bound, null);
+    }
+    return { success: true, data: data };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 function getSftpXml(params) {
   var trdr = parseInt(params.TRDR_RETAILER) || 0;
   var filename = (params.XMLFILENAME || '').toString();
@@ -696,7 +742,7 @@ function getSftpXml(params) {
   if (filename) where += ' AND XMLFILENAME = :1';
 
   var sql = 'SELECT TOP ' + limit + ' CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, '
-    + 'XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
+    + 'XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME, EDIDOCTYPE '
     + 'FROM CCCSFTPXML ' + where
     + ' ORDER BY XMLDATE ' + sortDir;
   try {
@@ -708,8 +754,8 @@ function getSftpXml(params) {
 }
 
 function createSftpXml(params) {
-  var sql = 'INSERT INTO CCCSFTPXML (TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, XMLFILENAME) '
-    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8)';
+  var sql = 'INSERT INTO CCCSFTPXML (TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, XMLFILENAME, EDIDOCTYPE) '
+    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)';
   try {
     X.RUNSQL(sql,
       parseInt(params.TRDR_CLIENT) || 1,
@@ -719,13 +765,14 @@ function createSftpXml(params) {
       (params.XMLDATE || '').toString(),
       (params.XMLSTATUS || 'NEW').toString(),
       (params.XMLERROR || '').toString(),
-      (params.XMLFILENAME || '').toString()
+      (params.XMLFILENAME || '').toString(),
+      (params.EDIDOCTYPE || 'ORDERS').toString()
     );
     var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
     // Return the inserted row so callers get the full record
     var row = {};
     if (newId > 0) {
-      var ds2 = X.GETSQLDATASET('SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME FROM CCCSFTPXML WHERE CCCSFTPXML = :1', newId);
+      var ds2 = X.GETSQLDATASET('SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME, EDIDOCTYPE FROM CCCSFTPXML WHERE CCCSFTPXML = :1', newId);
       var rows = convertDatasetToArray(ds2);
       if (rows.length > 0) row = rows[0];
     }
@@ -736,35 +783,84 @@ function createSftpXml(params) {
 }
 
 function patchSftpXml(params) {
-  var findoc = parseInt(params.FINDOC);
   var filename = (params.XMLFILENAME || '').toString();
   var trdr = parseInt(params.TRDR_RETAILER) || 0;
   var id = parseInt(params.id) || 0;
 
-  if (isNaN(findoc)) return { success: false, error: 'Missing FINDOC' };
+  // Build SET clause from provided fields (all optional except at least one must be set)
+  var sets = [];
+  if (params.FINDOC !== undefined && params.FINDOC !== null && !isNaN(parseInt(params.FINDOC))) {
+    sets.push('FINDOC = ' + parseInt(params.FINDOC));
+  }
+  if (params.XMLSTATUS) {
+    sets.push("XMLSTATUS = '" + (params.XMLSTATUS + '').replace(/'/g, "''") + "'");
+  }
+  if (params.XMLERROR !== undefined) {
+    sets.push("XMLERROR = '" + (params.XMLERROR + '').replace(/'/g, "''") + "'");
+  }
+  if (sets.length === 0) return { success: false, error: 'No fields to patch (FINDOC, XMLSTATUS, XMLERROR)' };
   if (!filename && !id) return { success: false, error: 'Missing XMLFILENAME or id' };
 
-  // findoc, id, trdr are safe integers — inlined; filename is user string — single :1 occurrence
   var updateWhere = 'WHERE 1=1';
   if (id) updateWhere += ' AND CCCSFTPXML = ' + id;
   if (filename) updateWhere += ' AND XMLFILENAME = :1';
   if (trdr) updateWhere += ' AND TRDR_RETAILER = ' + trdr;
 
-  var updateSql = 'UPDATE CCCSFTPXML SET FINDOC = ' + findoc + ' ' + updateWhere;
+  var updateSql = 'UPDATE CCCSFTPXML SET ' + sets.join(', ') + ' ' + updateWhere;
   try {
     if (filename) {
       X.RUNSQL(updateSql, filename);
     } else {
       X.RUNSQL(updateSql, null);
     }
-    // Return patched rows for callers that use patchRes[0].CCCSFTPXML
     var selectWhere = 'WHERE 1=1';
     if (id) selectWhere += ' AND CCCSFTPXML = ' + id;
     if (filename) selectWhere += ' AND XMLFILENAME = :1';
     if (trdr) selectWhere += ' AND TRDR_RETAILER = ' + trdr;
-    var selectSql = 'SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
+    var selectSql = 'SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME, EDIDOCTYPE '
       + 'FROM CCCSFTPXML ' + selectWhere;
     var ds = filename ? X.GETSQLDATASET(selectSql, filename) : X.GETSQLDATASET(selectSql, null);
+    return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// Atomic claim: transitions XMLSTATUS 'NEW' -> 'PROCESSING'.
+// Returns claimed=true only if the row was in 'NEW' state and is now ours.
+function claimSftpXml(params) {
+  var id = parseInt(params.id) || 0;
+  if (!id) return { success: false, error: 'Missing id' };
+  try {
+    X.RUNSQL("UPDATE CCCSFTPXML SET XMLSTATUS = 'PROCESSING' WHERE CCCSFTPXML = " + id + " AND XMLSTATUS = 'NEW'", null);
+    var affected = parseInt(X.SQL('SELECT @@ROWCOUNT', null)) || 0;
+    return { success: true, claimed: affected === 1, id: id };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
+// Return pending CCCSFTPXML rows (XMLSTATUS='NEW') for a set of retailers,
+// limited to a doctype and a date window. Used by the EDI scanner.
+function getPendingSftpXml(params) {
+  var doctype = (params.EDIDOCTYPE || 'ORDERS').toString().toUpperCase();
+  var daysOld = parseInt(params.daysOld) || 30;
+  var limit = parseInt(params.$limit) || 50;
+  var retailers = (params.TRDR_RETAILERS || '').toString();
+  // Only digits and commas allowed
+  if (!/^[0-9,\s]*$/.test(retailers)) return { success: false, error: 'Invalid TRDR_RETAILERS' };
+  retailers = retailers.replace(/\s+/g, '');
+
+  var where = "WHERE XMLSTATUS = 'NEW' AND EDIDOCTYPE = '" + doctype.replace(/'/g, "''") + "'"
+    + ' AND XMLDATE > DATEADD(day, -' + daysOld + ', GETDATE())';
+  if (retailers) where += ' AND TRDR_RETAILER IN (' + retailers + ')';
+
+  var sql = 'SELECT TOP ' + limit + ' CCCSFTPXML, TRDR_RETAILER, XMLFILENAME, XMLDATA, '
+    + "FORMAT(XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, EDIDOCTYPE, "
+    + '(SELECT NAME FROM TRDR WHERE TRDR = CCCSFTPXML.TRDR_RETAILER) AS RETAILER_NAME '
+    + 'FROM CCCSFTPXML ' + where + ' ORDER BY XMLDATE ASC';
+  try {
+    var ds = X.GETSQLDATASET(sql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };

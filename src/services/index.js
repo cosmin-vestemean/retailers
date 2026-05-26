@@ -29,6 +29,7 @@ import { getS1SqlData } from './get-s1-sql-data/get-s1-sql-data.service.js'
 import { getInvoiceDom } from './get-invoice-dom/get-invoice-dom.service.js'
 import { retailer } from './retailer/retailer.service.js'
 import { retailerStats } from './retailer-stats/retailer-stats.service.js'
+import { edi } from './edi/edi.service.js'
 
 export const services = (app) => {
   app.configure(cccaperak)
@@ -82,6 +83,8 @@ export const services = (app) => {
   app.configure(retailer)
 
   app.configure(retailerStats)
+
+  app.configure(edi)
 
   // All services will be registered here
 }

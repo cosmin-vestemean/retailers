@@ -8,6 +8,7 @@ import socketio from '@feathersjs/socketio'
 
 import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
+import { getEdiScannerMode, isScannerEnabled } from './edi/scanner-flags.js'
 
 import { services } from './services/index.js'
 import { channels } from './channels.js'
@@ -154,12 +155,23 @@ app.hooks({
 })
 
 //scanPeriodically run
-const enableScanner = (process.env.ENABLE_SFTP_SCANNER || 'true').toLowerCase() === 'true'
+const enableScanner = isScannerEnabled()
+// EDI_SCANNER controls which pipeline runs:
+//   'new' (default) → src/edi scanner (multi-provider, hardened)
+//   'legacy'        → old src/services/sftp scanner
+//   'both'          → run both (transition / parity testing only)
+const ediScannerMode = getEdiScannerMode()
 if (enableScanner) {
-  console.log('SFTP scanner ENABLED - will poll for EDI files')
-  app.service('sftp').scanPeriodically({}, {})
+  if (ediScannerMode === 'legacy' || ediScannerMode === 'both') {
+    console.log('[scanner] legacy SFTP scanner ENABLED')
+    app.service('sftp').scanPeriodically({}, {})
+  }
+  if (ediScannerMode === 'new' || ediScannerMode === 'both') {
+    console.log('[scanner] new EDI scanner ENABLED (multi-provider)')
+    app.service('edi').scanPeriodically({})
+  }
 } else {
-  console.log('SFTP scanner DISABLED (ENABLE_SFTP_SCANNER=' + process.env.ENABLE_SFTP_SCANNER + ')')
+  console.log('SFTP/EDI scanner DISABLED (set ENABLE_SFTP_SCANNER=true to enable scheduling)')
 }
 
 // Modified middleware to track only database requests

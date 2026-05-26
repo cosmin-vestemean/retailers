@@ -1,0 +1,1 @@
+# Empty directory — mirrors prod Infinite layout. Suppresses LIST ENOENT in tests.

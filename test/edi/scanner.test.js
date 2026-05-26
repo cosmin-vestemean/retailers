@@ -1,0 +1,132 @@
+// Integration test: local ftp-srv stands in for ftp.infinite.pl.
+// Verifies the scanner's download-and-insert pipeline end-to-end without
+// touching production. The safe-host guard in transports/safe-host.js makes
+// dialing a real production host physically impossible while NODE_ENV=test.
+import assert from 'node:assert'
+import path from 'node:path'
+import fs from 'node:fs/promises'
+import { feathers } from '@feathersjs/feathers'
+
+import { startFtp, makeWorkdir, FIXTURES_DIR } from './ftp-server.js'
+import { scanAll } from '../../src/edi/scanner.js'
+
+const TEST_PORT = 2121
+
+function buildMockApp(testRow, store) {
+  const app = feathers()
+
+  app.use('CCCSFTP', {
+    async find() { return { data: [testRow], total: 1 } },
+    async list() { return { data: [testRow], total: 1 } }
+  }, { methods: ['find', 'list'] })
+
+  app.use('CCCSFTPXML', {
+    async find({ query }) {
+      const match = store.filter((r) => r.XMLFILENAME === query.XMLFILENAME)
+      return { data: match, total: match.length, limit: 1, skip: 0 }
+    },
+    async create(data) {
+      const row = { CCCSFTPXML: store.length + 1, ...data }
+      store.push(row)
+      return row
+    },
+    async patch() { return null },
+    async pending() { return { data: [] } },
+    async claim() { return false }
+  }, { methods: ['find', 'create', 'patch', 'pending', 'claim'] })
+
+  return app
+}
+
+describe('EDI scanner against local ftp-srv', function () {
+  this.timeout(30000)
+  let stop, cleanup, root
+
+  before(async () => {
+    assert.strictEqual(process.env.NODE_ENV, 'test', 'must run under NODE_ENV=test for safe-host guard')
+    const wd = await makeWorkdir()
+    root = wd.root
+    cleanup = wd.cleanup
+    const srv = await startFtp({ port: TEST_PORT, root })
+    stop = srv.stop
+  })
+
+  after(async () => {
+    try { await stop?.() } catch { /* ignore */ }
+    try { await cleanup?.() } catch { /* ignore */ }
+    // Clean per-run download dir
+    try { await fs.rm(path.join('data', 'infinite', '99999'), { recursive: true, force: true }) } catch {}
+  })
+
+  it('refuses to construct a transport pointing at a production host', async () => {
+    const { FtpTransport } = await import('../../src/edi/transports/ftp-transport.js')
+    assert.throws(
+      () => new FtpTransport({ host: 'ftp.infinite.pl', port: 21, username: 'x', password: 'y' }),
+      /refusing non-loopback host/
+    )
+  })
+
+  it('lists, downloads and stores both AUCHAN_ and DEDEMAN_ fixtures', async () => {
+    const store = []
+    const testRow = {
+      CCCSFTP: 999,
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: 99999,
+      URL: '127.0.0.1',
+      PORT: TEST_PORT,
+      USERNAME: 'testuser',
+      PASSPHRASE: 'testpass',
+      INITIALDIRIN: '/',
+      INITIALDIROUT: '/',
+      PROVIDER_CODE: 'infinite',
+      PROVIDER_NAME: 'Infinite Edinet',
+      PROVIDER_CONNTYPE: 4
+    }
+    const app = buildMockApp(testRow, store)
+
+    const stats = await scanAll(app)
+
+    assert.deepStrictEqual(stats.errors, [], 'no errors expected')
+    assert.strictEqual(stats.providers, 1)
+    assert.strictEqual(stats.downloaded, 2, 'two order fixtures should be downloaded')
+    assert.strictEqual(stats.inserted, 2)
+    assert.strictEqual(stats.duplicates, 0)
+
+    const filenames = store.map((r) => r.XMLFILENAME).sort()
+    assert.deepStrictEqual(filenames, ['AUCHAN_900000001.xml', 'DEDEMAN_900000002.xml'])
+
+    for (const row of store) {
+      assert.strictEqual(row.EDIDOCTYPE, 'ORDERS')
+      assert.strictEqual(row.XMLSTATUS, 'NEW')
+      assert.strictEqual(row.TRDR_RETAILER, 99999)
+      assert.ok(row.XMLDATA.includes('<BuyerOrderNumber>'), 'XML body persisted')
+    }
+  })
+
+  it('dedupes on second scan — no re-insert', async () => {
+    const store = [
+      { CCCSFTPXML: 1, XMLFILENAME: 'AUCHAN_900000001.xml', TRDR_RETAILER: 99999 },
+      { CCCSFTPXML: 2, XMLFILENAME: 'DEDEMAN_900000002.xml', TRDR_RETAILER: 99999 }
+    ]
+    const testRow = {
+      CCCSFTP: 999, TRDR_CLIENT: 1, TRDR_RETAILER: 99999,
+      URL: '127.0.0.1', PORT: TEST_PORT, USERNAME: 'testuser', PASSPHRASE: 'testpass',
+      INITIALDIRIN: '/', INITIALDIROUT: '/',
+      PROVIDER_CODE: 'infinite', PROVIDER_NAME: 'Infinite Edinet', PROVIDER_CONNTYPE: 4
+    }
+    const app = buildMockApp(testRow, store)
+    const stats = await scanAll(app)
+
+    assert.strictEqual(stats.downloaded, 0, 'nothing new should be downloaded')
+    assert.strictEqual(stats.inserted, 0)
+    assert.strictEqual(stats.duplicates, 2)
+    assert.strictEqual(store.length, 2, 'store size unchanged')
+  })
+
+  it('FIXTURES_DIR mirrors real Infinite layout (orders only for now)', async () => {
+    const ordersDir = path.join(FIXTURES_DIR, 'orders')
+    const files = await fs.readdir(ordersDir)
+    assert.ok(files.some((f) => f.startsWith('AUCHAN_')), 'AUCHAN_ fixture present')
+    assert.ok(files.some((f) => f.startsWith('DEDEMAN_')), 'DEDEMAN_ fixture present')
+  })
+})
