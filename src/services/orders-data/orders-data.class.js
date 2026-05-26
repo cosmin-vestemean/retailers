@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class OrdersDataService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class OrdersDataService {
 
   async find(params) {
     const { trdr, page, pageSize, daysOlder, includeSent } = params.query || {}
-    const url = mainURL + '/JS/JSRetailers/getOrdersData'
+    const url = buildS1Url('/JS/JSRetailers/getOrdersData', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ trdr, page, pageSize, daysOlder, includeSent })

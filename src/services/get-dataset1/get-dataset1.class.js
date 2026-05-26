@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class GetDataset1Service {
   constructor(options) {
@@ -8,7 +7,7 @@ export class GetDataset1Service {
   }
 
   async find(params) {
-    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
+    const url = buildS1Url('/JS/JSRetailers/processSqlAsDataset1', { app: this.options.app })
     const method = 'POST'
     const sqlQuery = params.query.sqlQuery
     console.log('sqlQuery', sqlQuery)

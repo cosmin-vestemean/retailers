@@ -11,6 +11,7 @@
     "__name": "ALLOWED_ORIGINS",
     "__format": "json"
   },
+  "s1BaseUrl": "S1_BASE_URL",
   "mssql": {
     "connection": {
       "server": "MSSQL_SERVER",

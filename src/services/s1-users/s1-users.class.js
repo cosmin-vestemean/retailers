@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class S1UsersService {
   constructor(options) {
@@ -8,7 +7,7 @@ export class S1UsersService {
   }
 
   async find(params) {
-    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
+    const url = buildS1Url('/JS/JSRetailers/processSqlAsDataset1', { app: this.options.app })
     const sqlQuery = `SELECT b.name, a.luser as userId FROM webaccountlns a
       INNER JOIN users b ON a.luser = b.users
       WHERE a.webservice = 1001 AND a.webaccount = 4`

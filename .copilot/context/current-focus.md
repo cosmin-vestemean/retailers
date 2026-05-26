@@ -34,7 +34,7 @@
 - EDIDOCTYPE column populated on insert (`ORDERS`|`RETANN`|`APERAK`).
 - CCCEDIPROVIDER extended with `CODE varchar(20)`, `ISACTIVE bit`; rows updated (docprocess, infinite).
 - SQL injection on `{value}` mapping templates closed via AJS `runMappingSql` (rewrites `'{value}'` → `:1` and binds parameter; no DB template migration needed).
-- EDI order flow now propagates the retailer S1 base URL end-to-end: `CCCRETAILERSCLIENTS.WSURL` feeds `buildOrderPayload`, `connectToS1`, AJS `runMappingSql`, and `setDocument`. Fallback remains `S1_BASE_URL` env, then prod default.
+- Hardcoded S1 base URLs have been removed from `src/**`. Base URL resolution is now config-driven: explicit request URL when provided, else app config `s1BaseUrl`, else env `S1_BASE_URL`. The EDI order flow still prefers retailer-specific `CCCRETAILERSCLIENTS.WSURL`.
 - Scanner safety is stricter now: `ENABLE_SFTP_SCANNER` defaults to `false`, and both automatic scheduling and manual `scanNow` endpoints short-circuit unless explicitly enabled.
 - `privateKey.txt` no longer written to disk — `SftpTransport` holds the key in-memory.
 - Legacy `sftp` service NOT deleted yet; toggled via `EDI_SCANNER=legacy` for fallback during validation.
@@ -52,11 +52,12 @@
 - `test/edi/order-builder.test.js` — 2 tests passing (mocked `runMappingSql` via injected `fetchImpl`; verifies SQL field substitution + error-path logging).
 - `test/edi/order-sender.test.js` — 1 test passing (propagates dev/prod S1 target URL to `setDocument`, marks CCCSFTPXML row `SENT`).
 - `test/edi/scanner-flags.test.js` — 3 tests passing (default scanner disabled + manual scan guards on both new and legacy services).
-- **Total: 12 passing EDI tests, all under NODE_ENV=test, all loopback-only.**
+- `test/s1-base-url.test.js` — 3 tests passing (explicit URL, app config fallback, missing-config failure).
+- **Total: 15 passing tests covering EDI + S1 base URL resolution, all under NODE_ENV=test, all loopback-only.**
 - Fixed `FtpTransport.list` modifyTime bug (Date(0) → undefined).
 - `SftpTransport` now accepts `password` as fallback when no `privateKey` (for test use; prod path unchanged).
 - `buildOrderPayload` accepts optional `fetchImpl` (defaults to `node-fetch`) for test injection.
-- `connectToS1` now respects the incoming `url`/`username`/`password` query instead of hardcoded login only; `setDocument` now respects the same target URL.
+- `connectToS1`, `setDocument`, and the remaining server-side S1 service classes now resolve the base URL through the shared helper instead of embedding the production endpoint in each file.
 - Production data sources kept gitignored under `documentatie/infinite_samples/`.
 
 ## Infinite FTP layout (real, mapped 2026-05-26)

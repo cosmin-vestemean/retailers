@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class LookupFindocService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class LookupFindocService {
 
   async create(data) {
     const { trdr, orderId, xmlFilename } = data
-    const url = mainURL + '/JS/JSRetailers/lookupFindoc'
+    const url = buildS1Url('/JS/JSRetailers/lookupFindoc', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

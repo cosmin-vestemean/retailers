@@ -7,7 +7,8 @@ export const configurationSchema = Type.Intersect([
   Type.Object({
     host: Type.String(),
     port: Type.Number(),
-    public: Type.String()
+    public: Type.String(),
+    s1BaseUrl: Type.Optional(Type.String())
   })
 ])
 

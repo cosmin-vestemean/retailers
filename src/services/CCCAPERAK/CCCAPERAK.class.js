@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class CccaperakService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class CccaperakService {
 
   async find(params) {
     const query = params.query || {}
-    const url = mainURL + '/JS/JSRetailers/getAperaks'
+    const url = buildS1Url('/JS/JSRetailers/getAperaks', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(query)
@@ -20,7 +19,7 @@ export class CccaperakService {
   }
 
   async create(data) {
-    const url = mainURL + '/JS/JSRetailers/createAperak'
+    const url = buildS1Url('/JS/JSRetailers/createAperak', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data)

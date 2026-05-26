@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class CccsftpService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class CccsftpService {
 
   async find(params) {
     const query = params.query || {}
-    const url = mainURL + '/JS/JSRetailers/getSftpConfig'
+    const url = buildS1Url('/JS/JSRetailers/getSftpConfig', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(query)
@@ -21,7 +20,7 @@ export class CccsftpService {
 
   async update(id, data) {
     const trdr = typeof id === 'object' ? (id.query || {}).TRDR_RETAILER : id
-    const url = mainURL + '/JS/JSRetailers/updateSftpConfig'
+    const url = buildS1Url('/JS/JSRetailers/updateSftpConfig', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ ...data, TRDR_RETAILER: trdr })
@@ -42,7 +41,7 @@ export class CccsftpService {
    * PROVIDER_NAME, PROVIDER_CONNTYPE.
    */
   async list({ onlyActive = true } = {}) {
-    const url = mainURL + '/JS/JSRetailers/listEdiConfigs'
+    const url = buildS1Url('/JS/JSRetailers/listEdiConfigs', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ onlyActive })

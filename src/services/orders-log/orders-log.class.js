@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class OrdersLogService {
   constructor(options) {
@@ -10,7 +9,7 @@ export class OrdersLogService {
   async find(params) {
     const { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize } = params.query || {}
 
-    const url = mainURL + '/JS/JSRetailers/getOrdersLog'
+    const url = buildS1Url('/JS/JSRetailers/getOrdersLog', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize })
@@ -19,7 +18,7 @@ export class OrdersLogService {
   }
 
   async create(data, params) {
-    const url = mainURL + '/JS/JSRetailers/createOrderLog'
+    const url = buildS1Url('/JS/JSRetailers/createOrderLog', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data)
@@ -29,7 +28,7 @@ export class OrdersLogService {
 
   async remove(id, params) {
     const days = params?.query?.days || 30
-    const url = mainURL + '/JS/JSRetailers/cleanupOrdersLog'
+    const url = buildS1Url('/JS/JSRetailers/cleanupOrdersLog', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ days })

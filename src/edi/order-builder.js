@@ -70,7 +70,7 @@ export async function buildOrderPayload({
     query: { TRDR_CLIENT: 1 }
   })
   const wsCfg = resClient.data[0]
-  const s1BaseUrl = resolveS1BaseUrl(wsCfg?.WSURL)
+  const s1BaseUrl = resolveS1BaseUrl({ url: wsCfg?.WSURL, app })
 
   const resConnect = await app.service('connectToS1').find({
     query: { url: s1BaseUrl, username: wsCfg.WSUSER, password: wsCfg.WSPASS }

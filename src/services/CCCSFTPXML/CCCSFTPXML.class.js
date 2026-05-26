@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class CccsftpxmlService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class CccsftpxmlService {
 
   async find(params) {
     const query = params.query || {}
-    const url = mainURL + '/JS/JSRetailers/getSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/getSftpXml', { app: this.options.app })
     const body = {
       TRDR_RETAILER: query.TRDR_RETAILER,
       XMLFILENAME: query.XMLFILENAME,
@@ -26,7 +25,7 @@ export class CccsftpxmlService {
   }
 
   async create(data) {
-    const url = mainURL + '/JS/JSRetailers/createSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/createSftpXml', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data)
@@ -39,7 +38,7 @@ export class CccsftpxmlService {
 
   async patch(id, data, params) {
     const query = params?.query || {}
-    const url = mainURL + '/JS/JSRetailers/patchSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/patchSftpXml', { app: this.options.app })
     const body = {
       id: id,
       FINDOC: data.FINDOC,
@@ -59,7 +58,7 @@ export class CccsftpxmlService {
 
   /** Atomic NEW → PROCESSING transition. Returns true if this caller owns the row. */
   async claim(id) {
-    const url = mainURL + '/JS/JSRetailers/claimSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/claimSftpXml', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ id })
@@ -71,7 +70,7 @@ export class CccsftpxmlService {
 
   /** List CCCSFTPXML rows in XMLSTATUS='NEW' ready to be processed. */
   async pending({ retailers = [], doctype = 'ORDERS', daysOld = 30, limit = 50 } = {}) {
-    const url = mainURL + '/JS/JSRetailers/getPendingSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/getPendingSftpXml', { app: this.options.app })
     const body = {
       TRDR_RETAILERS: Array.isArray(retailers) ? retailers.join(',') : String(retailers || ''),
       EDIDOCTYPE: doctype,
@@ -88,7 +87,7 @@ export class CccsftpxmlService {
   }
 
   async remove(id) {
-    const url = mainURL + '/JS/JSRetailers/removeSftpXml'
+    const url = buildS1Url('/JS/JSRetailers/removeSftpXml', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ id })

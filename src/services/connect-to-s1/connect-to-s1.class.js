@@ -7,7 +7,7 @@ export class ConnectToS1Service {
   }
 
   async find(params) {
-    const url = resolveS1BaseUrl(params?.query?.url)
+    const url = resolveS1BaseUrl({ url: params?.query?.url, app: this.options.app })
     const username = params?.query?.username || process.env.S1_USERNAME || 'websitepetfactory'
     const password = params?.query?.password || process.env.S1_PASSWORD || 'petfactory4321'
     const method = 'POST'

@@ -7,7 +7,7 @@ export class SetDocumentService {
   }
 
   async create(data, params) {
-    const url = resolveS1BaseUrl(params?.query?.url)
+    const url = resolveS1BaseUrl({ url: params?.query?.url, app: this.options.app })
     const method = 'POST'
     const body = data
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })

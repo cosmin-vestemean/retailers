@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class Cccdocumentes1MappingsService {
   constructor(options) {
@@ -9,7 +8,7 @@ export class Cccdocumentes1MappingsService {
 
   async find(params) {
     const query = params.query || {}
-    const url = mainURL + '/JS/JSRetailers/getDocumentMappings'
+    const url = buildS1Url('/JS/JSRetailers/getDocumentMappings', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(query)
@@ -20,7 +19,7 @@ export class Cccdocumentes1MappingsService {
   }
 
   async create(data) {
-    const url = mainURL + '/JS/JSRetailers/createDocumentMapping'
+    const url = buildS1Url('/JS/JSRetailers/createDocumentMapping', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data)
@@ -31,7 +30,7 @@ export class Cccdocumentes1MappingsService {
   }
 
   async remove(id) {
-    const url = mainURL + '/JS/JSRetailers/removeDocumentMapping'
+    const url = buildS1Url('/JS/JSRetailers/removeDocumentMapping', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ id })

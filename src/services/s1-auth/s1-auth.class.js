@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { buildS1Url } from '../../s1-base-url.js'
 
 export class S1AuthService {
   constructor(options) {
@@ -20,7 +19,7 @@ export class S1AuthService {
       INNER JOIN users b ON a.luser = b.users
       WHERE a.webservice = 1001 AND a.webaccount = 4 AND b.users = ${parseInt(userId)}`
 
-    const url = mainURL + '/JS/JSRetailers/processSqlAsDataset1'
+    const url = buildS1Url('/JS/JSRetailers/processSqlAsDataset1', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify({ sqlQuery })
@@ -34,7 +33,7 @@ export class S1AuthService {
     const user = userResult.data[0]
 
     // Step 2: Validate password using S1 PASSWORDVALIDATE via AJS endpoint
-    const validateUrl = mainURL + '/JS/JSRetailers/validatePassword'
+    const validateUrl = buildS1Url('/JS/JSRetailers/validatePassword', { app: this.options.app })
     const validateResponse = await fetch(validateUrl, {
       method: 'POST',
       body: JSON.stringify({

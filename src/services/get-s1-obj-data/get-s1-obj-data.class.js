@@ -1,6 +1,5 @@
 import fetch from 'node-fetch'
-
-const mainURL = 'https://petfactory.oncloud.gr/s1services'
+import { resolveS1BaseUrl } from '../../s1-base-url.js'
 
 export class GetS1ObjDataService {
   constructor(options) {
@@ -16,7 +15,7 @@ export class GetS1ObjDataService {
     const KEY = findoc
     const service = 'getData'
     const LOCATEINFO = params.query.LOCATEINFO
-    const url = mainURL
+    const url = resolveS1BaseUrl({ app: this.options.app })
     const method = 'POST'
     const body = {
       service: service,
