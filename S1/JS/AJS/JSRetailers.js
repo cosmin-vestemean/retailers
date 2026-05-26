@@ -291,26 +291,56 @@ function getOrdersLog(params) {
     dateTo = dateTo + ' 23:59:59';
   }
 
-  // 5 fixed positional params — when empty, the (:N = '' OR ...) pattern skips the filter
-  // :1 = orderid, :2 = operation, :3 = level, :4 = dateFrom, :5 = dateTo
-  // trdr is a safe parseInt result, inlined directly
+  // Build WHERE dynamically. Each :N placeholder must appear EXACTLY once —
+  // S1 binds parameters positionally per occurrence, so repeating :1 causes
+  // "Variant or safe array index out of bounds".
+  // trdr is a safe parseInt result, inlined directly.
   var where = 'WHERE 1=1';
   if (trdr === -1) {
     where += ' AND TRDR_RETAILER = -1';
   } else if (trdr > 0) {
     where += ' AND TRDR_RETAILER = ' + trdr;
   }
-  where += " AND (:1 = '' OR ORDERID = :1)";
-  where += " AND (:2 = '' OR OPERATION = :2)";
-  where += " AND (:3 = '' OR LEVEL = :3)";
-  where += " AND (:4 = '' OR MESSAGEDATE >= :4)";
-  where += " AND (:5 = '' OR MESSAGEDATE <= :5)";
+  var sqlParams = [];
+  if (orderid) {
+    where += ' AND ORDERID = :' + (sqlParams.length + 1);
+    sqlParams.push(orderid);
+  }
+  if (operation) {
+    where += ' AND OPERATION = :' + (sqlParams.length + 1);
+    sqlParams.push(operation);
+  }
+  if (level) {
+    where += ' AND [LEVEL] = :' + (sqlParams.length + 1);
+    sqlParams.push(level);
+  }
+  if (dateFrom) {
+    where += ' AND MESSAGEDATE >= :' + (sqlParams.length + 1);
+    sqlParams.push(dateFrom);
+  }
+  if (dateTo) {
+    where += ' AND MESSAGEDATE <= :' + (sqlParams.length + 1);
+    sqlParams.push(dateTo);
+  }
 
-  // Count total — use GETSQLDATASET because X.SQL does not accept multiple params (throws EVariantBadIndexError)
+  // Count total — use GETSQLDATASET because X.SQL does not accept multiple params
   var countSql = 'SELECT COUNT(*) AS CNT FROM CCCORDERSLOG ' + where;
   var total = 0;
   try {
-    var dsCount = X.GETSQLDATASET(countSql, orderid, operation, level, dateFrom, dateTo);
+    var dsCount;
+    if (sqlParams.length === 0) {
+      dsCount = X.GETSQLDATASET(countSql, null);
+    } else if (sqlParams.length === 1) {
+      dsCount = X.GETSQLDATASET(countSql, sqlParams[0]);
+    } else if (sqlParams.length === 2) {
+      dsCount = X.GETSQLDATASET(countSql, sqlParams[0], sqlParams[1]);
+    } else if (sqlParams.length === 3) {
+      dsCount = X.GETSQLDATASET(countSql, sqlParams[0], sqlParams[1], sqlParams[2]);
+    } else if (sqlParams.length === 4) {
+      dsCount = X.GETSQLDATASET(countSql, sqlParams[0], sqlParams[1], sqlParams[2], sqlParams[3]);
+    } else {
+      dsCount = X.GETSQLDATASET(countSql, sqlParams[0], sqlParams[1], sqlParams[2], sqlParams[3], sqlParams[4]);
+    }
     if (dsCount.RECORDCOUNT > 0) {
       total = parseInt(dsCount.CNT) || 0;
     }
@@ -321,7 +351,7 @@ function getOrdersLog(params) {
   // Fetch page — offset/pageSize are safe integers
   var sql = 'SELECT CCCORDERSLOG, TRDR_RETAILER, '
     + "(SELECT NAME FROM TRDR WHERE TRDR = CCCORDERSLOG.TRDR_RETAILER) AS RETAILERNAME, "
-    + 'OPERATION, LEVEL, '
+    + 'OPERATION, [LEVEL], '
     + "FORMAT(MESSAGEDATE, 'yyyy-MM-dd HH:mm:ss') AS MESSAGEDATE, "
     + 'MESSAGETEXT '
     + 'FROM CCCORDERSLOG ' + where
@@ -329,7 +359,20 @@ function getOrdersLog(params) {
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
 
   try {
-    var ds = X.GETSQLDATASET(sql, orderid, operation, level, dateFrom, dateTo);
+    var ds;
+    if (sqlParams.length === 0) {
+      ds = X.GETSQLDATASET(sql, null);
+    } else if (sqlParams.length === 1) {
+      ds = X.GETSQLDATASET(sql, sqlParams[0]);
+    } else if (sqlParams.length === 2) {
+      ds = X.GETSQLDATASET(sql, sqlParams[0], sqlParams[1]);
+    } else if (sqlParams.length === 3) {
+      ds = X.GETSQLDATASET(sql, sqlParams[0], sqlParams[1], sqlParams[2]);
+    } else if (sqlParams.length === 4) {
+      ds = X.GETSQLDATASET(sql, sqlParams[0], sqlParams[1], sqlParams[2], sqlParams[3]);
+    } else {
+      ds = X.GETSQLDATASET(sql, sqlParams[0], sqlParams[1], sqlParams[2], sqlParams[3], sqlParams[4]);
+    }
     if (ds.RECORDCOUNT > 0) {
       return {
         success: true,
@@ -524,20 +567,23 @@ function getRetailersClients(params) {
 }
 
 function getDocumentMappings(params) {
-  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
-  var sosource = (parseInt(params.SOSOURCE) || 0).toString();
-  var fprms = (parseInt(params.FPRMS) || 0).toString();
-  var series = (parseInt(params.SERIES) || 0).toString();
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
+  var sosource = parseInt(params.SOSOURCE) || 0;
+  var fprms = parseInt(params.FPRMS) || 0;
+  var series = parseInt(params.SERIES) || 0;
+
+  // Safe integers inlined directly — each :N must appear exactly once in S1 SQL
+  var where = 'WHERE 1=1';
+  if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
+  if (sosource) where += ' AND SOSOURCE = ' + sosource;
+  if (fprms) where += ' AND FPRMS = ' + fprms;
+  if (series) where += ' AND SERIES = ' + series;
 
   var sql = 'SELECT CCCDOCUMENTES1MAPPINGS, TRDR_RETAILER, TRDR_CLIENT, SOSOURCE, FPRMS, SERIES, '
     + 'INITIALDIRIN, INITIALDIROUT '
-    + 'FROM CCCDOCUMENTES1MAPPINGS WHERE '
-    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
-    + '(:2 = \'0\' OR SOSOURCE = :2) AND '
-    + '(:3 = \'0\' OR FPRMS = :3) AND '
-    + '(:4 = \'0\' OR SERIES = :4)';
+    + 'FROM CCCDOCUMENTES1MAPPINGS ' + where;
   try {
-    var ds = X.GETSQLDATASET(sql, trdr, sosource, fprms, series);
+    var ds = X.GETSQLDATASET(sql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };
@@ -638,20 +684,23 @@ function removeXmlMappings(params) {
 // =====================================================
 
 function getSftpXml(params) {
-  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
   var filename = (params.XMLFILENAME || '').toString();
   var limit = parseInt(params.$limit) || 50;
   var sortDir = (params.$sortDir || 'DESC').toString().toUpperCase();
   if (sortDir !== 'ASC') sortDir = 'DESC';
 
+  // trdr is a safe integer — inlined; filename is user string — single :1 occurrence
+  var where = 'WHERE 1=1';
+  if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
+  if (filename) where += ' AND XMLFILENAME = :1';
+
   var sql = 'SELECT TOP ' + limit + ' CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, '
     + 'XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
-    + 'FROM CCCSFTPXML WHERE '
-    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
-    + '(:2 = \'\' OR XMLFILENAME = :2) '
-    + 'ORDER BY XMLDATE ' + sortDir;
+    + 'FROM CCCSFTPXML ' + where
+    + ' ORDER BY XMLDATE ' + sortDir;
   try {
-    var ds = X.GETSQLDATASET(sql, trdr, filename);
+    var ds = filename ? X.GETSQLDATASET(sql, filename) : X.GETSQLDATASET(sql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };
@@ -689,25 +738,33 @@ function createSftpXml(params) {
 function patchSftpXml(params) {
   var findoc = parseInt(params.FINDOC);
   var filename = (params.XMLFILENAME || '').toString();
-  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
-  var id = (parseInt(params.id) || 0).toString();
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
+  var id = parseInt(params.id) || 0;
 
   if (isNaN(findoc)) return { success: false, error: 'Missing FINDOC' };
   if (!filename && !id) return { success: false, error: 'Missing XMLFILENAME or id' };
 
-  var sql = 'UPDATE CCCSFTPXML SET FINDOC = :1 WHERE '
-    + '(:2 = \'0\' OR CCCSFTPXML = :2) AND '
-    + '(:3 = \'\' OR XMLFILENAME = :3) AND '
-    + '(:4 = \'0\' OR TRDR_RETAILER = :4)';
+  // findoc, id, trdr are safe integers — inlined; filename is user string — single :1 occurrence
+  var updateWhere = 'WHERE 1=1';
+  if (id) updateWhere += ' AND CCCSFTPXML = ' + id;
+  if (filename) updateWhere += ' AND XMLFILENAME = :1';
+  if (trdr) updateWhere += ' AND TRDR_RETAILER = ' + trdr;
+
+  var updateSql = 'UPDATE CCCSFTPXML SET FINDOC = ' + findoc + ' ' + updateWhere;
   try {
-    X.RUNSQL(sql, findoc, id, filename, trdr);
+    if (filename) {
+      X.RUNSQL(updateSql, filename);
+    } else {
+      X.RUNSQL(updateSql, null);
+    }
     // Return patched rows for callers that use patchRes[0].CCCSFTPXML
+    var selectWhere = 'WHERE 1=1';
+    if (id) selectWhere += ' AND CCCSFTPXML = ' + id;
+    if (filename) selectWhere += ' AND XMLFILENAME = :1';
+    if (trdr) selectWhere += ' AND TRDR_RETAILER = ' + trdr;
     var selectSql = 'SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME '
-      + 'FROM CCCSFTPXML WHERE '
-      + '(:1 = \'0\' OR CCCSFTPXML = :1) AND '
-      + '(:2 = \'\' OR XMLFILENAME = :2) AND '
-      + '(:3 = \'0\' OR TRDR_RETAILER = :3)';
-    var ds = X.GETSQLDATASET(selectSql, id, filename, trdr);
+      + 'FROM CCCSFTPXML ' + selectWhere;
+    var ds = filename ? X.GETSQLDATASET(selectSql, filename) : X.GETSQLDATASET(selectSql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };
@@ -730,21 +787,24 @@ function removeSftpXml(params) {
 // =====================================================
 
 function getAperaks(params) {
-  var trdr = (parseInt(params.TRDR_RETAILER) || 0).toString();
-  var trdrClient = (parseInt(params.TRDR_CLIENT) || 0).toString();
-  var findoc = (parseInt(params.FINDOC) || 0).toString();
+  var trdr = parseInt(params.TRDR_RETAILER) || 0;
+  var trdrClient = parseInt(params.TRDR_CLIENT) || 0;
+  var findoc = parseInt(params.FINDOC) || 0;
   var limit = parseInt(params.$limit) || 50;
+
+  // Safe integers inlined directly — each :N must appear exactly once in S1 SQL
+  var where = 'WHERE 1=1';
+  if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
+  if (trdrClient) where += ' AND TRDR_CLIENT = ' + trdrClient;
+  if (findoc) where += ' AND FINDOC = ' + findoc;
 
   var sql = 'SELECT TOP ' + limit + ' CCCAPERAK, TRDR_RETAILER, TRDR_CLIENT, FINDOC, '
     + 'XMLFILENAME, XMLSENTDATE, MESSAGEDATE, MESSAGETIME, MESSAGEORIGIN, '
     + 'DOCUMENTREFERENCE, DOCUMENTUID, SUPPLIERRECEIVERCODE, DOCUMENTRESPONSE, DOCUMENTDETAIL '
-    + 'FROM CCCAPERAK WHERE '
-    + '(:1 = \'0\' OR TRDR_RETAILER = :1) AND '
-    + '(:2 = \'0\' OR TRDR_CLIENT = :2) AND '
-    + '(:3 = \'0\' OR FINDOC = :3) '
-    + 'ORDER BY CCCAPERAK DESC';
+    + 'FROM CCCAPERAK ' + where
+    + ' ORDER BY CCCAPERAK DESC';
   try {
-    var ds = X.GETSQLDATASET(sql, trdr, trdrClient, findoc);
+    var ds = X.GETSQLDATASET(sql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };
