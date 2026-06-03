@@ -25,15 +25,34 @@ function jwtExpiryMs(token) {
   return undefined
 }
 
+function readCookieHeader(header, name) {
+  const cookies = String(header || '').split(';')
+  for (const cookie of cookies) {
+    const [rawName, ...rawValue] = cookie.trim().split('=')
+    if (rawName === name && rawValue.length) {
+      const value = rawValue.join('=')
+      try {
+        return decodeURIComponent(value)
+      } catch {
+        return value
+      }
+    }
+  }
+  return undefined
+}
+
+function readCookie(ctx, name) {
+  return ctx.cookies.get(name) || readCookieHeader(ctx.get('cookie'), name)
+}
+
 export const readAuthCookie = () => async (ctx, next) => {
   ctx.feathers = ctx.feathers || {}
   ctx.feathers.koa = { ctx }
 
-  if (!ctx.feathers.authentication) {
-    const token = ctx.cookies.get(AUTH_COOKIE)
-    if (token) {
-      ctx.feathers.authentication = { strategy: 'jwt', accessToken: token }
-    }
+  const existing = ctx.feathers.authentication
+  const token = readCookie(ctx, AUTH_COOKIE)
+  if (token && !existing?.accessToken) {
+    ctx.feathers.authentication = { ...existing, strategy: 'jwt', accessToken: token }
   }
   await next()
 }
