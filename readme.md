@@ -55,8 +55,10 @@ heroku open
 ## Hub SSO
 
 When opened from Pet Factory Hub, Retailers accepts a short-lived `hub_sso`
-token, verifies it with `HUB_SSO_SECRET`, and stores the resulting user in
-`sessionStorage` just like its own login flow. Direct access without `hub_sso`
-continues to show the normal Retailers login form.
+token, verifies it with `HUB_SSO_SECRET`, then creates its own
+`retailers_session` httpOnly cookie through the Feathers `authentication`
+service. Direct access without `hub_sso` continues to show the normal Retailers
+login form, which creates the same cookie-backed session.
 
 Set the same `HUB_SSO_SECRET` value in Hub, PNL, and Retailers.
+Set `FEATHERS_SECRET` in Retailers for the local JWT cookie session.

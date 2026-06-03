@@ -60,6 +60,14 @@ export default defineConfig(async () => {
     server: {
       port: 3001,
       proxy: {
+        '/authentication': {
+          target: proxyDecision.target,
+          changeOrigin: true,
+        },
+        '/me': {
+          target: proxyDecision.target,
+          changeOrigin: true,
+        },
         '/socket.io': {
           target: proxyDecision.target,
           changeOrigin: true,

@@ -9,11 +9,14 @@ import socketio from '@feathersjs/socketio'
 import { configurationValidator } from './configuration.js'
 import { logError } from './hooks/log-error.js'
 import { getEdiScannerMode, isScannerEnabled } from './edi/scanner-flags.js'
+import { authentication } from './authentication.js'
+import { readAuthCookie, setAuthCookie, clearAuthCookie } from './auth-cookie.js'
 
 import { services } from './services/index.js'
 import { channels } from './channels.js'
 
 const app = koa(feathers())
+app.proxy = process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === '1'
 const UI_PREFIX = '/app'
 
 // --- Start of new metrics logic ---
@@ -124,6 +127,7 @@ app.use(serveStatic(app.get('public')))
 app.use(serveStatic('./public/'))
 app.use(errorHandler())
 app.use(parseAuthentication())
+app.use(readAuthCookie())
 app.use(bodyParser())
 
 // Configure services and transports
@@ -136,8 +140,16 @@ app.configure(
   })
 )
 app.configure(channels)
+app.configure(authentication)
 
 app.configure(services)
+
+app.service('authentication').hooks({
+  after: {
+    create: [setAuthCookie],
+    remove: [clearAuthCookie]
+  }
+})
 
 // Register hooks that run on all service methods
 app.hooks({

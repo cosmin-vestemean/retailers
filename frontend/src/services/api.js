@@ -90,14 +90,48 @@ export async function getUsers() {
   return client.service('s1-users').find()
 }
 
+async function authRequest(body) {
+  const res = await fetch('/authentication', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(body),
+  })
+  let data = null
+  try {
+    data = await res.json()
+  } catch {
+    // ignore parse errors; handled below
+  }
+  if (!res.ok || !data?.user) {
+    return { success: false, message: data?.message || `Authentication failed (${res.status})` }
+  }
+  return { success: true, user: data.user }
+}
+
 /** Authenticate with userId + password. */
 export async function login(userId, password) {
-  return client.service('s1-auth').create({ userId: parseInt(userId), password })
+  return authRequest({ strategy: 's1', userId: parseInt(userId), password })
 }
 
 /** Authenticate from a short-lived Hub SSO token. */
 export async function loginWithHubSso(hubToken) {
-  return client.service('s1-auth').create({ hubToken })
+  return authRequest({ strategy: 'hub-sso', token: hubToken })
+}
+
+/** Restore the cookie-backed Retailers session. */
+export async function me() {
+  const res = await fetch('/me', { credentials: 'include', headers: { Accept: 'application/json' } })
+  if (res.status === 401) return null
+  if (!res.ok) return null
+  const data = await res.json()
+  return data?.user || null
+}
+
+/** Clear the cookie-backed Retailers session. */
+export async function logout() {
+  await fetch('/authentication', { method: 'DELETE', credentials: 'include' })
+  clearToken()
 }
 
 /** Lookup FINDOC for an order via S1 AJS (no direct DB access). */

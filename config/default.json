@@ -11,6 +11,17 @@
     "default": 100,
     "max": 500
   },
+  "authentication": {
+    "entity": null,
+    "secret": "DEV-ONLY-CHANGE-ME-IN-PROD",
+    "authStrategies": ["jwt", "s1", "hub-sso"],
+    "jwtOptions": {
+      "header": { "typ": "access" },
+      "audience": "https://pet-factory-retailers",
+      "algorithm": "HS256",
+      "expiresIn": "8h"
+    }
+  },
   "mssql": {
     "client": "mssql",
     "connection": {

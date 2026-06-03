@@ -15,29 +15,27 @@ import '@/pages/retailer-dashboard.js'
 import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
 import '@/pages/logs-page.js'
-import { loginWithHubSso } from '@/services/api.js'
+import { loginWithHubSso, logout, me } from '@/services/api.js'
 
 export class AppShell extends LightElement {
   static properties = {
     _user: { state: true },
-    _checkingSso: { state: true },
+    _checkingSession: { state: true },
     _theme: { state: true },
     _themes: { state: true },
   }
 
   constructor() {
     super()
-    // Restore session
-    const saved = sessionStorage.getItem('s1User')
-    this._user = saved ? JSON.parse(saved) : null
-    this._checkingSso = typeof window !== 'undefined' && new URL(window.location.href).searchParams.has('hub_sso')
+    this._user = null
+    this._checkingSession = true
     this._theme = getActiveThemeId()
     this._themes = getAvailableThemes()
   }
 
   connectedCallback() {
     super.connectedCallback()
-    this._consumeHubSsoToken()
+    this._restoreSession()
   }
 
   firstUpdated() {
@@ -52,33 +50,53 @@ export class AppShell extends LightElement {
     })
   }
 
+  async _restoreSession() {
+    const ssoUser = await this._consumeHubSsoToken()
+    if (ssoUser) {
+      this._setUser(ssoUser)
+    } else {
+      const user = await me()
+      if (user) {
+        this._setUser(user)
+      } else {
+        sessionStorage.removeItem('s1User')
+        this._user = null
+      }
+    }
+
+    this._checkingSession = false
+    if (this._user) {
+      this.updateComplete.then(() => this._initRouter())
+    }
+  }
+
   async _consumeHubSsoToken() {
     const url = new URL(window.location.href)
     const hubToken = url.searchParams.get('hub_sso')
-    if (!hubToken) return
+    if (!hubToken) return null
 
     url.searchParams.delete('hub_sso')
     window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
 
-    this._checkingSso = true
     try {
       const result = await loginWithHubSso(hubToken)
       if (result.success) {
-        sessionStorage.setItem('s1User', JSON.stringify(result.user))
-        this._user = result.user
-        this.updateComplete.then(() => this._initRouter())
-      } else {
-        console.warn('Hub SSO failed:', result.message)
+        return result.user
       }
+      console.warn('Hub SSO failed:', result.message)
     } catch (err) {
       console.warn('Hub SSO failed:', err)
-    } finally {
-      this._checkingSso = false
     }
+    return null
+  }
+
+  _setUser(user) {
+    this._user = user
+    sessionStorage.setItem('s1User', JSON.stringify(user))
   }
 
   _onLoginSuccess(e) {
-    this._user = e.detail
+    this._setUser(e.detail)
     // Need to wait for the outlet to render before initializing router
     this.updateComplete.then(() => this._initRouter())
   }
@@ -110,7 +128,12 @@ export class AppShell extends LightElement {
     ])
   }
 
-  _logout() {
+  async _logout() {
+    try {
+      await logout()
+    } catch (err) {
+      console.warn('Logout failed:', err)
+    }
     sessionStorage.removeItem('s1User')
     this._user = null
   }
@@ -171,10 +194,10 @@ export class AppShell extends LightElement {
   }
 
   render() {
-    if (this._checkingSso) {
+    if (this._checkingSession) {
       return html`
         ${this._renderHeader()}
-        <div class="page-wrapper py-5 text-center text-body-secondary">Se verifică sesiunea din hub…</div>
+        <div class="page-wrapper py-5 text-center text-body-secondary">Se verifică sesiunea…</div>
         <notification-toast></notification-toast>
       `
     }
