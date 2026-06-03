@@ -51,3 +51,12 @@ heroku ps:exec --app=retailers
 heroku run bash --app retailers
 heroku update
 heroku open
+
+## Hub SSO
+
+When opened from Pet Factory Hub, Retailers accepts a short-lived `hub_sso`
+token, verifies it with `HUB_SSO_SECRET`, and stores the resulting user in
+`sessionStorage` just like its own login flow. Direct access without `hub_sso`
+continues to show the normal Retailers login form.
+
+Set the same `HUB_SSO_SECRET` value in Hub, PNL, and Retailers.

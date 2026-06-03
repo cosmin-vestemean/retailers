@@ -95,6 +95,11 @@ export async function login(userId, password) {
   return client.service('s1-auth').create({ userId: parseInt(userId), password })
 }
 
+/** Authenticate from a short-lived Hub SSO token. */
+export async function loginWithHubSso(hubToken) {
+  return client.service('s1-auth').create({ hubToken })
+}
+
 /** Lookup FINDOC for an order via S1 AJS (no direct DB access). */
 export async function lookupFindoc(trdr, orderId, xmlFilename) {
   return client.service('lookup-findoc').create({ trdr, orderId, xmlFilename })

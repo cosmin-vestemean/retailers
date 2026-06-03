@@ -15,10 +15,12 @@ import '@/pages/retailer-dashboard.js'
 import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
 import '@/pages/logs-page.js'
+import { loginWithHubSso } from '@/services/api.js'
 
 export class AppShell extends LightElement {
   static properties = {
     _user: { state: true },
+    _checkingSso: { state: true },
     _theme: { state: true },
     _themes: { state: true },
   }
@@ -28,8 +30,14 @@ export class AppShell extends LightElement {
     // Restore session
     const saved = sessionStorage.getItem('s1User')
     this._user = saved ? JSON.parse(saved) : null
+    this._checkingSso = typeof window !== 'undefined' && new URL(window.location.href).searchParams.has('hub_sso')
     this._theme = getActiveThemeId()
     this._themes = getAvailableThemes()
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this._consumeHubSsoToken()
   }
 
   firstUpdated() {
@@ -42,6 +50,31 @@ export class AppShell extends LightElement {
       const toast = this.querySelector('notification-toast')
       if (toast) toast.show(e.detail.message, e.detail.type)
     })
+  }
+
+  async _consumeHubSsoToken() {
+    const url = new URL(window.location.href)
+    const hubToken = url.searchParams.get('hub_sso')
+    if (!hubToken) return
+
+    url.searchParams.delete('hub_sso')
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+
+    this._checkingSso = true
+    try {
+      const result = await loginWithHubSso(hubToken)
+      if (result.success) {
+        sessionStorage.setItem('s1User', JSON.stringify(result.user))
+        this._user = result.user
+        this.updateComplete.then(() => this._initRouter())
+      } else {
+        console.warn('Hub SSO failed:', result.message)
+      }
+    } catch (err) {
+      console.warn('Hub SSO failed:', err)
+    } finally {
+      this._checkingSso = false
+    }
   }
 
   _onLoginSuccess(e) {
@@ -138,6 +171,14 @@ export class AppShell extends LightElement {
   }
 
   render() {
+    if (this._checkingSso) {
+      return html`
+        ${this._renderHeader()}
+        <div class="page-wrapper py-5 text-center text-body-secondary">Se verifică sesiunea din hub…</div>
+        <notification-toast></notification-toast>
+      `
+    }
+
     if (!this._user) {
       return html`
         ${this._renderHeader()}

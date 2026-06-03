@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import { buildS1Url } from '../../s1-base-url.js'
+import { verifyHubSsoToken } from '../../hub-sso-token.js'
 
 export class S1AuthService {
   constructor(options) {
@@ -7,7 +8,22 @@ export class S1AuthService {
   }
 
   async create(data, params) {
-    const { userId, password } = data
+    const { hubToken, userId, password } = data
+
+    if (hubToken) {
+      try {
+        const user = verifyHubSsoToken(hubToken, 'retailers')
+        return {
+          success: true,
+          user: {
+            userId: user.userId,
+            name: user.name
+          }
+        }
+      } catch (err) {
+        return { success: false, message: err.message || 'Invalid Hub SSO token' }
+      }
+    }
 
     if (!userId || !password) {
       return { success: false, message: 'User and password are required' }
