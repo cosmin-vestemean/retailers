@@ -15,8 +15,8 @@ const PROCESS_BATCH = parseInt(process.env.EDI_PROCESS_BATCH) || 25
 
 // Legacy SALDOC mapping keys for the order pipeline.
 const ORDER_SOSOURCE = 1351
-const ORDER_FPRMS = 7062
-const ORDER_SERIES = 7062
+const ORDER_FPRMS = 701
+const ORDER_SERIES = 7012
 
 /**
  * One full pass: download new files from every active EDI provider/SFTP row,

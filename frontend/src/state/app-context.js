@@ -26,4 +26,5 @@ export const RETAILERS = [
   { trdr: '12664', name: 'Metro',      logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg' },
   { trdr: '12649', name: 'Mega Image', logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg' },
   { trdr: '11654', name: 'Dedeman',    logo: 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg' },
+  { trdr: '13248', name: 'Auchan',     logo: 'https://www.hellopark.ro/pictures/original/318255e7cfa2c1093c-auchan.jpg' },
 ]

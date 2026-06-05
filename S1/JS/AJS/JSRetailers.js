@@ -736,10 +736,10 @@ function getSftpXml(params) {
   var sortDir = (params.$sortDir || 'DESC').toString().toUpperCase();
   if (sortDir !== 'ASC') sortDir = 'DESC';
 
-  // trdr is a safe integer — inlined; filename is user string — single :1 occurrence
+  // trdr is a safe integer; filename is user string with a single :1 occurrence
   var where = 'WHERE 1=1';
   if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
-  if (filename) where += ' AND XMLFILENAME = :1';
+  if (filename) where += ' AND CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX))';
 
   var sql = 'SELECT TOP ' + limit + ' CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, '
     + 'XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME, EDIDOCTYPE '
@@ -757,18 +757,26 @@ function createSftpXml(params) {
   var sql = 'INSERT INTO CCCSFTPXML (TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, XMLFILENAME, EDIDOCTYPE) '
     + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)';
   try {
+    var trdrRetailer = parseInt(params.TRDR_RETAILER) || 0;
+    var xmlFilename = (params.XMLFILENAME || '').toString();
     X.RUNSQL(sql,
       parseInt(params.TRDR_CLIENT) || 1,
-      parseInt(params.TRDR_RETAILER) || 0,
+      trdrRetailer,
       (params.XMLDATA || '').toString(),
       (params.JSONDATA || '').toString(),
       (params.XMLDATE || '').toString(),
       (params.XMLSTATUS || 'NEW').toString(),
       (params.XMLERROR || '').toString(),
-      (params.XMLFILENAME || '').toString(),
+      xmlFilename,
       (params.EDIDOCTYPE || 'ORDERS').toString()
     );
     var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    if (newId <= 0 && xmlFilename) {
+      newId = parseInt(X.SQL(
+        'SELECT TOP 1 CCCSFTPXML FROM CCCSFTPXML WHERE CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX)) AND TRDR_RETAILER=' + trdrRetailer + ' ORDER BY CCCSFTPXML DESC',
+        xmlFilename
+      )) || 0;
+    }
     // Return the inserted row so callers get the full record
     var row = {};
     if (newId > 0) {
@@ -803,7 +811,7 @@ function patchSftpXml(params) {
 
   var updateWhere = 'WHERE 1=1';
   if (id) updateWhere += ' AND CCCSFTPXML = ' + id;
-  if (filename) updateWhere += ' AND XMLFILENAME = :1';
+  if (filename) updateWhere += ' AND CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX))';
   if (trdr) updateWhere += ' AND TRDR_RETAILER = ' + trdr;
 
   var updateSql = 'UPDATE CCCSFTPXML SET ' + sets.join(', ') + ' ' + updateWhere;
@@ -815,7 +823,7 @@ function patchSftpXml(params) {
     }
     var selectWhere = 'WHERE 1=1';
     if (id) selectWhere += ' AND CCCSFTPXML = ' + id;
-    if (filename) selectWhere += ' AND XMLFILENAME = :1';
+    if (filename) selectWhere += ' AND CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX))';
     if (trdr) selectWhere += ' AND TRDR_RETAILER = ' + trdr;
     var selectSql = 'SELECT CCCSFTPXML, TRDR_CLIENT, TRDR_RETAILER, XMLDATA, JSONDATA, XMLDATE, XMLSTATUS, XMLERROR, FINDOC, XMLFILENAME, EDIDOCTYPE '
       + 'FROM CCCSFTPXML ' + selectWhere;

@@ -20,7 +20,11 @@ async function copyDir(src, dst) {
     const s = path.join(src, e.name)
     const d = path.join(dst, e.name)
     if (e.isDirectory()) await copyDir(s, d)
-    else await fs.copyFile(s, d)
+    else {
+      await fs.copyFile(s, d)
+      const now = new Date()
+      await fs.utimes(d, now, now)
+    }
   }
 }
 

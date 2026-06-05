@@ -33,7 +33,8 @@ export class CccsftpxmlService {
     const result = await response.json()
     if (!result.success) throw new Error(result.error || 'createSftpXml failed')
     // Return the full row — store-xml.class.js uses xmlInsert as a record object
-    return result.data || { CCCSFTPXML: result.id, ...data }
+    if (result.data && Object.keys(result.data).length > 0) return result.data
+    return { CCCSFTPXML: result.id, ...data }
   }
 
   async patch(id, data, params) {

@@ -149,7 +149,40 @@ export async function buildOrderPayload({
     }
   }
 
+  DATA.ITELINES = groupLineFields(DATA.ITELINES || [])
+  if (!DATA.SALDOC || DATA.SALDOC.length === 0) DATA.SALDOC = [{}]
+  DATA.SALDOC[0].SERIES = series
+  DATA.SALDOC[0].TRDR = parseInt(retailer, 10)
+
   return { jsonOrder, errors, s1BaseUrl }
+}
+
+function groupLineFields(rows) {
+  const fieldNames = []
+  for (const row of rows) {
+    for (const field of Object.keys(row)) {
+      if (!fieldNames.includes(field)) fieldNames.push(field)
+    }
+  }
+  if (fieldNames.length === 0) return rows
+
+  const valuesByField = Object.fromEntries(fieldNames.map((field) => [field, []]))
+  for (const row of rows) {
+    for (const field of Object.keys(row)) {
+      valuesByField[field].push(row[field])
+    }
+  }
+
+  const lineCount = Math.max(...fieldNames.map((field) => valuesByField[field].length))
+  const grouped = []
+  for (let index = 0; index < lineCount; index += 1) {
+    const line = {}
+    for (const field of fieldNames) {
+      if (index < valuesByField[field].length) line[field] = valuesByField[field][index]
+    }
+    grouped.push(line)
+  }
+  return grouped
 }
 
 async function logMappingError(app, { retailer, orderId, cccsftpxml, message, field, value, sql }) {

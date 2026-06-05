@@ -17,10 +17,8 @@ export class ConnectToS1Service {
       password: password,
       appId: 1001
     }
-    console.log(body)
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })
     const json = await response.json()
-    console.log(json)
     const clientID = json.clientID
     const REFID = json.objs[0].REFID
     const MODULE = json.objs[0].MODULE
@@ -34,13 +32,11 @@ export class ConnectToS1Service {
       MODULE: MODULE,
       REFID: REFID
     }
-    console.log(authenticateBody)
     const authenticateResponse = await fetch(url, {
       method: method,
       body: JSON.stringify(authenticateBody)
     })
     const authenticateJson = await authenticateResponse.json()
-    console.log(authenticateJson)
     const token = authenticateJson.clientID
     return { token: token }
   }
