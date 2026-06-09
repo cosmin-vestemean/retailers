@@ -105,8 +105,10 @@ export class OrdersLogTable extends LightElement {
     if (this._page < this._totalPages) { this._page++; this._fetchLogs() }
   }
 
-  _retailerName(trdr) {
+  _retailerName(log) {
+    const trdr = Number(log.TRDR_RETAILER)
     if (trdr === -1) return 'System'
+    if (log.RETAILERNAME) return log.RETAILERNAME
     const r = RETAILERS.find(r => r.trdr === trdr)
     return r ? r.name : String(trdr)
   }
@@ -233,7 +235,7 @@ export class OrdersLogTable extends LightElement {
                   ` : this._logs.map(log => html`
                     <tr>
                       <td class="text-nowrap">${log.MESSAGEDATE ?? ''}</td>
-                      <td>${this._retailerName(log.TRDR_RETAILER)}</td>
+                      <td>${this._retailerName(log)}</td>
                       <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION)}</span></td>
                       <td><span class="fw-semibold ${this._levelClass(log.LEVEL)}">${log.LEVEL || '—'}</span></td>
                       <td class="msg-cell">${log.MESSAGETEXT ?? ''}</td>
