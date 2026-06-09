@@ -18,7 +18,7 @@ if (-not $Execute) {
   Write-Host 'Dry run only. Re-run with -Execute to apply changes.'
 }
 
-Invoke-Heroku config:set ENABLE_SFTP_SCANNER=false -a retailers4
+Invoke-Heroku config:set ENABLE_SFTP_SCANNER=false DO_RETRY_INTERVAL_MS=0 -a retailers4
 Invoke-Heroku restart -a retailers4
 
 Invoke-Heroku config:set ENABLE_SFTP_SCANNER=true -a retailers1

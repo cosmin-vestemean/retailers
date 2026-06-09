@@ -25,10 +25,10 @@ The new scanner is already controlled by:
 ```text
 ENABLE_SFTP_SCANNER=true|false
 EDI_SCANNER=new|legacy|both
-DO_RETRY_INTERVAL_MS=300000
+DO_RETRY_INTERVAL_MS=300000|0
 ```
 
-For cutover use `EDI_SCANNER=new`.
+For cutover use `EDI_SCANNER=new` and `DO_RETRY_INTERVAL_MS=300000`. For rollback/off state use `DO_RETRY_INTERVAL_MS=0` so `retailers4` does not keep retrying bucket objects while inactive.
 
 ## Preflight
 
@@ -43,7 +43,7 @@ heroku restart -a retailers1
 3. Ensure `retailers4` is ready but off:
 
 ```powershell
-heroku config:set ENABLE_SFTP_SCANNER=false EDI_SCANNER=new -a retailers4
+heroku config:set ENABLE_SFTP_SCANNER=false EDI_SCANNER=new DO_RETRY_INTERVAL_MS=0 -a retailers4
 heroku restart -a retailers4
 ```
 
@@ -77,7 +77,7 @@ This will:
 
 1. Set `ENABLE_SFTP_SCANNER=false` on `retailers1`.
 2. Restart `retailers1`.
-3. Set `ENABLE_SFTP_SCANNER=true EDI_SCANNER=new` on `retailers4`.
+3. Set `ENABLE_SFTP_SCANNER=true EDI_SCANNER=new DO_RETRY_INTERVAL_MS=300000` on `retailers4`.
 4. Restart `retailers4`.
 
 Expected logs:
@@ -101,7 +101,7 @@ Execute:
 
 This will:
 
-1. Set `ENABLE_SFTP_SCANNER=false` on `retailers4`.
+1. Set `ENABLE_SFTP_SCANNER=false DO_RETRY_INTERVAL_MS=0` on `retailers4`.
 2. Restart `retailers4`.
 3. Set `ENABLE_SFTP_SCANNER=true` on `retailers1`.
 4. Restart `retailers1`.

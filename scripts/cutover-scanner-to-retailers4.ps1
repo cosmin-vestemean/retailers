@@ -21,7 +21,7 @@ if (-not $Execute) {
 Invoke-Heroku config:set ENABLE_SFTP_SCANNER=false -a retailers1
 Invoke-Heroku restart -a retailers1
 
-Invoke-Heroku config:set ENABLE_SFTP_SCANNER=true EDI_SCANNER=new -a retailers4
+Invoke-Heroku config:set ENABLE_SFTP_SCANNER=true EDI_SCANNER=new DO_RETRY_INTERVAL_MS=300000 -a retailers4
 Invoke-Heroku restart -a retailers4
 
 Invoke-Heroku config -a retailers1
