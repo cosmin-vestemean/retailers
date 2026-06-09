@@ -99,6 +99,7 @@ export class OrdersLogTable extends LightElement {
     _dateFrom: { state: true },
     _dateTo: { state: true },
     _showDuplicateGuard: { state: true },
+    _showHeartbeat: { state: true },
   }
 
   constructor() {
@@ -117,6 +118,7 @@ export class OrdersLogTable extends LightElement {
     this._dateFrom = ''
     this._dateTo = ''
     this._showDuplicateGuard = false
+    this._showHeartbeat = false
   }
 
   get _totalPages() {
@@ -142,6 +144,7 @@ export class OrdersLogTable extends LightElement {
         page: this._page,
         pageSize: this._pageSize,
         excludeResolvedDuplicateGuard: !this._showDuplicateGuard && this._operation !== 'duplicateGuard',
+        excludeHeartbeat: !this._showHeartbeat && this._operation !== 'downloadXml' && this._operation !== 'createOrders',
       })
       if (res.success) {
         this._logs = res.data || []
@@ -267,12 +270,18 @@ export class OrdersLogTable extends LightElement {
             </button>
             </div>
 
-            <div class="col-12">
+            <div class="col-12 d-flex gap-4 flex-wrap">
               <label class="form-check form-switch mb-0 small">
                 <input class="form-check-input" type="checkbox"
                   .checked=${this._showDuplicateGuard}
                   @change=${e => this._showDuplicateGuard = e.target.checked}>
                 <span class="form-check-label">Arată duplicate guard rezolvate</span>
+              </label>
+              <label class="form-check form-switch mb-0 small">
+                <input class="form-check-input" type="checkbox"
+                  .checked=${this._showHeartbeat}
+                  @change=${e => this._showHeartbeat = e.target.checked}>
+                <span class="form-check-label">Arată heartbeat scanner (fără fișiere / fără comenzi)</span>
               </label>
             </div>
           </div>

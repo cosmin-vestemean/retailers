@@ -283,6 +283,7 @@ function getOrdersLog(params) {
   var page = parseInt(params.page) || 1;
   var pageSize = parseInt(params.pageSize) || 25;
   var excludeResolvedDuplicateGuard = params.excludeResolvedDuplicateGuard === true || params.excludeResolvedDuplicateGuard === 'true';
+  var excludeHeartbeat = params.excludeHeartbeat === true || params.excludeHeartbeat === 'true';
   if (pageSize > 100) pageSize = 100;
   if (page < 1) page = 1;
   var offset = (page - 1) * pageSize;
@@ -317,6 +318,10 @@ function getOrdersLog(params) {
   }
   if (excludeResolvedDuplicateGuard && operation !== 'duplicateGuard') {
     where += " AND NOT (OPERATION = 'duplicateGuard' AND [LEVEL] = 'warn')";
+  }
+  if (excludeHeartbeat && operation !== 'downloadXml' && operation !== 'createOrders') {
+    where += " AND NOT (OPERATION IN ('downloadXml', 'createOrders') AND [LEVEL] = 'info')"
+           + " AND NOT (OPERATION IS NULL AND [LEVEL] = 'info')";
   }
   if (dateFrom) {
     where += ' AND MESSAGEDATE >= :' + (sqlParams.length + 1);
