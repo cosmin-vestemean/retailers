@@ -11,6 +11,7 @@ const OP_OPTIONS = [
   { value: 'processOrder', label: 'Process order' },
   { value: 'createDocument', label: 'Create document' },
   { value: 'duplicateGuard', label: 'Duplicate guard' },
+  { value: 'pastDeliveryGuard', label: 'Past delivery guard' },
   { value: 'mappingError', label: 'Mapping error' },
   { value: 'emailNotify', label: 'Email notify' },
   { value: 'system', label: 'System' },

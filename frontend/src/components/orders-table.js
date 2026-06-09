@@ -71,12 +71,20 @@ export class OrdersTable extends LightElement {
       xmlData: o.XMLDATA || '',
       findoc: o.FINDOC || null,
       orderId: o.OrderId || '',
-      status: (o.FINDOC && o.FINDOC !== 0) ? 'sent' : 'pending',
-      error: null,
+      status: this._normalizeStatus(o),
+      error: o.XMLERROR || null,
+      xmlStatus: o.XMLSTATUS || '',
       fincode: null,
       trndate: null,
       _raw: o,
     }
+  }
+
+  _normalizeStatus(o) {
+    if (o.FINDOC && o.FINDOC !== 0) return 'sent'
+    if (o.XMLSTATUS === 'MANUAL') return 'manual'
+    if (o.XMLSTATUS === 'ERROR') return 'error'
+    return 'pending'
   }
 
   get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
@@ -131,7 +139,8 @@ export class OrdersTable extends LightElement {
       CCCSFTPXML: order.id,
       xmlData: order.xmlData,
       filename: order.filename,
-      orderId: order.orderId
+      orderId: order.orderId,
+      manual: order.status === 'manual'
     })
   }
 
@@ -218,6 +227,7 @@ export class OrdersTable extends LightElement {
     const map = {
       sent: html`<span class="badge badge-ok">Sent</span>`,
       pending: html`<span class="badge badge-pending">Pending</span>`,
+      manual: html`<span class="badge text-bg-warning">Manual</span>`,
       sending: html`<span class="badge badge-sending">Sending...</span>`,
       error: html`<span class="badge badge-error">Error</span>`,
     }
@@ -298,11 +308,11 @@ export class OrdersTable extends LightElement {
                     <div class="actions">
                       <button class="btn btn-sm btn-info" @click=${() => this._saveXml(order)}>Save</button>
                       <button class="btn btn-sm btn-primary" @click=${() => this._copyXml(order)}>Copy</button>
-                      ${order.status === 'pending' ? html`
+                      ${order.status === 'pending' || order.status === 'manual' ? html`
                         <button class="btn btn-sm btn-success"
                                 ?disabled=${this._sending.has(realIndex)}
                                 @click=${() => this._sendOrder(order, realIndex)}>
-                          ${this._sending.has(realIndex) ? 'Sending...' : 'Send'}
+                          ${this._sending.has(realIndex) ? 'Sending...' : order.status === 'manual' ? 'Send manual' : 'Send'}
                         </button>
                         <button class="btn btn-sm btn-danger" @click=${() => this._deleteOrder(order, realIndex)}>Delete</button>
                       ` : ''}

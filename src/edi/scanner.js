@@ -29,7 +29,7 @@ export async function scanAll(app) {
     return { skipped: true }
   }
   _running = true
-  const stats = { providers: 0, downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, processed: 0, failed: 0, errors: [] }
+  const stats = { providers: 0, downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, processed: 0, held: 0, failed: 0, errors: [] }
   try {
     const configs = await app.service('CCCSFTP').list({ onlyActive: true })
 
@@ -59,6 +59,7 @@ export async function scanAll(app) {
     // Process orders after all downloads — same retailer list, so a single pass works.
     const procStats = await processPendingOrders(app, configs.data)
     stats.processed += procStats.processed
+    stats.held += procStats.held
     stats.failed += procStats.failed
     stats.errors.push(...procStats.errors)
 
@@ -246,7 +247,7 @@ function getDoStorage(app) {
 }
 
 async function processPendingOrders(app, sftpRows) {
-  const stats = { processed: 0, failed: 0, errors: [] }
+  const stats = { processed: 0, held: 0, failed: 0, errors: [] }
   const retailers = sftpRows.map((r) => r.TRDR_RETAILER).filter((n) => n > 0)
   if (retailers.length === 0) return stats
 
@@ -292,7 +293,8 @@ async function processPendingOrders(app, sftpRows) {
         orderId: row.XMLFILENAME,
         cccsftpxmlId: row.CCCSFTPXML
       })
-      if (sendRes.success) stats.processed += 1
+      if (sendRes.held) stats.held += 1
+      else if (sendRes.success) stats.processed += 1
       else {
         stats.failed += 1
         stats.errors.push({ cccsftpxml: row.CCCSFTPXML, message: (sendRes.errors || []).join('; ') })

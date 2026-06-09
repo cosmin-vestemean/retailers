@@ -16,6 +16,7 @@ export async function sendOrderToS1({
   orderId,
   cccsftpxmlId,
   duplicateLookup,
+  manual = false,
   retries = 2,
   retryDelayMs = 1500
 }) {
@@ -49,6 +50,24 @@ export async function sendOrderToS1({
       message
     })
     return { success: true, id: duplicate.findoc, duplicate: true, fincode: duplicate.fincode }
+  }
+
+  const pastDelivery = manual ? null : findPastDeliveryDate(jsonOrder)
+  if (pastDelivery) {
+    const message = `Past delivery date guard: DELIVDATE=${pastDelivery.deliveryDate} is before ${pastDelivery.today}; XML kept for manual UI send`
+    await app.service('CCCSFTPXML').patch(cccsftpxmlId, {
+      XMLSTATUS: 'MANUAL',
+      XMLERROR: message.slice(0, 4000)
+    })
+    await safeLog(app, {
+      retailer,
+      orderId,
+      cccsftpxml: cccsftpxmlId,
+      operation: 'pastDeliveryGuard',
+      level: 'warn',
+      message
+    })
+    return { success: true, held: true, reason: 'pastDeliveryDate', deliveryDate: pastDelivery.deliveryDate }
   }
 
   let lastErr
@@ -143,6 +162,44 @@ function normalizeNum04(value) {
   if (!/^\d+$/.test(text)) return ''
   if (parseInt(text, 10) === 0) return ''
   return text
+}
+
+function findPastDeliveryDate(jsonOrder) {
+  const deliveryDate = normalizeDateOnly(jsonOrder?.DATA?.MTRDOC?.[0]?.DELIVDATE)
+  if (!deliveryDate) return null
+  const today = businessTodayDateOnly()
+  if (deliveryDate < today) return { deliveryDate, today }
+  return null
+}
+
+function normalizeDateOnly(value) {
+  const text = String(value ?? '').trim()
+  if (!text) return ''
+
+  const iso = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (iso) return formatDateOnly(iso[1], iso[2], iso[3])
+
+  const dotted = text.match(/^(\d{1,2})[./](\d{1,2})[./](\d{4})$/)
+  if (dotted) return formatDateOnly(dotted[3], dotted[2], dotted[1])
+
+  const parsed = new Date(text)
+  if (Number.isNaN(parsed.getTime())) return ''
+  return parsed.toISOString().slice(0, 10)
+}
+
+function businessTodayDateOnly(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Bucharest',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).formatToParts(date)
+  const byType = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+  return `${byType.year}-${byType.month}-${byType.day}`
+}
+
+function formatDateOnly(year, month, day) {
+  return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
 function formatS1Errors(errors) {

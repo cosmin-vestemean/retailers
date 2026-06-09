@@ -591,7 +591,7 @@ export class SftpService {
           .service('CCCSFTPXML')
           .patch(
             null,
-            { FINDOC: parseInt(setDocumentRes.id) },
+            { FINDOC: parseInt(setDocumentRes.id), XMLSTATUS: 'SENT', XMLERROR: '' },
             { query: { XMLFILENAME: xmlFilename, TRDR_RETAILER: retailer } }
           )
         console.log('CCCSFTPXML patch', patchRes)

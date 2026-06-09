@@ -160,7 +160,7 @@ function getOrdersData(params) {
 
   var sql = 'SELECT c.CCCSFTPXML, c.TRDR_RETAILER, c.XMLFILENAME, '
     + "FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, "
-    + 'ISNULL(c.FINDOC, 0) AS FINDOC, c.XMLDATA, '
+    + 'ISNULL(c.FINDOC, 0) AS FINDOC, c.XMLSTATUS, c.XMLERROR, c.XMLDATA, '
     + "REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', '') AS OrderId "
     + fromClause
     + ' ORDER BY c.XMLDATE DESC'
