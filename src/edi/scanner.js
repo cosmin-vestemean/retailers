@@ -29,7 +29,7 @@ export async function scanAll(app) {
     return { skipped: true }
   }
   _running = true
-  const stats = { providers: 0, downloaded: 0, inserted: 0, duplicates: 0, processed: 0, failed: 0, errors: [] }
+  const stats = { providers: 0, downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, processed: 0, failed: 0, errors: [] }
   try {
     const configs = await app.service('CCCSFTP').list({ onlyActive: true })
 
@@ -43,6 +43,11 @@ export async function scanAll(app) {
         stats.downloaded += dlStats.downloaded
         stats.inserted += dlStats.inserted
         stats.duplicates += dlStats.duplicates
+        stats.backedUp += dlStats.backedUp
+        stats.deletedFromDo += dlStats.deletedFromDo
+        stats.retryBackedUp += dlStats.retryBackedUp
+        stats.failed += dlStats.failed
+        stats.errors.push(...dlStats.errors)
       } catch (e) {
         stats.errors.push({ retailer: row.TRDR_RETAILER, scope: 'download', message: e.message })
         console.error(`[edi-scanner] download error for retailer ${row.TRDR_RETAILER}:`, e)
@@ -53,8 +58,8 @@ export async function scanAll(app) {
 
     // Process orders after all downloads — same retailer list, so a single pass works.
     const procStats = await processPendingOrders(app, configs.data)
-    stats.processed = procStats.processed
-    stats.failed = procStats.failed
+    stats.processed += procStats.processed
+    stats.failed += procStats.failed
     stats.errors.push(...procStats.errors)
 
     return stats
@@ -64,7 +69,7 @@ export async function scanAll(app) {
 }
 
 async function downloadAndStore(app, sftpRow, provider, transport) {
-  const stats = { downloaded: 0, inserted: 0, duplicates: 0 }
+  const stats = { downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, failed: 0, errors: [] }
   // Per provider: scan each supported docType.
   for (const docType of ['orders', 'retann', 'aperak']) {
     const prefixes = provider.filenamePrefixes(docType)
@@ -105,6 +110,8 @@ async function downloadAndStore(app, sftpRow, provider, transport) {
         continue
       }
 
+      let xml = ''
+      let doBackup = null
       try {
         await transport.download(remotePath, localPath)
         stats.downloaded += 1
@@ -114,11 +121,36 @@ async function downloadAndStore(app, sftpRow, provider, transport) {
       }
 
       try {
-        const xml = await fs.readFile(localPath, 'utf-8')
+        xml = await fs.readFile(localPath, 'utf-8')
+        doBackup = await backupXml(app, {
+          xml,
+          fileName: file.name,
+          sftpRow,
+          provider,
+          docType,
+          stage: 'incoming',
+          sourcePath: remotePath
+        })
+        if (doBackup?.key) stats.backedUp += 1
         await insertXmlRow(app, { xml, file, sftpRow, provider, docType })
         stats.inserted += 1
+        if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
       } catch (e) {
         console.error(`[edi-scanner] parse/insert failed for ${file.name}: ${e.message}`)
+        stats.failed += 1
+        stats.errors.push({ retailer: sftpRow.TRDR_RETAILER, scope: 'db-insert', file: file.name, message: e.message })
+        const retry = await saveRetryXml(app, {
+          xml,
+          fileName: file.name,
+          sftpRow,
+          provider,
+          docType,
+          stage: 'db-insert',
+          error: e.message,
+          sourcePath: remotePath,
+          incomingKey: doBackup?.key
+        })
+        if (retry?.key) stats.retryBackedUp += 1
       }
     }
   }
@@ -138,6 +170,79 @@ async function insertXmlRow(app, { xml, file, sftpRow, provider, docType }) {
     XMLFILENAME: file.name,
     EDIDOCTYPE: ediDocType
   })
+}
+
+async function backupXml(app, { xml, fileName, sftpRow, provider, docType, stage, sourcePath }) {
+  const doStorage = getDoStorage(app)
+  if (!doStorage || !xml) return null
+  try {
+    return doStorage.backupXml({
+      xml,
+      filename: fileName,
+      provider: provider.code,
+      retailer: sftpRow.TRDR_RETAILER,
+      trdrClient: sftpRow.TRDR_CLIENT || 1,
+      docType,
+      stage,
+      sourcePath
+    })
+  } catch (error) {
+    console.error(`[edi-scanner] DO backup failed for ${fileName}: ${error.message}`)
+    return null
+  }
+}
+
+async function saveRetryXml(app, { xml, fileName, sftpRow, provider, docType, stage, error, sourcePath, incomingKey }) {
+  const doStorage = getDoStorage(app)
+  if (!doStorage || !xml) return null
+  try {
+    if (incomingKey) {
+      return doStorage.moveToRetry(incomingKey, {
+        filename: fileName,
+        provider: provider.code,
+        retailer: sftpRow.TRDR_RETAILER,
+        trdrClient: sftpRow.TRDR_CLIENT || 1,
+        docType,
+        stage,
+        error,
+        sourcePath
+      })
+    }
+    return doStorage.saveRetryXml({
+      xml,
+      filename: fileName,
+      provider: provider.code,
+      retailer: sftpRow.TRDR_RETAILER,
+      trdrClient: sftpRow.TRDR_CLIENT || 1,
+      docType,
+      stage,
+      error,
+      sourcePath
+    })
+  } catch (backupError) {
+    console.error(`[edi-scanner] DO retry save failed for ${fileName}: ${backupError.message}`)
+    return null
+  }
+}
+
+async function deleteDoSuccess(app, key) {
+  const doStorage = getDoStorage(app)
+  if (!doStorage || !key) return false
+  try {
+    const result = await doStorage.deleteSuccess(key)
+    return !!result.deleted
+  } catch (error) {
+    console.error(`[edi-scanner] DO success delete failed for ${key}: ${error.message}`)
+    return false
+  }
+}
+
+function getDoStorage(app) {
+  try {
+    return app.service('do-storage')
+  } catch {
+    return null
+  }
 }
 
 async function processPendingOrders(app, sftpRows) {

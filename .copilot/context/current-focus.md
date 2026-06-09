@@ -2,9 +2,17 @@
 
 ## Last Updated
 
-- Session: DocProcess/Infinite dev validation + Auchan/Dedeman mapping parity
+- Session: DigitalOcean Spaces XML backup/retry planning for retailers4
 
 ## Current Goal
+
+- **Next feature: do not lose any inbound EDI XML on Heroku ephemeral storage.** Target app is `retailers4` only; `retailers4` is planned to replace `retailers1`.
+- `retailers4` Heroku config vars verified 2026-06-09: `DO_BUCKET=xml-edi-backup`, `DO_ACCESS_KEY` set, `DO_SECRET_KEY` set, `DO_ENDPOINT=https://fra1.digitaloceanspaces.com`.
+- Signed DigitalOcean Spaces list test from local tooling succeeded against `xml-edi-backup` with HTTP 200, region `fra1`, key count 0.
+- `retailers4` scanner remains disabled right now: `ENABLE_SFTP_SCANNER=false`; `EDI_SCANNER` and `EDI_SCAN_INTERVAL_MS` are unset, so cutover still needs explicit scanner activation.
+- Implemented 2026-06-09: `@aws-sdk/client-s3` DO client + `do-storage` Feathers service; scanner backs up downloaded XML to DO only until `CCCSFTPXML.create` succeeds, then deletes the DO object. If insert into S1 fails, the object is moved/written under `retry/db-insert/...`; `DO_RETRY_INTERVAL_MS` starts a retry loop that re-inserts retry objects into `CCCSFTPXML` and deletes them from DO on success.
+- UI implemented: `/app/do` route and navbar link `DO` after `Logs`; page shows bucket status, object list, XML view, manual retry, and delete.
+- Validation 2026-06-09: `npm test` passes (31 tests); `npm --prefix frontend run build` passes; new SDK client status against real `retailers4` DO vars returns `accessible=true`, `retryObjects=0`.
 
 - **EDI refactor validated end-to-end on dev S1 / PetFactoryTEST with real DocProcess and Infinite/Dedeman XMLs.**
 - Strategy: local `ftp-srv` (Infinite) + local SFTP server (DocProcess) serving anonymized fixtures from `test/fixtures/`. Real Infinite directory layout has been mapped from prod (read-only LIST + safe pulls from already-consumed folders).
@@ -123,8 +131,6 @@ Key behavioral notes:
 
 ## Next Step
 
-1. Add the full pipeline test: SFTP/FTP scanner + buildOrderPayload + sendOrderToS1 in one flow, asserting CCCSFTPXML transitions `NEW → PROCESSING → SENT` for DocProcess and Infinite fixtures.
-2. Validate scanner on retailers4-dev with `EDI_SCANNER=new` after setting Heroku vars.
-3. Wire signed-invoice upload for Infinite (`signSmime` + `FtpTransport.upload`).
-4. Verify SHA digest: `sign-smime.js` uses SHA-256; Infinite docs mention `SHA128withRSA` — needs review.
-5. After validation, delete legacy `src/services/sftp/sftp.class.js` + remove `EDI_SCANNER=legacy` branch.
+1. Deploy to `retailers4`, then verify `/app/do` shows bucket status OK.
+2. Keep `ENABLE_SFTP_SCANNER=false` until ready for cutover; when activating `retailers4`, set `ENABLE_SFTP_SCANNER=true`, `EDI_SCANNER=new`, and keep `DO_RETRY_INTERVAL_MS=300000` or the configured interval.
+3. After first live scanner pass, confirm any failed DB insert appears under `retry/` in DO and disappears after successful retry into `CCCSFTPXML`.

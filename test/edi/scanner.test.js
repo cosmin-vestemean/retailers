@@ -12,7 +12,7 @@ import { scanAll } from '../../src/edi/scanner.js'
 
 const TEST_PORT = 2121
 
-function buildMockApp(testRow, store) {
+function buildMockApp(testRow, store, options = {}) {
   const app = feathers()
 
   app.use('CCCSFTP', {
@@ -26,6 +26,7 @@ function buildMockApp(testRow, store) {
       return { data: match, total: match.length, limit: 1, skip: 0 }
     },
     async create(data) {
+      if (options.failCreate) throw new Error('S1 insert failed')
       const row = { CCCSFTPXML: store.length + 1, ...data }
       store.push(row)
       return row
@@ -34,6 +35,10 @@ function buildMockApp(testRow, store) {
     async pending() { return { data: [] } },
     async claim() { return false }
   }, { methods: ['find', 'create', 'patch', 'pending', 'claim'] })
+
+  if (options.doStorage) {
+    app.use('do-storage', options.doStorage, { methods: ['backupXml', 'moveToRetry', 'deleteSuccess'] })
+  }
 
   return app
 }
@@ -121,6 +126,43 @@ describe('EDI scanner against local ftp-srv', function () {
     assert.strictEqual(stats.inserted, 0)
     assert.strictEqual(stats.duplicates, 2)
     assert.strictEqual(store.length, 2, 'store size unchanged')
+  })
+
+  it('moves XMLs to DO retry when CCCSFTPXML insert fails', async () => {
+    const store = []
+    const retryKeys = []
+    const testRow = {
+      CCCSFTP: 999, TRDR_CLIENT: 1, TRDR_RETAILER: 99999,
+      URL: '127.0.0.1', PORT: TEST_PORT, USERNAME: 'testuser', PASSPHRASE: 'testpass',
+      INITIALDIRIN: '/', INITIALDIROUT: '/',
+      PROVIDER_CODE: 'infinite', PROVIDER_NAME: 'Infinite Edinet', PROVIDER_CONNTYPE: 4
+    }
+    const app = buildMockApp(testRow, store, {
+      failCreate: true,
+      doStorage: {
+        async backupXml({ filename }) {
+          return { key: `incoming/${filename}` }
+        },
+        async moveToRetry(fromKey, { filename, stage }) {
+          const key = `retry/${stage}/${filename}`
+          retryKeys.push({ fromKey, key })
+          return { key }
+        },
+        async deleteSuccess() {
+          throw new Error('deleteSuccess should not be called on insert failure')
+        }
+      }
+    })
+
+    const stats = await scanAll(app)
+
+    assert.strictEqual(stats.inserted, 0)
+    assert.strictEqual(stats.retryBackedUp, 2)
+    assert.strictEqual(stats.failed, 2)
+    assert.deepStrictEqual(retryKeys.map((item) => item.key).sort(), [
+      'retry/db-insert/AUCHAN_900000001.xml',
+      'retry/db-insert/DEDEMAN_900000002.xml'
+    ])
   })
 
   it('FIXTURES_DIR mirrors real Infinite layout (orders only for now)', async () => {

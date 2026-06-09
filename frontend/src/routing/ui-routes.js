@@ -5,6 +5,7 @@ export const UI_ROUTES = {
   retailer: `${UI_PREFIX}/retailer/:trdr`,
   config: `${UI_PREFIX}/config/:trdr`,
   logs: `${UI_PREFIX}/logs`,
+  doStorage: `${UI_PREFIX}/do`,
   fallback: UI_PREFIX,
 }
 
@@ -12,3 +13,4 @@ export const dashboardUrl = () => UI_ROUTES.dashboard
 export const retailerUrl = (trdr) => `${UI_PREFIX}/retailer/${trdr}`
 export const configUrl = (trdr) => `${UI_PREFIX}/config/${trdr}`
 export const logsUrl = () => UI_ROUTES.logs
+export const doStorageUrl = () => UI_ROUTES.doStorage

@@ -31,6 +31,7 @@ import { getInvoiceDom } from './get-invoice-dom/get-invoice-dom.service.js'
 import { retailer } from './retailer/retailer.service.js'
 import { retailerStats } from './retailer-stats/retailer-stats.service.js'
 import { edi } from './edi/edi.service.js'
+import { doStorage } from './do-storage/do-storage.service.js'
 
 export const services = (app) => {
   app.configure(cccaperak)
@@ -86,6 +87,8 @@ export const services = (app) => {
   app.configure(retailer)
 
   app.configure(retailerStats)
+
+  app.configure(doStorage)
 
   app.configure(edi)
 

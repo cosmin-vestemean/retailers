@@ -186,6 +186,12 @@ if (enableScanner) {
   console.log('SFTP/EDI scanner DISABLED (set ENABLE_SFTP_SCANNER=true to enable scheduling)')
 }
 
+const doRetryIntervalMs = parseInt(process.env.DO_RETRY_INTERVAL_MS) || 0
+if (doRetryIntervalMs > 0) {
+  app.service('do-storage').retryPeriodically({ intervalMs: doRetryIntervalMs })
+  console.log(`[do-storage] retry loop ENABLED (${doRetryIntervalMs}ms)`)
+}
+
 // Modified middleware to track only database requests
 app.use(async (ctx, next) => {
   const start = Date.now()

@@ -57,6 +57,7 @@ const SERVICES = {
   'orders-data': { methods: ['find'] },
   'invoices-data': { methods: ['find'] },
   'lookup-findoc': { methods: ['create'] },
+  'do-storage': { methods: ['status', 'list', 'get', 'retry', 'remove'] },
 }
 
 const CRUD_METHODS = ['find', 'get', 'create', 'update', 'patch', 'remove']
@@ -338,6 +339,28 @@ export async function getOrdersLog({ trdr, orderid, operation, level, dateFrom, 
   return client.service('orders-log').find({
     query: { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize }
   })
+}
+
+// --------------- DigitalOcean Spaces ---------------
+
+export async function getDoStorageStatus() {
+  return client.service('do-storage').status()
+}
+
+export async function listDoStorageObjects({ prefix = 'retry/', limit = 100 } = {}) {
+  return client.service('do-storage').list({ prefix, limit })
+}
+
+export async function retryDoStorageObject(key) {
+  return client.service('do-storage').retry({ key })
+}
+
+export async function removeDoStorageObject(key) {
+  return client.service('do-storage').remove(key)
+}
+
+export async function getDoStorageObject(key) {
+  return client.service('do-storage').get(key)
 }
 
 // --------------- Raw client (escape hatch) ---------------
