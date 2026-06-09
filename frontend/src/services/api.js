@@ -31,6 +31,7 @@ const SERVICES = {
               'storeAperakInErpMessages', 'createOrders', 'sendStoredOrder', 'scanNow'],
     events: ['uploadResult'],
   },
+  edi: { methods: ['scanNow', 'scanPeriodically', 'stop'] },
   // CRUD services
   retailer: {},
   'retailer-stats': { methods: ['find'] },
@@ -322,7 +323,7 @@ export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlde
 
 /** Trigger a full scan cycle (download + store + create orders + aperaks). */
 export async function scanNow() {
-  return client.service('sftp').scanNow({}, {})
+  return client.service('edi').scanNow({}, {})
 }
 
 /** Get the last system-level scan entry (TRDR_RETAILER = -1). */
