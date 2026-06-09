@@ -65,6 +65,18 @@ function renderMessage(text) {
   `
 }
 
+function displayMessage(log) {
+  const message = String(log?.MESSAGETEXT || '')
+  const fincode = String(log?.FINCODE || '').trim()
+  if (!fincode || /\bFINCODE=/i.test(message)) return message
+  if (log?.OPERATION !== 'createDocument' || log?.LEVEL !== 'success') return message
+
+  return message
+    .replace(/Document created successfully:\s*(\d+)/i, `Document created successfully: FINCODE=${fincode} FINDOC=$1`)
+    .replace(/Comandă creată:\s*FINDOC=(\d+)/i, `Comandă creată: FINCODE=${fincode} FINDOC=$1`)
+    .replace(/Document created:\s*FINDOC=(\d+)/i, `Document created: FINCODE=${fincode} FINDOC=$1`)
+}
+
 function tokenise(text) {
   // Regex: [FIELD] | KEY=value | "quoted" | → | plain text
   const re = /(\[([A-Z_]+)\])|(\b([A-Z_0-9]+)=("([^"]*)"|([\w\-.:/]+)))|(→)|("([^"]*)")/g
@@ -335,7 +347,7 @@ export class OrdersLogTable extends LightElement {
                       <td>${this._retailerName(log)}</td>
                       <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION)}</span></td>
                       <td><span class="fw-semibold ${this._levelClass(log.LEVEL)}">${log.LEVEL || '—'}</span></td>
-                      <td class="msg-cell">${renderMessage(log.MESSAGETEXT)}</td>
+                      <td class="msg-cell">${renderMessage(displayMessage(log))}</td>
                     </tr>
                   `)}
                 </tbody>

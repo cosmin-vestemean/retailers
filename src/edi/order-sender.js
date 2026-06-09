@@ -16,6 +16,7 @@ export async function sendOrderToS1({
   orderId,
   cccsftpxmlId,
   duplicateLookup,
+  createdDocumentLookup,
   manual = false,
   retries = 2,
   retryDelayMs = 1500
@@ -78,6 +79,8 @@ export async function sendOrderToS1({
         s1BaseUrl ? { query: { url: s1BaseUrl } } : undefined
       )
       if (res?.success === true && res.id) {
+        const createdDocument = await findCreatedDocumentByFindoc({ findoc: res.id, s1BaseUrl, lookup: createdDocumentLookup })
+        const message = `Comandă creată: ${createdDocument?.fincode ? 'FINCODE=' + createdDocument.fincode + ' ' : ''}FINDOC=${res.id}${orderId ? ' | Nr. comandă: ' + orderId : ''}`
         await app.service('CCCSFTPXML').patch(cccsftpxmlId, {
           FINDOC: parseInt(res.id),
           XMLSTATUS: 'SENT',
@@ -89,9 +92,11 @@ export async function sendOrderToS1({
           cccsftpxml: cccsftpxmlId,
           operation: 'createDocument',
           level: 'success',
-          message: `Comandă creată: FINDOC=${res.id}${orderId ? ' | Nr. comandă: ' + orderId : ''}`
+          message
         })
-        return { success: true, id: parseInt(res.id) }
+        return createdDocument?.fincode
+          ? { success: true, id: parseInt(res.id), fincode: createdDocument.fincode }
+          : { success: true, id: parseInt(res.id) }
       }
       // S1 returned a structured failure — not retryable
       const errMsg = formatS1Errors(res?.errors) || 'setDocument failed (no id)'
@@ -124,6 +129,25 @@ export async function sendOrderToS1({
     message: errMsg
   })
   return { success: false, errors: [errMsg] }
+}
+
+async function findCreatedDocumentByFindoc({ findoc, s1BaseUrl, lookup }) {
+  const id = parseInt(findoc, 10)
+  if (!id) return null
+  if (lookup) return lookup({ findoc: id })
+
+  try {
+    const sql = 'SELECT TOP 1 FINCODE FROM FINDOC WHERE FINDOC={value}'
+    const response = await fetch(buildS1Url('/JS/JSRetailers/runMappingSql', s1BaseUrl), {
+      method: 'POST',
+      body: JSON.stringify({ sql, value: String(id) })
+    })
+    const result = await response.json()
+    if (!result.success || !result.data) return null
+    return { findoc: id, fincode: String(result.data) }
+  } catch {
+    return null
+  }
 }
 
 async function findExistingOrderByNum04({ app, jsonOrder, s1BaseUrl, retailer, duplicateLookup }) {

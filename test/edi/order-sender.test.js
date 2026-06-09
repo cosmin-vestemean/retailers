@@ -38,10 +38,11 @@ describe('order-sender', function () {
       retailer: 99888,
       orderId: 'ORDERS_TEST_DX01_900000001.xml',
       cccsftpxmlId: 77,
+      createdDocumentLookup: async ({ findoc }) => ({ findoc, fincode: 'CKEY-00012345' }),
       retries: 0
     })
 
-    assert.deepStrictEqual(res, { success: true, id: 12345 })
+    assert.deepStrictEqual(res, { success: true, id: 12345, fincode: 'CKEY-00012345' })
     assert.strictEqual(setDocumentCalls.length, 1)
     assert.strictEqual(setDocumentCalls[0].params.query.url, 'https://dev-petfactory.oncloud.gr/s1services')
     assert.deepStrictEqual(patches, [{
@@ -50,6 +51,7 @@ describe('order-sender', function () {
     }])
     assert.strictEqual(logs.length, 1)
     assert.strictEqual(logs[0].LEVEL, 'success')
+    assert.strictEqual(logs[0].MESSAGETEXT, 'Comandă creată: FINCODE=CKEY-00012345 FINDOC=12345 | Nr. comandă: ORDERS_TEST_DX01_900000001.xml')
   })
 
   it('links an existing order by NUM04 and skips setDocument', async () => {
@@ -266,10 +268,11 @@ describe('order-sender', function () {
       cccsftpxmlId: 88,
       manual: true,
       retries: 0,
+      createdDocumentLookup: async ({ findoc }) => ({ findoc, fincode: 'CKEY-00012345' }),
       duplicateLookup: async () => null
     })
 
-    assert.deepStrictEqual(res, { success: true, id: 12345 })
+    assert.deepStrictEqual(res, { success: true, id: 12345, fincode: 'CKEY-00012345' })
     assert.strictEqual(setDocumentCalls.length, 1)
     assert.deepStrictEqual(patches, [{
       id: 88,
