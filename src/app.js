@@ -1345,8 +1345,16 @@ app.use('retailer', new retailerServiceClass())
 //test it with TRDR_CLIENT=1 and clientPlatforma=11654
 //app.service('retailer').find({ query: { retailer: 11654, clientPlatforma: 1 } })
 
-//scanPeriodically run
-app.service('sftp').scanPeriodically({}, {})
+// Legacy scanner switch for retailers1 cutover/rollback.
+// Default is ON to preserve existing main-branch production behavior until the
+// Heroku config var is explicitly set to false.
+const enableLegacyScanner = String(process.env.ENABLE_SFTP_SCANNER ?? 'true').toLowerCase() === 'true'
+if (enableLegacyScanner) {
+  console.log('[scanner] legacy SFTP scanner ENABLED')
+  app.service('sftp').scanPeriodically({}, {})
+} else {
+  console.log('[scanner] legacy SFTP scanner DISABLED (ENABLE_SFTP_SCANNER=false)')
+}
 
 // Modified middleware to track only database requests
 app.use(async (ctx, next) => {
