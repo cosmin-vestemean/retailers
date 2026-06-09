@@ -25,6 +25,10 @@ const LEVEL_OPTIONS = [
   { value: 'error', label: 'Error' },
 ]
 
+function isResolvedDuplicateGuard(log) {
+  return log?.OPERATION === 'duplicateGuard' && log?.LEVEL === 'warn'
+}
+
 export class OrdersLogTable extends LightElement {
   static properties = {
     _logs: { state: true },
@@ -41,6 +45,7 @@ export class OrdersLogTable extends LightElement {
     _orderid: { state: true },
     _dateFrom: { state: true },
     _dateTo: { state: true },
+    _showDuplicateGuard: { state: true },
   }
 
   constructor() {
@@ -58,6 +63,7 @@ export class OrdersLogTable extends LightElement {
     this._orderid = ''
     this._dateFrom = ''
     this._dateTo = ''
+    this._showDuplicateGuard = false
   }
 
   get _totalPages() {
@@ -82,6 +88,7 @@ export class OrdersLogTable extends LightElement {
         dateTo: this._dateTo || undefined,
         page: this._page,
         pageSize: this._pageSize,
+        excludeResolvedDuplicateGuard: !this._showDuplicateGuard && this._operation !== 'duplicateGuard',
       })
       if (res.success) {
         this._logs = res.data || []
@@ -127,7 +134,13 @@ export class OrdersLogTable extends LightElement {
     }
   }
 
+  get _visibleLogs() {
+    if (this._showDuplicateGuard || this._operation === 'duplicateGuard') return this._logs
+    return this._logs.filter(log => !isResolvedDuplicateGuard(log))
+  }
+
   render() {
+    const visibleLogs = this._visibleLogs
     return html`
       <div class="card shadow-sm border-0">
         <div class="card-header bg-body-tertiary border-0 py-3 px-4">
@@ -200,6 +213,15 @@ export class OrdersLogTable extends LightElement {
                 : 'Caută'}
             </button>
             </div>
+
+            <div class="col-12">
+              <label class="form-check form-switch mb-0 small">
+                <input class="form-check-input" type="checkbox"
+                  .checked=${this._showDuplicateGuard}
+                  @change=${e => this._showDuplicateGuard = e.target.checked}>
+                <span class="form-check-label">Arată duplicate guard rezolvate</span>
+              </label>
+            </div>
           </div>
 
           ${this._error ? html`
@@ -228,11 +250,11 @@ export class OrdersLogTable extends LightElement {
                   </tr>
                 </thead>
                 <tbody>
-                  ${this._logs.length === 0 ? html`
+                  ${visibleLogs.length === 0 ? html`
                     <tr><td colspan="5" class="text-center text-secondary py-4">
                       Niciun rezultat.
                     </td></tr>
-                  ` : this._logs.map(log => html`
+                  ` : visibleLogs.map(log => html`
                     <tr>
                       <td class="text-nowrap">${log.MESSAGEDATE ?? ''}</td>
                       <td>${this._retailerName(log)}</td>

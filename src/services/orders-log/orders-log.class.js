@@ -7,12 +7,12 @@ export class OrdersLogService {
   }
 
   async find(params) {
-    const { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize } = params.query || {}
+    const { trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize, excludeResolvedDuplicateGuard } = params.query || {}
 
     const url = buildS1Url('/JS/JSRetailers/getOrdersLog', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize })
+      body: JSON.stringify({ trdr, orderid, operation, level, dateFrom, dateTo, page, pageSize, excludeResolvedDuplicateGuard })
     })
     return response.json()
   }

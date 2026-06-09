@@ -282,6 +282,7 @@ function getOrdersLog(params) {
   var dateTo = (params.dateTo || '').toString().substring(0, 10);
   var page = parseInt(params.page) || 1;
   var pageSize = parseInt(params.pageSize) || 25;
+  var excludeResolvedDuplicateGuard = params.excludeResolvedDuplicateGuard === true || params.excludeResolvedDuplicateGuard === 'true';
   if (pageSize > 100) pageSize = 100;
   if (page < 1) page = 1;
   var offset = (page - 1) * pageSize;
@@ -313,6 +314,9 @@ function getOrdersLog(params) {
   if (level) {
     where += ' AND [LEVEL] = :' + (sqlParams.length + 1);
     sqlParams.push(level);
+  }
+  if (excludeResolvedDuplicateGuard && operation !== 'duplicateGuard') {
+    where += " AND NOT (OPERATION = 'duplicateGuard' AND [LEVEL] = 'warn')";
   }
   if (dateFrom) {
     where += ' AND MESSAGEDATE >= :' + (sqlParams.length + 1);

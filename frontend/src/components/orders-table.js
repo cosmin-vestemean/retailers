@@ -7,6 +7,10 @@ import {
 import './xml-viewer.js'
 import './batch-progress.js'
 
+function isDuplicateGuardMessage(message) {
+  return /^Duplicate NUM04 guard:/i.test(String(message || ''))
+}
+
 export class OrdersTable extends LightElement {
   static properties = {
     trdr:       { type: String },
@@ -24,7 +28,7 @@ export class OrdersTable extends LightElement {
     this._orders = []
     this._loading = false
     this._sending = new Set()
-    this._showSent = true
+    this._showSent = false
     this._page = 1
     this._pageSize = 25
     this._total = 0
@@ -85,6 +89,11 @@ export class OrdersTable extends LightElement {
     if (o.XMLSTATUS === 'MANUAL') return 'manual'
     if (o.XMLSTATUS === 'ERROR') return 'error'
     return 'pending'
+  }
+
+  _visibleError(order) {
+    if (order.status === 'sent' && isDuplicateGuardMessage(order.error)) return null
+    return order.error
   }
 
   get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
@@ -243,7 +252,7 @@ export class OrdersTable extends LightElement {
   }
 
   render() {
-    const showSentLabel = this._showSent ? 'Arată trimise' : 'Ascunde trimise'
+    const showSentLabel = 'Arată trimise'
     const showSentId = `show-sent-switch-${this.trdr || 'default'}`
 
     return html`
@@ -297,6 +306,7 @@ export class OrdersTable extends LightElement {
             <tbody>
               ${this._filteredOrders.map((order, i) => {
                 const realIndex = this._orders.indexOf(order)
+                const visibleError = this._visibleError(order)
                 return html`
                 <tr>
                   <td>${new Date(order.date).toLocaleString()}</td>
@@ -320,7 +330,7 @@ export class OrdersTable extends LightElement {
                         <button class="btn btn-sm" @click=${() => this._lookupFindoc(order, realIndex)}>Lookup</button>
                       ` : ''}
                     </div>
-                    ${order.error ? html`<div class="error-box">${order.error}</div>` : ''}
+                    ${visibleError ? html`<div class="error-box">${visibleError}</div>` : ''}
                     ${order.xmlData ? html`<xml-viewer .content=${order.xmlData}></xml-viewer>` : ''}
                   </td>
                   <td>${this._statusBadge(order)}</td>
