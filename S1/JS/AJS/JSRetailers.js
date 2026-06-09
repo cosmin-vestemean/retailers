@@ -320,8 +320,15 @@ function getOrdersLog(params) {
     where += " AND NOT (OPERATION = 'duplicateGuard' AND [LEVEL] = 'warn')";
   }
   if (excludeHeartbeat && operation !== 'downloadXml' && operation !== 'createOrders' && operation !== 'system') {
-    where += " AND NOT (OPERATION IN ('downloadXml', 'createOrders', 'system') AND [LEVEL] = 'info')"
-           + " AND NOT (OPERATION IS NULL AND [LEVEL] = 'info')";
+    where += " AND NOT ([LEVEL] = 'info' AND ("
+           + "OPERATION IN ('downloadXml', 'createOrders', 'system')"
+           + " OR ISNULL(OPERATION, '') = ''"
+           + " OR CAST(MESSAGETEXT AS VARCHAR(MAX)) LIKE '%No files on server%'"
+           + " OR CAST(MESSAGETEXT AS VARCHAR(MAX)) LIKE '%No files in server%'"
+           + " OR CAST(MESSAGETEXT AS VARCHAR(MAX)) LIKE '%No files inserted%'"
+           + " OR CAST(MESSAGETEXT AS VARCHAR(MAX)) LIKE '%No files to store%'"
+           + " OR CAST(MESSAGETEXT AS VARCHAR(MAX)) LIKE '%No orders to create%'"
+           + "))";
   }
   if (dateFrom) {
     where += ' AND MESSAGEDATE >= :' + (sqlParams.length + 1);

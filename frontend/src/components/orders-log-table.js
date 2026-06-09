@@ -31,10 +31,12 @@ function isResolvedDuplicateGuard(log) {
 
 function isHeartbeatLog(log) {
   if (log?.LEVEL !== 'info') return false
+  const message = String(log?.MESSAGETEXT || '')
   return log?.OPERATION === 'system'
     || log?.OPERATION === 'downloadXml'
     || log?.OPERATION === 'createOrders'
     || !log?.OPERATION
+    || /No files (on|in) server|No files inserted|No files to store|No orders to create/i.test(message)
 }
 
 /**
