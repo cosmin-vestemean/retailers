@@ -347,7 +347,7 @@ orders-log-table .orders-log-summary { display: inline-flex; align-items: center
 orders-log-table .log-msg { font-size: 0.85rem; }
 orders-log-table .log-field { font-weight: 600; color: var(--tblr-body-color); }
 orders-log-table .log-key { color: var(--tblr-secondary); font-size: 0.82rem; }
-orders-log-table .log-val { background: var(--tblr-primary-lt); color: var(--tblr-primary-fg, var(--tblr-primary)); border-radius: 3px; padding: 0 4px; font-size: 0.82rem; font-weight: 600; }
+orders-log-table .log-val { background: var(--tblr-primary); color: #fff; border-radius: 3px; padding: 0 5px; font-size: 0.82rem; font-weight: 600; }
 orders-log-table .log-arrow { color: var(--tblr-secondary); }
 orders-log-table .log-quoted { background: var(--tblr-code-bg, #f1f3f4); border-radius: 3px; padding: 0 4px; font-size: 0.82rem; color: var(--tblr-danger); }
 orders-log-table .log-sql { display: block; font-size: 0.75rem; color: var(--tblr-secondary); background: var(--tblr-bg-surface-secondary, #f8f9fa); border-radius: 4px; padding: 2px 6px; margin-top: 3px; white-space: pre-wrap; word-break: break-all; }
