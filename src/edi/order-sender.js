@@ -45,7 +45,7 @@ export async function sendOrderToS1({
       orderId,
       cccsftpxml: cccsftpxmlId,
       operation: 'duplicateGuard',
-      level: 'warning',
+      level: 'warn',
       message
     })
     return { success: true, id: duplicate.findoc, duplicate: true, fincode: duplicate.fincode }

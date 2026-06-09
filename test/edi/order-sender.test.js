@@ -108,7 +108,7 @@ describe('order-sender', function () {
     })
     assert.strictEqual(logs.length, 1)
     assert.strictEqual(logs[0].OPERATION, 'duplicateGuard')
-    assert.strictEqual(logs[0].LEVEL, 'warning')
+    assert.strictEqual(logs[0].LEVEL, 'warn')
   })
 
   it('fails closed when the NUM04 duplicate lookup fails', async () => {

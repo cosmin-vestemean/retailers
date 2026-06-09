@@ -10,6 +10,7 @@ const OP_OPTIONS = [
   { value: 'createOrders', label: 'Create orders' },
   { value: 'processOrder', label: 'Process order' },
   { value: 'createDocument', label: 'Create document' },
+  { value: 'duplicateGuard', label: 'Duplicate guard' },
   { value: 'mappingError', label: 'Mapping error' },
   { value: 'emailNotify', label: 'Email notify' },
   { value: 'system', label: 'System' },
