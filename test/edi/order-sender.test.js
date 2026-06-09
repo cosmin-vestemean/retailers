@@ -103,7 +103,7 @@ describe('order-sender', function () {
       data: {
         FINDOC: 2123739,
         XMLSTATUS: 'SENT',
-        XMLERROR: 'Duplicate NUM04 guard: existing FINDOC=2123739 FINCODE=CKEY-00059455 NUM04=1833989'
+        XMLERROR: 'Comandă deja existentă: nr. 1833989 → FINDOC=2123739 FINCODE=CKEY-00059455'
       }
     })
     assert.strictEqual(logs.length, 1)
@@ -154,11 +154,11 @@ describe('order-sender', function () {
       duplicateLookup: async () => ({ lookupError: 'S1 unavailable', num04: '1833989', trdr: 11322 })
     })
 
-    assert.deepStrictEqual(res, { success: false, errors: ['Duplicate NUM04 guard lookup failed: S1 unavailable'] })
+    assert.deepStrictEqual(res, { success: false, errors: ['Verificare duplicat eșuată pentru nr. comandă 1833989 — S1 unavailable'] })
     assert.strictEqual(setDocumentCalls.length, 0)
     assert.deepStrictEqual(patches, [{
       id: 7053,
-      data: { XMLSTATUS: 'ERROR', XMLERROR: 'Duplicate NUM04 guard lookup failed: S1 unavailable' }
+      data: { XMLSTATUS: 'ERROR', XMLERROR: 'Verificare duplicat eșuată pentru nr. comandă 1833989 — S1 unavailable' }
     }])
     assert.strictEqual(logs.length, 1)
     assert.strictEqual(logs[0].OPERATION, 'duplicateGuard')
@@ -216,7 +216,7 @@ describe('order-sender', function () {
     assert.strictEqual(patches.length, 1)
     assert.strictEqual(patches[0].id, 88)
     assert.strictEqual(patches[0].data.XMLSTATUS, 'MANUAL')
-    assert.match(patches[0].data.XMLERROR, /^Past delivery date guard: DELIVDATE=2000-01-02/)
+    assert.match(patches[0].data.XMLERROR, /^Dată livrare depășită: DELIVDATE=2000-01-02/)
     assert.strictEqual(logs.length, 1)
     assert.strictEqual(logs[0].OPERATION, 'pastDeliveryGuard')
     assert.strictEqual(logs[0].LEVEL, 'warn')

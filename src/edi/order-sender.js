@@ -22,7 +22,7 @@ export async function sendOrderToS1({
 }) {
   const duplicate = await findExistingOrderByNum04({ app, jsonOrder, s1BaseUrl, retailer, duplicateLookup })
   if (duplicate?.lookupError) {
-    const message = `Duplicate NUM04 guard lookup failed: ${duplicate.lookupError}`
+    const message = `Verificare duplicat eșuată pentru nr. comandă ${duplicate.num04} — ${duplicate.lookupError}`
     await markError(app, cccsftpxmlId, message)
     await safeLog(app, {
       retailer,
@@ -35,7 +35,7 @@ export async function sendOrderToS1({
     return { success: false, errors: [message] }
   }
   if (duplicate) {
-    const message = `Duplicate NUM04 guard: existing FINDOC=${duplicate.findoc} FINCODE=${duplicate.fincode || ''} NUM04=${duplicate.num04}`
+    const message = `Comandă deja existentă: nr. ${duplicate.num04} → FINDOC=${duplicate.findoc}${duplicate.fincode ? ' FINCODE=' + duplicate.fincode : ''}`
     await app.service('CCCSFTPXML').patch(cccsftpxmlId, {
       FINDOC: duplicate.findoc,
       XMLSTATUS: 'SENT',
@@ -54,7 +54,7 @@ export async function sendOrderToS1({
 
   const pastDelivery = manual ? null : findPastDeliveryDate(jsonOrder)
   if (pastDelivery) {
-    const message = `Past delivery date guard: DELIVDATE=${pastDelivery.deliveryDate} is before ${pastDelivery.today}; XML kept for manual UI send`
+    const message = `Dată livrare depășită: DELIVDATE=${pastDelivery.deliveryDate} (astăzi ${pastDelivery.today}) — păstrat pentru trimitere manuală`
     await app.service('CCCSFTPXML').patch(cccsftpxmlId, {
       XMLSTATUS: 'MANUAL',
       XMLERROR: message.slice(0, 4000)
@@ -89,7 +89,7 @@ export async function sendOrderToS1({
           cccsftpxml: cccsftpxmlId,
           operation: 'createDocument',
           level: 'success',
-          message: `Document created: FINDOC=${res.id}`
+          message: `Comandă creată: FINDOC=${res.id}${orderId ? ' | Nr. comandă: ' + orderId : ''}`
         })
         return { success: true, id: parseInt(res.id) }
       }

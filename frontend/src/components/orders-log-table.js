@@ -29,6 +29,59 @@ function isResolvedDuplicateGuard(log) {
   return log?.OPERATION === 'duplicateGuard' && log?.LEVEL === 'warn'
 }
 
+/**
+ * Render a plain-text log message with lightweight highlights.
+ * Rules (applied left-to-right on each segment):
+ *  - Lines/segments after "| SQL: " or " — SQL: " → <code> block
+ *  - [FIELD_NAME] at segment start → bold label
+ *  - KEY=value tokens → KEY in muted, value in badge
+ *  - "quoted values" → inline code
+ *  - → arrow → muted
+ * All input is treated as text; no unsafeHTML used anywhere.
+ */
+function renderMessage(text) {
+  if (!text) return html``
+  const str = String(text)
+
+  // Split on SQL separator, render remainder as code block
+  const sqlSep = str.match(/\s*[|—]\s*SQL:\s*([\s\S]+)$/)
+  const mainPart = sqlSep ? str.slice(0, sqlSep.index).trim() : str
+  const sqlPart  = sqlSep ? sqlSep[1].trim() : null
+
+  const parts = tokenise(mainPart)
+  return html`
+    <span class="log-msg">${parts}</span>
+    ${sqlPart ? html`<br><code class="log-sql">${sqlPart}</code>` : ''}
+  `
+}
+
+function tokenise(text) {
+  // Regex: [FIELD] | KEY=value | "quoted" | → | plain text
+  const re = /(\[([A-Z_]+)\])|(\b([A-Z_0-9]+)=("([^"]*)"|([\w\-.:/]+)))|(→)|("([^"]*)")/g
+  const out = []
+  let last = 0, m
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) out.push(text.slice(last, m.index))
+    if (m[1]) {
+      // [FIELD]
+      out.push(html`<strong class="log-field">[${m[2]}]</strong>`)
+    } else if (m[3]) {
+      // KEY=value
+      const key = m[4]; const val = m[6] ?? m[7]
+      out.push(html`<span class="log-key">${key}=</span><span class="log-val">${val}</span>`)
+    } else if (m[8]) {
+      // → arrow
+      out.push(html`<span class="log-arrow"> → </span>`)
+    } else if (m[9]) {
+      // "quoted"
+      out.push(html`<code class="log-quoted">${m[10]}</code>`)
+    }
+    last = re.lastIndex
+  }
+  if (last < text.length) out.push(text.slice(last))
+  return out
+}
+
 export class OrdersLogTable extends LightElement {
   static properties = {
     _logs: { state: true },
@@ -260,7 +313,7 @@ export class OrdersLogTable extends LightElement {
                       <td>${this._retailerName(log)}</td>
                       <td><span class="badge rounded-pill text-bg-secondary">${this._opLabel(log.OPERATION)}</span></td>
                       <td><span class="fw-semibold ${this._levelClass(log.LEVEL)}">${log.LEVEL || '—'}</span></td>
-                      <td class="msg-cell">${log.MESSAGETEXT ?? ''}</td>
+                      <td class="msg-cell">${renderMessage(log.MESSAGETEXT)}</td>
                     </tr>
                   `)}
                 </tbody>

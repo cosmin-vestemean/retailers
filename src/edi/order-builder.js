@@ -194,7 +194,7 @@ async function logMappingError(app, { retailer, orderId, cccsftpxml, message, fi
       CCCSFTPXML: cccsftpxml,
       OPERATION: 'mappingError',
       LEVEL: 'error',
-      MESSAGETEXT: `field=${field} value=${value} sql=${sql} :: ${message}`
+      MESSAGETEXT: `[${field}] valoarea "${value}" nerezolvată — ${message} | SQL: ${sql}`
     })
   } catch (e) {
     console.error('[order-builder] orders-log insert failed:', e.message)
