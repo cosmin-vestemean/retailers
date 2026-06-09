@@ -1,6 +1,23 @@
 import fetch from 'node-fetch'
 import { buildS1Url } from '../../s1-base-url.js'
 
+/**
+ * Read a fetch Response and parse it as the S1 JSON contract.
+ * Throws a descriptive error (status + body snippet) when the body is empty
+ * or not valid JSON, instead of a cryptic "Unexpected end of JSON input".
+ */
+async function parseS1Json(response, label) {
+  const text = await response.text()
+  if (!text || !text.trim()) {
+    throw new Error(`${label} returned empty response (HTTP ${response.status} ${response.statusText})`)
+  }
+  try {
+    return JSON.parse(text)
+  } catch {
+    throw new Error(`${label} returned non-JSON response (HTTP ${response.status}): ${text.slice(0, 300)}`)
+  }
+}
+
 export class CccsftpxmlService {
   constructor(options) {
     this.options = options
@@ -19,7 +36,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify(body)
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'getSftpXml')
     if (!result.success) throw new Error(result.error || 'getSftpXml failed')
     return { data: result.data, total: result.total }
   }
@@ -34,7 +51,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify(body)
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'createSftpXml')
     if (!result.success) throw new Error(result.error || 'createSftpXml failed')
     // Return the full row — store-xml.class.js uses xmlInsert as a record object
     if (result.data && Object.keys(result.data).length > 0) return result.data
@@ -56,7 +73,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify(body)
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'patchSftpXml')
     if (!result.success) throw new Error(result.error || 'patchSftpXml failed')
     return result.data || []
   }
@@ -68,7 +85,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify({ id })
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'claimSftpXml')
     if (!result.success) throw new Error(result.error || 'claimSftpXml failed')
     return !!result.claimed
   }
@@ -86,7 +103,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify(body)
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'getPendingSftpXml')
     if (!result.success) throw new Error(result.error || 'getPendingSftpXml failed')
     return { data: result.data || [], total: result.total || 0 }
   }
@@ -97,7 +114,7 @@ export class CccsftpxmlService {
       method: 'POST',
       body: JSON.stringify({ id })
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'removeSftpXml')
     if (!result.success) throw new Error(result.error || 'removeSftpXml failed')
     return result
   }

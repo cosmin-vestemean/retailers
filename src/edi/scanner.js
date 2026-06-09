@@ -259,7 +259,15 @@ async function processPendingOrders(app, sftpRows) {
   })
 
   for (const row of pending.data) {
-    const claimed = await app.service('CCCSFTPXML').claim(row.CCCSFTPXML)
+    let claimed
+    try {
+      claimed = await app.service('CCCSFTPXML').claim(row.CCCSFTPXML)
+    } catch (e) {
+      // Transient S1/network failure on claim — skip this row, keep scanning the rest
+      stats.failed += 1
+      stats.errors.push({ cccsftpxml: row.CCCSFTPXML, message: `claim failed: ${e.message}` })
+      continue
+    }
     if (!claimed) continue // another worker beat us, or status moved already
 
     try {
