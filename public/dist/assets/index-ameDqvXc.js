@@ -781,7 +781,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
           <div>
             <h1 class="fw-bold mb-1" style="font-size:1.5rem;">DigitalOcean Spaces</h1>
-            <p class="text-secondary mb-0">XML-uri păstrate doar când salvarea în S1 nu a reușit.</p>
+            <p class="mb-0">XML-uri păstrate doar când salvarea în S1 nu a reușit.</p>
           </div>
           <button class="btn btn-outline-secondary btn-sm" type="button" @click=${this._refresh} ?disabled=${this._loading}>
             ${this._loading?`Se încarcă...`:`Reîncarcă`}
@@ -796,7 +796,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
               <div class="card-body">
                 <h2 class="h6 mb-3">Status bucket</h2>
                 ${this._status?H`
-                  <dl class="row small mb-0">
+                  <dl class="row mb-0">
                     <dt class="col-4">Bucket</dt><dd class="col-8">${this._status.bucket||`-`}</dd>
                     <dt class="col-4">Endpoint</dt><dd class="col-8 text-break">${this._status.endpoint||`-`}</dd>
                     <dt class="col-4">Regiune</dt><dd class="col-8">${this._status.region||`-`}</dd>
@@ -807,7 +807,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                       </span>
                     </dd>
                   </dl>
-                `:H`<p class="text-secondary small mb-0">Status indisponibil.</p>`}
+                `:H`<p class="small mb-0">Status indisponibil.</p>`}
               </div>
             </div>
           </div>
@@ -822,7 +822,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                       ${xa.map(e=>H`<option value=${e.value}>${e.label}</option>`)}
                     </select>
                   </div>
-                  <span class="text-secondary small">${this._objects.length} obiecte</span>
+                  <span class="small fw-medium">${this._objects.length} obiecte</span>
                 </div>
 
                 <div class="table-responsive border rounded-3">
@@ -837,7 +837,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     </thead>
                     <tbody>
                       ${this._objects.length===0?H`
-                        <tr><td colspan="4" class="text-center text-secondary py-4">Nu există obiecte pentru prefixul selectat.</td></tr>
+                        <tr><td colspan="4" class="text-center py-4">Nu există obiecte pentru prefixul selectat.</td></tr>
                       `:this._objects.map(e=>H`
                         <tr>
                           <td class="text-break small">${e.key}</td>
@@ -878,7 +878,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                   `)}
                 </div>
               `:``}
-              <pre class="border rounded-3 p-3 bg-body-tertiary small" style="max-height: 520px; overflow:auto;"><code>${this._xml}</code></pre>
+              <pre class="border rounded-3 p-3 small text-body" style="max-height: 520px; overflow:auto; background: #f1f3f5;"><code>${this._xml}</code></pre>
             </div>
           </div>
         `:``}
