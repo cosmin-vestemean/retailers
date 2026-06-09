@@ -72,6 +72,9 @@ describe('EDI scanner against local ftp-srv', function () {
   })
 
   it('lists, downloads and stores both AUCHAN_ and DEDEMAN_ fixtures', async () => {
+    const pdfPath = path.join(root, 'orders', 'AUCHAN_900000003.pdf')
+    await fs.writeFile(pdfPath, '%PDF-1.4 fake non-XML payload')
+
     const store = []
     const testRow = {
       CCCSFTP: 999,
@@ -106,6 +109,8 @@ describe('EDI scanner against local ftp-srv', function () {
       assert.strictEqual(row.TRDR_RETAILER, 99999)
       assert.ok(row.XMLDATA.includes('<BuyerOrderNumber>'), 'XML body persisted')
     }
+
+    await fs.rm(pdfPath, { force: true })
   })
 
   it('dedupes on second scan — no re-insert', async () => {

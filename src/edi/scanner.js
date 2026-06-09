@@ -96,7 +96,7 @@ async function downloadAndStore(app, sftpRow, provider, transport) {
 
     const cutoff = new Date(Date.now() - DOWNLOAD_AGE_DAYS * 86400_000)
     const matching = entries.filter(
-      (e) => prefixes.some((p) => e.name.startsWith(p)) && (!e.modifyTime || e.modifyTime >= cutoff)
+      (e) => prefixes.some((p) => e.name.startsWith(p)) && isXmlLikeFile(e.name) && (!e.modifyTime || e.modifyTime >= cutoff)
     )
 
     for (const file of matching) {
@@ -317,6 +317,10 @@ function joinRemote(a, b) {
   const left = a.endsWith('/') ? a.slice(0, -1) : a
   const right = b.startsWith('/') ? b : '/' + b
   return left + right
+}
+
+function isXmlLikeFile(fileName) {
+  return /\.(xml|confirm)$/i.test(String(fileName || ''))
 }
 
 function formatSqlDate(d) {
