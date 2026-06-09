@@ -29,6 +29,14 @@ function isResolvedDuplicateGuard(log) {
   return log?.OPERATION === 'duplicateGuard' && log?.LEVEL === 'warn'
 }
 
+function isHeartbeatLog(log) {
+  if (log?.LEVEL !== 'info') return false
+  return log?.OPERATION === 'system'
+    || log?.OPERATION === 'downloadXml'
+    || log?.OPERATION === 'createOrders'
+    || !log?.OPERATION
+}
+
 /**
  * Render a plain-text log message with lightweight highlights.
  * Rules (applied left-to-right on each segment):
@@ -144,7 +152,7 @@ export class OrdersLogTable extends LightElement {
         page: this._page,
         pageSize: this._pageSize,
         excludeResolvedDuplicateGuard: !this._showDuplicateGuard && this._operation !== 'duplicateGuard',
-        excludeHeartbeat: !this._showHeartbeat && this._operation !== 'downloadXml' && this._operation !== 'createOrders',
+        excludeHeartbeat: !this._showHeartbeat && !['downloadXml', 'createOrders', 'system'].includes(this._operation),
       })
       if (res.success) {
         this._logs = res.data || []
@@ -191,8 +199,11 @@ export class OrdersLogTable extends LightElement {
   }
 
   get _visibleLogs() {
-    if (this._showDuplicateGuard || this._operation === 'duplicateGuard') return this._logs
-    return this._logs.filter(log => !isResolvedDuplicateGuard(log))
+    return this._logs.filter(log => {
+      if (!this._showDuplicateGuard && this._operation !== 'duplicateGuard' && isResolvedDuplicateGuard(log)) return false
+      if (!this._showHeartbeat && !['downloadXml', 'createOrders', 'system'].includes(this._operation) && isHeartbeatLog(log)) return false
+      return true
+    })
   }
 
   render() {

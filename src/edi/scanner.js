@@ -63,9 +63,37 @@ export async function scanAll(app) {
     stats.failed += procStats.failed
     stats.errors.push(...procStats.errors)
 
+    await logScanSummary(app, stats)
     return stats
   } finally {
     _running = false
+  }
+}
+
+async function logScanSummary(app, stats) {
+  if (!app.services?.['orders-log']) return
+  try {
+    await app.service('orders-log').create({
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: -1,
+      ORDERID: '',
+      CCCSFTPXML: -1,
+      OPERATION: 'system',
+      LEVEL: 'info',
+      MESSAGETEXT: 'Scanare EDI finalizată: '
+        + `RETAILERI=${stats.providers} `
+        + `XML_DESCARCATE=${stats.downloaded} `
+        + `XML_INSERATE=${stats.inserted} `
+        + `DUPLICATE=${stats.duplicates} `
+        + `DO_BACKUP=${stats.backedUp} `
+        + `DO_STERSE=${stats.deletedFromDo} `
+        + `DO_RETRY=${stats.retryBackedUp} `
+        + `COMENZI_CREATE=${stats.processed} `
+        + `MANUAL=${stats.held} `
+        + `ERORI=${stats.failed}`
+    })
+  } catch (e) {
+    console.error('[edi-scanner] scan summary log failed:', e.message)
   }
 }
 

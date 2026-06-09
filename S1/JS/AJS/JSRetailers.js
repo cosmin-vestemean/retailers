@@ -319,8 +319,8 @@ function getOrdersLog(params) {
   if (excludeResolvedDuplicateGuard && operation !== 'duplicateGuard') {
     where += " AND NOT (OPERATION = 'duplicateGuard' AND [LEVEL] = 'warn')";
   }
-  if (excludeHeartbeat && operation !== 'downloadXml' && operation !== 'createOrders') {
-    where += " AND NOT (OPERATION IN ('downloadXml', 'createOrders') AND [LEVEL] = 'info')"
+  if (excludeHeartbeat && operation !== 'downloadXml' && operation !== 'createOrders' && operation !== 'system') {
+    where += " AND NOT (OPERATION IN ('downloadXml', 'createOrders', 'system') AND [LEVEL] = 'info')"
            + " AND NOT (OPERATION IS NULL AND [LEVEL] = 'info')";
   }
   if (dateFrom) {
