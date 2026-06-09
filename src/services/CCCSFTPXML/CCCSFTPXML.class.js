@@ -26,15 +26,19 @@ export class CccsftpxmlService {
 
   async create(data) {
     const url = buildS1Url('/JS/JSRetailers/createSftpXml', { app: this.options.app })
+    const body = {
+      ...data,
+      XMLDATA: normalizeXmlDataForS1(data.XMLDATA)
+    }
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(body)
     })
     const result = await response.json()
     if (!result.success) throw new Error(result.error || 'createSftpXml failed')
     // Return the full row — store-xml.class.js uses xmlInsert as a record object
     if (result.data && Object.keys(result.data).length > 0) return result.data
-    return { CCCSFTPXML: result.id, ...data }
+    return { CCCSFTPXML: result.id, ...body }
   }
 
   async patch(id, data, params) {
@@ -97,6 +101,10 @@ export class CccsftpxmlService {
     if (!result.success) throw new Error(result.error || 'removeSftpXml failed')
     return result
   }
+}
+
+function normalizeXmlDataForS1(xml) {
+  return String(xml || '').replace(/^\uFEFF?\s*<\?xml[^?]*\?>\s*/i, '')
 }
 
 export const getOptions = (app) => {

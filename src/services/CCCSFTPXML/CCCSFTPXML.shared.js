@@ -1,6 +1,6 @@
 export const cccsftpxmlPath = 'CCCSFTPXML'
 
-export const cccsftpxmlMethods = ['find', 'create', 'patch', 'remove']
+export const cccsftpxmlMethods = ['find', 'create', 'patch', 'remove', 'claim', 'pending']
 
 export const cccsftpxmlClient = (client) => {
   const connection = client.get('connection')
