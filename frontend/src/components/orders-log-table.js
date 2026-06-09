@@ -49,9 +49,32 @@ function isHeartbeatLog(log) {
  *  - → arrow → muted
  * All input is treated as text; no unsafeHTML used anywhere.
  */
+const SCAN_SUMMARY_RE = /^Scanare EDI finalizat[aă]:\s*/i
+
+function renderScanSummary(text) {
+  const rest = text.replace(SCAN_SUMMARY_RE, '').trim()
+  const items = rest.split(/\s+/).map(pair => {
+    const eq = pair.indexOf('=')
+    if (eq < 0) return null
+    return { key: pair.slice(0, eq), val: pair.slice(eq + 1) }
+  }).filter(Boolean)
+
+  return html`<span class="log-msg log-scan-summary">
+    <span class="log-scan-label">Scanare EDI finalizată</span>
+    <span class="log-scan-counters">${items.map(({ key, val }) => {
+      const zero = val === '0'
+      const danger = key === 'ERORI' && !zero
+      return html`<span class="log-scan-item">
+        <span class="log-key">${key}=</span><span class="log-val ${zero ? 'log-val-zero' : danger ? 'log-val-danger' : ''}">${val}</span>
+      </span>`
+    })}</span>
+  </span>`
+}
+
 function renderMessage(text) {
   if (!text) return html``
   const str = String(text)
+  if (SCAN_SUMMARY_RE.test(str)) return renderScanSummary(str)
 
   // Split on SQL separator, render remainder as code block
   const sqlSep = str.match(/\s*[|—]\s*SQL:\s*([\s\S]+)$/)

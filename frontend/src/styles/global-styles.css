@@ -351,6 +351,12 @@ orders-log-table .log-val { background: var(--tblr-primary); color: #fff; border
 orders-log-table .log-arrow { color: var(--tblr-secondary); }
 orders-log-table .log-quoted { background: var(--tblr-code-bg, #f1f3f4); border-radius: 3px; padding: 0 4px; font-size: 0.82rem; color: var(--tblr-danger); }
 orders-log-table .log-sql { display: block; font-size: 0.75rem; color: var(--tblr-secondary); background: var(--tblr-bg-surface-secondary, #f8f9fa); border-radius: 4px; padding: 2px 6px; margin-top: 3px; white-space: pre-wrap; word-break: break-all; }
+orders-log-table .log-scan-summary { display: flex; flex-direction: column; gap: 3px; }
+orders-log-table .log-scan-label { font-weight: 600; font-size: 0.85rem; color: var(--tblr-body-color); }
+orders-log-table .log-scan-counters { display: flex; flex-wrap: wrap; gap: 3px 6px; }
+orders-log-table .log-scan-item { white-space: nowrap; font-size: 0.82rem; }
+orders-log-table .log-val-zero { background: var(--tblr-secondary); opacity: 0.35; color: #fff; border-radius: 3px; padding: 0 5px; font-size: 0.82rem; font-weight: 600; }
+orders-log-table .log-val-danger { background: var(--tblr-danger); color: #fff; border-radius: 3px; padding: 0 5px; font-size: 0.82rem; font-weight: 600; }
 orders-log-table .placeholder {
   text-align: center; padding: 3rem 1rem; color: var(--tblr-secondary);
   background: var(--bs-tertiary-bg, var(--tblr-bg-surface-secondary));
