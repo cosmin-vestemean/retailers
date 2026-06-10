@@ -14,10 +14,11 @@ const TEST_PORT = 2121
 
 function buildMockApp(testRow, store, options = {}) {
   const app = feathers()
+  const testRows = Array.isArray(testRow) ? testRow : [testRow]
 
   app.use('CCCSFTP', {
-    async find() { return { data: [testRow], total: 1 } },
-    async list() { return { data: [testRow], total: 1 } }
+    async find() { return { data: testRows, total: testRows.length } },
+    async list() { return { data: testRows, total: testRows.length } }
   }, { methods: ['find', 'list'] })
 
   app.use('CCCSFTPXML', {
@@ -111,6 +112,38 @@ describe('EDI scanner against local ftp-srv', function () {
     }
 
     await fs.rm(pdfPath, { force: true })
+  })
+
+  it('routes Infinite files to the retailer matching their filename prefix', async () => {
+    const store = []
+    const baseRow = {
+      CCCSFTP: 999,
+      TRDR_CLIENT: 1,
+      URL: '127.0.0.1',
+      PORT: TEST_PORT,
+      USERNAME: 'testuser',
+      PASSPHRASE: 'testpass',
+      INITIALDIRIN: '/',
+      INITIALDIROUT: '/',
+      PROVIDER_CODE: 'infinite',
+      PROVIDER_NAME: 'Infinite Edinet',
+      PROVIDER_CONNTYPE: 4
+    }
+    const app = buildMockApp([
+      { ...baseRow, CCCSFTP: 11654, TRDR_RETAILER: 11654 },
+      { ...baseRow, CCCSFTP: 13248, TRDR_RETAILER: 13248 }
+    ], store)
+
+    const stats = await scanAll(app)
+
+    assert.deepStrictEqual(stats.errors, [], 'no errors expected')
+    assert.strictEqual(stats.providers, 2)
+    assert.strictEqual(stats.downloaded, 2)
+    assert.strictEqual(stats.inserted, 2)
+
+    const byFilename = Object.fromEntries(store.map((row) => [row.XMLFILENAME, row.TRDR_RETAILER]))
+    assert.strictEqual(byFilename['AUCHAN_900000001.xml'], 13248)
+    assert.strictEqual(byFilename['DEDEMAN_900000002.xml'], 11654)
   })
 
   it('dedupes on second scan — no re-insert', async () => {

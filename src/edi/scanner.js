@@ -101,7 +101,7 @@ async function downloadAndStore(app, sftpRow, provider, transport) {
   const stats = { downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, failed: 0, errors: [] }
   // Per provider: scan each supported docType.
   for (const docType of ['orders', 'retann', 'aperak']) {
-    const prefixes = provider.filenamePrefixes(docType)
+    const prefixes = provider.filenamePrefixes(docType, sftpRow)
     if (!prefixes || prefixes.length === 0) continue
 
     const subdir = provider.remoteSubdir(docType)

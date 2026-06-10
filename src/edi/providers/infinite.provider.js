@@ -10,6 +10,11 @@ const parseXml = (xml) =>
 const cleanXml = (xml) =>
   xml.replace(/<\?xml[^?]*\?>/g, '').replace(/\ufeff/g, '').replace(/[\n\r\t]/g, '')
 
+const RETAILER_PREFIXES = {
+  13248: ['AUCHAN_'],
+  11654: ['DEDEMAN_']
+}
+
 /**
  * Infinite Edinet provider. Sample schema:
  *   <Document Type="Orders|RetAnn"><Order><OrderHeader><BuyerOrderNumber/>...
@@ -24,9 +29,10 @@ const cleanXml = (xml) =>
 export const infiniteProvider = {
   code: 'infinite',
 
-  filenamePrefixes(docType) {
-    if (docType === 'orders') return ['AUCHAN_', 'DEDEMAN_']
-    if (docType === 'retann') return ['AUCHAN_', 'DEDEMAN_']
+  filenamePrefixes(docType, sftpRow = {}) {
+    const retailerPrefixes = RETAILER_PREFIXES[parseInt(sftpRow.TRDR_RETAILER, 10)]
+    if (docType === 'orders') return retailerPrefixes || ['AUCHAN_', 'DEDEMAN_']
+    if (docType === 'retann') return retailerPrefixes || ['AUCHAN_', 'DEDEMAN_']
     return []
   },
 

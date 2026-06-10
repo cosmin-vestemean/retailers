@@ -11,7 +11,7 @@
  *
  * @typedef {Object} EdiProvider
  * @property {string} code                                                  // 'docprocess' | 'infinite'
- * @property {(docType: 'orders'|'retann'|'aperak') => string[]}   filenamePrefixes
+ * @property {(docType: 'orders'|'retann'|'aperak', sftpRow?: object) => string[]}   filenamePrefixes
  * @property {(docType: 'orders'|'retann'|'invoice'|'aperak') => string}   remoteSubdir
  * @property {(xml: string) => Promise<ParsedOrder>}              parseOrder
  * @property {(xml: string) => Promise<object>}                   parseAperak
