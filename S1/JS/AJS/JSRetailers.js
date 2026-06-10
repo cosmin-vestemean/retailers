@@ -925,6 +925,8 @@ function getAperaks(params) {
   var trdr = parseInt(params.TRDR_RETAILER) || 0;
   var trdrClient = parseInt(params.TRDR_CLIENT) || 0;
   var findoc = parseInt(params.FINDOC) || 0;
+  var aperakFilename = (params.APERAKFILENAME || '').toString();
+  var documentUid = (params.DOCUMENTUID || '').toString();
   var limit = parseInt(params.$limit) || 50;
 
   // Safe integers inlined directly — each :N must appear exactly once in S1 SQL
@@ -932,6 +934,8 @@ function getAperaks(params) {
   if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
   if (trdrClient) where += ' AND TRDR_CLIENT = ' + trdrClient;
   if (findoc) where += ' AND FINDOC = ' + findoc;
+  if (aperakFilename) where += ' AND CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX))';
+  if (documentUid) where += " AND DOCUMENTUID = '" + documentUid.replace(/'/g, "''") + "'";
 
   var sql = 'SELECT TOP ' + limit + ' CCCAPERAK, TRDR_RETAILER, TRDR_CLIENT, FINDOC, '
     + 'XMLFILENAME, XMLSENTDATE, MESSAGEDATE, MESSAGETIME, MESSAGEORIGIN, '
@@ -939,7 +943,7 @@ function getAperaks(params) {
     + 'FROM CCCAPERAK ' + where
     + ' ORDER BY CCCAPERAK DESC';
   try {
-    var ds = X.GETSQLDATASET(sql, null);
+    var ds = aperakFilename ? X.GETSQLDATASET(sql, aperakFilename) : X.GETSQLDATASET(sql, null);
     return { success: true, data: convertDatasetToArray(ds), total: ds.RECORDCOUNT };
   } catch (e) {
     return { success: false, error: e.message };
@@ -956,7 +960,7 @@ function createAperak(params) {
       parseInt(params.TRDR_RETAILER) || 0,
       parseInt(params.TRDR_CLIENT) || 1,
       parseInt(params.FINDOC) || 0,
-      (params.XMLFILENAME || '').toString(),
+      (params.XMLFILENAME || params.APERAKFILENAME || '').toString(),
       (params.XMLSENTDATE || '').toString(),
       (params.MESSAGEDATE || '').toString(),
       (params.MESSAGETIME || '').toString(),

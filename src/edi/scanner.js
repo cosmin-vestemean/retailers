@@ -132,11 +132,13 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
       const remotePath = joinRemote(remoteDir, file.name)
       const localPath = path.join(localDir, file.name)
 
-      // Dedupe by filename before downloading — skip files already in CCCSFTPXML.
-      const existing = await app.service('CCCSFTPXML').find({ query: { XMLFILENAME: file.name, $limit: 1 } })
-      if (existing.total > 0 || (existing.data && existing.data.length > 0)) {
-        stats.duplicates += 1
-        continue
+      if (docType !== 'aperak') {
+        // Dedupe by filename before downloading — skip files already stored.
+        const existing = await app.service('CCCSFTPXML').find({ query: { XMLFILENAME: file.name, $limit: 1 } })
+        if (existing.total > 0 || (existing.data && existing.data.length > 0)) {
+          stats.duplicates += 1
+          continue
+        }
       }
 
       let xml = ''
@@ -161,8 +163,17 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
           sourcePath: remotePath
         })
         if (doBackup?.key) stats.backedUp += 1
-        const insertRow = await resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows })
-        await insertXmlRow(app, { xml, file, sftpRow: insertRow, provider, docType })
+        if (docType === 'aperak') {
+          const inserted = await insertAperakRow(app, { xml, file, sftpRow, provider })
+          if (!inserted) {
+            stats.duplicates += 1
+            if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
+            continue
+          }
+        } else {
+          const insertRow = await resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows })
+          await insertXmlRow(app, { xml, file, sftpRow: insertRow, provider, docType })
+        }
         stats.inserted += 1
         if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
       } catch (e) {
@@ -192,6 +203,58 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
     }
   }
   return stats
+}
+
+async function insertAperakRow(app, { xml, file, sftpRow, provider }) {
+  const aperak = await provider.parseAperak(xml)
+  if (await hasExistingAperak(app, aperak)) return false
+  const data = {
+    TRDR_CLIENT: sftpRow.TRDR_CLIENT || 1,
+    TRDR_RETAILER: sftpRow.TRDR_RETAILER,
+    APERAKFILENAME: file.name,
+    MESSAGEDATE: aperak.messageDate,
+    MESSAGETIME: aperak.messageTime,
+    MESSAGEORIGIN: aperak.messageOrigin,
+    DOCUMENTREFERENCE: aperak.documentReference,
+    DOCUMENTUID: aperak.documentUid,
+    SUPPLIERRECEIVERCODE: aperak.supplierReceiverCode,
+    DOCUMENTRESPONSE: aperak.documentResponse,
+    DOCUMENTDETAIL: aperak.documentDetail
+  }
+
+  const document = await findAperakDocument(app, aperak.documentReference)
+  if (document) {
+    data.FINDOC = parseInt(document.FINDOC, 10)
+    data.TRDR_RETAILER = parseInt(document.retailer, 10) || data.TRDR_RETAILER
+    if (document.xmlFilename) data.XMLFILENAME = document.xmlFilename
+    if (document.xmlSentDate) data.XMLSENTDATE = document.xmlSentDate
+  } else {
+    data.XMLFILENAME = file.name
+  }
+
+  await app.service('CCCAPERAK').create(data)
+  return true
+}
+
+async function hasExistingAperak(app, aperak) {
+  if (!aperak.documentUid) return false
+  const existing = await app.service('CCCAPERAK').find({ query: { DOCUMENTUID: aperak.documentUid, $limit: 20 } })
+  return (existing.data || []).some((row) =>
+    String(row.DOCUMENTRESPONSE || '') === String(aperak.documentResponse || '')
+    && String(row.DOCUMENTDETAIL || '') === String(aperak.documentDetail || '')
+  )
+}
+
+async function findAperakDocument(app, documentReference) {
+  const reference = String(documentReference || '').replace(/'/g, "''")
+  if (!reference) return null
+  const response = await app.service('getDataset1').find({
+    query: {
+      sqlQuery: "SELECT TOP 1 FORMAT(a.trndate, 'dd.MM.yyyy') TRNDATE, A.FINDOC, A.FINCODE, a.SERIESNUM DocumentReference, CONCAT(B.BGBULSTAT, B.AFM) MessageOrigin, A.TRDR retailer, c.CCCXmlFile xmlFilename, c.CCCXMLSendDate xmlSentDate FROM FINDOC A INNER JOIN TRDR B ON A.TRDR = B.TRDR LEFT JOIN mtrdoc c ON c.findoc = a.findoc WHERE A.SOSOURCE = 1351 AND A.FPRMS = 712 AND A.FINCODE LIKE '%" + reference + "%' AND A.ISCANCEL = 0 ORDER BY A.TRNDATE DESC"
+    }
+  })
+  if (!response.success || !Array.isArray(response.data) || response.data.length === 0) return null
+  return response.data[0]
 }
 
 async function insertRoutingErrorRow(app, { xml, file, sftpRow, provider, docType, error }) {

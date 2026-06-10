@@ -31,6 +31,7 @@ async function copyDir(src, dst) {
 function buildMockApp(testRow, store, options = {}) {
   const app = feathers()
   const testRows = Array.isArray(testRow) ? testRow : [testRow]
+  const aperakStore = options.aperakStore || []
   app.use('CCCSFTP', {
     async find() { return { data: testRows, total: testRows.length } },
     async list() { return { data: testRows, total: testRows.length } }
@@ -51,11 +52,33 @@ function buildMockApp(testRow, store, options = {}) {
     async claim() { return false }
   }, { methods: ['find', 'create', 'patch', 'pending', 'claim'] })
 
+  app.use('CCCAPERAK', {
+    async find({ query }) {
+      const match = aperakStore.filter((row) => !query.DOCUMENTUID || row.DOCUMENTUID === query.DOCUMENTUID)
+      return { data: match.slice(0, query.$limit || 50), total: match.length }
+    },
+    async create(data) {
+      const row = { CCCAPERAK: aperakStore.length + 1, ...data }
+      aperakStore.push(row)
+      return row
+    }
+  }, { methods: ['find', 'create'] })
+
   if (options.resolveGlnToRetailer) {
     app.use('getDataset', {
       async find({ query }) {
         const match = String(query.sqlQuery || '').match(/CCCS1DXGLN='([^']+)'/)
         return { success: true, data: options.resolveGlnToRetailer[match?.[1]] || '' }
+      }
+    }, { methods: ['find'] })
+  }
+
+  if (options.invoiceDocuments) {
+    app.use('getDataset1', {
+      async find({ query }) {
+        const match = String(query.sqlQuery || '').match(/LIKE '%([^']+)%'/)
+        const document = options.invoiceDocuments[match?.[1]]
+        return document ? { success: true, total: 1, data: [document] } : { success: true, total: 0, data: [] }
       }
     }, { methods: ['find'] })
   }
@@ -203,5 +226,56 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
     assert.strictEqual(jsonData.routing.delivery.name, 'TEST DX DELIVERY POINT')
     assert.strictEqual(jsonData.routing.delivery.city, '')
     assert.strictEqual(jsonData.routing.itemsPreview[0].buyerItemId, 'TEST-DX-001')
+  })
+
+  it('stores APERAK files in CCCAPERAK instead of CCCSFTPXML', async () => {
+    await fs.copyFile(
+      path.join(FIXTURES_DIR, 'aperak', 'APERAK_TEST_DX01_900000001.xml'),
+      path.join(workdir, 'out', 'APERAK_TEST_DX01_900000001.xml')
+    )
+    const now = new Date()
+    await fs.utimes(path.join(workdir, 'out', 'APERAK_TEST_DX01_900000001.xml'), now, now)
+
+    const store = []
+    const aperakStore = []
+    const testRow = {
+      CCCSFTP: 998,
+      TRDR_CLIENT: 1,
+      TRDR_RETAILER: 11322,
+      URL: '127.0.0.1',
+      PORT: TEST_PORT,
+      USERNAME: 'testuser',
+      INITIALDIRIN: '/out',
+      INITIALDIROUT: '/in',
+      PROVIDER_CODE: 'docprocess',
+      PROVIDER_NAME: 'DocProcess',
+      PROVIDER_CONNTYPE: 1,
+      PASSWORD: 'testpass'
+    }
+    const app = buildMockApp(testRow, store, {
+      aperakStore,
+      resolveGlnToRetailer: { '0000000000030': '11322' },
+      invoiceDocuments: {
+        '38723': {
+          FINDOC: 2145262,
+          FINCODE: 'FAEX-PF-38723',
+          retailer: 11322,
+          xmlFilename: 'INVOIC_38723_VAT_RO25190857.xml',
+          xmlSentDate: '2026-06-10 10:20:00'
+        }
+      }
+    })
+
+    const stats = await scanAll(app)
+
+    assert.strictEqual(stats.errors.filter((e) => e.scope !== 'download').length, 0)
+    assert.strictEqual(aperakStore.length, 1)
+    assert.strictEqual(aperakStore[0].FINDOC, 2145262)
+    assert.strictEqual(aperakStore[0].TRDR_RETAILER, 11322)
+    assert.strictEqual(aperakStore[0].XMLFILENAME, 'INVOIC_38723_VAT_RO25190857.xml')
+    assert.strictEqual(aperakStore[0].DOCUMENTREFERENCE, '38723')
+    assert.strictEqual(aperakStore[0].DOCUMENTUID, 'DX-APERAK-TEST-0001')
+    assert.strictEqual(aperakStore[0].DOCUMENTRESPONSE, 'ACCEPTAT')
+    assert.strictEqual(store.some((row) => row.XMLFILENAME === 'APERAK_TEST_DX01_900000001.xml'), false)
   })
 })

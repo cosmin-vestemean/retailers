@@ -48,6 +48,16 @@ function firstItemsPreview(orderLine) {
   })
 }
 
+function normalizeDocumentReference(reference, detail) {
+  let value = text(reference)
+  if (value.includes('INVOIC_')) value = value.split('_')[1] || value
+  if (value === 'Necunoscut') {
+    const match = text(detail).match(/Nume fisier:\s*INVOIC_([^_\.\s]+)/i)
+    if (match) value = match[1]
+  }
+  return value
+}
+
 /**
  * DocProcess provider. UBL-flavoured Order XML, single remote inbox.
  * @type {import('./provider.interface.js').EdiProvider}
@@ -103,6 +113,20 @@ export const docProcessProvider = {
   },
 
   async parseAperak(xml) {
-    return parseXml(cleanXml(xml))
+    const json = await parseXml(cleanXml(xml))
+    const message = json?.DXMessage
+    if (!message) throw new Error('DocProcess: missing <DXMessage> root')
+    const detail = text(message.DocumentDetail)
+    return {
+      messageDate: text(message.MessageDate),
+      messageTime: text(message.MessageTime),
+      messageOrigin: text(message.MessageOrigin),
+      documentReference: normalizeDocumentReference(message.DocumentReference, detail),
+      documentUid: text(message.DocumentUID),
+      supplierReceiverCode: text(message.SupplierReceiverCode),
+      documentResponse: text(message.DocumentResponse),
+      documentDetail: detail,
+      raw: json
+    }
   }
 }

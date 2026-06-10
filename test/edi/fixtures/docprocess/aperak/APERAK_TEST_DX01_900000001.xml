@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DXMessage>
+  <MessageDate>2026-06-10</MessageDate>
+  <MessageTime>10:26:25</MessageTime>
+  <MessageOrigin>RO17275880</MessageOrigin>
+  <DocumentReference>38723</DocumentReference>
+  <DocumentUID>DX-APERAK-TEST-0001</DocumentUID>
+  <SupplierReceiverCode>-</SupplierReceiverCode>
+  <DocumentResponse>ACCEPTAT</DocumentResponse>
+  <DocumentDetail>- - ID document: DX-APERAK-TEST-0001
+Nume fisier: INVOIC_38723_VAT_RO25190857.xml
+Status: Transmis / Sent
+Mesaj: Documentul a fost trimis.</DocumentDetail>
+</DXMessage>
