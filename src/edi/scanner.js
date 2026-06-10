@@ -39,7 +39,7 @@ export async function scanAll(app) {
       try {
         const providerImpl = getProvider({ CODE: row.PROVIDER_CODE, NAME: row.PROVIDER_NAME })
         transport = buildTransport(row, row.PROVIDER_CONNTYPE)
-        const dlStats = await downloadAndStore(app, row, providerImpl, transport)
+        const dlStats = await downloadAndStore(app, row, providerImpl, transport, configs.data)
         stats.downloaded += dlStats.downloaded
         stats.inserted += dlStats.inserted
         stats.duplicates += dlStats.duplicates
@@ -97,7 +97,7 @@ async function logScanSummary(app, stats) {
   }
 }
 
-async function downloadAndStore(app, sftpRow, provider, transport) {
+async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []) {
   const stats = { downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, failed: 0, errors: [] }
   // Per provider: scan each supported docType.
   for (const docType of ['orders', 'retann', 'aperak']) {
@@ -161,7 +161,8 @@ async function downloadAndStore(app, sftpRow, provider, transport) {
           sourcePath: remotePath
         })
         if (doBackup?.key) stats.backedUp += 1
-        await insertXmlRow(app, { xml, file, sftpRow, provider, docType })
+        const insertRow = await resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows })
+        await insertXmlRow(app, { xml, file, sftpRow: insertRow, provider, docType })
         stats.inserted += 1
         if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
       } catch (e) {
@@ -199,6 +200,36 @@ async function insertXmlRow(app, { xml, file, sftpRow, provider, docType }) {
     XMLFILENAME: file.name,
     EDIDOCTYPE: ediDocType
   })
+}
+
+async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows }) {
+  if (provider.code !== 'docprocess' || docType !== 'orders') return sftpRow
+  let parsed
+  try {
+    parsed = await provider.parseOrder(xml)
+  } catch {
+    return sftpRow
+  }
+  const gln = String(parsed.shipToGln || parsed.buyerGln || '').trim()
+  if (!/^\d{8,14}$/.test(gln)) return sftpRow
+
+  const candidates = (sftpRows || [])
+    .filter((row) => String(row.PROVIDER_CODE || '').toLowerCase() === provider.code)
+    .map((row) => parseInt(row.TRDR_RETAILER, 10))
+    .filter((trdr) => trdr > 0)
+  if (candidates.length === 0) return sftpRow
+
+  try {
+    const sql = 'SELECT TOP 1 CAST(TRDR AS VARCHAR(20)) FROM TRDBRANCH '
+      + `WHERE CCCS1DXGLN='${gln}' AND TRDR IN (${[...new Set(candidates)].join(',')}) `
+      + 'ORDER BY TRDR'
+    const result = await app.service('getDataset').find({ query: { sqlQuery: sql } })
+    const resolved = parseInt(result?.data, 10)
+    if (!resolved || resolved === parseInt(sftpRow.TRDR_RETAILER, 10)) return sftpRow
+    return (sftpRows || []).find((row) => parseInt(row.TRDR_RETAILER, 10) === resolved) || { ...sftpRow, TRDR_RETAILER: resolved }
+  } catch {
+    return sftpRow
+  }
 }
 
 async function backupXml(app, { xml, fileName, sftpRow, provider, docType, stage, sourcePath }) {

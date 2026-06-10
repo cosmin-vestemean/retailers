@@ -28,11 +28,12 @@ async function copyDir(src, dst) {
   }
 }
 
-function buildMockApp(testRow, store) {
+function buildMockApp(testRow, store, options = {}) {
   const app = feathers()
+  const testRows = Array.isArray(testRow) ? testRow : [testRow]
   app.use('CCCSFTP', {
-    async find() { return { data: [testRow], total: 1 } },
-    async list() { return { data: [testRow], total: 1 } }
+    async find() { return { data: testRows, total: testRows.length } },
+    async list() { return { data: testRows, total: testRows.length } }
   }, { methods: ['find', 'list'] })
 
   app.use('CCCSFTPXML', {
@@ -49,6 +50,15 @@ function buildMockApp(testRow, store) {
     async pending() { return { data: [] } },
     async claim() { return false }
   }, { methods: ['find', 'create', 'patch', 'pending', 'claim'] })
+
+  if (options.resolveGlnToRetailer) {
+    app.use('getDataset', {
+      async find({ query }) {
+        const match = String(query.sqlQuery || '').match(/CCCS1DXGLN='([^']+)'/)
+        return { success: true, data: options.resolveGlnToRetailer[match?.[1]] || '' }
+      }
+    }, { methods: ['find'] })
+  }
 
   return app
 }
@@ -118,5 +128,34 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
       assert.strictEqual(row.XMLFILENAME, 'ORDERS_TEST_DX01_900000001.xml')
       assert.ok(row.XMLDATA.includes('<ID>TEST-DX-ORDER-0001</ID>'))
     }
+  })
+
+  it('routes shared DocProcess inbox files to the retailer matching the XML GLN', async () => {
+    const store = []
+    const baseRow = {
+      TRDR_CLIENT: 1,
+      URL: '127.0.0.1',
+      PORT: TEST_PORT,
+      USERNAME: 'testuser',
+      INITIALDIRIN: '/out',
+      INITIALDIROUT: '/in',
+      PROVIDER_CODE: 'docprocess',
+      PROVIDER_NAME: 'DocProcess',
+      PROVIDER_CONNTYPE: 1,
+      PASSWORD: 'testpass'
+    }
+    const app = buildMockApp([
+      { ...baseRow, CCCSFTP: 11322, TRDR_RETAILER: 11322, RETAILER_NAME: 'Carrefour' },
+      { ...baseRow, CCCSFTP: 12349, TRDR_RETAILER: 12349, RETAILER_NAME: 'Kaufland' }
+    ], store, {
+      resolveGlnToRetailer: { '0000000000030': '12349' }
+    })
+
+    const stats = await scanAll(app)
+
+    assert.deepStrictEqual(stats.errors.filter((e) => e.scope !== 'download'), [], 'no processing errors')
+    assert.strictEqual(stats.inserted, 1)
+    assert.strictEqual(store[0].TRDR_RETAILER, 12349)
+    assert.strictEqual(store[0].XMLFILENAME, 'ORDERS_TEST_DX01_900000001.xml')
   })
 })
