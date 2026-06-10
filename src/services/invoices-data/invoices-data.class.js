@@ -7,11 +7,11 @@ export class InvoicesDataService {
   }
 
   async find(params) {
-    const { trdr, page, pageSize, daysOlder, sosource, fprms, series } = params.query || {}
+    const { trdr, page, pageSize, daysOlder, sosource, fprms, series, includeSent } = params.query || {}
     const url = buildS1Url('/JS/JSRetailers/getInvoicesData', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ trdr, page, pageSize, daysOlder, sosource, fprms, series })
+      body: JSON.stringify({ trdr, page, pageSize, daysOlder, sosource, fprms, series, includeSent })
     })
     return response.json()
   }

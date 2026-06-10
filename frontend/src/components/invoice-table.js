@@ -17,6 +17,7 @@ export class InvoiceTable extends LightElement {
     _invoices:   { state: true },
     _loading:    { state: true },
     _sending:    { state: true },
+    _showSent:   { state: true },
     _page:       { state: true },
     _pageSize:   { state: true },
     _total:      { state: true },
@@ -27,6 +28,7 @@ export class InvoiceTable extends LightElement {
     this._invoices = []
     this._loading = false
     this._sending = new Set()
+    this._showSent = false
     this.daysOlder = 7
     this.sosource = 1351
     this.fprms = 712
@@ -48,6 +50,7 @@ export class InvoiceTable extends LightElement {
         sosource: this.sosource, fprms: this.fprms,
         series: this.series, daysOlder: this.daysOlder,
         page: this._page, pageSize: this._pageSize,
+        includeSent: this._showSent,
       })
       if (res?.success) {
         const invoices = (res.data || []).map(r => ({
@@ -236,6 +239,12 @@ export class InvoiceTable extends LightElement {
     await this.loadInvoices()
   }
 
+  async _toggleShowSent(e) {
+    this._showSent = e.target.checked
+    this._page = 1
+    await this.loadInvoices()
+  }
+
   _toggleAperak(e) {
     const body = e.currentTarget.nextElementSibling
     body.classList.toggle('open')
@@ -284,6 +293,9 @@ export class InvoiceTable extends LightElement {
   }
 
   render() {
+    const showSentLabel = 'Arată trimise'
+    const showSentId = `show-sent-invoices-switch-${this.trdr || 'default'}`
+
     return html`
       <div class="toolbar">
         <button class="btn btn-info btn-sm ${this._loading ? 'btn-loading' : ''}"
@@ -304,6 +316,18 @@ export class InvoiceTable extends LightElement {
             Trimite toate (${this._unsentCount})
           </button>
         ` : ''}
+        <div class="form-check form-switch form-check-reverse ms-auto mb-0">
+          <input
+            id="${showSentId}"
+            class="form-check-input"
+            type="checkbox"
+            role="switch"
+            .checked=${this._showSent}
+            aria-checked=${this._showSent ? 'true' : 'false'}
+            @change=${this._toggleShowSent}
+          />
+          <label class="form-check-label small" for="${showSentId}">${showSentLabel}</label>
+        </div>
       </div>
 
       <batch-progress></batch-progress>
@@ -349,11 +373,13 @@ export class InvoiceTable extends LightElement {
                         <button class="btn btn-sm btn-primary"
                                 @click=${() => this._saveXml(inv)}>Save XML</button>
                       ` : ''}
-                      <button class="btn btn-sm btn-success"
-                              ?disabled=${inv._sending}
-                              @click=${() => this._sendInvoice(inv, i)}>
-                        ${inv._sending ? 'Sending...' : 'Send'}
-                      </button>
+                      ${!inv.sent ? html`
+                        <button class="btn btn-sm btn-success"
+                                ?disabled=${inv._sending}
+                                @click=${() => this._sendInvoice(inv, i)}>
+                          ${inv._sending ? 'Sending...' : 'Send'}
+                        </button>
+                      ` : ''}
                       ${inv.sent ? html`
                         <button class="btn btn-sm btn-warning"
                                 @click=${() => this._sendInvoice(inv, i, true)}>Resend</button>

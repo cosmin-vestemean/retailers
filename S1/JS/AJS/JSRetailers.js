@@ -190,6 +190,7 @@ function getInvoicesData(params) {
   var daysOlder = parseInt(params.daysOlder) || 7;
   var page = parseInt(params.page) || 1;
   var pageSize = parseInt(params.pageSize) || 25;
+  var includeSent = params.includeSent === true || params.includeSent === 'true' || params.includeSent === 1 || params.includeSent === '1';
   if (pageSize > 100) pageSize = 100;
   var offset = (page - 1) * pageSize;
 
@@ -197,6 +198,7 @@ function getInvoicesData(params) {
     return { success: false, error: 'Invalid retailer ID (trdr) provided.' };
   }
 
+  var positiveAperakFilter = "NOT EXISTS (SELECT 1 FROM CCCAPERAK a WHERE a.FINDOC = f.FINDOC AND UPPER(ISNULL(a.DOCUMENTRESPONSE, '')) IN ('RECEPTIONAT', 'ACCEPTAT'))";
   var fromClause = 'FROM findoc f INNER JOIN mtrdoc m ON f.findoc = m.findoc '
     + 'WHERE f.sosource = ' + sosource
     + ' AND f.fprms = ' + fprms
@@ -204,6 +206,10 @@ function getInvoicesData(params) {
     + ' AND f.trdr = ' + trdr
     + ' AND f.iscancel = 0'
     + ' AND f.trndate >= DATEADD(day, -' + daysOlder + ', GETDATE())';
+
+  if (!includeSent) {
+    fromClause += ' AND m.CCCXMLSendDate IS NULL AND ' + positiveAperakFilter;
+  }
 
   var total = 0;
   try {
