@@ -29,6 +29,11 @@ export async function retryDoObject(app, key) {
   if (doctype !== 'ORDERS') {
     return { key, skipped: true, processed: false, error: `Unsupported retry doctype ${doctype}` }
   }
+  const filename = meta.filename || filenameFromKey(key)
+  const retailer = parseInt(meta.retailer) || 0
+  if (!retailer) {
+    return { key, skipped: true, processed: false, error: `Cannot retry ${filename}: missing resolved retailer` }
+  }
 
   await ensureSftpXmlRow(app, {
     xml: object.body,

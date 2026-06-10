@@ -168,11 +168,12 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
       } catch (e) {
         console.error(`[edi-scanner] parse/insert failed for ${file.name}: ${e.message}`)
         stats.failed += 1
-        stats.errors.push({ retailer: sftpRow.TRDR_RETAILER, scope: 'db-insert', file: file.name, message: e.message })
+        const errorRetailer = e.routingError ? 0 : sftpRow.TRDR_RETAILER
+        stats.errors.push({ retailer: errorRetailer, scope: 'db-insert', file: file.name, message: e.message })
         const retry = await saveRetryXml(app, {
           xml,
           fileName: file.name,
-          sftpRow,
+          sftpRow: e.routingError ? { ...sftpRow, TRDR_RETAILER: 0 } : sftpRow,
           provider,
           docType,
           stage: 'db-insert',
@@ -207,17 +208,21 @@ async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftp
   let parsed
   try {
     parsed = await provider.parseOrder(xml)
-  } catch {
-    return sftpRow
+  } catch (error) {
+    throw routingError(`DocProcess routing error: XML parse failed (${error.message})`)
   }
   const gln = String(parsed.shipToGln || parsed.buyerGln || '').trim()
-  if (!/^\d{8,14}$/.test(gln)) return sftpRow
+  if (!/^\d{8,14}$/.test(gln)) {
+    throw routingError(`DocProcess routing error: missing or invalid GLN (${gln || 'empty'})`)
+  }
 
   const candidates = (sftpRows || [])
     .filter((row) => String(row.PROVIDER_CODE || '').toLowerCase() === provider.code)
     .map((row) => parseInt(row.TRDR_RETAILER, 10))
     .filter((trdr) => trdr > 0)
-  if (candidates.length === 0) return sftpRow
+  if (candidates.length === 0) {
+    throw routingError(`DocProcess routing error: no active DocProcess retailers for GLN ${gln}`)
+  }
 
   try {
     const sql = 'SELECT TOP 1 CAST(TRDR AS VARCHAR(20)) FROM TRDBRANCH '
@@ -225,11 +230,21 @@ async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftp
       + 'ORDER BY TRDR'
     const result = await app.service('getDataset').find({ query: { sqlQuery: sql } })
     const resolved = parseInt(result?.data, 10)
-    if (!resolved || resolved === parseInt(sftpRow.TRDR_RETAILER, 10)) return sftpRow
+    if (!resolved) {
+      throw routingError(`DocProcess routing error: no active retailer match for GLN ${gln}`)
+    }
+    if (resolved === parseInt(sftpRow.TRDR_RETAILER, 10)) return sftpRow
     return (sftpRows || []).find((row) => parseInt(row.TRDR_RETAILER, 10) === resolved) || { ...sftpRow, TRDR_RETAILER: resolved }
-  } catch {
-    return sftpRow
+  } catch (error) {
+    if (error.routingError) throw error
+    throw routingError(`DocProcess routing error: GLN lookup failed for ${gln} (${error.message})`)
   }
+}
+
+function routingError(message) {
+  const error = new Error(message)
+  error.routingError = true
+  return error
 }
 
 async function backupXml(app, { xml, fileName, sftpRow, provider, docType, stage, sourcePath }) {

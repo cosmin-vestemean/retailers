@@ -114,7 +114,9 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
       // password used by our patched transport
       PASSWORD: 'testpass'
     }
-    const app = buildMockApp(testRow, store)
+    const app = buildMockApp(testRow, store, {
+      resolveGlnToRetailer: { '0000000000030': '99888' }
+    })
 
     const stats = await scanAll(app)
 
@@ -157,5 +159,37 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
     assert.strictEqual(stats.inserted, 1)
     assert.strictEqual(store[0].TRDR_RETAILER, 12349)
     assert.strictEqual(store[0].XMLFILENAME, 'ORDERS_TEST_DX01_900000001.xml')
+  })
+
+  it('fails closed when a shared DocProcess XML GLN does not match an active retailer', async () => {
+    const store = []
+    const baseRow = {
+      TRDR_CLIENT: 1,
+      URL: '127.0.0.1',
+      PORT: TEST_PORT,
+      USERNAME: 'testuser',
+      INITIALDIRIN: '/out',
+      INITIALDIROUT: '/in',
+      PROVIDER_CODE: 'docprocess',
+      PROVIDER_NAME: 'DocProcess',
+      PROVIDER_CONNTYPE: 1,
+      PASSWORD: 'testpass'
+    }
+    const app = buildMockApp([
+      { ...baseRow, CCCSFTP: 11322, TRDR_RETAILER: 11322, RETAILER_NAME: 'Carrefour' },
+      { ...baseRow, CCCSFTP: 12349, TRDR_RETAILER: 12349, RETAILER_NAME: 'Kaufland' }
+    ], store, {
+      resolveGlnToRetailer: {}
+    })
+
+    const stats = await scanAll(app)
+
+    assert.strictEqual(stats.inserted, 0)
+    assert.strictEqual(stats.failed, 2)
+    assert.strictEqual(store.length, 0)
+    assert.strictEqual(stats.errors.length, 2)
+    for (const error of stats.errors) {
+      assert.match(error.message, /DocProcess routing error: no active retailer match for GLN 0000000000030/)
+    }
   })
 })

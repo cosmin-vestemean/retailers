@@ -84,4 +84,37 @@ describe('DigitalOcean XML retry storage', () => {
     assert.strictEqual(createdRows[0].XMLSTATUS, 'NEW')
     assert.deepStrictEqual(deletedKeys, ['retry/db-insert/docprocess/12649/ORDERS/2026-06-09/DO_ORDER.xml'])
   })
+
+  it('skips retry XMLs that have no resolved retailer', async () => {
+    const app = feathers()
+    let deleted = false
+
+    app.use('do-storage', {
+      async get({ key }) {
+        return {
+          key,
+          body: '<Order><ID>DO-UNROUTED</ID></Order>',
+          metadata: {
+            filename: 'DO_UNROUTED.xml',
+            retailer: '0',
+            trdrclient: '1',
+            doctype: 'ORDERS'
+          }
+        }
+      },
+      async deleteSuccess() {
+        deleted = true
+      }
+    }, { methods: ['get', 'deleteSuccess'] })
+
+    const result = await retryDoObject(app, 'retry/db-insert/docprocess/0/ORDERS/2026-06-09/DO_UNROUTED.xml')
+
+    assert.deepStrictEqual(result, {
+      key: 'retry/db-insert/docprocess/0/ORDERS/2026-06-09/DO_UNROUTED.xml',
+      skipped: true,
+      processed: false,
+      error: 'Cannot retry DO_UNROUTED.xml: missing resolved retailer'
+    })
+    assert.strictEqual(deleted, false)
+  })
 })
