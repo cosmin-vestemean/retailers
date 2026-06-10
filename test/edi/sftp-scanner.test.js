@@ -161,7 +161,7 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
     assert.strictEqual(store[0].XMLFILENAME, 'ORDERS_TEST_DX01_900000001.xml')
   })
 
-  it('fails closed when a shared DocProcess XML GLN does not match an active retailer', async () => {
+  it('stores unresolved shared DocProcess XMLs as routing errors without guessing retailer', async () => {
     const store = []
     const baseRow = {
       TRDR_CLIENT: 1,
@@ -184,12 +184,24 @@ describe('EDI scanner against local SFTP (DocProcess)', function () {
 
     const stats = await scanAll(app)
 
-    assert.strictEqual(stats.inserted, 0)
-    assert.strictEqual(stats.failed, 2)
-    assert.strictEqual(store.length, 0)
-    assert.strictEqual(stats.errors.length, 2)
-    for (const error of stats.errors) {
-      assert.match(error.message, /DocProcess routing error: no active retailer match for GLN 0000000000030/)
-    }
+    assert.strictEqual(stats.inserted, 1)
+    assert.strictEqual(stats.failed, 1)
+    assert.strictEqual(stats.duplicates, 1)
+    assert.strictEqual(store.length, 1)
+    assert.strictEqual(stats.errors.length, 1)
+    assert.match(stats.errors[0].message, /DocProcess routing error: no active retailer match for GLN 0000000000030/)
+
+    const row = store[0]
+    assert.strictEqual(row.TRDR_RETAILER, 0)
+    assert.strictEqual(row.XMLSTATUS, 'ERROR')
+    assert.match(row.XMLERROR, /DocProcess routing error: no active retailer match for GLN 0000000000030/)
+    const jsonData = JSON.parse(row.JSONDATA)
+    assert.strictEqual(jsonData.routing.reason, 'no_active_retailer_match')
+    assert.strictEqual(jsonData.routing.routingGln, '0000000000030')
+    assert.strictEqual(jsonData.routing.orderId, 'TEST-DX-ORDER-0001')
+    assert.strictEqual(jsonData.routing.buyer.name, 'TEST DX BUYER')
+    assert.strictEqual(jsonData.routing.delivery.name, 'TEST DX DELIVERY POINT')
+    assert.strictEqual(jsonData.routing.delivery.city, '')
+    assert.strictEqual(jsonData.routing.itemsPreview[0].buyerItemId, 'TEST-DX-001')
   })
 })

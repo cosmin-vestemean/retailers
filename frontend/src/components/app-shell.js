@@ -1,7 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import { Router } from '@vaadin/router'
-import { UI_ROUTES, dashboardUrl, logsUrl, doStorageUrl } from '@/routing/ui-routes.js'
+import { UI_ROUTES, dashboardUrl, logsUrl, doStorageUrl, routingErrorsUrl } from '@/routing/ui-routes.js'
 import {
   applyTheme,
   getActiveThemeId,
@@ -16,6 +16,7 @@ import '@/pages/retailer-detail.js'
 import '@/pages/retailer-config.js'
 import '@/pages/logs-page.js'
 import '@/pages/do-storage-page.js'
+import '@/pages/routing-errors-page.js'
 import { loginWithHubSso, logout, me } from '@/services/api.js'
 
 export class AppShell extends LightElement {
@@ -126,6 +127,7 @@ export class AppShell extends LightElement {
       },
       { path: UI_ROUTES.logs, component: 'logs-page' },
       { path: UI_ROUTES.doStorage, component: 'do-storage-page' },
+      { path: UI_ROUTES.routingErrors, component: 'routing-errors-page' },
       { path: '(.*)', redirect: UI_ROUTES.fallback },
     ])
   }
@@ -175,6 +177,7 @@ export class AppShell extends LightElement {
                 <div class="navbar-nav flex-row ms-auto gap-2">
                   <a class="nav-link px-2" href="${dashboardUrl()}">Dashboard</a>
                   <a class="nav-link px-2" href="${logsUrl()}">Logs</a>
+                  <a class="nav-link px-2" href="${routingErrorsUrl()}">Erori rutare</a>
                   <a class="nav-link px-2" href="${doStorageUrl()}">DO</a>
                 </div>
               `

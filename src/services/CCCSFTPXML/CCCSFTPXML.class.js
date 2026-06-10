@@ -1,5 +1,7 @@
 import fetch from 'node-fetch'
 import { buildS1Url } from '../../s1-base-url.js'
+import { getProvider } from '../../edi/providers/factory.js'
+import { resolveInsertSftpRow } from '../../edi/scanner.js'
 
 /**
  * Read a fetch Response and parse it as the S1 JSON contract.
@@ -27,8 +29,10 @@ export class CccsftpxmlService {
     const query = params.query || {}
     const url = buildS1Url('/JS/JSRetailers/getSftpXml', { app: this.options.app })
     const body = {
+      id: query.id,
       TRDR_RETAILER: query.TRDR_RETAILER,
       XMLFILENAME: query.XMLFILENAME,
+      ROUTING_ERRORS: query.ROUTING_ERRORS,
       $limit: query.$limit,
       $sortDir: query.$sort?.XMLDATE === -1 ? 'DESC' : query.$sort?.XMLDATE === 1 ? 'ASC' : undefined
     }
@@ -64,8 +68,10 @@ export class CccsftpxmlService {
     const body = {
       id: id,
       FINDOC: data.FINDOC,
+      SET_TRDR_RETAILER: data.SET_TRDR_RETAILER,
       XMLSTATUS: data.XMLSTATUS,
       XMLERROR: data.XMLERROR,
+      JSONDATA: data.JSONDATA,
       XMLFILENAME: query.XMLFILENAME,
       TRDR_RETAILER: query.TRDR_RETAILER
     }
@@ -117,6 +123,53 @@ export class CccsftpxmlService {
     const result = await parseS1Json(response, 'removeSftpXml')
     if (!result.success) throw new Error(result.error || 'removeSftpXml failed')
     return result
+  }
+
+  async resolveRouting(id) {
+    const rowId = parseInt(id, 10)
+    if (!rowId) throw new Error('Missing CCCSFTPXML id')
+    const current = await this.find({ query: { id: rowId, $limit: 1 } })
+    const row = current.data?.[0]
+    if (!row) throw new Error(`CCCSFTPXML ${rowId} not found`)
+
+    const configs = await this.options.app.service('CCCSFTP').list({ onlyActive: true })
+    const sftpRows = configs.data || []
+    const docProcessRow = sftpRows.find((r) => String(r.PROVIDER_CODE || '').toLowerCase() === 'docprocess')
+    if (!docProcessRow) throw new Error('No active DocProcess configuration found')
+
+    const provider = getProvider({ CODE: 'docprocess', NAME: 'DocProcess' })
+    let resolvedRow
+    try {
+      resolvedRow = await resolveInsertSftpRow(this.options.app, {
+        xml: row.XMLDATA,
+        sftpRow: docProcessRow,
+        provider,
+        docType: 'orders',
+        sftpRows
+      })
+    } catch (error) {
+      if (!error.routingError) throw error
+      const patched = await this.patch(rowId, {
+        XMLSTATUS: 'ERROR',
+        XMLERROR: (error.message || '').slice(0, 4000),
+        JSONDATA: JSON.stringify({ routing: error.routingContext || {} })
+      })
+      return { success: false, error: error.message, data: patched }
+    }
+    const parsed = await provider.parseOrder(row.XMLDATA)
+    const routingContext = {
+      ...(parsed.routingContext || {}),
+      reason: 'resolved',
+      resolvedRetailer: parseInt(resolvedRow.TRDR_RETAILER, 10)
+    }
+
+    const patched = await this.patch(rowId, {
+      SET_TRDR_RETAILER: parseInt(resolvedRow.TRDR_RETAILER, 10),
+      XMLSTATUS: 'NEW',
+      XMLERROR: '',
+      JSONDATA: JSON.stringify({ routing: routingContext })
+    })
+    return { success: true, resolvedRetailer: parseInt(resolvedRow.TRDR_RETAILER, 10), data: patched }
   }
 }
 

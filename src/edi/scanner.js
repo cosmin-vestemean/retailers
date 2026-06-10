@@ -170,10 +170,16 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
         stats.failed += 1
         const errorRetailer = e.routingError ? 0 : sftpRow.TRDR_RETAILER
         stats.errors.push({ retailer: errorRetailer, scope: 'db-insert', file: file.name, message: e.message })
+        if (e.routingError) {
+          await insertRoutingErrorRow(app, { xml, file, sftpRow, provider, docType, error: e })
+          stats.inserted += 1
+          if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
+          continue
+        }
         const retry = await saveRetryXml(app, {
           xml,
           fileName: file.name,
-          sftpRow: e.routingError ? { ...sftpRow, TRDR_RETAILER: 0 } : sftpRow,
+          sftpRow,
           provider,
           docType,
           stage: 'db-insert',
@@ -188,32 +194,46 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
   return stats
 }
 
-async function insertXmlRow(app, { xml, file, sftpRow, provider, docType }) {
+async function insertRoutingErrorRow(app, { xml, file, sftpRow, provider, docType, error }) {
+  await insertXmlRow(app, {
+    xml,
+    file,
+    sftpRow: { ...sftpRow, TRDR_RETAILER: 0 },
+    provider,
+    docType,
+    status: 'ERROR',
+    error: error.message,
+    jsonData: JSON.stringify({ routing: error.routingContext || {} })
+  })
+}
+
+async function insertXmlRow(app, { xml, file, sftpRow, provider, docType, status = 'NEW', error = '', jsonData = '' }) {
   const ediDocType = docType.toUpperCase() // ORDERS | RETANN | APERAK
   await app.service('CCCSFTPXML').create({
     TRDR_CLIENT: sftpRow.TRDR_CLIENT || 1,
     TRDR_RETAILER: sftpRow.TRDR_RETAILER,
     XMLDATA: xml,
-    JSONDATA: '',
+    JSONDATA: jsonData,
     XMLDATE: formatSqlDate(file.modifyTime || new Date()),
-    XMLSTATUS: 'NEW',
-    XMLERROR: '',
+    XMLSTATUS: status,
+    XMLERROR: error.slice(0, 4000),
     XMLFILENAME: file.name,
     EDIDOCTYPE: ediDocType
   })
 }
 
-async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows }) {
+export async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows }) {
   if (provider.code !== 'docprocess' || docType !== 'orders') return sftpRow
   let parsed
   try {
     parsed = await provider.parseOrder(xml)
   } catch (error) {
-    throw routingError(`DocProcess routing error: XML parse failed (${error.message})`)
+    throw routingError(`DocProcess routing error: XML parse failed (${error.message})`, { reason: 'xml_parse_failed' })
   }
+  const baseContext = parsed.routingContext || {}
   const gln = String(parsed.shipToGln || parsed.buyerGln || '').trim()
   if (!/^\d{8,14}$/.test(gln)) {
-    throw routingError(`DocProcess routing error: missing or invalid GLN (${gln || 'empty'})`)
+    throw routingError(`DocProcess routing error: missing or invalid GLN (${gln || 'empty'})`, { ...baseContext, reason: 'missing_or_invalid_gln' })
   }
 
   const candidates = (sftpRows || [])
@@ -221,7 +241,7 @@ async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftp
     .map((row) => parseInt(row.TRDR_RETAILER, 10))
     .filter((trdr) => trdr > 0)
   if (candidates.length === 0) {
-    throw routingError(`DocProcess routing error: no active DocProcess retailers for GLN ${gln}`)
+    throw routingError(`DocProcess routing error: no active DocProcess retailers for GLN ${gln}`, { ...baseContext, reason: 'no_active_docprocess_retailers', routingGln: gln })
   }
 
   try {
@@ -231,19 +251,20 @@ async function resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftp
     const result = await app.service('getDataset').find({ query: { sqlQuery: sql } })
     const resolved = parseInt(result?.data, 10)
     if (!resolved) {
-      throw routingError(`DocProcess routing error: no active retailer match for GLN ${gln}`)
+      throw routingError(`DocProcess routing error: no active retailer match for GLN ${gln}`, { ...baseContext, reason: 'no_active_retailer_match', routingGln: gln })
     }
     if (resolved === parseInt(sftpRow.TRDR_RETAILER, 10)) return sftpRow
     return (sftpRows || []).find((row) => parseInt(row.TRDR_RETAILER, 10) === resolved) || { ...sftpRow, TRDR_RETAILER: resolved }
   } catch (error) {
     if (error.routingError) throw error
-    throw routingError(`DocProcess routing error: GLN lookup failed for ${gln} (${error.message})`)
+    throw routingError(`DocProcess routing error: GLN lookup failed for ${gln} (${error.message})`, { ...baseContext, reason: 'gln_lookup_failed', routingGln: gln })
   }
 }
 
-function routingError(message) {
+function routingError(message, routingContext = {}) {
   const error = new Error(message)
   error.routingError = true
+  error.routingContext = routingContext
   return error
 }
 

@@ -749,14 +749,18 @@ function runMappingSql(params) {
 }
 
 function getSftpXml(params) {
+  var id = parseInt(params.id) || 0;
   var trdr = parseInt(params.TRDR_RETAILER) || 0;
   var filename = (params.XMLFILENAME || '').toString();
+  var routingErrors = params.ROUTING_ERRORS === true || params.ROUTING_ERRORS === 'true' || params.ROUTING_ERRORS === 1;
   var limit = parseInt(params.$limit) || 50;
   var sortDir = (params.$sortDir || 'DESC').toString().toUpperCase();
   if (sortDir !== 'ASC') sortDir = 'DESC';
 
   // trdr is a safe integer; filename is user string with a single :1 occurrence
   var where = 'WHERE 1=1';
+  if (id) where += ' AND CCCSFTPXML = ' + id;
+  if (routingErrors) where += " AND TRDR_RETAILER = 0 AND XMLSTATUS = 'ERROR' AND EDIDOCTYPE = 'ORDERS' AND XMLERROR LIKE 'DocProcess routing error:%'";
   if (trdr) where += ' AND TRDR_RETAILER = ' + trdr;
   if (filename) where += ' AND CAST(XMLFILENAME AS VARCHAR(MAX)) = CAST(:1 AS VARCHAR(MAX))';
 
@@ -819,13 +823,19 @@ function patchSftpXml(params) {
   if (params.FINDOC !== undefined && params.FINDOC !== null && !isNaN(parseInt(params.FINDOC))) {
     sets.push('FINDOC = ' + parseInt(params.FINDOC));
   }
+  if (params.SET_TRDR_RETAILER !== undefined && params.SET_TRDR_RETAILER !== null && !isNaN(parseInt(params.SET_TRDR_RETAILER))) {
+    sets.push('TRDR_RETAILER = ' + parseInt(params.SET_TRDR_RETAILER));
+  }
   if (params.XMLSTATUS) {
     sets.push("XMLSTATUS = '" + (params.XMLSTATUS + '').replace(/'/g, "''") + "'");
   }
   if (params.XMLERROR !== undefined) {
     sets.push("XMLERROR = '" + (params.XMLERROR + '').replace(/'/g, "''") + "'");
   }
-  if (sets.length === 0) return { success: false, error: 'No fields to patch (FINDOC, XMLSTATUS, XMLERROR)' };
+  if (params.JSONDATA !== undefined) {
+    sets.push("JSONDATA = '" + (params.JSONDATA + '').replace(/'/g, "''") + "'");
+  }
+  if (sets.length === 0) return { success: false, error: 'No fields to patch (FINDOC, TRDR_RETAILER, XMLSTATUS, XMLERROR, JSONDATA)' };
   if (!filename && !id) return { success: false, error: 'Missing XMLFILENAME or id' };
 
   var updateWhere = 'WHERE 1=1';

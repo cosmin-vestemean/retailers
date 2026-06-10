@@ -40,7 +40,7 @@ const SERVICES = {
   CCCDOCUMENTES1MAPPINGS: {},
   CCCXMLS1MAPPINGS: {},
   CCCRETAILERSCLIENTS: {},
-  CCCSFTPXML: {},
+  CCCSFTPXML: { methods: ['find', 'get', 'create', 'update', 'patch', 'remove', 'claim', 'pending', 'resolveRouting'] },
   CCCAPERAK: {},
   // S1 integration
   connectToS1: {},
@@ -171,6 +171,22 @@ export async function downloadAndStoreOrders(trdr) {
 /** Build and send one stored order entirely on the backend. */
 export async function sendStoredOrder(data) {
   return client.service('sftp').sendStoredOrder(data)
+}
+
+/** Fetch unresolved DocProcess routing errors from CCCSFTPXML. */
+export async function getRoutingErrors({ limit = 100 } = {}) {
+  return client.service('CCCSFTPXML').find({
+    query: { ROUTING_ERRORS: true, $limit: limit, $sort: { XMLDATE: -1 } }
+  })
+}
+
+/** Re-run DocProcess GLN routing for a stored unresolved XML. */
+export async function resolveRoutingError(id) {
+  return client.service('CCCSFTPXML').resolveRouting(id)
+}
+
+export async function removeRoutingError(id) {
+  return client.service('CCCSFTPXML').remove(id)
 }
 
 /** Send an order to S1 (setDocument wrapper). */
