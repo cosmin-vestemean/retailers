@@ -212,6 +212,30 @@ export class InvoiceTable extends LightElement {
     }
   }
 
+  async _markAllAsSent() {
+    if (!confirm(`Marchezi toate facturile neprocesate ca trimise? (${this._unsentCount} facturi)`)) return
+    let all = []
+    try {
+      all = await this._loadAllUnsentInvoices()
+    } catch (e) {
+      this._toast('Eroare la încărcare: ' + e.message, 'is-danger')
+      return
+    }
+    if (!all.length) return
+    const bp = this.querySelector('batch-progress')
+    bp.start(all.length)
+    let ok = 0
+    for (const inv of all) {
+      bp.advance(`Marchare ${inv.fincode}...`)
+      try {
+        const res = await markDocumentSent(inv.findoc, 'Already sent by other means')
+        if (res?.success) ok++
+      } catch { /* continue */ }
+    }
+    bp.finish(`${ok} din ${all.length} facturi marcate ca trimise`)
+    await this.loadInvoices()
+  }
+
   async _sendAllUnsent() {
     let unsent = []
     try {
@@ -350,6 +374,9 @@ export class InvoiceTable extends LightElement {
         ${this._unsentCount > 0 ? html`
           <button class="btn btn-success btn-sm" @click=${this._sendAllUnsent}>
             Trimite toate (${this._unsentCount})
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" @click=${this._markAllAsSent}>
+            ✓ Marchează toate ca trimise
           </button>
         ` : ''}
         <div class="form-check form-switch form-check-reverse ms-auto mb-0">
