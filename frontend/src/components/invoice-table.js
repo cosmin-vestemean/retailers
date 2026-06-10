@@ -55,9 +55,9 @@ export class InvoiceTable extends LightElement {
           trndate: r.trndate || '',
           fincode: r.fincode,
           sumamnt: r.sumamnt,
-          sent: !!r.CCCXMLSendDate,
-          sentDate: r.CCCXMLSendDate || null,
-          xmlFile: r.CCCXMLFile || null,
+          sent: !!this._field(r, 'CCCXMLSendDate'),
+          sentDate: this._field(r, 'CCCXMLSendDate') || null,
+          xmlFile: this._field(r, 'CCCXMLFile') || null,
           postfix: '',
           xmlData: null,
           aperak: null,
@@ -74,7 +74,14 @@ export class InvoiceTable extends LightElement {
           )
         )
         aperakResults.forEach((ar, i) => {
-          if (ar.total > 0) invoices[i].aperak = ar.data[0]
+          if (ar.total > 0) {
+            const positiveAperak = (ar.data || []).find((aperak) => this._isPositiveAperak(aperak))
+            invoices[i].aperak = positiveAperak || ar.data[0]
+            if (positiveAperak) {
+              invoices[i].sent = true
+              invoices[i].sentViaAperak = true
+            }
+          }
         })
         this._invoices = invoices
         this._total = res.total || 0
@@ -240,6 +247,15 @@ export class InvoiceTable extends LightElement {
     }))
   }
 
+  _isPositiveAperak(aperak) {
+    const response = (aperak?.DOCUMENTRESPONSE || '').toLowerCase()
+    return response === 'acceptat' || response === 'receptionat'
+  }
+
+  _field(row, name) {
+    return row?.[name] ?? row?.[name.toUpperCase()] ?? row?.[name.toLowerCase()]
+  }
+
   get _unsentCount() {
     return this._invoices.filter(i => !i.sent).length
   }
@@ -347,8 +363,8 @@ export class InvoiceTable extends LightElement {
                   </td>
                   <td>
                     ${inv.sent ? html`
-                      <span class="badge badge-sent">Sent</span>
-                      <div class="invoice-sent-meta">${inv.sentDate}</div>
+                      <span class="badge badge-sent">${inv.sentViaAperak ? inv.aperak?.DOCUMENTRESPONSE : 'Sent'}</span>
+                      <div class="invoice-sent-meta">${inv.sentViaAperak ? 'APERAK confirmat' : inv.sentDate}</div>
                     ` : html`
                       <label class="invoice-mark-sent-label">
                         <input type="checkbox" @change=${(e) => {

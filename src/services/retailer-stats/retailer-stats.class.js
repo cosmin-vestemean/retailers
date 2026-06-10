@@ -30,8 +30,10 @@ export class RetailerStatsService {
     }
 
     const ordersSql = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0 AND XMLDATE > DATEADD(day, -${daysOlder}, GETDATE()) AND ISNULL(EDIDOCTYPE, 'ORDERS') = 'ORDERS' AND CAST(XMLFILENAME AS VARCHAR(MAX)) NOT LIKE 'APERAK[_]%'`
-    const invoicesCountSql = `SELECT COUNT(*) nrFacturiDeTrimis FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${trdr} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -${daysOlder}, GETDATE())`
-    const invoicesListSql = `SELECT fincode, FORMAT(trndate, 'dd.MM.yyyy') trndate FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${trdr} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -${daysOlder}, GETDATE())`
+    const positiveAperakFilter = `NOT EXISTS (SELECT 1 FROM CCCAPERAK a WHERE a.FINDOC = f.FINDOC AND UPPER(ISNULL(a.DOCUMENTRESPONSE, '')) IN ('RECEPTIONAT', 'ACCEPTAT'))`
+    const invoicesWhere = `WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${trdr} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -${daysOlder}, GETDATE()) AND ${positiveAperakFilter}`
+    const invoicesCountSql = `SELECT COUNT(*) nrFacturiDeTrimis FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) ${invoicesWhere}`
+    const invoicesListSql = `SELECT fincode, FORMAT(trndate, 'dd.MM.yyyy') trndate FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) ${invoicesWhere}`
 
     const [ordersRes, invoicesCountRes, invoicesListRes] = await Promise.all([
       this.app.service('getDataset').find({ query: { sqlQuery: ordersSql } }),
