@@ -29,7 +29,7 @@ export class InvoiceTable extends LightElement {
     this._loading = false
     this._sending = new Set()
     this._showSent = false
-    this.daysOlder = 7
+    this.daysOlder = 30
     this.sosource = 1351
     this.fprms = 712
     this.series = 7121

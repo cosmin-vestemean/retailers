@@ -329,7 +329,7 @@ export async function getOrdersPaged(trdr, { page = 1, pageSize = 25, daysOlder 
 }
 
 /** Fetch invoices (paginated) via AJS endpoint. */
-export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlder = 7, sosource = 1351, fprms = 712, series = 7121, includeSent = false } = {}) {
+export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30, sosource = 1351, fprms = 712, series = 7121, includeSent = false } = {}) {
   return client.service('invoices-data').find({
     query: { trdr, page, pageSize, daysOlder, sosource, fprms, series, includeSent }
   })
