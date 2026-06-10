@@ -2,8 +2,6 @@ import Client from 'ssh2-sftp-client'
 import * as fs from 'fs'
 import { parseString } from 'xml2js'
 import { disabledScanControlResult, isScannerEnabled } from '../../edi/scanner-flags.js'
-import { buildOrderPayload } from '../../edi/order-builder.js'
-import { sendOrderToS1 } from '../../edi/order-sender.js'
 
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
@@ -210,6 +208,9 @@ export class SftpService {
     const processedPath = xmlPath + '/processed'
     const errorPath = xmlPath + '/error'
     const folderPath = xmlPath
+    if (!fs.existsSync(folderPath)) {
+      return [{ success: true, message: 'No APERAK files to store' }]
+    }
     const files = fs.readdirSync(folderPath)
     const returnedData = []
 
@@ -240,6 +241,21 @@ export class SftpService {
         const SupplierReceiverCode = json.DXMessage.SupplierReceiverCode
         const DocumentResponse = json.DXMessage.DocumentResponse
         const DocumentDetail = json.DXMessage.DocumentDetail
+        const existingAperaks = DocumentUID
+          ? await this.app.service('CCCAPERAK').find({ query: { DOCUMENTUID: DocumentUID, $limit: 20 } })
+          : { data: [] }
+        const alreadyStored = (existingAperaks.data || []).some((row) =>
+          String(row.DOCUMENTRESPONSE || '') === String(DocumentResponse || '')
+          && String(row.DOCUMENTDETAIL || '') === String(DocumentDetail || '')
+        )
+        if (alreadyStored) {
+          returnedData.push({ filename: filename, success: true, message: 'APERAK already stored' })
+          if (!fs.existsSync(processedPath)) {
+            fs.mkdirSync(processedPath)
+          }
+          fs.renameSync(localPath, processedPath + '/' + filename)
+          continue
+        }
         let possibleDocumentReference = ''
         try {
           possibleDocumentReference = DocumentDetail.split('Nume fisier: ')[1].split('.xml')[0]
@@ -270,14 +286,20 @@ export class SftpService {
         }
         if (response.success) {
           if (response.total === 0) {
+            dataToCccAperakTable.FINDOC = -1
+            dataToCccAperakTable.TRDR_RETAILER = -1
+            dataToCccAperakTable.XMLFILENAME = filename
+            const result = await this.app.service('CCCAPERAK').create(dataToCccAperakTable)
             returnedData.push({
               filename: filename,
-              success: false,
-              response: response + ' No document found in ERP'
+              success: Boolean(result.CCCAPERAK),
+              response: result,
+              message: 'No document found in ERP'
             })
-            if (!fs.existsSync(errorPath)) {
-              fs.mkdirSync(errorPath)
+            if (!fs.existsSync(processedPath)) {
+              fs.mkdirSync(processedPath)
             }
+            fs.renameSync(localPath, processedPath + '/' + filename)
           } else {
             if (response.total > 1) {
               returnedData.push({
@@ -329,6 +351,9 @@ export class SftpService {
           fs.renameSync(localPath, errorPath + '/' + filename)
         }
       }
+    }
+    if (returnedData.length === 0) {
+      returnedData.push({ success: true, message: 'No APERAK files to store' })
     }
     return returnedData
   }
@@ -387,66 +412,7 @@ export class SftpService {
   }
 
   async sendStoredOrder(data, params) {
-    const retailer = parseInt(data.trdr ?? params?.query?.trdr, 10)
-    const cccsftpxml = parseInt(data.CCCSFTPXML, 10)
-    const xml = data.xmlData
-    const xmlFilename = data.filename
-    const orderId = data.orderId
-    const sosource = 1351
-    const fprms = 701
-    const series = 7012
-
-    if (!Number.isInteger(retailer)) {
-      return { success: false, message: 'Missing retailer' }
-    }
-    if (!xml) {
-      return { success: false, message: 'Missing XML data' }
-    }
-    if (!xmlFilename) {
-      return { success: false, message: 'Missing XML filename' }
-    }
-
-    try {
-      const { jsonOrder, errors, s1BaseUrl } = await buildOrderPayload({
-        xml,
-        sosource,
-        fprms,
-        series,
-        retailer,
-        orderId: orderId || xmlFilename,
-        cccsftpxml,
-        app: this.app
-      })
-
-      if (errors.length > 0) {
-        const message = `Mapping errors (${errors.length}): ${errors.slice(0, 3).map((e) => e.message).join(' | ')}`
-        if (cccsftpxml) {
-          await this.app.service('CCCSFTPXML').patch(cccsftpxml, {
-            XMLSTATUS: 'ERROR',
-            XMLERROR: message.slice(0, 4000)
-          })
-        }
-        return { success: false, errors, message }
-      }
-
-      return sendOrderToS1({
-        app: this.app,
-        jsonOrder,
-        s1BaseUrl,
-        retailer,
-        orderId: orderId || xmlFilename,
-        cccsftpxmlId: cccsftpxml,
-        manual: data.manual === true
-      })
-    } catch (error) {
-      if (cccsftpxml) {
-        await this.app.service('CCCSFTPXML').patch(cccsftpxml, {
-          XMLSTATUS: 'ERROR',
-          XMLERROR: (error.message || '').slice(0, 4000)
-        })
-      }
-      return { success: false, errors: [error.message], message: error.message }
-    }
+    return this.app.service('edi-orders').create(data, params)
   }
 
   async scanNow(data, params) {

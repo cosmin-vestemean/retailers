@@ -25,12 +25,6 @@ client.configure(socketClient)
 
 // Register all backend services once
 const SERVICES = {
-  // SFTP operations
-  sftp: {
-    methods: ['downloadXml', 'storeXmlInDB', 'uploadXml',
-              'storeAperakInErpMessages', 'createOrders', 'sendStoredOrder', 'scanNow'],
-    events: ['uploadResult'],
-  },
   edi: { methods: ['scanNow', 'scanPeriodically', 'stop'] },
   // CRUD services
   retailer: {},
@@ -59,6 +53,9 @@ const SERVICES = {
   'invoices-data': { methods: ['find'] },
   'lookup-findoc': { methods: ['create'] },
   'mark-invoice-sent': { methods: ['create'] },
+  'edi-orders': { methods: ['create'] },
+  'edi-invoices': { methods: ['create'] },
+  'edi-aperaks': { methods: ['create'] },
   'do-storage': { methods: ['status', 'list', 'get', 'retry', 'remove'] },
 }
 
@@ -161,17 +158,12 @@ export async function getOrdersDirect(trdr, limit = 50) {
 
 /** Download remote XMLs and store them in DB. */
 export async function downloadAndStoreOrders(trdr) {
-  await client.service('sftp').downloadXml({}, {
-    query: { retailer: trdr, rootPath: 'data/order', startsWith: 'ORDERS_' },
-  })
-  await client.service('sftp').storeXmlInDB({}, {
-    query: { retailer: trdr, rootPath: 'data/order' },
-  })
+  return client.service('edi').scanNow({}, {})
 }
 
 /** Build and send one stored order entirely on the backend. */
 export async function sendStoredOrder(data) {
-  return client.service('sftp').sendStoredOrder(data)
+  return client.service('edi-orders').create(data)
 }
 
 /** Fetch unresolved DocProcess routing errors from CCCSFTPXML. */
@@ -216,10 +208,7 @@ export async function getInvoiceDom(params) {
 
 /** Upload invoice XML via SFTP. */
 export async function uploadInvoice(findoc, xml, filename, trdr) {
-  return client.service('sftp').uploadXml(
-    { findoc, xml, filename },
-    { query: { retailer: trdr } },
-  )
+  return client.service('edi-invoices').create({ findoc, xml, filename, retailer: trdr })
 }
 
 /** Mark a document as sent in S1 using SQL Server GETDATE(). */
@@ -231,12 +220,7 @@ export async function markDocumentSent(findoc, xmlFilename) {
 
 /** Download and store APERAK responses. */
 export async function downloadAperaks(trdr) {
-  await client.service('sftp').downloadXml({}, {
-    query: { retailer: trdr, rootPath: 'data/aperak', startsWith: 'APERAK_' },
-  })
-  await client.service('sftp').storeAperakInErpMessages({}, {
-    query: { rootPath: 'data/aperak' },
-  })
+  return client.service('edi-aperaks').create({ retailer: trdr })
 }
 
 /** Fetch APERAK records from DB. */

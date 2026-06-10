@@ -32,6 +32,9 @@ import { getInvoiceDom } from './get-invoice-dom/get-invoice-dom.service.js'
 import { retailer } from './retailer/retailer.service.js'
 import { retailerStats } from './retailer-stats/retailer-stats.service.js'
 import { edi } from './edi/edi.service.js'
+import { ediOrders } from './edi-orders/edi-orders.service.js'
+import { ediInvoices } from './edi-invoices/edi-invoices.service.js'
+import { ediAperaks } from './edi-aperaks/edi-aperaks.service.js'
 import { doStorage } from './do-storage/do-storage.service.js'
 
 export const services = (app) => {
@@ -92,6 +95,12 @@ export const services = (app) => {
   app.configure(retailerStats)
 
   app.configure(doStorage)
+
+  app.configure(ediOrders)
+
+  app.configure(ediInvoices)
+
+  app.configure(ediAperaks)
 
   app.configure(edi)
 
