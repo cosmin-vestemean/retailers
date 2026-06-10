@@ -29,7 +29,7 @@ export class RetailerStatsService {
       throw new Error('trdr is required')
     }
 
-    const ordersSql = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0 AND XMLDATE > DATEADD(day, -${daysOlder}, GETDATE())`
+    const ordersSql = `SELECT COUNT(*) nrComenziDeTrimis FROM CCCSFTPXML WHERE TRDR_RETAILER = ${trdr} AND COALESCE(FINDOC, 0) = 0 AND XMLDATE > DATEADD(day, -${daysOlder}, GETDATE()) AND ISNULL(EDIDOCTYPE, 'ORDERS') = 'ORDERS' AND CAST(XMLFILENAME AS VARCHAR(MAX)) NOT LIKE 'APERAK[_]%'`
     const invoicesCountSql = `SELECT COUNT(*) nrFacturiDeTrimis FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${trdr} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -${daysOlder}, GETDATE())`
     const invoicesListSql = `SELECT fincode, FORMAT(trndate, 'dd.MM.yyyy') trndate FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) WHERE f.sosource=1351 AND f.fprms=712 AND f.series=7121 AND f.trdr=${trdr} AND m.CCCXMLSendDate IS NULL AND f.iscancel=0 AND trndate > DATEADD(day, -${daysOlder}, GETDATE())`
 
