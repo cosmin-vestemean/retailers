@@ -19,6 +19,16 @@ function convertDatasetToArray(dataset) {
   return arr
 }
 
+function getDatasetFieldValue(dataset, name) {
+  var upperName = name.toUpperCase()
+  for (var i = 0; i < dataset.fieldcount; i++) {
+    if (dataset.fieldname(i).toUpperCase() === upperName) {
+      return dataset.fields(i)
+    }
+  }
+  return null
+}
+
 function processSqlAsDataset1(obj) {
   var ds
   if (!obj.sqlQuery) return { success: false, error: 'No sql query transmited.' }
@@ -220,7 +230,7 @@ function getInvoicesData(params) {
 
   var sql = 'SELECT f.findoc, f.fincode, '
     + "FORMAT(f.trndate, 'yyyy-MM-dd') AS trndate, "
-    + 'f.sumamnt, m.CCCXMLSendDate, m.CCCXMLFile '
+    + "f.sumamnt, CONVERT(VARCHAR(19), m.CCCXMLSendDate, 120) AS CCCXMLSendDate, m.CCCXMLFile "
     + fromClause
     + ' ORDER BY f.trndate DESC, f.findoc DESC'
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
@@ -230,17 +240,13 @@ function getInvoicesData(params) {
     var rows = [];
     ds.FIRST;
     while (!ds.EOF) {
-      var sentDate = null;
-      if (ds.CCCXMLSendDate) {
-        sentDate = X.FORMATDATE('yyyy-mm-dd HH:MM:SS', ds.CCCXMLSendDate);
-      }
       rows.push({
-        findoc: ds.findoc,
-        fincode: ds.fincode,
-        trndate: ds.trndate,
-        sumamnt: ds.sumamnt,
-        CCCXMLSendDate: sentDate,
-        CCCXMLFile: ds.CCCXMLFile
+        findoc: getDatasetFieldValue(ds, 'findoc'),
+        fincode: getDatasetFieldValue(ds, 'fincode'),
+        trndate: getDatasetFieldValue(ds, 'trndate'),
+        sumamnt: getDatasetFieldValue(ds, 'sumamnt'),
+        CCCXMLSendDate: getDatasetFieldValue(ds, 'CCCXMLSendDate'),
+        CCCXMLFile: getDatasetFieldValue(ds, 'CCCXMLFile')
       });
       ds.NEXT;
     }

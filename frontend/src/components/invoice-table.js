@@ -53,19 +53,7 @@ export class InvoiceTable extends LightElement {
         includeSent: this._showSent,
       })
       if (res?.success) {
-        const invoices = (res.data || []).map(r => ({
-          findoc: r.findoc,
-          trndate: r.trndate || '',
-          fincode: r.fincode,
-          sumamnt: r.sumamnt,
-          sent: !!this._field(r, 'CCCXMLSendDate'),
-          sentDate: this._field(r, 'CCCXMLSendDate') || null,
-          xmlFile: this._field(r, 'CCCXMLFile') || null,
-          postfix: '',
-          xmlData: null,
-          aperak: null,
-          _sending: false,
-        }))
+        const invoices = (res.data || []).map(r => this._toInvoice(r))
         // Fetch aperaks for current page only
         const aperakResults = await Promise.all(
           invoices.map(inv =>
@@ -225,9 +213,16 @@ export class InvoiceTable extends LightElement {
   }
 
   async _sendAllUnsent() {
-    const unsent = this._invoices
-      .map((inv, i) => ({ inv, i }))
-      .filter(({ inv }) => !inv.sent)
+    let unsent = []
+    try {
+      unsent = (await this._loadAllUnsentInvoices()).map((inv, i) => {
+        const visibleIndex = this._invoices.findIndex(item => item.findoc === inv.findoc)
+        return { inv, i: visibleIndex >= 0 ? visibleIndex : -i - 1 }
+      })
+    } catch (e) {
+      this._toast('Load invoices failed: ' + e.message, 'is-danger')
+      return
+    }
 
     if (!unsent.length) return
     const bp = this.querySelector('batch-progress')
@@ -267,8 +262,47 @@ export class InvoiceTable extends LightElement {
     return row?.[name] ?? row?.[name.toUpperCase()] ?? row?.[name.toLowerCase()]
   }
 
+  _toInvoice(r) {
+    return {
+      findoc: r.findoc,
+      trndate: r.trndate || '',
+      fincode: r.fincode,
+      sumamnt: r.sumamnt,
+      sent: !!this._field(r, 'CCCXMLSendDate'),
+      sentDate: this._field(r, 'CCCXMLSendDate') || null,
+      xmlFile: this._field(r, 'CCCXMLFile') || null,
+      postfix: '',
+      xmlData: null,
+      aperak: null,
+      _sending: false,
+    }
+  }
+
+  async _loadAllUnsentInvoices() {
+    const pageSize = 100
+    let page = 1
+    let total = 0
+    const invoices = []
+
+    do {
+      const res = await getInvoicesPaged(this.trdr, {
+        sosource: this.sosource, fprms: this.fprms,
+        series: this.series, daysOlder: this.daysOlder,
+        page, pageSize, includeSent: false,
+      })
+      if (!res?.success) throw new Error(res?.error || 'Unknown error')
+      const rows = res.data || []
+      total = res.total || rows.length
+      invoices.push(...rows.map(r => this._toInvoice(r)))
+      if (!rows.length) break
+      page++
+    } while (invoices.length < total)
+
+    return invoices
+  }
+
   get _unsentCount() {
-    return this._invoices.filter(i => !i.sent).length
+    return this._showSent ? this._invoices.filter(i => !i.sent).length : this._total
   }
 
   _renderAperak(aperak) {
