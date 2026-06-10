@@ -89,15 +89,64 @@ export class XmlMappingTable extends LightElement {
     }
   }
 
+  _normalizeDocRows(rows, docId) {
+    const targetDocId = parseInt(docId, 10) || 0
+    const seen = new Set()
+
+    return (rows || []).filter((row) => {
+      const rowDocId = parseInt(row.CCCDOCUMENTES1MAPPINGS, 10) || 0
+      if (targetDocId && rowDocId && rowDocId !== targetDocId) return false
+
+      const rowId = parseInt(row.CCCXMLS1MAPPINGS, 10) || 0
+      const key = rowId || [
+        row.XMLNODE || '',
+        row.S1TABLE1 || '',
+        row.S1FIELD1 || '',
+        row.S1TABLE2 || '',
+        row.S1FIELD2 || '',
+        row.SQL || '',
+        row.XMLORDER || 0,
+      ].join('||')
+
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }
+
+  _dedupeSelectedRows(rows) {
+    const seen = new Set()
+
+    return (rows || []).filter((row) => {
+      const key = [
+        row.xmlPath || '',
+        row.s1Table1 || '',
+        row.s1Field1 || '',
+        row.s1Table2 || '',
+        row.s1Field2 || '',
+        row.sql || '',
+        row.xmlOrder || 0,
+      ].join('||')
+
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }
+
   async _loadMappings() {
-    if (!this.docId) return
+    const targetDocId = parseInt(this.docId, 10) || 0
+    if (!targetDocId) return
     this._loading = true
     try {
       const res = await getXmlMappings({
-        CCCDOCUMENTES1MAPPINGS: this.docId,
+        CCCDOCUMENTES1MAPPINGS: targetDocId,
         $sort: { XMLORDER: 1 },
       })
-      this._rows = (res.data || []).map(m => ({
+      if ((parseInt(this.docId, 10) || 0) !== targetDocId) return
+
+      const normalizedRows = this._normalizeDocRows(res.data, targetDocId)
+      this._rows = normalizedRows.map(m => ({
         xmlOrder: m.XMLORDER || 0,
         picked: true,
         mandatory: m.MANDATORY === 1,
@@ -177,28 +226,31 @@ export class XmlMappingTable extends LightElement {
     }
     this._saving = true
     try {
+      const retailerId = parseInt(this.trdr, 10) || 0
       // Check if doc already exists (overwrite scenario)
       const existing = await getDocMappings({
+        TRDR_RETAILER: retailerId,
         FPRMS: this.doc.FPRMS,
         SERIES: this.doc.SERIES,
       })
-      let targetDocId = this.docId
-      if (existing.data?.length && existing.data[0].CCCDOCUMENTES1MAPPINGS !== this.docId) {
+      let targetDocId = parseInt(this.docId, 10) || 0
+      const existingDocId = parseInt(existing.data?.[0]?.CCCDOCUMENTES1MAPPINGS, 10) || 0
+      if (existingDocId && existingDocId !== targetDocId) {
         if (!confirm('Mapping with same FPRMS/SERIES exists. Overwrite?')) {
           this._saving = false
           return
         }
-        await removeXmlMappings(existing.data[0].CCCDOCUMENTES1MAPPINGS)
-        await removeDocMapping(existing.data[0].CCCDOCUMENTES1MAPPINGS)
-      } else if (this.docId) {
+        await removeXmlMappings(existingDocId)
+        await removeDocMapping(existingDocId)
+      } else if (targetDocId) {
         // Delete existing child mappings before re-saving
-        await removeXmlMappings(this.docId)
+        await removeXmlMappings(targetDocId)
       }
 
       // If docId doesn't exist yet (new doc), create it
       if (!targetDocId) {
         const newDoc = await createDocMapping({
-          TRDR_RETAILER: parseInt(this.trdr),
+          TRDR_RETAILER: retailerId,
           TRDR_CLIENT: 1,
           SOSOURCE: 1351,
           FPRMS: this.doc.FPRMS,
@@ -206,11 +258,12 @@ export class XmlMappingTable extends LightElement {
           INITIALDIRIN: this.doc.INITIALDIRIN || '',
           INITIALDIROUT: this.doc.INITIALDIROUT || '',
         })
-        targetDocId = newDoc.CCCDOCUMENTES1MAPPINGS
+        targetDocId = parseInt(newDoc.CCCDOCUMENTES1MAPPINGS || newDoc.id, 10) || 0
       }
 
       // Insert all selected rows
-      for (const row of selected) {
+      const uniqueSelected = this._dedupeSelectedRows(selected)
+      for (const row of uniqueSelected) {
         await createXmlMapping({
           CCCDOCUMENTES1MAPPINGS: targetDocId,
           XMLNODE: row.xmlPath,
@@ -224,7 +277,9 @@ export class XmlMappingTable extends LightElement {
           OBSERVATII: row.observatii || null,
         })
       }
-      this._toast(`Saved ${selected.length} mappings`, 'is-success')
+      await this._loadMappings()
+      const skipped = selected.length - uniqueSelected.length
+      this._toast(`Saved ${uniqueSelected.length} mappings${skipped ? `, skipped ${skipped} duplicates` : ''}`, 'is-success')
     } catch (e) {
       this._toast('Save failed: ' + e.message, 'is-danger')
     } finally {
