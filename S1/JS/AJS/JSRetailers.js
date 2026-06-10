@@ -145,7 +145,9 @@ function getOrdersData(params) {
   }
 
   var fromClause = 'FROM CCCSFTPXML c WHERE c.TRDR_RETAILER = ' + trdr
-    + ' AND c.XMLDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())';
+    + ' AND c.XMLDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())'
+    + " AND ISNULL(c.EDIDOCTYPE, 'ORDERS') = 'ORDERS'"
+    + " AND CAST(c.XMLFILENAME AS VARCHAR(MAX)) NOT LIKE 'APERAK[_]%'";
 
   if (!includeSent) {
     fromClause += ' AND ISNULL(c.FINDOC, 0) = 0';

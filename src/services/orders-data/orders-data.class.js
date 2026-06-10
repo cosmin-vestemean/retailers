@@ -15,6 +15,8 @@ export class OrdersDataService {
     })
     const result = await response.json()
     if (!result.success || !Array.isArray(result.data)) return result
+    result.data = result.data.filter((row) => isOrderRow(row))
+    result.total = Math.min(result.total || result.data.length, result.data.length)
     return this.enrichXmlStatus(result)
   }
 
@@ -35,6 +37,12 @@ export class OrdersDataService {
     }))
     return { ...result, data: rows }
   }
+}
+
+function isOrderRow(row) {
+  const docType = String(row.EDIDOCTYPE || 'ORDERS').toUpperCase()
+  const filename = String(row.XMLFILENAME || '').toUpperCase()
+  return docType === 'ORDERS' && !filename.startsWith('APERAK_')
 }
 
 export const getOptions = (app) => ({ app })
