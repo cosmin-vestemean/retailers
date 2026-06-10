@@ -305,7 +305,7 @@ export class InvoiceTable extends LightElement {
         <label class="invoice-days-filter">
           <input type="number" class="form-control form-control-sm invoice-days-input"
                  .value=${String(this.daysOlder)} min="1" max="90"
-                 @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 7; this._page = 1; this.loadInvoices() }} />
+                 @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 30; this._page = 1; this.loadInvoices() }} />
           zile
         </label>
         <button class="btn btn-primary btn-sm" @click=${this._downloadAperaks} ?disabled=${this._loading}>
