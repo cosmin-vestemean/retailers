@@ -153,6 +153,13 @@ export class OrdersTable extends LightElement {
     })
   }
 
+  _sendButtonLabel(order, index) {
+    if (this._sending.has(index)) return 'Sending...'
+    if (order.status === 'manual') return 'Send manual'
+    if (order.status === 'error') return 'Retrimite'
+    return 'Send'
+  }
+
   async _sendAllPending() {
     const pendingIndices = this._orders
       .map((o, i) => ({ o, i }))
@@ -318,11 +325,11 @@ export class OrdersTable extends LightElement {
                     <div class="actions">
                       <button class="btn btn-sm btn-info" @click=${() => this._saveXml(order)}>Save</button>
                       <button class="btn btn-sm btn-primary" @click=${() => this._copyXml(order)}>Copy</button>
-                      ${order.status === 'pending' || order.status === 'manual' ? html`
+                      ${order.status === 'pending' || order.status === 'manual' || order.status === 'error' ? html`
                         <button class="btn btn-sm btn-success"
                                 ?disabled=${this._sending.has(realIndex)}
                                 @click=${() => this._sendOrder(order, realIndex)}>
-                          ${this._sending.has(realIndex) ? 'Sending...' : order.status === 'manual' ? 'Send manual' : 'Send'}
+                          ${this._sendButtonLabel(order, realIndex)}
                         </button>
                         <button class="btn btn-sm btn-danger" @click=${() => this._deleteOrder(order, realIndex)}>Delete</button>
                       ` : ''}
