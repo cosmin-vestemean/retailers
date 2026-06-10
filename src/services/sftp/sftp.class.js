@@ -2,6 +2,8 @@ import Client from 'ssh2-sftp-client'
 import * as fs from 'fs'
 import { parseString } from 'xml2js'
 import { disabledScanControlResult, isScannerEnabled } from '../../edi/scanner-flags.js'
+import { buildOrderPayload } from '../../edi/order-builder.js'
+import { sendOrderToS1 } from '../../edi/order-sender.js'
 
 const invoicePath = 'data/invoice'
 const invoiceXmlPath = invoicePath + '/xml'
@@ -404,33 +406,47 @@ export class SftpService {
       return { success: false, message: 'Missing XML filename' }
     }
 
-    const resOrder = await this.createOrderJSON(
-      xml,
-      sosource,
-      fprms,
-      series,
-      retailer,
-      orderId,
-      cccsftpxml
-    )
+    try {
+      const { jsonOrder, errors, s1BaseUrl } = await buildOrderPayload({
+        xml,
+        sosource,
+        fprms,
+        series,
+        retailer,
+        orderId: orderId || xmlFilename,
+        cccsftpxml,
+        app: this.app
+      })
 
-    if (!resOrder.success) {
-      return {
-        success: false,
-        errors: resOrder.errors,
-        message: resOrder.message || 'Failed to create order payload'
+      if (errors.length > 0) {
+        const message = `Mapping errors (${errors.length}): ${errors.slice(0, 3).map((e) => e.message).join(' | ')}`
+        if (cccsftpxml) {
+          await this.app.service('CCCSFTPXML').patch(cccsftpxml, {
+            XMLSTATUS: 'ERROR',
+            XMLERROR: message.slice(0, 4000)
+          })
+        }
+        return { success: false, errors, message }
       }
+
+      return sendOrderToS1({
+        app: this.app,
+        jsonOrder,
+        s1BaseUrl,
+        retailer,
+        orderId: orderId || xmlFilename,
+        cccsftpxmlId: cccsftpxml,
+        manual: data.manual === true
+      })
+    } catch (error) {
+      if (cccsftpxml) {
+        await this.app.service('CCCSFTPXML').patch(cccsftpxml, {
+          XMLSTATUS: 'ERROR',
+          XMLERROR: (error.message || '').slice(0, 4000)
+        })
+      }
+      return { success: false, errors: [error.message], message: error.message }
     }
-
-    const response = await this.sendOrderToServer(
-      resOrder.jsonOrder,
-      xmlFilename,
-      retailer,
-      orderId,
-      cccsftpxml
-    )
-
-    return response
   }
 
   async scanNow(data, params) {
