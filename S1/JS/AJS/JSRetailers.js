@@ -227,9 +227,26 @@ function getInvoicesData(params) {
 
   try {
     var ds = X.GETSQLDATASET(sql, null);
+    var rows = [];
+    ds.FIRST;
+    while (!ds.EOF) {
+      var sentDate = null;
+      if (ds.CCCXMLSendDate) {
+        sentDate = X.FORMATDATE('yyyy-mm-dd HH:MM:SS', ds.CCCXMLSendDate);
+      }
+      rows.push({
+        findoc: ds.findoc,
+        fincode: ds.fincode,
+        trndate: ds.trndate,
+        sumamnt: ds.sumamnt,
+        CCCXMLSendDate: sentDate,
+        CCCXMLFile: ds.CCCXMLFile
+      });
+      ds.NEXT;
+    }
     return {
       success: true,
-      data: convertDatasetToArray(ds),
+      data: rows,
       total: total,
       page: page,
       pageSize: pageSize
