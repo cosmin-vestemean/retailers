@@ -18,6 +18,7 @@ import { ordersLog } from './orders-log/orders-log.service.js'
 import { ordersData } from './orders-data/orders-data.service.js'
 import { invoicesData } from './invoices-data/invoices-data.service.js'
 import { lookupFindoc } from './lookup-findoc/lookup-findoc.service.js'
+import { markInvoiceSent } from './mark-invoice-sent/mark-invoice-sent.service.js'
 import { sftp } from './sftp/sftp.service.js'
 import { storeXml } from './store-xml/store-xml.service.js'
 import { connectToS1 } from './connect-to-s1/connect-to-s1.service.js'
@@ -63,6 +64,8 @@ export const services = (app) => {
   app.configure(invoicesData)
 
   app.configure(lookupFindoc)
+
+  app.configure(markInvoiceSent)
 
   app.configure(sftp)
 

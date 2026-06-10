@@ -239,6 +239,21 @@ function getInvoicesData(params) {
   }
 }
 
+function markInvoiceSent(params) {
+  var findoc = parseInt(params.findoc) || 0;
+  if (!findoc || findoc <= 0) {
+    return { success: false, error: 'Invalid FINDOC.' };
+  }
+
+  try {
+    X.RUNSQL('UPDATE MTRDOC SET CCCXMLSendDate = GETDATE() WHERE FINDOC = :1', findoc);
+    var sentDate = X.SQL('SELECT CONVERT(VARCHAR(19), CCCXMLSendDate, 120) FROM MTRDOC WHERE FINDOC = :1', findoc);
+    return { success: true, findoc: findoc, CCCXMLSendDate: sentDate };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
+
 function sendEmail(params) {
   var strTO = params.to || ''
   var strCC = params.cc || ''

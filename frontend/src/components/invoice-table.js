@@ -181,12 +181,13 @@ export class InvoiceTable extends LightElement {
       const res = await uploadInvoice(inv.findoc, domObj.dom, filename, this.trdr)
       if (res?.success) {
         // Mark as sent in S1
-        await markDocumentSent(inv.findoc, filename)
+        const markResult = await markDocumentSent(inv.findoc, filename)
+        if (!markResult?.success) throw new Error(markResult?.error || 'Mark sent failed')
         this._invoices = this._invoices.map((item, i) =>
           i === index ? {
             ...item,
             sent: true,
-            sentDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            sentDate: markResult.CCCXMLSendDate || item.sentDate,
             _sending: false,
             _domObj: domObj,
             xmlData: domObj.dom,
@@ -208,12 +209,13 @@ export class InvoiceTable extends LightElement {
 
   async _markAlreadySent(inv, index) {
     try {
-      await markDocumentSent(inv.findoc, 'Already sent by other means')
+      const markResult = await markDocumentSent(inv.findoc, 'Already sent by other means')
+      if (!markResult?.success) throw new Error(markResult?.error || 'Mark sent failed')
       this._invoices = this._invoices.map((item, i) =>
         i === index ? {
           ...item,
           sent: true,
-          sentDate: 'Manual',
+          sentDate: markResult.CCCXMLSendDate || 'Manual',
         } : item
       )
       this._toast('Marked as sent', 'is-success')

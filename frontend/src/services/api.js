@@ -58,6 +58,7 @@ const SERVICES = {
   'orders-data': { methods: ['find'] },
   'invoices-data': { methods: ['find'] },
   'lookup-findoc': { methods: ['create'] },
+  'mark-invoice-sent': { methods: ['create'] },
   'do-storage': { methods: ['status', 'list', 'get', 'retry', 'remove'] },
 }
 
@@ -221,20 +222,9 @@ export async function uploadInvoice(findoc, xml, filename, trdr) {
   )
 }
 
-/** Mark a document as sent in S1 (setData on SALDOC). */
+/** Mark a document as sent in S1 using SQL Server GETDATE(). */
 export async function markDocumentSent(findoc, xmlFilename) {
-  const clientID = await getToken()
-  return client.service('setDocument').create({
-    service: 'setData',
-    clientID,
-    appId: '1001',
-    OBJECT: 'SALDOC',
-    FORM: 'EFIntegrareRetailers',
-    KEY: findoc,
-    DATA: {
-      MTRDOC: [{ CCCXMLSendDate: new Date().toISOString().slice(0, 19).replace('T', ' ') }],
-    },
-  })
+  return client.service('mark-invoice-sent').create({ findoc, xmlFilename })
 }
 
 // --------------- APERAK ---------------
