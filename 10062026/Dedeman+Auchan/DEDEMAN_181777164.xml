@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-06-09T17:17:15">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>4516609102</BuyerOrderNumber>
+    <OrderIssueDate>2026-06-09</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-06-16T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest></DeliveryDateEarliest>
+    <DeliveryDateLatest></DeliveryDateLatest>
+    <PurchasingInfo><![CDATA[]]></PurchasingInfo>
+    <PromotionDealNo><![CDATA[]]></PromotionDealNo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5940475841003</GLN>
+       <Name><![CDATA[DEDEMAN SRL]]></Name>
+       <Street><![CDATA[ALEXEI TOLSTOI]]></Street>
+       <PostalCode>600093</PostalCode>
+       <City><![CDATA[BACAU]]></City>
+       <CountryCode>RO</CountryCode>
+       <PurchasingContact></PurchasingContact>
+       <ContactTel></ContactTel>
+       <ContactFax></ContactFax>
+       <SalesDepartmentNumber></SalesDepartmentNumber>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN></GLN>
+       <Name><![CDATA[]]></Name>
+       <Street><![CDATA[]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[]]></City>
+       <CountryCode></CountryCode>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>5940475841324</GLN>
+       <Name><![CDATA[Magazin 67 SLATINA]]></Name>
+       <Street><![CDATA[STR. CIREASOV NR. 40]]></Street>
+       <PostalCode>230070</PostalCode>
+       <City><![CDATA[SLATINA]]></City>
+       <CountryCode>RO</CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>0000003419</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[SOS. GIURGIULUI NR.118 BL.12 AP.130]]></Street>
+       <PostalCode>/</PostalCode>
+       <City><![CDATA[SECTOR 4 Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>4025877415265</GTIN>
+      <BuyerItemNum>10</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066865]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.06550]]></SellerItemID>
+      <QuantityOrdered>16.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[BISCUITI MERA RULOU PUI/VITA/PESTE 1KG]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>11.03</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060215984</GTIN>
+      <BuyerItemNum>20</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066874]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.06999]]></SellerItemID>
+      <QuantityOrdered>20.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[CASTRON 4DOG INOX, 0.71L, 16,5CM]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>7.07</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060204988</GTIN>
+      <BuyerItemNum>30</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050922]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.03313]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[CONSERVA 4DOG CU CARNE PUI 1250G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>6.51</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060200546</GTIN>
+      <BuyerItemNum>40</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050470]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.02255]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[COVORASE ABSORBANTE 4DOG 60X90 10BUC]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>14.63</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060214185</GTIN>
+      <BuyerItemNum>50</BuyerItemNum>
+      <BuyerItemID><![CDATA[7059350]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[/]]></SellerItemID>
+      <QuantityOrdered>20.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[HRANA USCATA PISICI CAT JOY PASARE 1KG]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>8.81</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060225129</GTIN>
+      <BuyerItemNum>60</BuyerItemNum>
+      <BuyerItemID><![CDATA[7076196]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[PF.00088]]></SellerItemID>
+      <QuantityOrdered>13.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PACHET MIXT MIAU MIAU PUI FIC VIT 4X100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>5.16</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060224108</GTIN>
+      <BuyerItemNum>70</BuyerItemNum>
+      <BuyerItemID><![CDATA[7073512]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[PF.00015]]></SellerItemID>
+      <QuantityOrdered>72.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC CAT JOY PUI 85G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.98</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060224115</GTIN>
+      <BuyerItemNum>80</BuyerItemNum>
+      <BuyerItemID><![CDATA[7073513]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[PF.00016]]></SellerItemID>
+      <QuantityOrdered>48.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC CAT JOY VITA 85G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.98</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060224160</GTIN>
+      <BuyerItemNum>90</BuyerItemNum>
+      <BuyerItemID><![CDATA[7073517]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[PF.00020]]></SellerItemID>
+      <QuantityOrdered>48.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC DOG JOY ADULT VITA 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.98</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060205961</GTIN>
+      <BuyerItemNum>100</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050495]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.03973]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU CU PUI FICAT IN SOS 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060205992</GTIN>
+      <BuyerItemNum>110</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050497]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.03974]]></SellerItemID>
+      <QuantityOrdered>48.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU CU SOMON IN SOS 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060205985</GTIN>
+      <BuyerItemNum>120</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050498]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.03975]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU CU VITA IN SOS 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060213959</GTIN>
+      <BuyerItemNum>130</BuyerItemNum>
+      <BuyerItemID><![CDATA[7060663]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[/]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU IEPURE IN SOS 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060207705</GTIN>
+      <BuyerItemNum>140</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050489]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.04336]]></SellerItemID>
+      <QuantityOrdered>72.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU KITTEN 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060213942</GTIN>
+      <BuyerItemNum>150</BuyerItemNum>
+      <BuyerItemID><![CDATA[7060662]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[/]]></SellerItemID>
+      <QuantityOrdered>48.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU RATA IN SOS 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060207699</GTIN>
+      <BuyerItemNum>160</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050492]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.04337]]></SellerItemID>
+      <QuantityOrdered>72.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU STERILISED 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>3420900121686</GTIN>
+      <BuyerItemNum>170</BuyerItemNum>
+      <BuyerItemID><![CDATA[7052387]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.02912]]></SellerItemID>
+      <QuantityOrdered>6.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ZGARDA ANTIPARAZITARE CAINE MEDIE 60CM]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>12.09</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+</OrderDetail>
+ <OrderSummary >
+    <NumberOfItems>17</NumberOfItems>
+    <TotalNetAmount>1454.50</TotalNetAmount>
+ </OrderSummary >
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

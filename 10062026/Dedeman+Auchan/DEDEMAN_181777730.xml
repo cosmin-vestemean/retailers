@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-06-09T17:29:09">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>4516609374</BuyerOrderNumber>
+    <OrderIssueDate>2026-06-01</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-06-16T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest></DeliveryDateEarliest>
+    <DeliveryDateLatest></DeliveryDateLatest>
+    <PurchasingInfo><![CDATA[Comanda deja livrata]]></PurchasingInfo>
+    <PromotionDealNo><![CDATA[]]></PromotionDealNo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5940475841003</GLN>
+       <Name><![CDATA[DEDEMAN SRL]]></Name>
+       <Street><![CDATA[ALEXEI TOLSTOI]]></Street>
+       <PostalCode>600093</PostalCode>
+       <City><![CDATA[BACAU]]></City>
+       <CountryCode>RO</CountryCode>
+       <PurchasingContact></PurchasingContact>
+       <ContactTel></ContactTel>
+       <ContactFax></ContactFax>
+       <SalesDepartmentNumber></SalesDepartmentNumber>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN></GLN>
+       <Name><![CDATA[]]></Name>
+       <Street><![CDATA[]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[]]></City>
+       <CountryCode></CountryCode>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>5940475841157</GLN>
+       <Name><![CDATA[Magazin 49 Constanta]]></Name>
+       <Street><![CDATA[STR. DRAGOS VODA  NR.2]]></Street>
+       <PostalCode>907016</PostalCode>
+       <City><![CDATA[ SAT LAZU, COM. AGIGEA,CONSTANTA]]></City>
+       <CountryCode>RO</CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>0000003419</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[SOS. GIURGIULUI NR.118 BL.12 AP.130]]></Street>
+       <PostalCode>/</PostalCode>
+       <City><![CDATA[SECTOR 4 Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060207699</GTIN>
+      <BuyerItemNum>10</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050492]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.04337]]></SellerItemID>
+      <QuantityOrdered>120.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[PLIC MIAU MIAU STERILISED 100G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-16</ItemRequestedDeliverDate>
+    </Item>
+</OrderDetail>
+ <OrderSummary >
+    <NumberOfItems>1</NumberOfItems>
+    <TotalNetAmount>154.80</TotalNetAmount>
+ </OrderSummary >
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

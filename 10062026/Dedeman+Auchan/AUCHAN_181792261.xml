@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-06-10T02:43:02">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>05702655</BuyerOrderNumber>
+    <OrderIssueDate>2026-06-10</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-06-17T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest></DeliveryDateEarliest>
+    <DeliveryDateLatest></DeliveryDateLatest>
+    <PurchasingInfo><![CDATA[ORDERS ]]></PurchasingInfo>
+    <PromotionDealNo><![CDATA[]]></PromotionDealNo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5940475172107</GLN>
+       <Name><![CDATA[AUCHAN Romania SA IASI - 011]]></Name>
+       <Street><![CDATA[Strada Palas, nr 5C, Cladirea D1-D2, Spatiul Comercial AD2-1]]></Street>
+       <PostalCode>700051</PostalCode>
+       <City><![CDATA[Iasi]]></City>
+       <CountryCode>RO</CountryCode>
+       <PurchasingContact></PurchasingContact>
+       <ContactTel></ContactTel>
+       <ContactFax></ContactFax>
+       <SalesDepartmentNumber>746</SalesDepartmentNumber>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN></GLN>
+       <Name><![CDATA[]]></Name>
+       <Street><![CDATA[]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[]]></City>
+       <CountryCode></CountryCode>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>5940475172107</GLN>
+       <Name><![CDATA[AUCHAN Romania SA IASI - 011]]></Name>
+       <Street><![CDATA[Strada Palas, nr 5C, Cladirea D1-D2, Spatiul Comercial AD2-1]]></Street>
+       <PostalCode>700051</PostalCode>
+       <City><![CDATA[Iasi]]></City>
+       <CountryCode></CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>02219</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[Sos. Mihai Bravu nr. 255]]></Street>
+       <PostalCode>040676</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode></CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060213942</GTIN>
+      <BuyerItemNum>1</BuyerItemNum>
+      <BuyerItemID><![CDATA[726912]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit>24.00</NumberInTradeUnit>
+      <ProductDescription><![CDATA[MIAU MIAU RATA IN SOS, PLIC 10]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.55</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate></ItemRequestedDeliverDate>
+    </Item>
+</OrderDetail>
+ <OrderSummary >
+    <NumberOfItems>1</NumberOfItems>
+    <TotalNetAmount>37.20</TotalNetAmount>
+ </OrderSummary >
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>
