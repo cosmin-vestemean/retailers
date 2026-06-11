@@ -8,7 +8,10 @@ SELECT TOP 50
     FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, 
     c.XMLDATA,
     c.FINDOC,
-    REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(max)), '<ID>', ''), '</ID>', '') AS OrderId
+    COALESCE(
+        NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(max)), '<ID>', ''), '</ID>', ''))), ''),
+        NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Document/Order/OrderHeader/BuyerOrderNumber') AS VARCHAR(max)), '<BuyerOrderNumber>', ''), '</BuyerOrderNumber>', ''))), '')
+    ) AS OrderId
 FROM CCCSFTPXML c 
 WHERE c.TRDR_RETAILER = {trdr} 
     AND CAST(c.XMLDATE AS DATE) >= DATEADD(day, -30, GETDATE()) 

@@ -173,7 +173,7 @@ function getOrdersData(params) {
   var sql = 'SELECT c.CCCSFTPXML, c.TRDR_RETAILER, c.XMLFILENAME, '
     + "FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, "
     + 'ISNULL(c.FINDOC, 0) AS FINDOC, c.XMLSTATUS, c.XMLERROR, c.XMLDATA, '
-    + "REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', '') AS OrderId "
+    + "COALESCE(NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', ''))), ''), NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Document/Order/OrderHeader/BuyerOrderNumber') AS VARCHAR(MAX)), '<BuyerOrderNumber>', ''), '</BuyerOrderNumber>', ''))), '')) AS OrderId "
     + fromClause
     + ' ORDER BY c.XMLDATE DESC'
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
@@ -998,9 +998,15 @@ function createAperak(params) {
   var sql = 'INSERT INTO CCCAPERAK (TRDR_RETAILER, TRDR_CLIENT, FINDOC, XMLFILENAME, XMLSENTDATE, '
     + 'MESSAGEDATE, MESSAGETIME, MESSAGEORIGIN, DOCUMENTREFERENCE, DOCUMENTUID, '
     + 'SUPPLIERRECEIVERCODE, DOCUMENTRESPONSE, DOCUMENTDETAIL) '
-    + 'VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12, :13)';
+    + 'OUTPUT INSERTED.CCCAPERAK '
+    + 'VALUES (:1, :2, :3, CAST(:4 AS VARCHAR(100)), '
+    + "TRY_CONVERT(DATE, LEFT(NULLIF(CAST(:5 AS VARCHAR(30)), ''), 10), 23), "
+    + "TRY_CONVERT(DATE, LEFT(NULLIF(CAST(:6 AS VARCHAR(30)), ''), 10), 23), "
+    + "TRY_CONVERT(TIME, LEFT(NULLIF(CAST(:7 AS VARCHAR(20)), ''), 8), 108), "
+    + 'CAST(:8 AS VARCHAR(50)), CAST(:9 AS VARCHAR(100)), CAST(:10 AS VARCHAR(50)), '
+    + 'CAST(:11 AS VARCHAR(50)), CAST(:12 AS VARCHAR(50)), CAST(:13 AS VARCHAR(MAX)))';
   try {
-    X.RUNSQL(sql,
+    var newId = parseInt(X.SQL(sql,
       parseInt(params.TRDR_RETAILER) || 0,
       parseInt(params.TRDR_CLIENT) || 1,
       parseInt(params.FINDOC) || 0,
@@ -1014,8 +1020,7 @@ function createAperak(params) {
       (params.SUPPLIERRECEIVERCODE || '').toString(),
       (params.DOCUMENTRESPONSE || '').toString(),
       (params.DOCUMENTDETAIL || '').toString()
-    );
-    var newId = parseInt(X.SQL('SELECT SCOPE_IDENTITY()', null)) || 0;
+    )) || 0;
     return { success: true, CCCAPERAK: newId };
   } catch (e) {
     return { success: false, error: e.message };

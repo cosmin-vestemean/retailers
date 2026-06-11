@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Order>
+	<UBLExtension>Original</UBLExtension>
+	<UBLVersionID>2.1</UBLVersionID>
+	<CustomizationID>ver2.0</CustomizationID>
+	<ProfileID>TEST_PROFILE</ProfileID>
+	<ID>TEST-DX-ORDER-0001</ID>
+	<CopyIndicator>true</CopyIndicator>
+	<UUID>TEST_DX01_900000001</UUID>
+	<IssueDate>2026-05-25</IssueDate>
+	<OrderTypeCode>220</OrderTypeCode>
+	<Note>TESTNOTE</Note>
+	<LineCountNumeric>1</LineCountNumeric>
+	<RequestedDeliveryPeriod>
+		<StartDate>2026-05-28</StartDate>
+		<EndDate>2026-05-28</EndDate>
+	</RequestedDeliveryPeriod>
+	<BuyerCustomerParty>
+		<EndpointID>0000000000020</EndpointID>
+		<PartyName>TEST DX BUYER</PartyName>
+		<PostalAddress>
+			<StreetName>Test Bd 1</StreetName>
+			<CityName>Bucuresti</CityName>
+			<PostalZone>010000</PostalZone>
+			<Country>RO</Country>
+		</PostalAddress>
+	</BuyerCustomerParty>
+	<SellerSupplierParty>
+		<CustomerAssignedAccountID>0099</CustomerAssignedAccountID>
+		<EndpointID>0000000000099</EndpointID>
+		<PartyName>PET FACTORY TEST</PartyName>
+	</SellerSupplierParty>
+	<DeliveryParty>
+		<EndpointID>0000000000030</EndpointID>
+		<PartyName>TEST DX DELIVERY POINT</PartyName>
+	</DeliveryParty>
+	<Delivery>
+		<Quantity>
+			<Amount>6000</Amount>
+		</Quantity>
+	</Delivery>
+	<AnticipatedMonetaryTotal>
+		<TaxExclusiveAmount CurrencyID="RON">
+			<Amount>5100</Amount>
+		</TaxExclusiveAmount>
+	</AnticipatedMonetaryTotal>
+	<OrderLine>
+		<ID>1</ID>
+		<Price CurrencyID="RON">
+			<Amount>0.85</Amount>
+		</Price>
+		<Quantity UnitCode="PCE">
+			<Amount>6000</Amount>
+		</Quantity>
+		<Item>
+			<Description>TEST DX PRODUCT</Description>
+			<PackQuantity>250</PackQuantity>
+			<PackSizeNumeric>24</PackSizeNumeric>
+			<BuyersItemIdentification>TEST-DX-001</BuyersItemIdentification>
+			<StandardItemIdentification>5949060900001</StandardItemIdentification>
+		</Item>
+	</OrderLine>
+</Order>

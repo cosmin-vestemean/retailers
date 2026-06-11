@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-05-22T11:21:05">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>TEST-AUCH-0001</BuyerOrderNumber>
+    <OrderIssueDate>2026-05-22</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-05-27T00:00:00</RequestedDeliveryDate>
+    <PurchasingInfo><![CDATA[ORDERS ]]></PurchasingInfo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>0000000000001</GLN>
+       <Name><![CDATA[TEST AUCHAN BUYER]]></Name>
+       <Street><![CDATA[Test Street 1]]></Street>
+       <PostalCode>000001</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </BuyerParty>
+    <ShipToParty>
+       <GLN>0000000000002</GLN>
+       <Name><![CDATA[TEST AUCHAN SHIPTO]]></Name>
+       <Street><![CDATA[Test Industrial Park]]></Street>
+       <City><![CDATA[Calan]]></City>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>0000000000099</GLN>
+       <SellerID>00099</SellerID>
+       <Name><![CDATA[PET FACTORY TEST]]></Name>
+       <Street><![CDATA[Test Avenue 99]]></Street>
+       <PostalCode>040000</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060000001</GTIN>
+      <BuyerItemNum>1</BuyerItemNum>
+      <BuyerItemID><![CDATA[TEST001]]></BuyerItemID>
+      <QuantityOrdered>10.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <ProductDescription><![CDATA[TEST PRODUCT A]]></ProductDescription>
+      <UnitNetPrice>1.72</UnitNetPrice>
+    </Item>
+  </OrderDetail>
+  <OrderSummary>
+    <NumberOfItems>1</NumberOfItems>
+    <TotalNetAmount>17.20</TotalNetAmount>
+  </OrderSummary>
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

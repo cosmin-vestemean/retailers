@@ -97,7 +97,7 @@ Returns order XML records with pagination support.`,
       const dataSql = `SELECT c.CCCSFTPXML, c.TRDR_RETAILER, c.XMLFILENAME, ` +
         `FORMAT(c.XMLDATE, 'yyyy-MM-dd HH:mm:ss') AS XMLDATE, ` +
         `ISNULL(c.FINDOC, 0) AS FINDOC, ` +
-        `REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', '') AS OrderId ` +
+        `COALESCE(NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Order/ID') AS VARCHAR(MAX)), '<ID>', ''), '</ID>', ''))), ''), NULLIF(LTRIM(RTRIM(REPLACE(REPLACE(CAST(c.xmldata.query('/Document/Order/OrderHeader/BuyerOrderNumber') AS VARCHAR(MAX)), '<BuyerOrderNumber>', ''), '</BuyerOrderNumber>', ''))), '')) AS OrderId ` +
         `FROM CCCSFTPXML c WHERE c.TRDR_RETAILER = ${trdr} ` +
         `AND c.XMLDATE >= DATEADD(day, -${d}, GETDATE()) ` +
         `ORDER BY c.XMLDATE DESC ` +

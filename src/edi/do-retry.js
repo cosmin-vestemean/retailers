@@ -26,6 +26,11 @@ export async function retryDoObject(app, key) {
   const object = await doStorage.get({ key })
   const meta = object.metadata || {}
   const doctype = (meta.doctype || 'ORDERS').toUpperCase()
+
+  if (doctype === 'APERAK') {
+    return retryAperakObject(app, { key, xml: object.body, metadata: meta })
+  }
+
   if (doctype !== 'ORDERS') {
     return { key, skipped: true, processed: false, error: `Unsupported retry doctype ${doctype}` }
   }
@@ -42,6 +47,27 @@ export async function retryDoObject(app, key) {
   })
   await doStorage.deleteSuccess(key)
   return { key, processed: true, success: true, deleted: true }
+}
+
+async function retryAperakObject(app, { key, xml, metadata }) {
+  const { getProvider } = await import('./providers/factory.js')
+  const { insertAperakRow } = await import('./scanner.js')
+  const doStorage = app.service('do-storage')
+  const filename = metadata.filename || filenameFromKey(key)
+  try {
+    const provider = getProvider({ CODE: metadata.provider })
+    const sftpRow = {
+      TRDR_RETAILER: parseInt(metadata.retailer) || 0,
+      TRDR_CLIENT: parseInt(metadata.trdrclient) || 1
+    }
+    // insertAperakRow returns false when the APERAK already exists; both cases
+    // mean the object no longer needs to live in DO retry.
+    await insertAperakRow(app, { xml, file: { name: filename }, sftpRow, provider })
+    await doStorage.deleteSuccess(key)
+    return { key, processed: true, success: true, deleted: true }
+  } catch (e) {
+    return { key, processed: true, success: false, error: e.message }
+  }
 }
 
 async function ensureSftpXmlRow(app, { xml, metadata, key }) {

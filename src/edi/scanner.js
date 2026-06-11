@@ -205,7 +205,7 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
   return stats
 }
 
-async function insertAperakRow(app, { xml, file, sftpRow, provider }) {
+export async function insertAperakRow(app, { xml, file, sftpRow, provider }) {
   const aperak = await provider.parseAperak(xml)
   if (await hasExistingAperak(app, aperak)) return false
   const data = {
