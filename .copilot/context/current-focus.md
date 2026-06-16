@@ -2,6 +2,7 @@
 
 ## Last Updated 
 
+- 2026-06-11 (APERAK DO retry fix deployed to retailers4)
 - Session: DigitalOcean Spaces XML backup/retry planning for retailers4
 
 ## Current Goal
@@ -151,11 +152,12 @@ Key behavioral notes:
 - **Resolved 2026-06-05**: Auchan active TRDR is `13248`. Auchan and Dedeman now have individual Infinite `CCCSFTP` rows in both DBs. ORDER mappings are complete in both DBs (`CCCDOCUMENTES1MAPPINGS=43` Dedeman, `49` Auchan, 7 XML rows each). Dashboard cards for both are present.
 - **Resolved 2026-06-05**: synthetic numeric Auchan row `PetFactoryTEST.dbo.CCCSFTPXML=7153` was processed successfully after looking up the real PK by filename; it is now `XMLSTATUS=SENT`, `FINDOC=2135462`.
 - Heroku config vars: `EDINET_P12_BASE64`, `EDINET_P12_PASSWORD`, optional `EDI_SCAN_INTERVAL_MS`, `EDI_DOWNLOAD_AGE_DAYS`, `EDI_PROCESS_AGE_DAYS`, `EDI_PROCESS_BATCH`, `EDI_SCANNER`.
-- APERAK/RECADV handling for Infinite — `parseAperak` is a stub; scanner downloads them but doesn't insert.
+- APERAK/RECADV handling for Infinite — `parseAperak` is a stub; scanner downloads them but doesn't insert. (DocProcess APERAK flow is fully working: parse + insert into CCCAPERAK + DO retry; Infinite still pending.)
 - Invoice outbound flow (Infinite) — `sign-smime.js` ready, upload step not yet integrated.
 - Before retiring `retailers1`, remove the remaining backend legacy fallback: delete/disable the `EDI_SCANNER=legacy|both` branch, then delete `src/services/sftp/*` and `storeXml` once `edi-aperaks` no longer delegates to `sftp.downloadXml/storeAperakInErpMessages` or those methods are moved into the dedicated service.
 
 ## Next Step
 
-1. Monitor `retailers4` logs after cutover for first real inbound XML: expected startup lines are `[scanner] new EDI scanner ENABLED (multi-provider)` and `[do-storage] retry loop ENABLED (300000ms)`.
+1. APERAK DO retry is fully resolved and verified 2026-06-11: backend v116 (`6562a244`) processes APERAK in the DO retry loop, ERP AJS `createAperak` uses `OUTPUT INSERTED.CCCAPERAK` (live probe returned real PK `7232`, not 0), and DO `retry/` is confirmed empty (`RETRY_TOTAL=0`). No further action needed for this issue.
+2. Monitor `retailers4` logs after cutover for first real inbound XML: expected startup lines are `[scanner] new EDI scanner ENABLED (multi-provider)` and `[do-storage] retry loop ENABLED (300000ms)`.
 2. If rollback is needed, set `retailers4 ENABLE_SFTP_SCANNER=false DO_RETRY_INTERVAL_MS=0`, then set `retailers1 ENABLE_SFTP_SCANNER=true`.
