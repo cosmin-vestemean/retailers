@@ -41,6 +41,14 @@ function makeApp({ ajsLog }) {
   return app
 }
 
+function jsonResponse(body, status = 200, statusText = 'OK') {
+  return {
+    status,
+    statusText,
+    text: async () => JSON.stringify(body)
+  }
+}
+
 describe('order-builder: AJS fetch mock', function () {
   this.timeout(15000)
 
@@ -57,7 +65,7 @@ describe('order-builder: AJS fetch mock', function () {
       if (body.sql.includes('FROM TRDR')) answer = 'TRDR_42'
       else if (body.sql.includes('FROM MTRL')) answer = `MTRL_${body.value}`
       else answer = 'UNKNOWN'
-      return { json: async () => ({ success: true, data: answer }) }
+      return jsonResponse({ success: true, data: answer })
     }
 
     const app = makeApp({ ajsLog })
@@ -93,8 +101,8 @@ describe('order-builder: AJS fetch mock', function () {
     const ajsLog = []
     const fetchMock = async (url, init) => {
       const body = JSON.parse(init.body)
-      if (body.sql.includes('FROM TRDR')) return { json: async () => ({ success: true, data: '' }) }
-      return { json: async () => ({ success: true, data: `M_${body.value}` }) }
+      if (body.sql.includes('FROM TRDR')) return jsonResponse({ success: true, data: '' })
+      return jsonResponse({ success: true, data: `M_${body.value}` })
     }
     const app = makeApp({ ajsLog })
     const { errors } = await buildOrderPayload({
@@ -107,4 +115,24 @@ describe('order-builder: AJS fetch mock', function () {
     assert.strictEqual(ajsLog[0].LEVEL, 'error')
     assert.strictEqual(ajsLog[0].CCCSFTPXML, 7)
   })
+
+  for (const response of [
+    { label: 'empty response', response: { status: 502, statusText: 'Bad Gateway', text: async () => '' }, expected: /runMappingSql returned empty response \(HTTP 502 Bad Gateway\)/ },
+    { label: 'non-JSON response', response: { status: 503, statusText: 'Service Unavailable', text: async () => '<html>upstream unavailable</html>' }, expected: /runMappingSql returned non-JSON response \(HTTP 503 Service Unavailable\): <html>upstream unavailable<\/html>/ }
+  ]) {
+    it(`logs a descriptive mapping error for ${response.label}`, async () => {
+      const xml = await fs.readFile(FIXTURE, 'utf-8')
+      const ajsLog = []
+      const app = makeApp({ ajsLog })
+      const { errors } = await buildOrderPayload({
+        xml, sosource: 1351, fprms: 7531, series: 220, retailer: 99888,
+        orderId: 'X', cccsftpxml: 7, app, fetchImpl: async () => response.response
+      })
+
+      assert.strictEqual(errors.length, 2)
+      assert.match(errors[0].message, response.expected)
+      assert.strictEqual(ajsLog.length, 2)
+      assert.match(ajsLog[0].MESSAGETEXT, response.expected)
+    })
+  }
 })

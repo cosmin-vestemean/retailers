@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import { resolveS1BaseUrl } from '../../s1-base-url.js'
+import { parseS1Json } from '../../s1-response.js'
 
 export class SetDocumentService {
   constructor(options) {
@@ -11,7 +12,7 @@ export class SetDocumentService {
     const method = 'POST'
     const body = data
     const response = await fetch(url, { method: method, body: JSON.stringify(body) })
-    const json = await response.json()
+    const json = await parseS1Json(response, 'setDocument')
     console.log(json)
     return json
   }

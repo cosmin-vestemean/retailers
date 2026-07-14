@@ -2,12 +2,13 @@
 
 ## Last Updated 
 
-- 2026-06-11 (APERAK DO retry fix deployed to retailers4)
-- Session: DigitalOcean Spaces XML backup/retry planning for retailers4
+- 2026-07-14 (Soft1 malformed JSON response diagnostics implemented locally)
+- Session: Kaufland order mapping error investigation and response-parser hardening
 
 ## Current Goal
 
 - **Next feature: do not lose any inbound EDI XML on Heroku ephemeral storage.** Target app is `retailers4` only; `retailers4` is planned to replace `retailers1`.
+- Kaufland UI error `Mapping errors (1): Unexpected end of JSON input` is now locally hardened: the error originates in `buildOrderPayload()` when `runMappingSql` returns an empty/non-JSON HTTP body and raw `response.json()` throws. New shared `src/s1-response.js` reports endpoint + HTTP status + bounded response detail; it is used by `order-builder`, `order-sender`, `set-document`, and `CCCSFTPXML`. `test/edi/order-builder.test.js` covers empty and non-JSON mapping responses. Validation 2026-07-14: focused mapping/sender tests pass (9); `npm test` passes (50); `get_errors` clean. The exact June 18 XML is not present locally, so confirm the live `orders-log`/`CCCSFTPXML` evidence before changing a mapping or resending.
 - `retailers4` Heroku config vars verified 2026-06-09: `DO_BUCKET=xml-edi-backup`, `DO_ACCESS_KEY` set, `DO_SECRET_KEY` set, `DO_ENDPOINT=https://fra1.digitaloceanspaces.com`.
 - Signed DigitalOcean Spaces list test from local tooling succeeded against `xml-edi-backup` with HTTP 200, region `fra1`, key count 0.
 - Cutover active 2026-06-09: `retailers1` scanner is disabled (`ENABLE_SFTP_SCANNER=false`, Heroku release `v374`). `retailers4` scanner is active (`ENABLE_SFTP_SCANNER=true`, `EDI_SCANNER=new`, `DO_RETRY_INTERVAL_MS=300000`, Heroku release `v83`). DO bucket `xml-edi-backup` was accessible immediately before cutover and `retry/` was empty (`retryTotal=0`).
@@ -139,6 +140,13 @@ Key behavioral notes:
 - Naming proves `infiniteProvider.filenamePrefixes('orders') = ['AUCHAN_', 'DEDEMAN_']` is correct.
 - `provider.remoteSubdir('retann')` → `/retanns/` (plural) matches real layout.
 - No `/recadv/` or `/aperak/` folder on Infinite — RECADV/APERAK not part of this provider's flow; ignore for now.
+- **Re-verified live 2026-07-14 (read-only recursive LIST via `scripts/explore-infinite-ftp.js`, creds from `CCCSFTP` rows `TRDR_RETAILER IN (13248,11654)`, `USERNAME='pet_factory_ro'`).** Root `/` has exactly 4 dirs: `desadv`, `invoice`, `orders`, `retanns`. `/orders` has 172 live files (Auchan+Dedeman mixed). `/desadv/archive` has 131 files, `/invoice/archive` has 31 files (both active outbound flows). **`/retanns/` and ALL its subfolders (`confirm/{archive,error,logs/{err,ok},temp}`, `failed`, `sent`, `temp`) are completely empty (0 files everywhere, including `sent/`)** — Auchan/Dedeman have never delivered a RETANN document through Infinite to date. No `recadv` folder exists anywhere in the tree (confirmed exhaustively, not just at root).
+- **DB check 2026-07-14**: `SELECT ... FROM CCCSFTPXML WHERE EDIDOCTYPE IN ('RETANN','RECADV') OR XMLFILENAME LIKE '%RETANN%' OR XMLFILENAME LIKE '%RECADV%'` returns **zero rows**. No RETANN/RECADV document has ever been stored in `CCCSFTPXML` for any retailer.
+- Conclusion: RECADV (goods-receipt advice) is not an Infinite Edinet concept at all for Auchan/Dedeman — if the beneficiary needs receipt-confirmation data, it must come from a different provider/channel (DocProcess's original design docs mention RECADV appearing in the retailer output folder for DocProcess retailers — Carrefour/Kaufland/etc. — not Infinite). This still needs live verification on the DocProcess side; not yet checked.
+- `infiniteProvider.remoteSubdir('aperak')` returning `/recadv/` in code is speculative/dead — the path does not exist on the real server. Should likely be removed or clarified in a follow-up.
+- **User insight 2026-07-14**: beneficiary showed the Infinite Edinet **web portal** (not the FTP account) where he can open RECADV (goods-receipt advice, with +/- quantity differences) and RETANN (return) documents. His employees currently print these and enter them manually into Soft1. This confirms RECADV/RETANN are delivered to the beneficiary through a channel other than our `pet_factory_ro` FTP account (web portal only, possibly a different account/API). Brainstormed next steps (not yet started): (1) ask Infinite/EDI admin whether RECADV/RETANN can be enabled for FTP delivery on our existing account; (2) check for an official Infinite web-service/API behind the portal; (3) as a fallback, inspect portal network calls (needs beneficiary portal credentials) or consider browser automation (Playwright) to fetch documents if no official channel exists. Explicitly out of scope for now: DocProcess RECADV investigation (user said not interested yet).
+- **Public site check 2026-07-14**: fetched `infinite-it.com/en` and `infinite.pl` (same vendor, global rebrand of the Polish `ftp.infinite.pl` company). Both are marketing-only sites (feature lists, compliance blog posts, generic FAQ); no technical docs, no API reference, no info on which document types are FTP vs. portal-only. Confirms this question can only be answered by contacting Infinite support/account manager directly, not via public research.
+- **Official EDInet Connector manual reviewed 2026-07-14** (`documentatie/EDInet_Connector/EDInet Connector.md`, a 2012-era Java desktop FTP-sync tool from Infinite, superseded by our direct Node FTP client — kept only as protocol/folder-structure reference). Table of contents documents exactly 3 relation types: **Orders, Retanns, Invoices**. No RECADV relation type exists anywhere in the manual. Retanns section confirms `Remote directory: /retanns/`, same host `ftp.infinite.pl`, port 21 — matching our current code and the live empty `/retanns/` folder exactly. This is independent confirmation (from Infinite's own official docs, not just live probing) that: (a) RETANN's FTP path/mechanism in our code is already correct, and (b) RECADV has never been a supported FTP relation type for this connector — supporting the theory that RECADV reaches the beneficiary through a separate web-portal-only channel, not FTP.
 
 ## Open Questions / Pending
 
@@ -159,5 +167,6 @@ Key behavioral notes:
 ## Next Step
 
 1. APERAK DO retry is fully resolved and verified 2026-06-11: backend v116 (`6562a244`) processes APERAK in the DO retry loop, ERP AJS `createAperak` uses `OUTPUT INSERTED.CCCAPERAK` (live probe returned real PK `7232`, not 0), and DO `retry/` is confirmed empty (`RETRY_TOTAL=0`). No further action needed for this issue.
-2. Monitor `retailers4` logs after cutover for first real inbound XML: expected startup lines are `[scanner] new EDI scanner ENABLED (multi-provider)` and `[do-storage] retry loop ENABLED (300000ms)`.
-2. If rollback is needed, set `retailers4 ENABLE_SFTP_SCANNER=false DO_RETRY_INTERVAL_MS=0`, then set `retailers1 ENABLE_SFTP_SCANNER=true`.
+2. For Kaufland order `3200164514` / filename sequence `01003727`, query S1 `orders-log` (`TRDR_RETAILER=12349`, 2026-06-18..19, `OPERATION='mappingError'`) and correlate the `CCCSFTPXML` row. Validate `XMLDATA` (or DO backup) and only then deploy this backend change and use individual `Retrimite`; verify `SENT` plus `FINDOC` or the new actionable error.
+3. Monitor `retailers4` logs after cutover for first real inbound XML: expected startup lines are `[scanner] new EDI scanner ENABLED (multi-provider)` and `[do-storage] retry loop ENABLED (300000ms)`.
+4. If rollback is needed, set `retailers4 ENABLE_SFTP_SCANNER=false DO_RETRY_INTERVAL_MS=0`, then set `retailers1 ENABLE_SFTP_SCANNER=true`.

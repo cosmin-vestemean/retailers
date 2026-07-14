@@ -7,6 +7,7 @@
 import fetch from 'node-fetch'
 
 import { buildS1Url } from '../s1-base-url.js'
+import { parseS1Json } from '../s1-response.js'
 
 export async function sendOrderToS1({
   app,
@@ -142,7 +143,7 @@ async function findCreatedDocumentByFindoc({ findoc, s1BaseUrl, lookup }) {
       method: 'POST',
       body: JSON.stringify({ sql, value: String(id) })
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'runMappingSql')
     if (!result.success || !result.data) return null
     return { findoc: id, fincode: String(result.data) }
   } catch {
@@ -168,7 +169,7 @@ async function findExistingOrderByNum04({ app, jsonOrder, s1BaseUrl, retailer, d
       method: 'POST',
       body: JSON.stringify({ sql, value: num04 })
     })
-    const result = await response.json()
+    const result = await parseS1Json(response, 'runMappingSql')
     if (!result.success) throw new Error(result.error || 'runMappingSql failed')
     if (!result.data) return null
 

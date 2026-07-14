@@ -1,6 +1,7 @@
 import { parseString } from 'xml2js'
 import defaultFetch from 'node-fetch'
 import { buildS1Url, resolveS1BaseUrl } from '../s1-base-url.js'
+import { parseS1Json } from '../s1-response.js'
 
 const parseXml = (xml) =>
   new Promise((resolve, reject) =>
@@ -128,7 +129,7 @@ export async function buildOrderPayload({
             method: 'POST',
             body: JSON.stringify({ sql: v.SQL, value: v.value })
           })
-          const out = await r.json()
+          const out = await parseS1Json(r, 'runMappingSql')
           if (!out.success) {
             errors.push({ table: tableName, field, value: v.value, sql: v.SQL, message: out.error })
             await logMappingError(app, { retailer, orderId, cccsftpxml, message: out.error, field, value: v.value, sql: v.SQL })

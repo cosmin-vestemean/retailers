@@ -1,24 +1,8 @@
 import fetch from 'node-fetch'
 import { buildS1Url } from '../../s1-base-url.js'
+import { parseS1Json } from '../../s1-response.js'
 import { getProvider } from '../../edi/providers/factory.js'
 import { resolveInsertSftpRow } from '../../edi/scanner.js'
-
-/**
- * Read a fetch Response and parse it as the S1 JSON contract.
- * Throws a descriptive error (status + body snippet) when the body is empty
- * or not valid JSON, instead of a cryptic "Unexpected end of JSON input".
- */
-async function parseS1Json(response, label) {
-  const text = await response.text()
-  if (!text || !text.trim()) {
-    throw new Error(`${label} returned empty response (HTTP ${response.status} ${response.statusText})`)
-  }
-  try {
-    return JSON.parse(text)
-  } catch {
-    throw new Error(`${label} returned non-JSON response (HTTP ${response.status}): ${text.slice(0, 300)}`)
-  }
-}
 
 export class CccsftpxmlService {
   constructor(options) {
