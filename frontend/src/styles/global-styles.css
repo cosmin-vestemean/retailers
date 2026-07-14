@@ -235,6 +235,8 @@ orders-table .badge-error { background: var(--tblr-danger); color: #fff; }
 orders-table .badge-sending { background: var(--tblr-primary); color: #fff; }
 orders-table .actions { display: flex; gap: 0.25rem; flex-wrap: wrap; }
 orders-table .error-box { background: var(--tblr-danger-lt); border-radius: 4px; padding: 0.5em; margin-top: 0.5em; font-size: 0.8rem; color: var(--tblr-danger); max-height: 150px; overflow: auto; }
+orders-table .error-box-technical { background: var(--tblr-danger-lt); color: var(--tblr-danger); }
+orders-table .error-box-mapping { background: var(--tblr-warning-lt); color: var(--tblr-warning); border: 1px solid var(--tblr-warning); }
 orders-table .details-box { font-size: 0.8rem; margin-top: 0.3em; color: var(--tblr-secondary); }
 
 /* ============================================================

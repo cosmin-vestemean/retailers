@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-06-24T08:35:37">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>01344465</BuyerOrderNumber>
+    <OrderIssueDate>2026-06-24</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-07-01T00:00:00</RequestedDeliveryDate>
+    <PurchasingInfo><![CDATA[ORDERS ]]></PurchasingInfo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5949084999266</GLN>
+       <Name><![CDATA[EXIGENT]]></Name>
+       <Street><![CDATA[Bulevardul Timisoara nr. 14A, corp C1]]></Street>
+       <PostalCode>061344</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </BuyerParty>
+    <ShipToParty>
+       <GLN>5949084999266</GLN>
+       <Name><![CDATA[EXIGENT]]></Name>
+       <Street><![CDATA[Bulevardul Timisoara nr. 14A, corp C1]]></Street>
+       <PostalCode>061344</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>03837</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[Sos. Mihai Bravu nr. 255]]></Street>
+       <PostalCode>040676</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060200706</GTIN>
+      <BuyerItemNum>1</BuyerItemNum>
+      <BuyerItemID><![CDATA[401295]]></BuyerItemID>
+      <QuantityOrdered>4.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <ProductDescription><![CDATA[SILICAT FRESH MIAU MIAU 8L/3.3]]></ProductDescription>
+      <UnitNetPrice>24.34</UnitNetPrice>
+    </Item>
+    <Item>
+      <GTIN>5949060228625</GTIN>
+      <BuyerItemNum>2</BuyerItemNum>
+      <BuyerItemID><![CDATA[332216]]></BuyerItemID>
+      <QuantityOrdered>400.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <ProductDescription><![CDATA[RECOMPENSA NAT. TON MIAU MIAU]]></ProductDescription>
+      <UnitNetPrice>3.36</UnitNetPrice>
+    </Item>
+  </OrderDetail>
+  <OrderSummary>
+    <NumberOfItems>2</NumberOfItems>
+    <TotalNetAmount>1439.36</TotalNetAmount>
+  </OrderSummary>
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

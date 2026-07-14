@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { buildTransport } from './transports/factory.js'
 import { getProvider } from './providers/factory.js'
-import { buildOrderPayload } from './order-builder.js'
+import { buildOrderPayload, formatMappingErrorMessage } from './order-builder.js'
 import { sendOrderToS1 } from './order-sender.js'
 
 // Module-level concurrency lock — `setInterval` re-entry is the legacy bug.
@@ -441,7 +441,7 @@ async function processPendingOrders(app, sftpRows) {
       })
 
       if (errors.length > 0) {
-        const msg = `Mapping errors (${errors.length}): ${errors.slice(0, 3).map((e) => e.message).join(' | ')}`
+        const msg = `Mapping errors (${errors.length}): ${errors.slice(0, 3).map((e) => formatMappingErrorMessage(e)).join(' | ')}`
         await app.service('CCCSFTPXML').patch(row.CCCSFTPXML, {
           XMLSTATUS: 'ERROR',
           XMLERROR: msg.slice(0, 4000)

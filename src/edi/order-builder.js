@@ -8,6 +8,62 @@ const parseXml = (xml) =>
     parseString(xml, { explicitArray: false }, (err, result) => (err ? reject(err) : resolve(result)))
   )
 
+// Structured "mapping remediate" error types — fields resolved via SQL lookup in the loop
+// below (CCCS1DXTRDRMTRL / TRDBRANCH.CCCS1DXGLN) whose value can be fixed by adding the
+// missing mapping row directly in SoftOne, without a code change.
+const MAPPING_ERROR_TYPES = {
+  MTRL: 'MTRL_NOTFOUND',
+  TRDBRANCH: 'TRDBRANCH_NOTFOUND'
+}
+
+const REMEDY_LOCATION = {
+  MTRL_NOTFOUND: 'CCCS1DXTRDRMTRL — mapare cod articol retailer către MTRL',
+  TRDBRANCH_NOTFOUND: 'TRDBRANCH.CCCS1DXGLN — mapare GLN punct de livrare către punct de lucru'
+}
+
+// Both EDI providers use a fixed XML shape per field, so the human-readable description
+// (product name / store name) can be derived deterministically from the sibling node next to
+// the failing value — no extra mapping config or heuristics needed.
+//   MTRL:       Infinite .../Item/BuyerItemID              -> .../Item/ProductDescription
+//               DocProcess .../Item/BuyersItemIdentification -> .../Item/Description
+//   TRDBRANCH:  Infinite .../ShipToParty/GLN                -> .../ShipToParty/Name
+//               DocProcess DeliveryParty/EndpointID          -> DeliveryParty/PartyName
+const DESCRIPTION_SIBLING_LEAF = {
+  MTRL: {
+    BuyerItemID: 'ProductDescription',
+    BuyersItemIdentification: 'Description'
+  },
+  TRDBRANCH: {
+    GLN: 'Name',
+    EndpointID: 'PartyName'
+  }
+}
+
+function descriptionXmlNodeFor(xmlNode, s1Field) {
+  const leafMap = DESCRIPTION_SIBLING_LEAF[s1Field]
+  if (!leafMap) return null
+  const segments = xmlNode.split('/')
+  const descLeaf = leafMap[segments[segments.length - 1]]
+  if (!descLeaf) return null
+  return [...segments.slice(0, -1), descLeaf].join('/')
+}
+
+/**
+ * Human-readable message for a mapping error. Structured MTRL_NOTFOUND/TRDBRANCH_NOTFOUND
+ * errors get a self-contained message with the XML value, its description, and where to fix
+ * it in SoftOne. Any other (generic/technical) error keeps its original plain message.
+ */
+export function formatMappingErrorMessage(err, { includeSql = false } = {}) {
+  let base
+  if (err.type && REMEDY_LOCATION[err.type]) {
+    const desc = err.xmlDescription ? ` (${err.xmlDescription})` : ''
+    base = `[${err.type}] ${err.field}="${err.xmlValue}"${desc} nerezolvat — verificați maparea. Remediere: ${err.remedyLocation}`
+  } else {
+    base = `[${err.field}] valoarea "${err.value}" nerezolvată — ${err.message}`
+  }
+  return includeSql && err.sql ? `${base} | SQL: ${err.sql}` : base
+}
+
 /**
  * Walk an XML JSON tree, following a slash-separated path. Returns all leaf
  * values matched along the way (handles repeated nodes like OrderLine).
@@ -109,11 +165,15 @@ export async function buildOrderPayload({
 
   for (const m of xmlMappings) {
     const xmlVals = getValFromXML(xmlJson, m.XMLNODE)
-    for (const xmlVal of xmlVals) {
+    const descriptionNode = m.SQL ? descriptionXmlNodeFor(m.XMLNODE, m.S1FIELD1) : null
+    const descriptionVals = descriptionNode ? getValFromXML(xmlJson, descriptionNode) : []
+    xmlVals.forEach((xmlVal, index) => {
       const obj = {}
-      obj[m.S1FIELD1] = m.SQL ? { SQL: m.SQL, value: xmlVal } : xmlVal
+      obj[m.S1FIELD1] = m.SQL
+        ? { SQL: m.SQL, value: xmlVal, xmlDescription: descriptionVals[index] ?? null }
+        : xmlVal
       DATA[m.S1TABLE1].push(obj)
-    }
+    })
   }
   jsonOrder.DATA = DATA
 
@@ -131,20 +191,37 @@ export async function buildOrderPayload({
           })
           const out = await parseS1Json(r, 'runMappingSql')
           if (!out.success) {
-            errors.push({ table: tableName, field, value: v.value, sql: v.SQL, message: out.error })
-            await logMappingError(app, { retailer, orderId, cccsftpxml, message: out.error, field, value: v.value, sql: v.SQL })
+            // SQL/API execution failure — a platform issue, not a "value not mapped yet" case.
+            const err = { table: tableName, field, value: v.value, sql: v.SQL, message: out.error }
+            errors.push(err)
+            await logMappingError(app, { retailer, orderId, cccsftpxml, error: err })
             continue
           }
           if (out.data === '' || out.data === null || out.data === undefined) {
-            const msg = `No row from mapping SQL for field ${field} value ${v.value}`
-            errors.push({ table: tableName, field, value: v.value, sql: v.SQL, message: msg })
-            await logMappingError(app, { retailer, orderId, cccsftpxml, message: msg, field, value: v.value, sql: v.SQL })
+            const message = `No row from mapping SQL for field ${field} value ${v.value}`
+            const mappingErrorType = MAPPING_ERROR_TYPES[field]
+            const err = mappingErrorType
+              ? {
+                  type: mappingErrorType,
+                  field,
+                  xmlValue: v.value,
+                  xmlDescription: v.xmlDescription || null,
+                  remedyLocation: REMEDY_LOCATION[mappingErrorType],
+                  table: tableName,
+                  sql: v.SQL,
+                  message
+                }
+              : { table: tableName, field, value: v.value, sql: v.SQL, message }
+            errors.push(err)
+            await logMappingError(app, { retailer, orderId, cccsftpxml, error: err })
           } else {
             item[field] = out.data
           }
         } catch (e) {
-          errors.push({ table: tableName, field, value: v.value, sql: v.SQL, message: e.message })
-          await logMappingError(app, { retailer, orderId, cccsftpxml, message: e.message, field, value: v.value, sql: v.SQL })
+          // Transport/JSON parsing failure — technical/platform error, not remediable in S1.
+          const err = { table: tableName, field, value: v.value, sql: v.SQL, message: e.message }
+          errors.push(err)
+          await logMappingError(app, { retailer, orderId, cccsftpxml, error: err })
         }
       }
     }
@@ -186,7 +263,7 @@ function groupLineFields(rows) {
   return grouped
 }
 
-async function logMappingError(app, { retailer, orderId, cccsftpxml, message, field, value, sql }) {
+async function logMappingError(app, { retailer, orderId, cccsftpxml, error }) {
   try {
     await app.service('orders-log').create({
       TRDR_CLIENT: 1,
@@ -195,9 +272,10 @@ async function logMappingError(app, { retailer, orderId, cccsftpxml, message, fi
       CCCSFTPXML: cccsftpxml,
       OPERATION: 'mappingError',
       LEVEL: 'error',
-      MESSAGETEXT: `[${field}] valoarea "${value}" nerezolvată — ${message} | SQL: ${sql}`
+      MESSAGETEXT: formatMappingErrorMessage(error, { includeSql: true })
     })
   } catch (e) {
     console.error('[order-builder] orders-log insert failed:', e.message)
   }
 }
+

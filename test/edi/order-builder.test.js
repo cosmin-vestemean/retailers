@@ -5,10 +5,11 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { feathers } from '@feathersjs/feathers'
 
-import { buildOrderPayload } from '../../src/edi/order-builder.js'
+import { buildOrderPayload, formatMappingErrorMessage } from '../../src/edi/order-builder.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const FIXTURE = path.join(__dirname, 'fixtures', 'docprocess', 'out', 'ORDERS_TEST_DX01_900000001.xml')
+const AUCHAN_FIXTURE = path.join(__dirname, 'fixtures', 'mapping-errors', 'AUCHAN_mapping_error_332216.xml')
 
 function makeApp({ ajsLog }) {
   const app = feathers()
@@ -21,10 +22,22 @@ function makeApp({ ajsLog }) {
     async find() { return { token: 'TEST-TOKEN' } }
   }, { methods: ['find'] })
   app.use('CCCDOCUMENTES1MAPPINGS', {
-    async find() { return { data: [{ CCCDOCUMENTES1MAPPINGS: 42 }] } }
+    async find({ query }) {
+      const id = query?.TRDR_RETAILER === 13248 ? 13248 : 42
+      return { data: [{ CCCDOCUMENTES1MAPPINGS: id }] }
+    }
   }, { methods: ['find'] })
   app.use('CCCXMLS1MAPPINGS', {
-    async find() {
+    async find({ query }) {
+      if (query?.CCCDOCUMENTES1MAPPINGS === 13248) {
+        return {
+          data: [
+            { S1TABLE1: 'SALDOC', S1FIELD1: 'TRDBRANCH', XMLNODE: 'Order/OrderParty/ShipToParty/GLN', SQL: "select trdbranch from trdbranch where trdr=13248 AND cccs1dxgln='{value}'" },
+            { S1TABLE1: 'ITELINES', S1FIELD1: 'MTRL', XMLNODE: 'Order/OrderDetail/Item/BuyerItemID', SQL: "select mtrl from CCCS1DXTRDRMTRL where trdr=13248 and code='{value}'" },
+            { S1TABLE1: 'ITELINES', S1FIELD1: 'QTY1', XMLNODE: 'Order/OrderDetail/Item/QuantityOrdered', SQL: null }
+          ]
+        }
+      }
       return {
         data: [
           { S1TABLE1: 'SALDOC', S1FIELD1: 'TRDR', XMLNODE: 'BuyerCustomerParty/EndpointID', SQL: 'SELECT TRDR FROM TRDR WHERE AFM=:value' },
@@ -135,4 +148,81 @@ describe('order-builder: AJS fetch mock', function () {
       assert.match(ajsLog[0].MESSAGETEXT, response.expected)
     })
   }
+})
+
+describe('order-builder: structured MTRL_NOTFOUND / TRDBRANCH_NOTFOUND mapping errors', function () {
+  this.timeout(15000)
+
+  it('builds a structured MTRL_NOTFOUND error with xmlValue/xmlDescription/remedyLocation (real Auchan XML)', async () => {
+    const xml = await fs.readFile(AUCHAN_FIXTURE, 'utf-8')
+    const ajsLog = []
+    const fetchMock = async (url, init) => {
+      const body = JSON.parse(init.body)
+      if (body.sql.toLowerCase().includes('trdbranch')) return jsonResponse({ success: true, data: 7875 })
+      if (body.value === '332216') return jsonResponse({ success: true, data: '' }) // unmapped MTRL
+      return jsonResponse({ success: true, data: `MTRL_${body.value}` })
+    }
+    const app = makeApp({ ajsLog })
+    const { errors } = await buildOrderPayload({
+      xml, sosource: 1351, fprms: 701, series: 7012, retailer: 13248,
+      orderId: 'AUCHAN_182540228.xml', cccsftpxml: 7566, app, fetchImpl: fetchMock
+    })
+
+    assert.strictEqual(errors.length, 1, `expected exactly one error: ${JSON.stringify(errors)}`)
+    const [err] = errors
+    assert.strictEqual(err.type, 'MTRL_NOTFOUND')
+    assert.strictEqual(err.field, 'MTRL')
+    assert.strictEqual(err.xmlValue, '332216')
+    assert.strictEqual(err.xmlDescription, 'RECOMPENSA NAT. TON MIAU MIAU')
+    assert.strictEqual(err.remedyLocation, 'CCCS1DXTRDRMTRL — mapare cod articol retailer către MTRL')
+
+    const message = formatMappingErrorMessage(err)
+    assert.match(message, /\[MTRL_NOTFOUND\]/)
+    assert.match(message, /332216/)
+    assert.match(message, /RECOMPENSA NAT\. TON MIAU MIAU/)
+
+    assert.strictEqual(ajsLog.length, 1)
+    assert.strictEqual(ajsLog[0].OPERATION, 'mappingError')
+    assert.strictEqual(ajsLog[0].LEVEL, 'error')
+    assert.match(ajsLog[0].MESSAGETEXT, /\[MTRL_NOTFOUND\]/)
+    assert.match(ajsLog[0].MESSAGETEXT, /SQL: select mtrl from CCCS1DXTRDRMTRL/)
+  })
+
+  it('builds a structured TRDBRANCH_NOTFOUND error with xmlValue/xmlDescription/remedyLocation (real Auchan XML)', async () => {
+    const xml = await fs.readFile(AUCHAN_FIXTURE, 'utf-8')
+    const ajsLog = []
+    const fetchMock = async (url, init) => {
+      const body = JSON.parse(init.body)
+      if (body.sql.toLowerCase().includes('trdbranch')) return jsonResponse({ success: true, data: '' }) // unmapped GLN
+      return jsonResponse({ success: true, data: `MTRL_${body.value}` })
+    }
+    const app = makeApp({ ajsLog })
+    const { errors } = await buildOrderPayload({
+      xml, sosource: 1351, fprms: 701, series: 7012, retailer: 13248,
+      orderId: 'AUCHAN_182528560.xml', cccsftpxml: 7536, app, fetchImpl: fetchMock
+    })
+
+    assert.strictEqual(errors.length, 1, `expected exactly one error: ${JSON.stringify(errors)}`)
+    const [err] = errors
+    assert.strictEqual(err.type, 'TRDBRANCH_NOTFOUND')
+    assert.strictEqual(err.field, 'TRDBRANCH')
+    assert.strictEqual(err.xmlValue, '5949084999266')
+    assert.strictEqual(err.xmlDescription, 'EXIGENT')
+    assert.strictEqual(err.remedyLocation, 'TRDBRANCH.CCCS1DXGLN — mapare GLN punct de livrare către punct de lucru')
+
+    const message = formatMappingErrorMessage(err)
+    assert.match(message, /\[TRDBRANCH_NOTFOUND\]/)
+    assert.match(message, /5949084999266/)
+    assert.match(message, /EXIGENT/)
+
+    assert.strictEqual(ajsLog.length, 1)
+    assert.match(ajsLog[0].MESSAGETEXT, /\[TRDBRANCH_NOTFOUND\]/)
+  })
+
+  it('generic (non MTRL/TRDBRANCH) mapping errors keep the plain message format', () => {
+    const err = { field: 'TRDR', value: '0000000000020', sql: 'SELECT TRDR FROM TRDR WHERE AFM=:value', message: 'No row from mapping SQL for field TRDR value 0000000000020' }
+    const message = formatMappingErrorMessage(err)
+    assert.doesNotMatch(message, /\[TRDR_NOTFOUND\]/)
+    assert.match(message, /\[TRDR\] valoarea "0000000000020" nerezolvată/)
+  })
 })

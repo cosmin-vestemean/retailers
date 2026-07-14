@@ -11,6 +11,13 @@ function isDuplicateGuardMessage(message) {
   return /^Duplicate NUM04 guard:/i.test(String(message || ''))
 }
 
+// Structured mapping errors (MTRL/TRDBRANCH not found in SoftOne) are remediable by fixing
+// the mapping data in the ERP, then retrying the send. Any other error (technical/platform:
+// JSON, FTP, routing, other exceptions) is not fixable from this UI.
+function isRemediatedMappingError(message) {
+  return /\[(MTRL_NOTFOUND|TRDBRANCH_NOTFOUND)\]/.test(String(message || ''))
+}
+
 export class OrdersTable extends LightElement {
   static properties = {
     trdr:       { type: String },
@@ -96,6 +103,10 @@ export class OrdersTable extends LightElement {
     return order.error
   }
 
+  _isMappingError(order) {
+    return isRemediatedMappingError(order.error)
+  }
+
   get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
 
   async _prevPage() {
@@ -130,9 +141,8 @@ export class OrdersTable extends LightElement {
         this._orders[index].findoc = response.id
         this.requestUpdate()
       } else {
-        const errMsg = response.errors?.map((e, i) =>
-          `${i + 1}. "${e.key}" = "${e.value}" — SQL: ${e.sql}`
-        ).join('\n') || response.message || 'Unknown error'
+        const errMsg = response.errors?.map((e, i) => `${i + 1}. ${this._formatSendError(e)}`).join('\n')
+          || response.message || 'Unknown error'
         this._updateOrderStatus(index, 'error', errMsg)
       }
     } catch (e) {
@@ -151,6 +161,14 @@ export class OrdersTable extends LightElement {
       orderId: order.orderId,
       manual: order.status === 'manual'
     })
+  }
+
+  _formatSendError(e) {
+    if (e?.type === 'MTRL_NOTFOUND' || e?.type === 'TRDBRANCH_NOTFOUND') {
+      const desc = e.xmlDescription ? ` (${e.xmlDescription})` : ''
+      return `[${e.type}] ${e.field}="${e.xmlValue}"${desc} — ${e.remedyLocation}`
+    }
+    return e?.message || String(e)
   }
 
   _sendButtonLabel(order, index) {
@@ -325,19 +343,28 @@ export class OrdersTable extends LightElement {
                     <div class="actions">
                       <button class="btn btn-sm btn-info" @click=${() => this._saveXml(order)}>Save</button>
                       <button class="btn btn-sm btn-primary" @click=${() => this._copyXml(order)}>Copy</button>
-                      ${order.status === 'pending' || order.status === 'manual' || order.status === 'error' ? html`
+                      ${order.status === 'pending' || order.status === 'manual' || (order.status === 'error' && this._isMappingError(order)) ? html`
                         <button class="btn btn-sm btn-success"
                                 ?disabled=${this._sending.has(realIndex)}
                                 @click=${() => this._sendOrder(order, realIndex)}>
                           ${this._sendButtonLabel(order, realIndex)}
                         </button>
+                      ` : ''}
+                      ${order.status === 'pending' || order.status === 'manual' || order.status === 'error' ? html`
                         <button class="btn btn-sm btn-danger" @click=${() => this._deleteOrder(order, realIndex)}>Delete</button>
                       ` : ''}
                       ${order.status === 'sent' && !order.fincode ? html`
                         <button class="btn btn-sm" @click=${() => this._lookupFindoc(order, realIndex)}>Lookup</button>
                       ` : ''}
                     </div>
-                    ${visibleError ? html`<div class="error-box">${visibleError}</div>` : ''}
+                    ${visibleError ? html`
+                      <div class="error-box ${this._isMappingError(order) ? 'error-box-mapping' : 'error-box-technical'}"
+                           title=${this._isMappingError(order)
+                             ? 'Eroare de mapare — corectați maparea în ERP, apoi apăsați Retrimite'
+                             : 'Eroare tehnică — necesită investigare, nu poate fi corectată din această interfață'}>
+                        ${visibleError}
+                      </div>
+                    ` : ''}
                     ${order.xmlData ? html`<xml-viewer .content=${order.xmlData}></xml-viewer>` : ''}
                   </td>
                   <td>${this._statusBadge(order)}</td>
