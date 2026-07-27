@@ -1,0 +1,1059 @@
+[
+    {
+        "type": "text",
+        "text": "EDInet Connector – manual",
+        "text_level": 1,
+        "bbox": [
+            319,
+            57,
+            678,
+            77
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Table of contents",
+        "text_level": 2,
+        "bbox": [
+            57,
+            114,
+            248,
+            131
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "EDInet Connector – manual....1",
+        "bbox": [
+            55,
+            137,
+            939,
+            152
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Installation....1",
+        "bbox": [
+            57,
+            154,
+            939,
+            168
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Orders relation ....3",
+        "bbox": [
+            57,
+            170,
+            939,
+            185
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Retanns relation ......5",
+        "bbox": [
+            57,
+            187,
+            939,
+            200
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Invoices relations ....5",
+        "bbox": [
+            57,
+            203,
+            939,
+            217
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Installation",
+        "text_level": 2,
+        "bbox": [
+            423,
+            267,
+            571,
+            286
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "list",
+        "sub_type": "text",
+        "list_items": [
+            "1. Please download EC from here: http://www.infinite.pl/pub/soft/edinetconnector/",
+            "File: EdinetConnector-1.6.exe",
+            "You need the latest java library.",
+            "2. Start installation process with EdinetConnector-1.6.exe",
+            "3. Chose language and click Next"
+        ],
+        "bbox": [
+            55,
+            291,
+            731,
+            406
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/3044fd731eaa5f49d3ab54e528b4f993a988a6beb611aa143c621a2de14b22ed.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "EdinetConnector 1.6\nEdinet\npki adapter\nSelect language:\nWybierz język:\nNyelv:\nEnglish\nCancel\tNext",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            420,
+            731,
+            797
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "list",
+        "sub_type": "text",
+        "list_items": [
+            "4. Accept the agreement",
+            "5. Please implement License key.\nYou got the License from Edinet helpdesk"
+        ],
+        "bbox": [
+            55,
+            812,
+            423,
+            879
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/4a77b18e5c4a1fbe433d4b6fed0c1024dc4a7a41499929b1fab926a802f546ea.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "EdinetConnector 1.6\nLicence key\nCancel\tBack\tNext",
+        "sub_type": "text_image",
+        "bbox": [
+            58,
+            41,
+            727,
+            418
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/77d274439d9474ff5b75be111d3ed92278655e7ad3ccddb5e057e64f2fe9c55c.jpg",
+        "image_caption": [
+            "6. Click install",
+            "7. Start and open EDInet Connector from tray"
+        ],
+        "image_footnote": [],
+        "content": "EdinetConnector 1.6\nInstall\nAutostart\nBack\tFinish",
+        "sub_type": "text_image",
+        "bbox": [
+            58,
+            448,
+            727,
+            822
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/19831b5a14d1f46d03d0fa8c3885b5dd3735c15bf3e11717ae899ee0c8eee872.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Start\nStop\nOpen\nUpdate\nClose\n13:53\n2012-11-28\nStart\nStop\nOpen\nUpdate\nClose\n13:56\n2012-11-28",
+        "sub_type": "text_image",
+        "bbox": [
+            58,
+            40,
+            806,
+            189
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "8. Type login and password (admin/admin).",
+        "bbox": [
+            55,
+            219,
+            423,
+            237
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/53f2bd0f9f8b3e262bf2b05d12b6034a7d77d524cce9fd4f123c934aa11cd50b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Podaj nazwę użytkownika i hasło\nWitryna http://localhost:29292 prosi o podanie nazwy użytkownika i hasła. Komunikat witryny:\n„EdinetConnector\"\nUżytkownik: admin\nHasło: •••••\nOK\tAnuluj",
+        "sub_type": "text_image",
+        "bbox": [
+            87,
+            253,
+            789,
+            397
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Orders relation",
+        "text_level": 3,
+        "bbox": [
+            400,
+            426,
+            596,
+            445
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "1. Proceed to RELATIONS bookmark and Add new relation.",
+        "bbox": [
+            55,
+            450,
+            564,
+            464
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/f15b2af9a7e8d7cd9081f75b34cfda3f4b4eba0367bd451ab242e883e3e4cfda.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> F[\"Add\"]\n  F -.-> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            80,
+            470,
+            821,
+            588
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY.",
+        "bbox": [
+            53,
+            601,
+            939,
+            633
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Please select: FTP -> Directory",
+        "bbox": [
+            55,
+            634,
+            327,
+            651
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Also type name of relation.",
+        "bbox": [
+            55,
+            651,
+            280,
+            668
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/6a849534b1e3153cf008fb5f27ca1a06aac103d0ff6c8da0e863f4557529e4a4.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  G[\"Remove\"] --> H[\"Remove\"]\n  I[\"ID\"] --> J[\"ON\"]\n  K[\"Relation description\"] --> L[\"Source type\"]\n  M[\"Connection type\"] --> N[\"Relation description orders\"]\n  O[\"Relation with FTP\"] --> P[\"to DIRECTORY\"]\n  Q[\"Add\"] --> R[\"Add\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            72,
+            684,
+            811,
+            875
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3. Enter the source settings:",
+        "bbox": [
+            55,
+            889,
+            282,
+            904
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "You got those data from Edinet helpdesk.",
+        "bbox": [
+            55,
+            906,
+            416,
+            922
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Host name: ftp.infinite.pl",
+        "bbox": [
+            57,
+            923,
+            265,
+            938
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Remote directory: /orders/",
+        "bbox": [
+            57,
+            939,
+            278,
+            954
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Port: 21",
+        "text_level": 3,
+        "bbox": [
+            55,
+            42,
+            129,
+            55
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "User name and password are different for every client.",
+        "bbox": [
+            55,
+            58,
+            499,
+            74
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/a1369243d54eefdadcb1d0be3d8a76c9d489e3a862931dd1ebdc054618800506.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Source settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /orders/\n? User name test\n? Password\n? Pattern filename\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\n? Validate? true",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            89,
+            937,
+            326
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "4. Check the connection:",
+        "text_level": 4,
+        "bbox": [
+            55,
+            344,
+            260,
+            359
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/7523841e323df408fd14bd3be34b82bd127ffd2f1278b25a32c960a849400f6e.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Check connection\nSuccess",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            359,
+            416,
+            391
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "5. Enter the destination settings. Where orders will be downloading to your system.",
+        "bbox": [
+            55,
+            406,
+            737,
+            423
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/2f7785c2e907a282396fc88511b326a052159cb4b8091e4f394ed96952dce235.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Destination settings\n? Path for destination directory d:\\orders\nCheck connection Success",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            437,
+            816,
+            485
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "6. Save the relation",
+        "text_level": 4,
+        "bbox": [
+            55,
+            502,
+            216,
+            517
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/1519b70127e4ea788beec63f0b312cb0f3bbb7229dc602d528fd95f48ae10efa.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> E\n  F[\"Id\"] --> G[\"ON\"]\n  G --> H[\"Relation description\"]\n  H --> I[\"Source type\"]\n  I --> J[\"Connection type\"]\n  K[\"1\"] --> L[\"No\"]\n  L --> M[\"orders\"]\n  M --> N[\"FTP\"]\n  N --> O[\"DIRECTORY\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            67,
+            537,
+            811,
+            629
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "7. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Order will be downloading from Edinet system to your server",
+        "bbox": [
+            53,
+            644,
+            890,
+            678
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/acc6bcc5094b685c2bc6877131a2431c6b8cbc3306b6bc8c1bb05c296281828d.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"Start\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            65,
+            697,
+            811,
+            790
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "8. To check the document status, please go to MESSAGE TRACKER bookmark.",
+        "bbox": [
+            55,
+            806,
+            717,
+            824
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/e157ea61239027286a79880a84e14a37e512a5ccc7f3f12a2a961c5828721c33.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "",
+        "bbox": [
+            68,
+            47,
+            816,
+            524
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "TRANSACTION NODE",
+        "bbox": [
+            82,
+            54,
+            211,
+            63
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "MESSAGE TRACKER",
+        "bbox": [
+            245,
+            54,
+            366,
+            63
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "RELATIONS",
+        "bbox": [
+            408,
+            54,
+            478,
+            63
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "ADMINISTRATION",
+        "bbox": [
+            569,
+            54,
+            680,
+            63
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/c4bf73c6aad54979e098f03252996766d0619e34afbcb30ea63840118a474cee.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Status:</td><td>Relations:</td><td>Date:</td></tr><tr><td>processing</td><td>All</td><td></td></tr><tr><td>sent</td><td></td><td>search by date</td></tr><tr><td>confirmed</td><td>File name:</td><td>date range</td></tr><tr><td>error</td><td></td><td>1 day</td></tr></table>",
+        "bbox": [
+            75,
+            74,
+            789,
+            135
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/48bc376f2969811a83c9e66f50f0e9d87136851e0ac3fdea22aa84252a9f7ce1.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Rel. Id</td><td>Status</td><td>File name</td><td>Last operation date</td><td>Date of retry message sending</td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188209.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188210.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188211.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188212.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188208.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr></table>",
+        "bbox": [
+            73,
+            139,
+            794,
+            225
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/424c4a0b1d698d6f1b528f5655a3e587ee971c74c66205e03c244ad58851d835.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Date</td><td>Type</td><td>Content</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload start. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download start. File PKI12188209.xml</td></tr></table>",
+        "bbox": [
+            102,
+            273,
+            736,
+            437
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Retanns relation",
+        "text_level": 3,
+        "bbox": [
+            391,
+            556,
+            605,
+            574
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Configuration is the same like for orders.",
+        "bbox": [
+            53,
+            596,
+            396,
+            613
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Only remote directory is different.",
+        "bbox": [
+            57,
+            614,
+            337,
+            630
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The source settings:",
+        "bbox": [
+            55,
+            646,
+            220,
+            662
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "You got those data from Edinet helpdesk.",
+        "bbox": [
+            57,
+            663,
+            416,
+            678
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Host name: ftp.infinite.pl",
+        "bbox": [
+            57,
+            680,
+            265,
+            695
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Remote directory: /retanns/",
+        "bbox": [
+            57,
+            696,
+            287,
+            711
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Port: 21",
+        "bbox": [
+            57,
+            712,
+            129,
+            726
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "User name and password are different for every client.",
+        "bbox": [
+            57,
+            728,
+            499,
+            744
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Invoices relations",
+        "text_level": 3,
+        "bbox": [
+            381,
+            760,
+            613,
+            778
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "1. Proceed to RELATIONS bookmark and Add new relation.",
+        "bbox": [
+            57,
+            784,
+            563,
+            799
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/f57e1f934dc4c74597078f95f441685e20aad80cb1819af5f450505283eaa3b4.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            84,
+            804,
+            818,
+            920
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY.",
+        "bbox": [
+            53,
+            41,
+            941,
+            73
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Please select: Directory -> FTP",
+        "text_level": 4,
+        "bbox": [
+            55,
+            74,
+            327,
+            91
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Also type name of relation.",
+        "bbox": [
+            55,
+            92,
+            280,
+            108
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/8b4ddd76f5cb1eafabe423c5063d5c980edbf7afa3318f77888e6d86f1c6e15d.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Relation description invoices\nRelation with DIRECTORY to FTP\nAdd",
+        "sub_type": "text_image",
+        "bbox": [
+            58,
+            122,
+            937,
+            199
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3. Main setting:",
+        "text_level": 3,
+        "bbox": [
+            55,
+            215,
+            188,
+            231
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "list",
+        "sub_type": "text",
+        "list_items": [
+            "3.1 Signature type: please select Key storage",
+            "3.2 Path to key store: type the path where you put Edinet key (you got from Edinet helpdesk, file edinet.p12)",
+            "3.3 Enter the password",
+            "3.4 Click on Certificate list, select certificate and click OK.",
+            "3.5 The rest stays in default."
+        ],
+        "bbox": [
+            112,
+            233,
+            902,
+            330
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/def3f78ae0adcb33f75f09e43e4aa7322de593e66f4e0875d71792dca625d64c.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Main settings\n? Relation description invoices\n? Retry interval for directory monitoring (seconds) 30\n? Frequency of sending attempts 5\n? Maximum retry attempts of message sending 5\n? Maximum retry interval of message sending (seconds) 300\n? Transformations Do not transform Transform to PDF Transform specially\n? Signature type Not sign Key storage Card Signature\n? Path to key store C:\\Users\\Konrad Majewski\\Desktop\\pick\\phd\\edinet.p12\n? Password to key store Check key store\n? Signature certificate Certificate list\n? Signature algorithm SHA128withRSA\n? Signature file format S/MIME",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            331,
+            937,
+            570
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4. Enter the source settings:",
+        "text_level": 4,
+        "bbox": [
+            55,
+            586,
+            282,
+            602
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The place where invoices are imported from your ERP system.",
+        "bbox": [
+            55,
+            602,
+            566,
+            619
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/2cc0918b80d1567ead79e3b4ece5e341d4be78202aec6de90687e35720cd9260.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Source settings\n? Path for source directory D:\\invoices\\\n? Pattern filename\n? Validate? true\n? Min. file size\n? File contents",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            619,
+            937,
+            715
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "5. Enter the destination settings.",
+        "text_level": 4,
+        "bbox": [
+            55,
+            730,
+            319,
+            746
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "You got those data from Edinet helpdesk.",
+        "text_level": 4,
+        "bbox": [
+            55,
+            747,
+            416,
+            763
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Host name: ftp.infinite.pl",
+        "bbox": [
+            55,
+            764,
+            265,
+            778
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Remote directory: /invoice/",
+        "bbox": [
+            55,
+            780,
+            282,
+            795
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Port: 21",
+        "bbox": [
+            55,
+            796,
+            122,
+            809
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "User name and password are different for every client.",
+        "bbox": [
+            55,
+            812,
+            499,
+            829
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/41641f8930edf53c07d528fae9c2a9d6a8124fc981af5b277f9f7af36b460a27.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Destination settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /invoice/\n? User name test\n? Password ••••••••\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\nCheck connection Success",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            57,
+            931,
+            280
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "6. Check the connection:",
+        "text_level": 4,
+        "bbox": [
+            57,
+            299,
+            260,
+            315
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/7de8f433167942f27a57f99ba217d54ef2750995c964b5de5c13d3f40d25dea6.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "Check connection\nSuccess",
+        "sub_type": "text_image",
+        "bbox": [
+            60,
+            315,
+            418,
+            347
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "7. Save the relation",
+        "text_level": 4,
+        "bbox": [
+            55,
+            394,
+            216,
+            410
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/8500d3a87067b3491777d1d78d2ff493188b62236ae76351fa2942fd44b56c48.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n  M[\"1\"] --> N[\"No\"]\n  N --> O[\"orders\"]\n  O --> P[\"FTP\"]\n  P --> Q[\"DIRECTORY\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            68,
+            429,
+            811,
+            520
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "8. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Invoices will be sending to Edinet system.",
+        "bbox": [
+            53,
+            536,
+            892,
+            571
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/1614b6f49ff36289c9f7cdb0912dfe179b781119ffda3a89c99c2878648fecb5.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"End of Process\"]\n```",
+        "sub_type": "flowchart",
+        "bbox": [
+            65,
+            589,
+            811,
+            683
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "9. To check the document status, please go to MESSAGE TRACKER bookmark.",
+        "bbox": [
+            55,
+            697,
+            717,
+            717
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/726be4c471a4e43dd8013baa64b3607d4749b18beac5d300d985533a63d3ef8b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "content": "TRANSACTION NODE\nMESSAGE TRACKER\nRELATIONS\nADMINISTRATION\nStatus:\nprocessing\nsent\nconfirmed\nerror\nRelations:\nAll\nFile name:\nDate:\nsearch by date\ndate range\n1 day\nFilter\nReset\nRel. Id\tStatus\tFile name\tLast operation date\tData of retry\nmessage sending\n2\tSENT\tPKI12188209.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188210.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188211.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188212.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188208.xml\t2012-11-28 14:26:52\t\t\t①",
+        "sub_type": "text_image",
+        "bbox": [
+            65,
+            736,
+            815,
+            917
+        ],
+        "page_idx": 6
+    }
+]

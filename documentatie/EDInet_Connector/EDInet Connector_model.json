@@ -1,0 +1,2190 @@
+[
+    [
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.321,
+                0.058,
+                0.679,
+                0.078
+            ],
+            "angle": 0,
+            "content": "EDInet Connector – manual"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.058,
+                0.115,
+                0.25,
+                0.133
+            ],
+            "angle": 0,
+            "content": "Table of contents"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.138,
+                0.94,
+                0.153
+            ],
+            "angle": 0,
+            "content": "EDInet Connector – manual....1",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.155,
+                0.94,
+                0.169
+            ],
+            "angle": 0,
+            "content": "Installation....1",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.171,
+                0.94,
+                0.186
+            ],
+            "angle": 0,
+            "content": "Orders relation ....3",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.188,
+                0.94,
+                0.202
+            ],
+            "angle": 0,
+            "content": "Retanns relation ......5",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.204,
+                0.94,
+                0.218
+            ],
+            "angle": 0,
+            "content": "Invoices relations ....5",
+            "merge_prev": false
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.425,
+                0.268,
+                0.572,
+                0.287
+            ],
+            "angle": 0,
+            "content": "Installation"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.292,
+                0.732,
+                0.309
+            ],
+            "angle": 0,
+            "content": "1. Please download EC from here: http://www.infinite.pl/pub/soft/edinetconnector/",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.31,
+                0.307,
+                0.324
+            ],
+            "angle": 0,
+            "content": "File: EdinetConnector-1.6.exe",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.326,
+                0.338,
+                0.342
+            ],
+            "angle": 0,
+            "content": "You need the latest java library.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.358,
+                0.529,
+                0.375
+            ],
+            "angle": 0,
+            "content": "2. Start installation process with EdinetConnector-1.6.exe",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.39,
+                0.334,
+                0.407
+            ],
+            "angle": 0,
+            "content": "3. Chose language and click Next",
+            "merge_prev": false
+        },
+        {
+            "type": "list",
+            "bbox": [
+                0.056,
+                0.292,
+                0.732,
+                0.407
+            ],
+            "angle": 0,
+            "content": null
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.422,
+                0.732,
+                0.798
+            ],
+            "angle": 0,
+            "content": "EdinetConnector 1.6\nEdinet\npki adapter\nSelect language:\nWybierz język:\nNyelv:\nEnglish\nCancel\tNext",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.813,
+                0.259,
+                0.83
+            ],
+            "angle": 0,
+            "content": "4. Accept the agreement",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.846,
+                0.424,
+                0.88
+            ],
+            "angle": 0,
+            "content": "5. Please implement License key.\nYou got the License from Edinet helpdesk",
+            "merge_prev": false
+        },
+        {
+            "type": "list",
+            "bbox": [
+                0.056,
+                0.813,
+                0.424,
+                0.88
+            ],
+            "angle": 0,
+            "content": null
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.321,
+                0.054,
+                0.68,
+                0.08
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.113,
+                0.252,
+                0.135
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.812,
+                0.26,
+                0.832
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.138,
+                0.297,
+                0.154
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.154,
+                0.165,
+                0.171
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.169,
+                0.256,
+                0.189
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.186,
+                0.198,
+                0.203
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.921,
+                0.188,
+                0.941,
+                0.201
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.203,
+                0.219,
+                0.22
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.923,
+                0.205,
+                0.94,
+                0.217
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.424,
+                0.266,
+                0.576,
+                0.29
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.289,
+                0.733,
+                0.311
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.308,
+                0.307,
+                0.326
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.324,
+                0.34,
+                0.345
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.389,
+                0.336,
+                0.409
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.357,
+                0.53,
+                0.376
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.291,
+                0.733,
+                0.311
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.307,
+                0.308,
+                0.327
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.325,
+                0.34,
+                0.344
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.055,
+                0.356,
+                0.53,
+                0.377
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.39,
+                0.336,
+                0.408
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.844,
+                0.337,
+                0.865
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.861,
+                0.424,
+                0.881
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.813,
+                0.259,
+                0.832
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.846,
+                0.337,
+                0.864
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.861,
+                0.424,
+                0.881
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "bbox": [
+                0.059,
+                0.042,
+                0.729,
+                0.419
+            ],
+            "angle": 0,
+            "content": "EdinetConnector 1.6\nLicence key\nCancel\tBack\tNext",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "image_caption",
+            "bbox": [
+                0.059,
+                0.433,
+                0.18,
+                0.448
+            ],
+            "angle": 0,
+            "content": "6. Click install"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.059,
+                0.449,
+                0.729,
+                0.823
+            ],
+            "angle": 0,
+            "content": "EdinetConnector 1.6\nInstall\nAutostart\nBack\tFinish",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "image_caption",
+            "bbox": [
+                0.057,
+                0.839,
+                0.433,
+                0.856
+            ],
+            "angle": 0,
+            "content": "7. Start and open EDInet Connector from tray"
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.837,
+                0.433,
+                0.858
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.433,
+                0.181,
+                0.45
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "bbox": [
+                0.059,
+                0.041,
+                0.807,
+                0.19
+            ],
+            "angle": 0,
+            "content": "Start\nStop\nOpen\nUpdate\nClose\n13:53\n2012-11-28\nStart\nStop\nOpen\nUpdate\nClose\n13:56\n2012-11-28",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.221,
+                0.424,
+                0.239
+            ],
+            "angle": 0,
+            "content": "8. Type login and password (admin/admin).",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.088,
+                0.254,
+                0.791,
+                0.398
+            ],
+            "angle": 0,
+            "content": "Podaj nazwę użytkownika i hasło\nWitryna http://localhost:29292 prosi o podanie nazwy użytkownika i hasła. Komunikat witryny:\n„EdinetConnector\"\nUżytkownik: admin\nHasło: •••••\nOK\tAnuluj",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.4,
+                0.427,
+                0.598,
+                0.446
+            ],
+            "angle": 0,
+            "content": "Orders relation"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.057,
+                0.451,
+                0.566,
+                0.466
+            ],
+            "angle": 0,
+            "content": "1. Proceed to RELATIONS bookmark and Add new relation.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.082,
+                0.472,
+                0.823,
+                0.589
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> F[\"Add\"]\n  F -.-> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.054,
+                0.602,
+                0.941,
+                0.634
+            ],
+            "angle": 0,
+            "content": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.636,
+                0.329,
+                0.652
+            ],
+            "angle": 0,
+            "content": "Please select: FTP -> Directory",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.652,
+                0.281,
+                0.669
+            ],
+            "angle": 0,
+            "content": "Also type name of relation.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.073,
+                0.686,
+                0.813,
+                0.876
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  G[\"Remove\"] --> H[\"Remove\"]\n  I[\"ID\"] --> J[\"ON\"]\n  K[\"Relation description\"] --> L[\"Source type\"]\n  M[\"Connection type\"] --> N[\"Relation description orders\"]\n  O[\"Relation with FTP\"] --> P[\"to DIRECTORY\"]\n  Q[\"Add\"] --> R[\"Add\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.89,
+                0.284,
+                0.906
+            ],
+            "angle": 0,
+            "content": "3. Enter the source settings:",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.907,
+                0.418,
+                0.923
+            ],
+            "angle": 0,
+            "content": "You got those data from Edinet helpdesk.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.924,
+                0.267,
+                0.939
+            ],
+            "angle": 0,
+            "content": "Host name: ftp.infinite.pl",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.94,
+                0.28,
+                0.956
+            ],
+            "angle": 0,
+            "content": "Remote directory: /orders/",
+            "merge_prev": false
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.906,
+                0.42,
+                0.924
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.4,
+                0.424,
+                0.6,
+                0.448
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.921,
+                0.267,
+                0.94
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.602,
+                0.941,
+                0.62
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.618,
+                0.267,
+                0.636
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.652,
+                0.283,
+                0.669
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.888,
+                0.287,
+                0.909
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.94,
+                0.281,
+                0.956
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.634,
+                0.329,
+                0.654
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.22,
+                0.426,
+                0.24
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.059,
+                0.451,
+                0.565,
+                0.467
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.057,
+                0.043,
+                0.13,
+                0.057
+            ],
+            "angle": 0,
+            "content": "Port: 21"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.057,
+                0.059,
+                0.5,
+                0.075
+            ],
+            "angle": 0,
+            "content": "User name and password are different for every client.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.09,
+                0.938,
+                0.328
+            ],
+            "angle": 0,
+            "content": "Source settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /orders/\n? User name test\n? Password\n? Pattern filename\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\n? Validate? true",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.345,
+                0.261,
+                0.36
+            ],
+            "angle": 0,
+            "content": "4. Check the connection:"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.36,
+                0.418,
+                0.392
+            ],
+            "angle": 0,
+            "content": "Check connection\nSuccess",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.407,
+                0.738,
+                0.424
+            ],
+            "angle": 0,
+            "content": "5. Enter the destination settings. Where orders will be downloading to your system.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.438,
+                0.818,
+                0.486
+            ],
+            "angle": 0,
+            "content": "Destination settings\n? Path for destination directory d:\\orders\nCheck connection Success",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.057,
+                0.504,
+                0.217,
+                0.518
+            ],
+            "angle": 0,
+            "content": "6. Save the relation"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.068,
+                0.538,
+                0.813,
+                0.63
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> E\n  F[\"Id\"] --> G[\"ON\"]\n  G --> H[\"Relation description\"]\n  H --> I[\"Source type\"]\n  I --> J[\"Connection type\"]\n  K[\"1\"] --> L[\"No\"]\n  L --> M[\"orders\"]\n  M --> N[\"FTP\"]\n  N --> O[\"DIRECTORY\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.055,
+                0.645,
+                0.891,
+                0.679
+            ],
+            "angle": 0,
+            "content": "7. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Order will be downloading from Edinet system to your server",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.067,
+                0.698,
+                0.812,
+                0.791
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"Start\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.807,
+                0.718,
+                0.825
+            ],
+            "angle": 0,
+            "content": "8. To check the document status, please go to MESSAGE TRACKER bookmark.",
+            "merge_prev": false
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.345,
+                0.263,
+                0.362
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.503,
+                0.218,
+                0.519
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.404,
+                0.739,
+                0.426
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.059,
+                0.502,
+                0.077
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.043,
+                0.132,
+                0.06
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.055,
+                0.644,
+                0.893,
+                0.664
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.661,
+                0.562,
+                0.681
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.807,
+                0.719,
+                0.826
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "image_block",
+            "bbox": [
+                0.069,
+                0.048,
+                0.817,
+                0.525
+            ],
+            "angle": 0,
+            "content": null
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.084,
+                0.055,
+                0.212,
+                0.064
+            ],
+            "angle": 0,
+            "content": "TRANSACTION NODE",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.246,
+                0.055,
+                0.367,
+                0.064
+            ],
+            "angle": 0,
+            "content": "MESSAGE TRACKER",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.409,
+                0.055,
+                0.48,
+                0.064
+            ],
+            "angle": 0,
+            "content": "RELATIONS",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.571,
+                0.055,
+                0.681,
+                0.064
+            ],
+            "angle": 0,
+            "content": "ADMINISTRATION",
+            "merge_prev": false
+        },
+        {
+            "type": "table",
+            "bbox": [
+                0.077,
+                0.075,
+                0.791,
+                0.136
+            ],
+            "angle": 0,
+            "content": "<table><tr><td>Status:</td><td>Relations:</td><td>Date:</td></tr><tr><td>processing</td><td>All</td><td></td></tr><tr><td>sent</td><td></td><td>search by date</td></tr><tr><td>confirmed</td><td>File name:</td><td>date range</td></tr><tr><td>error</td><td></td><td>1 day</td></tr></table>"
+        },
+        {
+            "type": "table",
+            "bbox": [
+                0.074,
+                0.14,
+                0.795,
+                0.226
+            ],
+            "angle": 0,
+            "content": "<table><tr><td>Rel. Id</td><td>Status</td><td>File name</td><td>Last operation date</td><td>Date of retry message sending</td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188209.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188210.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188211.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188212.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188208.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr></table>"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.744,
+                0.254,
+                0.768,
+                0.271
+            ],
+            "angle": 0,
+            "content": null
+        },
+        {
+            "type": "table",
+            "bbox": [
+                0.104,
+                0.274,
+                0.737,
+                0.438
+            ],
+            "angle": 0,
+            "content": "<table><tr><td>Date</td><td>Type</td><td>Content</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload start. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download start. File PKI12188209.xml</td></tr></table>"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.392,
+                0.557,
+                0.606,
+                0.575
+            ],
+            "angle": 0,
+            "content": "Retanns relation"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.055,
+                0.598,
+                0.398,
+                0.614
+            ],
+            "angle": 0,
+            "content": "Configuration is the same like for orders.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.615,
+                0.338,
+                0.631
+            ],
+            "angle": 0,
+            "content": "Only remote directory is different.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.647,
+                0.221,
+                0.663
+            ],
+            "angle": 0,
+            "content": "The source settings:",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.664,
+                0.418,
+                0.68
+            ],
+            "angle": 0,
+            "content": "You got those data from Edinet helpdesk.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.681,
+                0.267,
+                0.696
+            ],
+            "angle": 0,
+            "content": "Host name: ftp.infinite.pl",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.697,
+                0.289,
+                0.712
+            ],
+            "angle": 0,
+            "content": "Remote directory: /retanns/",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.713,
+                0.131,
+                0.727
+            ],
+            "angle": 0,
+            "content": "Port: 21",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.729,
+                0.5,
+                0.745
+            ],
+            "angle": 0,
+            "content": "User name and password are different for every client.",
+            "merge_prev": false
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.383,
+                0.761,
+                0.615,
+                0.779
+            ],
+            "angle": 0,
+            "content": "Invoices relations"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.058,
+                0.785,
+                0.564,
+                0.8
+            ],
+            "angle": 0,
+            "content": "1. Proceed to RELATIONS bookmark and Add new relation.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.085,
+                0.805,
+                0.819,
+                0.921
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.597,
+                0.4,
+                0.615
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.059,
+                0.664,
+                0.419,
+                0.681
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.678,
+                0.268,
+                0.697
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.645,
+                0.224,
+                0.665
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.392,
+                0.554,
+                0.609,
+                0.578
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.696,
+                0.288,
+                0.713
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.384,
+                0.759,
+                0.617,
+                0.782
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.613,
+                0.339,
+                0.631
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.784,
+                0.565,
+                0.802
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.712,
+                0.134,
+                0.729
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.082,
+                0.054,
+                0.213,
+                0.065
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.245,
+                0.055,
+                0.368,
+                0.065
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.57,
+                0.054,
+                0.683,
+                0.065
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.407,
+                0.053,
+                0.481,
+                0.065
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.728,
+                0.502,
+                0.748
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "text",
+            "bbox": [
+                0.055,
+                0.042,
+                0.942,
+                0.074
+            ],
+            "angle": 0,
+            "content": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY.",
+            "merge_prev": false
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.076,
+                0.329,
+                0.092
+            ],
+            "angle": 0,
+            "content": "Please select: Directory -> FTP"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.093,
+                0.281,
+                0.109
+            ],
+            "angle": 0,
+            "content": "Also type name of relation.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.059,
+                0.123,
+                0.938,
+                0.2
+            ],
+            "angle": 0,
+            "content": "Relation description invoices\nRelation with DIRECTORY to FTP\nAdd",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.216,
+                0.189,
+                0.232
+            ],
+            "angle": 0,
+            "content": "3. Main setting:"
+        },
+        {
+            "type": "list",
+            "bbox": [
+                0.114,
+                0.234,
+                0.903,
+                0.331
+            ],
+            "angle": 0,
+            "content": null
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.115,
+                0.234,
+                0.488,
+                0.249
+            ],
+            "angle": 0,
+            "content": "3.1 Signature type: please select Key storage",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.055,
+                0.25,
+                0.901,
+                0.281
+            ],
+            "angle": 0,
+            "content": "3.2 Path to key store: type the path where you put Edinet key (you got from Edinet helpdesk, file edinet.p12)",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.116,
+                0.283,
+                0.306,
+                0.298
+            ],
+            "angle": 0,
+            "content": "3.3 Enter the password",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.116,
+                0.299,
+                0.598,
+                0.313
+            ],
+            "angle": 0,
+            "content": "3.4 Click on Certificate list, select certificate and click OK.",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.116,
+                0.316,
+                0.348,
+                0.331
+            ],
+            "angle": 0,
+            "content": "3.5 The rest stays in default.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.061,
+                0.332,
+                0.938,
+                0.571
+            ],
+            "angle": 0,
+            "content": "Main settings\n? Relation description invoices\n? Retry interval for directory monitoring (seconds) 30\n? Frequency of sending attempts 5\n? Maximum retry attempts of message sending 5\n? Maximum retry interval of message sending (seconds) 300\n? Transformations Do not transform Transform to PDF Transform specially\n? Signature type Not sign Key storage Card Signature\n? Path to key store C:\\Users\\Konrad Majewski\\Desktop\\pick\\phd\\edinet.p12\n? Password to key store Check key store\n? Signature certificate Certificate list\n? Signature algorithm SHA128withRSA\n? Signature file format S/MIME",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.587,
+                0.284,
+                0.604
+            ],
+            "angle": 0,
+            "content": "4. Enter the source settings:"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.604,
+                0.568,
+                0.62
+            ],
+            "angle": 0,
+            "content": "The place where invoices are imported from your ERP system.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.061,
+                0.62,
+                0.938,
+                0.716
+            ],
+            "angle": 0,
+            "content": "Source settings\n? Path for source directory D:\\invoices\\\n? Pattern filename\n? Validate? true\n? Min. file size\n? File contents",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.731,
+                0.32,
+                0.747
+            ],
+            "angle": 0,
+            "content": "5. Enter the destination settings."
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.056,
+                0.748,
+                0.418,
+                0.764
+            ],
+            "angle": 0,
+            "content": "You got those data from Edinet helpdesk."
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.765,
+                0.267,
+                0.78
+            ],
+            "angle": 0,
+            "content": "Host name: ftp.infinite.pl",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.781,
+                0.284,
+                0.796
+            ],
+            "angle": 0,
+            "content": "Remote directory: /invoice/",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.797,
+                0.124,
+                0.81
+            ],
+            "angle": 0,
+            "content": "Port: 21",
+            "merge_prev": false
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.813,
+                0.5,
+                0.83
+            ],
+            "angle": 0,
+            "content": "User name and password are different for every client.",
+            "merge_prev": false
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.747,
+                0.42,
+                0.765
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.115,
+                0.281,
+                0.308,
+                0.301
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.042,
+                0.942,
+                0.06
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.059,
+                0.267,
+                0.074
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.092,
+                0.284,
+                0.109
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.117,
+                0.316,
+                0.349,
+                0.332
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.585,
+                0.286,
+                0.606
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.764,
+                0.266,
+                0.78
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.059,
+                0.781,
+                0.284,
+                0.797
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.075,
+                0.33,
+                0.093
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.729,
+                0.322,
+                0.749
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.058,
+                0.812,
+                0.503,
+                0.831
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.115,
+                0.231,
+                0.49,
+                0.254
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.215,
+                0.19,
+                0.235
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.117,
+                0.299,
+                0.599,
+                0.315
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.602,
+                0.571,
+                0.622
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.796,
+                0.128,
+                0.813
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.114,
+                0.247,
+                0.904,
+                0.268
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.055,
+                0.263,
+                0.161,
+                0.285
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.114,
+                0.232,
+                0.489,
+                0.252
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.114,
+                0.248,
+                0.904,
+                0.268
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.108,
+                0.265,
+                0.16,
+                0.283
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.114,
+                0.283,
+                0.308,
+                0.299
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.114,
+                0.298,
+                0.6,
+                0.316
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.115,
+                0.315,
+                0.35,
+                0.333
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.058,
+                0.932,
+                0.281
+            ],
+            "angle": 0,
+            "content": "Destination settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /invoice/\n? User name test\n? Password ••••••••\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\nCheck connection Success",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.058,
+                0.3,
+                0.262,
+                0.316
+            ],
+            "angle": 0,
+            "content": "6. Check the connection:"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.062,
+                0.316,
+                0.42,
+                0.348
+            ],
+            "angle": 0,
+            "content": "Check connection\nSuccess",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "paragraph_title",
+            "bbox": [
+                0.057,
+                0.395,
+                0.218,
+                0.411
+            ],
+            "angle": 0,
+            "content": "7. Save the relation"
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.069,
+                0.43,
+                0.813,
+                0.521
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n  M[\"1\"] --> N[\"No\"]\n  N --> O[\"orders\"]\n  O --> P[\"FTP\"]\n  P --> Q[\"DIRECTORY\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.055,
+                0.537,
+                0.893,
+                0.573
+            ],
+            "angle": 0,
+            "content": "8. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Invoices will be sending to Edinet system.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.067,
+                0.59,
+                0.813,
+                0.684
+            ],
+            "angle": 0,
+            "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"End of Process\"]\n```",
+            "sub_type": "flowchart"
+        },
+        {
+            "type": "text",
+            "bbox": [
+                0.056,
+                0.699,
+                0.719,
+                0.718
+            ],
+            "angle": 0,
+            "content": "9. To check the document status, please go to MESSAGE TRACKER bookmark.",
+            "merge_prev": false
+        },
+        {
+            "type": "image",
+            "bbox": [
+                0.067,
+                0.737,
+                0.816,
+                0.919
+            ],
+            "angle": 0,
+            "content": "TRANSACTION NODE\nMESSAGE TRACKER\nRELATIONS\nADMINISTRATION\nStatus:\nprocessing\nsent\nconfirmed\nerror\nRelations:\nAll\nFile name:\nDate:\nsearch by date\ndate range\n1 day\nFilter\nReset\nRel. Id\tStatus\tFile name\tLast operation date\tData of retry\nmessage sending\n2\tSENT\tPKI12188209.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188210.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188211.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188212.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188208.xml\t2012-11-28 14:26:52\t\t\t①",
+            "sub_type": "text_image"
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.3,
+                0.263,
+                0.317
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.057,
+                0.394,
+                0.219,
+                0.412
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.055,
+                0.537,
+                0.894,
+                0.557
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.553,
+                0.403,
+                0.573
+            ],
+            "text": "",
+            "score": 1.0
+        },
+        {
+            "type": "ocr_text",
+            "bbox": [
+                0.056,
+                0.699,
+                0.718,
+                0.718
+            ],
+            "text": "",
+            "score": 1.0
+        }
+    ]
+]

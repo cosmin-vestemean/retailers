@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-05-22T11:21:05">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>01676145</BuyerOrderNumber>
+    <OrderIssueDate>2026-05-22</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-05-27T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest></DeliveryDateEarliest>
+    <DeliveryDateLatest></DeliveryDateLatest>
+    <PurchasingInfo><![CDATA[ORDERS ]]></PurchasingInfo>
+    <PromotionDealNo><![CDATA[]]></PromotionDealNo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5949084999594</GLN>
+       <Name><![CDATA[AUCHAN PLATFORMA LOGISTICA FOOD PGC DEVA ACT. 675]]></Name>
+       <Street><![CDATA[Str. Brasov, Nr. 25, Sector 6]]></Street>
+       <PostalCode>061444</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+       <PurchasingContact></PurchasingContact>
+       <ContactTel></ContactTel>
+       <ContactFax></ContactFax>
+       <SalesDepartmentNumber>746</SalesDepartmentNumber>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN></GLN>
+       <Name><![CDATA[]]></Name>
+       <Street><![CDATA[]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[]]></City>
+       <CountryCode></CountryCode>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>5949084999501</GLN>
+       <Name><![CDATA[AUCHAN PLATFORMA LOGISTICA NON FOOD CALAN
+]]></Name>
+       <Street><![CDATA[Parc Industrial NON Food Calan, str. 1 Decembrie nr. 40]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[Calan]]></City>
+       <CountryCode></CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>05613</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[Sos. Mihai Bravu nr. 255]]></Street>
+       <PostalCode>040676</PostalCode>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode></CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949084029970</GTIN>
+      <BuyerItemNum>1</BuyerItemNum>
+      <BuyerItemID><![CDATA[826077]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[]]></SellerItemID>
+      <QuantityOrdered>2640.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit>24.00</NumberInTradeUnit>
+      <ProductDescription><![CDATA[POUCE PLIC PISICA VITA IN SOS]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.87</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate></ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949084030013</GTIN>
+      <BuyerItemNum>2</BuyerItemNum>
+      <BuyerItemID><![CDATA[826080]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[]]></SellerItemID>
+      <QuantityOrdered>1800.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit>24.00</NumberInTradeUnit>
+      <ProductDescription><![CDATA[AUCHAN PLIC PISICA PUI IN SOS]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.92</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate></ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949084030563</GTIN>
+      <BuyerItemNum>3</BuyerItemNum>
+      <BuyerItemID><![CDATA[826084]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[]]></SellerItemID>
+      <QuantityOrdered>2208.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit>24.00</NumberInTradeUnit>
+      <ProductDescription><![CDATA[AUCHAN PLIC PISICA SOMON IN SO]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.92</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate></ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949084030006</GTIN>
+      <BuyerItemNum>4</BuyerItemNum>
+      <BuyerItemID><![CDATA[826085]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[]]></SellerItemID>
+      <QuantityOrdered>1032.000</QuantityOrdered>
+      <UnitOfMeasure>PCE</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit>24.00</NumberInTradeUnit>
+      <ProductDescription><![CDATA[AUCHAN PLIC PISICA JUNIOR PUI]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>0.92</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate></ItemRequestedDeliverDate>
+    </Item>
+</OrderDetail>
+ <OrderSummary >
+    <NumberOfItems>4</NumberOfItems>
+    <TotalNetAmount>6933.60</TotalNetAmount>
+ </OrderSummary >
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

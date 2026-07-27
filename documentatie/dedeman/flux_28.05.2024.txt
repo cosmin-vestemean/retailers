@@ -1,0 +1,18 @@
+1. Edinet FTP (usr, pwd, IP, init dir) / servicedesk@infinite-b2b.ro sau +40 756 030 581
+
+2. Rtann > fact retur 7531 > xml
+Ultimul Aviz care contine cantitatea returnata daca cant retur > cant ultim aviz => retur cant din ultimul aviz pe o linie si restul din urmatorul/urmatoarele avize => pret articol factura retur pereche avize
+
+--------------------------------------------------------------------
+
+3. comenzi CKEY 7012
+
+4. WMS: aviz 7111 => desav xml 10
+
+5. RECADV 8 => facturi S1 7123 8 + aviz retur 9221 (diferenta) 2
+
+--------------------------------------------------------------------
+4 foldere pentru fiecare tip de doc xml; cel de retun rtann - solicitare spre comenrcial pentru activare
+ip, usr, pwd, init dir: al are Fliundra pe email, altfel trebuie resetata parola => mecanismul actual trebuie actualizat la noua parola; se poate?
+ftp &&&&&&&&& SFPT, daca se solicita instalarea/configurarea conexiunii ca atare
+retann, ceva comenzi cu valori negative

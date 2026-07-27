@@ -1,0 +1,4 @@
+4 foldere pentru fiecare tip de doc xml; cel de retun rtann - solicitare spre comenrcial pentru activare
+ip, usr, pwd, init dir: al are Fliundra pe email, altfel trebuie resetata parola => mecanismul actual trebuie actualizat la noua parola; se poate?
+ftp &&&&&&&&& SFPT, daca se solicita instalarea/configurarea conexiunii ca atare
+retann, ceva comenzi cu valori negative

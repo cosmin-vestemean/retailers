@@ -1,0 +1,1595 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "EDInet Connector – manual"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                319,
+                57,
+                678,
+                77
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Table of contents"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                57,
+                114,
+                248,
+                131
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "EDInet Connector – manual....1"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                137,
+                939,
+                152
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Installation....1"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                154,
+                939,
+                168
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Orders relation ....3"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                170,
+                939,
+                185
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Retanns relation ......5"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                187,
+                939,
+                200
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Invoices relations ....5"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                203,
+                939,
+                217
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Installation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                423,
+                267,
+                571,
+                286
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "text_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "1. Please download EC from here: http://www.infinite.pl/pub/soft/edinetconnector/"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "File: EdinetConnector-1.6.exe"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "You need the latest java library."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "2. Start installation process with EdinetConnector-1.6.exe"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3. Chose language and click Next"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                291,
+                731,
+                406
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/3044fd731eaa5f49d3ab54e528b4f993a988a6beb611aa143c621a2de14b22ed.jpg"
+                },
+                "content": "EdinetConnector 1.6\nEdinet\npki adapter\nSelect language:\nWybierz język:\nNyelv:\nEnglish\nCancel\tNext",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                420,
+                731,
+                797
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "text_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "4. Accept the agreement"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "5. Please implement License key.\nYou got the License from Edinet helpdesk"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                812,
+                423,
+                879
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/4a77b18e5c4a1fbe433d4b6fed0c1024dc4a7a41499929b1fab926a802f546ea.jpg"
+                },
+                "content": "EdinetConnector 1.6\nLicence key\nCancel\tBack\tNext",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                58,
+                41,
+                727,
+                418
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/77d274439d9474ff5b75be111d3ed92278655e7ad3ccddb5e057e64f2fe9c55c.jpg"
+                },
+                "content": "EdinetConnector 1.6\nInstall\nAutostart\nBack\tFinish",
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "6. Click install"
+                    },
+                    {
+                        "type": "text",
+                        "content": "7. Start and open EDInet Connector from tray"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                58,
+                448,
+                727,
+                822
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/19831b5a14d1f46d03d0fa8c3885b5dd3735c15bf3e11717ae899ee0c8eee872.jpg"
+                },
+                "content": "Start\nStop\nOpen\nUpdate\nClose\n13:53\n2012-11-28\nStart\nStop\nOpen\nUpdate\nClose\n13:56\n2012-11-28",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                58,
+                40,
+                806,
+                189
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "8. Type login and password (admin/admin)."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                219,
+                423,
+                237
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/53f2bd0f9f8b3e262bf2b05d12b6034a7d77d524cce9fd4f123c934aa11cd50b.jpg"
+                },
+                "content": "Podaj nazwę użytkownika i hasło\nWitryna http://localhost:29292 prosi o podanie nazwy użytkownika i hasła. Komunikat witryny:\n„EdinetConnector\"\nUżytkownik: admin\nHasło: •••••\nOK\tAnuluj",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                87,
+                253,
+                789,
+                397
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Orders relation"
+                    }
+                ],
+                "level": 3
+            },
+            "bbox": [
+                400,
+                426,
+                596,
+                445
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Proceed to RELATIONS bookmark and Add new relation."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                450,
+                564,
+                464
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/f15b2af9a7e8d7cd9081f75b34cfda3f4b4eba0367bd451ab242e883e3e4cfda.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> F[\"Add\"]\n  F -.-> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                80,
+                470,
+                821,
+                588
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                601,
+                939,
+                633
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Please select: FTP -> Directory"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                634,
+                327,
+                651
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Also type name of relation."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                651,
+                280,
+                668
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/6a849534b1e3153cf008fb5f27ca1a06aac103d0ff6c8da0e863f4557529e4a4.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  G[\"Remove\"] --> H[\"Remove\"]\n  I[\"ID\"] --> J[\"ON\"]\n  K[\"Relation description\"] --> L[\"Source type\"]\n  M[\"Connection type\"] --> N[\"Relation description orders\"]\n  O[\"Relation with FTP\"] --> P[\"to DIRECTORY\"]\n  Q[\"Add\"] --> R[\"Add\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                72,
+                684,
+                811,
+                875
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Enter the source settings:"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                889,
+                282,
+                904
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You got those data from Edinet helpdesk."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                906,
+                416,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Host name: ftp.infinite.pl"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                923,
+                265,
+                938
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Remote directory: /orders/"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                939,
+                278,
+                954
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Port: 21"
+                    }
+                ],
+                "level": 3
+            },
+            "bbox": [
+                55,
+                42,
+                129,
+                55
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "User name and password are different for every client."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                58,
+                499,
+                74
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a1369243d54eefdadcb1d0be3d8a76c9d489e3a862931dd1ebdc054618800506.jpg"
+                },
+                "content": "Source settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /orders/\n? User name test\n? Password\n? Pattern filename\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\n? Validate? true",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                89,
+                937,
+                326
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Check the connection:"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                344,
+                260,
+                359
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/7523841e323df408fd14bd3be34b82bd127ffd2f1278b25a32c960a849400f6e.jpg"
+                },
+                "content": "Check connection\nSuccess",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                359,
+                416,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Enter the destination settings. Where orders will be downloading to your system."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                406,
+                737,
+                423
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/2f7785c2e907a282396fc88511b326a052159cb4b8091e4f394ed96952dce235.jpg"
+                },
+                "content": "Destination settings\n? Path for destination directory d:\\orders\nCheck connection Success",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                437,
+                816,
+                485
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. Save the relation"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                502,
+                216,
+                517
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1519b70127e4ea788beec63f0b312cb0f3bbb7229dc602d528fd95f48ae10efa.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\\nAdd\\nRemove\"] -.-> E\n  F[\"Id\"] --> G[\"ON\"]\n  G --> H[\"Relation description\"]\n  H --> I[\"Source type\"]\n  I --> J[\"Connection type\"]\n  K[\"1\"] --> L[\"No\"]\n  L --> M[\"orders\"]\n  M --> N[\"FTP\"]\n  N --> O[\"DIRECTORY\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                67,
+                537,
+                811,
+                629
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "7. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Order will be downloading from Edinet system to your server"
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                644,
+                890,
+                678
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/acc6bcc5094b685c2bc6877131a2431c6b8cbc3306b6bc8c1bb05c296281828d.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"Start\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                65,
+                697,
+                811,
+                790
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "8. To check the document status, please go to MESSAGE TRACKER bookmark."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                806,
+                717,
+                824
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/e157ea61239027286a79880a84e14a37e512a5ccc7f3f12a2a961c5828721c33.jpg"
+                },
+                "content": "",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                68,
+                47,
+                816,
+                524
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "TRANSACTION NODE"
+                    }
+                ]
+            },
+            "bbox": [
+                82,
+                54,
+                211,
+                63
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "MESSAGE TRACKER"
+                    }
+                ]
+            },
+            "bbox": [
+                245,
+                54,
+                366,
+                63
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "RELATIONS"
+                    }
+                ]
+            },
+            "bbox": [
+                408,
+                54,
+                478,
+                63
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "ADMINISTRATION"
+                    }
+                ]
+            },
+            "bbox": [
+                569,
+                54,
+                680,
+                63
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/c4bf73c6aad54979e098f03252996766d0619e34afbcb30ea63840118a474cee.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Status:</td><td>Relations:</td><td>Date:</td></tr><tr><td>processing</td><td>All</td><td></td></tr><tr><td>sent</td><td></td><td>search by date</td></tr><tr><td>confirmed</td><td>File name:</td><td>date range</td></tr><tr><td>error</td><td></td><td>1 day</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                75,
+                74,
+                789,
+                135
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/48bc376f2969811a83c9e66f50f0e9d87136851e0ac3fdea22aa84252a9f7ce1.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Rel. Id</td><td>Status</td><td>File name</td><td>Last operation date</td><td>Date of retry message sending</td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188209.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188210.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188211.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188212.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr><tr><td>2</td><td>SENT</td><td>PKI12188208.xml</td><td>2012-11-28 14:26:52</td><td></td><td></td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                73,
+                139,
+                794,
+                225
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/424c4a0b1d698d6f1b528f5655a3e587ee971c74c66205e03c244ad58851d835.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Date</td><td>Type</td><td>Content</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Upload start. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download success. File PKI12188209.xml</td></tr><tr><td>2012-11-28 14:26:52</td><td>INFO</td><td>Download start. File PKI12188209.xml</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                102,
+                273,
+                736,
+                437
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Retanns relation"
+                    }
+                ],
+                "level": 3
+            },
+            "bbox": [
+                391,
+                556,
+                605,
+                574
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Configuration is the same like for orders."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                596,
+                396,
+                613
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Only remote directory is different."
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                614,
+                337,
+                630
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The source settings:"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                646,
+                220,
+                662
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "You got those data from Edinet helpdesk."
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                663,
+                416,
+                678
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Host name: ftp.infinite.pl"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                680,
+                265,
+                695
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Remote directory: /retanns/"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                696,
+                287,
+                711
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Port: 21"
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                712,
+                129,
+                726
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "User name and password are different for every client."
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                728,
+                499,
+                744
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Invoices relations"
+                    }
+                ],
+                "level": 3
+            },
+            "bbox": [
+                381,
+                760,
+                613,
+                778
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Proceed to RELATIONS bookmark and Add new relation."
+                    }
+                ]
+            },
+            "bbox": [
+                57,
+                784,
+                563,
+                799
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/f57e1f934dc4c74597078f95f441685e20aad80cb1819af5f450505283eaa3b4.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                84,
+                804,
+                818,
+                920
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2. You can create few types of relations: DIRECTORY to DIRECTORY, FTP to FTP, DIRECTORY to FTP or FTP to DIRECTORY."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                41,
+                941,
+                73
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Please select: Directory -> FTP"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                74,
+                327,
+                91
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Also type name of relation."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                92,
+                280,
+                108
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/8b4ddd76f5cb1eafabe423c5063d5c980edbf7afa3318f77888e6d86f1c6e15d.jpg"
+                },
+                "content": "Relation description invoices\nRelation with DIRECTORY to FTP\nAdd",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                58,
+                122,
+                937,
+                199
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Main setting:"
+                    }
+                ],
+                "level": 3
+            },
+            "bbox": [
+                55,
+                215,
+                188,
+                231
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "text_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3.1 Signature type: please select Key storage"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3.2 Path to key store: type the path where you put Edinet key (you got from Edinet helpdesk, file edinet.p12)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3.3 Enter the password"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3.4 Click on Certificate list, select certificate and click OK."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3.5 The rest stays in default."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                233,
+                902,
+                330
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/def3f78ae0adcb33f75f09e43e4aa7322de593e66f4e0875d71792dca625d64c.jpg"
+                },
+                "content": "Main settings\n? Relation description invoices\n? Retry interval for directory monitoring (seconds) 30\n? Frequency of sending attempts 5\n? Maximum retry attempts of message sending 5\n? Maximum retry interval of message sending (seconds) 300\n? Transformations Do not transform Transform to PDF Transform specially\n? Signature type Not sign Key storage Card Signature\n? Path to key store C:\\Users\\Konrad Majewski\\Desktop\\pick\\phd\\edinet.p12\n? Password to key store Check key store\n? Signature certificate Certificate list\n? Signature algorithm SHA128withRSA\n? Signature file format S/MIME",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                331,
+                937,
+                570
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Enter the source settings:"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                586,
+                282,
+                602
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The place where invoices are imported from your ERP system."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                602,
+                566,
+                619
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/2cc0918b80d1567ead79e3b4ece5e341d4be78202aec6de90687e35720cd9260.jpg"
+                },
+                "content": "Source settings\n? Path for source directory D:\\invoices\\\n? Pattern filename\n? Validate? true\n? Min. file size\n? File contents",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                619,
+                937,
+                715
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Enter the destination settings."
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                730,
+                319,
+                746
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "You got those data from Edinet helpdesk."
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                747,
+                416,
+                763
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Host name: ftp.infinite.pl"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                764,
+                265,
+                778
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Remote directory: /invoice/"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                780,
+                282,
+                795
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Port: 21"
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                796,
+                122,
+                809
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "User name and password are different for every client."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                812,
+                499,
+                829
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/41641f8930edf53c07d528fae9c2a9d6a8124fc981af5b277f9f7af36b460a27.jpg"
+                },
+                "content": "Destination settings\n? Host name ftp.infinite.pl\n? Port 21\n? Remote directory /invoice/\n? User name test\n? Password ••••••••\n? FTP type FTP\n? Type of connection passive\n? Proxy method\n? Proxy host name\n? Proxy port\n? Proxy user name\n? Proxy password\nCheck connection Success",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                57,
+                931,
+                280
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. Check the connection:"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                57,
+                299,
+                260,
+                315
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/7de8f433167942f27a57f99ba217d54ef2750995c964b5de5c13d3f40d25dea6.jpg"
+                },
+                "content": "Check connection\nSuccess",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                60,
+                315,
+                418,
+                347
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "7. Save the relation"
+                    }
+                ],
+                "level": 4
+            },
+            "bbox": [
+                55,
+                394,
+                216,
+                410
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/8500d3a87067b3491777d1d78d2ff493188b62236ae76351fa2942fd44b56c48.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Save\"] --> F[\"Add\"]\n  F --> G[\"Remove\"]\n  H[\"Id\"] --> I[\"ON\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Source type\"]\n  K --> L[\"Connection type\"]\n  M[\"1\"] --> N[\"No\"]\n  N --> O[\"orders\"]\n  O --> P[\"FTP\"]\n  P --> Q[\"DIRECTORY\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                68,
+                429,
+                811,
+                520
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "8. To launch the EDInet Connector go to TRANSACTION MODE and press start or start all button. Invoices will be sending to Edinet system."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                536,
+                892,
+                571
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1614b6f49ff36289c9f7cdb0912dfe179b781119ffda3a89c99c2878648fecb5.jpg"
+                },
+                "content": "```mermaid\ngraph LR\n  A[\"TRANSACTION NODE\"] --> B[\"MESSAGE TRACKER\"]\n  B --> C[\"RELATIONS\"]\n  C --> D[\"ADMINISTRATION\"]\n  E[\"Start all\"] --> F[\"Stop all\"]\n  F --> G[\"Cancel Alerts\"]\n  H[\"Rel. Id\"] --> I[\"Status\"]\n  I --> J[\"Relation description\"]\n  J --> K[\"Last monitoring date\"]\n  K --> L[\"Last hour statistics\"]\n  M[\"1\"] --> N[\"STOPPED\"]\n  N --> O[\"orders\"]\n  O --> P[\"ok: 0 errors: 0\"]\n  Q[\"Start\"] -.-> R[\"End of Process\"]\n```",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "flowchart",
+            "bbox": [
+                65,
+                589,
+                811,
+                683
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "9. To check the document status, please go to MESSAGE TRACKER bookmark."
+                    }
+                ]
+            },
+            "bbox": [
+                55,
+                697,
+                717,
+                717
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/726be4c471a4e43dd8013baa64b3607d4749b18beac5d300d985533a63d3ef8b.jpg"
+                },
+                "content": "TRANSACTION NODE\nMESSAGE TRACKER\nRELATIONS\nADMINISTRATION\nStatus:\nprocessing\nsent\nconfirmed\nerror\nRelations:\nAll\nFile name:\nDate:\nsearch by date\ndate range\n1 day\nFilter\nReset\nRel. Id\tStatus\tFile name\tLast operation date\tData of retry\nmessage sending\n2\tSENT\tPKI12188209.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188210.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188211.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188212.xml\t2012-11-28 14:26:52\t\t\t①\n2\tSENT\tPKI12188208.xml\t2012-11-28 14:26:52\t\t\t①",
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "sub_type": "text_image",
+            "bbox": [
+                65,
+                736,
+                815,
+                917
+            ]
+        }
+    ]
+]

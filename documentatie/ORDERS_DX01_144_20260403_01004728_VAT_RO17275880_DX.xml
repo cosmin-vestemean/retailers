@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Order xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/ddescultescu/Desktop/Comanda%20UBL%20la%20XML%20DX2/docxchange-order-dx2.xsd">
+	<UBLExtension>Original</UBLExtension>
+	<UBLVersionID>2.1</UBLVersionID>
+	<CustomizationID>ver2.0</CustomizationID>
+	<ProfileID>RO6719278_RO25190857</ProfileID>
+	<ID>2604044134250</ID>
+	<CopyIndicator>true</CopyIndicator>
+	<UUID>DX01_144_20260403_01004728</UUID>
+	<IssueDate>2026-04-03</IssueDate>
+	<OrderTypeCode>220</OrderTypeCode>
+	<Note>680731B1</Note>
+	<LineCountNumeric>1</LineCountNumeric>
+	<RequestedDeliveryPeriod>
+		<StartDate>2026-04-06</StartDate>
+		<StartTime>23:59:00</StartTime>
+		<EndDate>2026-04-06</EndDate>
+		<EndTime>23:59:00</EndTime>
+		<Description/>
+	</RequestedDeliveryPeriod>
+	<BuyerCustomerParty>
+		<EndpointID>5940475870003</EndpointID>
+		<PartyName>MEGA IMAGE SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Bd. Timisoara Nr.26, Sect.6</StreetName>
+			<AdditionalStreetName/>
+			<CityName>Bucuresti</CityName>
+			<PostalZone>012152</PostalZone>
+			<AddressLine>Bd. Timisoara Nr.26, Sect.6  . Bucuresti 012152</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</BuyerCustomerParty>
+	<SellerSupplierParty>
+		<CustomerAssignedAccountID>6807</CustomerAssignedAccountID>
+		<EndpointID>5940475754006</EndpointID>
+		<PartyName>PET FACTORY SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Sos. Mihai Bravu</StreetName>
+			<AdditionalStreetName/>
+			<CityName>Bucuresti</CityName>
+			<PostalZone>40676</PostalZone>
+			<AddressLine>Sos. Mihai Bravu  255 Bucuresti 40676</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</SellerSupplierParty>
+	<AccountingCustomerParty>
+		<EndpointID>5940475870003</EndpointID>
+		<PartyName>MEGA IMAGE SRL</PartyName>
+		<PostalAddress>
+			<StreetName>Bd. Timisoara Nr.26, Sect.6</StreetName>
+			<AdditionalStreetName/>
+			<CityName>Bucuresti</CityName>
+			<PostalZone>012152</PostalZone>
+			<AddressLine>Bd. Timisoara Nr.26, Sect.6  . Bucuresti 012152</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</AccountingCustomerParty>
+	<DeliveryParty>
+		<EndpointID>5949065001155</EndpointID>
+		<PartyName>PROFI 703 DEPOZIT PLOIESTI</PartyName>
+		<PostalAddress>
+			<StreetName>PROFI 703 DEPOZIT PLOIESTI</StreetName>
+			<AdditionalStreetName>ARICESTII RAHTIVANI DN 72, KM 7 </AdditionalStreetName>
+			<CityName>ARICESTII RAHTIVANI , JUD.PRAHOVA</CityName>
+			<PostalZone>107025</PostalZone>
+			<AddressLine>PROFI 703 DEPOZIT PLOIESTI ARICESTII RAHTIVANI DN 72, KM 7  - ARICESTII RAHTIVANI , JUD.PRAHOVA 107025</AddressLine>
+			<Country>RO</Country>
+		</PostalAddress>
+	</DeliveryParty>
+	<Delivery>
+		<Quantity>
+			<Amount>6000</Amount>
+		</Quantity>
+	</Delivery>
+	<AnticipatedMonetaryTotal>
+		<TaxExclusiveAmount CurrencyID="RON">
+			<Amount>5100</Amount>
+		</TaxExclusiveAmount>
+	</AnticipatedMonetaryTotal>
+	<OrderLine>
+		<ID>1</ID>
+		<Price CurrencyID="RON">
+			<Amount>0.85</Amount>
+		</Price>
+		<Quantity UnitCode="PCE">
+			<Amount>6000</Amount>
+		</Quantity>
+		<ReturnableMaterialIndicator>false</ReturnableMaterialIndicator>
+		<PalletSpaceMeasurementDimension>
+			<Measure>
+				<Amount>0.947</Amount>
+			</Measure>
+			<MaximumMeasure>
+				<Amount>6336</Amount>
+			</MaximumMeasure>
+		</PalletSpaceMeasurementDimension>
+		<Item>
+			<Description>LOVEPET CAINI VITA IN SOS 100G G</Description>
+			<PackQuantity>250</PackQuantity>
+			<PackSizeNumeric>24</PackSizeNumeric>
+			<BuyersItemIdentification>098625-0</BuyersItemIdentification>
+			<StandardItemIdentification>5949065035907</StandardItemIdentification>
+		</Item>
+	</OrderLine>
+</Order>

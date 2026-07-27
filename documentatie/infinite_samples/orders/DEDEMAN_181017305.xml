@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-05-25T18:13:39">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>4516552372</BuyerOrderNumber>
+    <OrderIssueDate>2026-05-25</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-06-01T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest></DeliveryDateEarliest>
+    <DeliveryDateLatest></DeliveryDateLatest>
+    <PurchasingInfo><![CDATA[]]></PurchasingInfo>
+    <PromotionDealNo><![CDATA[]]></PromotionDealNo>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>5940475841003</GLN>
+       <Name><![CDATA[DEDEMAN SRL]]></Name>
+       <Street><![CDATA[ALEXEI TOLSTOI]]></Street>
+       <PostalCode>600093</PostalCode>
+       <City><![CDATA[BACAU]]></City>
+       <CountryCode>RO</CountryCode>
+       <PurchasingContact></PurchasingContact>
+       <ContactTel></ContactTel>
+       <ContactFax></ContactFax>
+       <SalesDepartmentNumber></SalesDepartmentNumber>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN></GLN>
+       <Name><![CDATA[]]></Name>
+       <Street><![CDATA[]]></Street>
+       <PostalCode></PostalCode>
+       <City><![CDATA[]]></City>
+       <CountryCode></CountryCode>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>5940475841546</GLN>
+       <Name><![CDATA[Magazin 87 IASI]]></Name>
+       <Street><![CDATA[BLD. PRIMAVERII  NR.2]]></Street>
+       <PostalCode>700264</PostalCode>
+       <City><![CDATA[IASI]]></City>
+       <CountryCode>RO</CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>5940475754006</GLN>
+       <SellerID>0000003419</SellerID>
+       <Name><![CDATA[PET FACTORY SRL]]></Name>
+       <Street><![CDATA[SOS. GIURGIULUI NR.118 BL.12 AP.130]]></Street>
+       <PostalCode>/</PostalCode>
+       <City><![CDATA[SECTOR 4 Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060220285</GTIN>
+      <BuyerItemNum>10</BuyerItemNum>
+      <BuyerItemID><![CDATA[7068652]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.08860]]></SellerItemID>
+      <QuantityOrdered>40.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ASTERNUT IG MIAU MIAU PURE WH LAVENDE 5L]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>13.13</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060220292</GTIN>
+      <BuyerItemNum>20</BuyerItemNum>
+      <BuyerItemID><![CDATA[7068651]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.08859]]></SellerItemID>
+      <QuantityOrdered>20.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ASTERNUT IG MIAU MIAU PURE WH MARSEIL 5L]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>13.13</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060220308</GTIN>
+      <BuyerItemNum>30</BuyerItemNum>
+      <BuyerItemID><![CDATA[7068650]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.08858]]></SellerItemID>
+      <QuantityOrdered>40.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ASTERNUT IGIENIC MIAU MIAU PURE WHITE 5L]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>13.13</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060213256</GTIN>
+      <BuyerItemNum>40</BuyerItemNum>
+      <BuyerItemID><![CDATA[7060356]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[/]]></SellerItemID>
+      <QuantityOrdered>18.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ASTERNUT SILICAT MIAU MIAU 15L]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>46.42</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060202731</GTIN>
+      <BuyerItemNum>50</BuyerItemNum>
+      <BuyerItemID><![CDATA[7050932]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.02987]]></SellerItemID>
+      <QuantityOrdered>70.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[BATON COLOR 12,5 CM 10BUC]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>1.89</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060202687</GTIN>
+      <BuyerItemNum>60</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066872]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.02981]]></SellerItemID>
+      <QuantityOrdered>20.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[BATON PIELE RASUCIT 12,5CM 15BUC]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>6.38</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060216189</GTIN>
+      <BuyerItemNum>70</BuyerItemNum>
+      <BuyerItemID><![CDATA[7067100]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.07020]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[CASTRON 4DOG INOX BAZA ROSIE 0.5L 13CM]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>5.36</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060209747</GTIN>
+      <BuyerItemNum>80</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066749]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.05160]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[DESIRE PLIC PUI FILE/RATA 70G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>3.34</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060209730</GTIN>
+      <BuyerItemNum>90</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066748]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.05159]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[DESIRE PLIC PUI FILE/TON 70G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>3.34</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5949060209716</GTIN>
+      <BuyerItemNum>100</BuyerItemNum>
+      <BuyerItemID><![CDATA[7066747]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.05158]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[DESIRE PLIC TON/CREVETI 70G]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>3.34</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>5410340216200</GTIN>
+      <BuyerItemNum>110</BuyerItemNum>
+      <BuyerItemID><![CDATA[7060664]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[/]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[HRANA VL PRESTIGE PT PERUSI 1KG]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>11.10</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+    <Item>
+      <GTIN>3420900121709</GTIN>
+      <BuyerItemNum>120</BuyerItemNum>
+      <BuyerItemID><![CDATA[7052358]]></BuyerItemID>
+      <BuyerProductGroupID><![CDATA[]]></BuyerProductGroupID>
+      <SellerItemID><![CDATA[MF.02905]]></SellerItemID>
+      <QuantityOrdered>12.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <PackageType></PackageType>
+      <NumberInTradeUnit></NumberInTradeUnit>
+      <ProductDescription><![CDATA[ZGARDA ANTIPARAZITARE PILOU PISICA 35CM]]></ProductDescription>
+      <Description><![CDATA[]]></Description>
+      <UnitNetPrice>11.14</UnitNetPrice>
+      <RetailPrice></RetailPrice>
+      <BestBeforeDate></BestBeforeDate>
+      <ItemRequestedDeliverDate>2026-06-01</ItemRequestedDeliverDate>
+    </Item>
+</OrderDetail>
+ <OrderSummary >
+    <NumberOfItems>12</NumberOfItems>
+    <TotalNetAmount>2924.22</TotalNetAmount>
+ </OrderSummary >
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

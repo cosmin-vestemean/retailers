@@ -1,16 +1,13 @@
-//Cod specific S1 - AJS
-
 /*
  * https://winscp.net/download/WinSCP-5.19.3-Portable.zip
  */
 
 lib.include("runCmd20210915");
 lib.include("eMagMarketplace");
+lib.include("core");
 
 var zoomed = false;
-var objABC = {};
 var aDoua = false;
-var itsMeStackOverflow = false;
 var danteOutFolder = "dante_out";
 
 function exportXML() {
@@ -23,7 +20,7 @@ function exportXML() {
 
   DsP1 = X.GETSQLDATASET(
     "SELECT convert(varchar(10), CCCXMLSendDate,103) CCCXMLSendDate, left(replace(trdr.name,' ',''),8) name from findoc join mtrdoc on findoc.findoc=mtrdoc.findoc join trdr on findoc.trdr=trdr.trdr where findoc.findoc=" +
-      id,
+    id,
     null
   );
   CCCXMLSendDate = DsP1.CCCXMLSendDate;
@@ -126,7 +123,7 @@ function exportXML() {
   //X.Warning('fisierul a fost trimis '+fileName+' !');
   X.RUNSQL(
     "update mtrdoc set CCCXMLSendDate=GETDATE(), CCCXMLfile=null where findoc=" +
-      SALDOC.FINDOC,
+    SALDOC.FINDOC,
     null
   );
 }
@@ -147,7 +144,7 @@ function SaveStringToFTPFile(temp_filename, tempfolder, fileName) {
   var id = getID();
   var DsP1 = X.GETSQLDATASET(
     "SELECT trdr.CCCFtpServer, trdr.CCCFtpUser, trdr.CCCFtpPwd, CCCFtpPath from findoc join trdr on findoc.trdr=trdr.trdr where findoc.findoc=" +
-      id,
+    id,
     null
   );
   var CCCFtpServer = DsP1.CCCFtpServer;
@@ -234,6 +231,20 @@ function CheckFolder(FolderName) {
 }
 
 function ON_AFTERPOST() {
+
+  //26.03.2025 - update id comanda, document la salvare comanda 
+  if ((SALDOC.FPRMS == 700) || (SALDOC.FPRMS == 701)) {
+    var vFindocID;
+    vFindocID = getID();
+    X.RUNSQL("UPDATE FINDOC SET CCCORDERID=FINDOC, CCCORDERDOC=FINCODE WHERE FINDOC=:1", vFindocID);
+  }
+
+  //Calcul greutate produse
+  DsGreutate = X.GETSQLDATASET('select sum(weight) as id from mtrl where mtrl in (select mtrl from mtrlines where findoc = ' + docID() + ')', null);
+
+  //Update greutate la nivel de document
+  X.RUNSQL('update findoc set NUM03 = ' + DsGreutate.id + ' where findoc = ' + docID(), null);
+
   var vID = SALDOC.FINDOC;
   if (vID < 0) vID = X.NEWID;
   //USRID = X.SYS.USER;
@@ -248,7 +259,7 @@ function ON_AFTERPOST() {
   //am elimiat rularea proc G_FINDOC_POST din afterpost, se muta intr-un job care ruleaza automat.
   //Insemnez doc astfel: Daca exista findoc in tabelul CCCFINDOCPOST job-ul ruleaza procedura si apoi scoate findoc din tabel.
   var createTblQ =
-      "create table CCCFINDOCPOST (CCCFINDOCPOST int not null identity(1,1) primary key, findoc int not null, trndate date not null, fincode varchar(max) not null)",
+    "create table CCCFINDOCPOST (CCCFINDOCPOST int not null identity(1,1) primary key, findoc int not null, trndate date not null, fincode varchar(max) not null)",
     theQ = "if OBJECT_ID('dbo.CCCFINDOCPOST') is null " + createTblQ;
 
   try {
@@ -258,13 +269,13 @@ function ON_AFTERPOST() {
   }
 
   var markDoc =
-      "insert into CCCFINDOCPOST (findoc, trndate, fincode) values (" +
-      vID +
-      ", '" +
-      X.FORMATDATE("yyyymmdd", SALDOC.TRNDATE) +
-      "', '" +
-      SALDOC.FINCODE +
-      "')",
+    "insert into CCCFINDOCPOST (findoc, trndate, fincode) values (" +
+    vID +
+    ", '" +
+    X.FORMATDATE("yyyymmdd", SALDOC.TRNDATE) +
+    "', '" +
+    SALDOC.FINCODE +
+    "')",
     theQ = X.SQL(
       "select isnull(findoc, 0) from CCCFINDOCPOST where findoc=" + vID,
       null
@@ -280,25 +291,32 @@ function ON_AFTERPOST() {
 
   var up = X.SQL(
     "select coalesce(unitpack, 0) from CCCS1DXTRDRMTRL where mtrl=" +
-      ITELINES.MTRL +
-      " and trdr=" +
-      SALDOC.TRDR,
+    ITELINES.MTRL +
+    " and trdr=" +
+    SALDOC.TRDR,
     null
   );
   if (up) {
     X.RUNSQL(
       "UPDATE MTRLINES SET CCCUNITPACK=" +
-        up +
-        "WHERE MTRL=" +
-        ITELINES.MTRL +
-        "AND FINDOC=" +
-        vID,
+      up +
+      "WHERE MTRL=" +
+      ITELINES.MTRL +
+      "AND FINDOC=" +
+      vID,
       null
     );
   }
 
   saveABC();
   aDoua = true;
+
+  //25.03.2025 - inchidere comanda la salvare factura externa
+  if (SALDOC.FPRMS == 747) {
+    var vSQL = 'exec cccInchidereComanda :1';
+    X.RunSQL(vSQL, ITELINES.FINDOCS);
+  }
+
 }
 
 function ON_POST() {
@@ -308,7 +326,7 @@ function ON_POST() {
       //verifica daca exista numarul de comanda online in tabelul findoc pt seria 7022, comanda online nu poate fi duplicata
       var qd = X.SQL(
         "select count(*) from findoc where series=7022 and num04=" +
-          SALDOC.NUM04,
+        SALDOC.NUM04,
         null
       );
       if (qd > 0) {
@@ -394,7 +412,7 @@ function ON_POST() {
       if (ITELINES.QTY1 > Qty1) {
         X.EXCEPTION(
           "Nu puteti returna mai mult decat cantitatea din documentul storno, pentru articolul" +
-            ITELINES.MTRL_ITEM_NAME
+          ITELINES.MTRL_ITEM_NAME
         );
       }
     }
@@ -509,9 +527,9 @@ function ON_POST() {
   //interdictie modificare factura daca a fost trimisa si validata in ANAF, exceptie Sorin Fliundra
 
   /*
-	if ((SALDOC.CCCEXPEFACTURA==1) && (SALDOC.CCCVALDEFACTURA==1) && (SALDOC.CCCIDANAFVIEW!=null) && (SALDOC.CCCIDDWLDVIEW!=null) && (X.SYS.USER!=1) && (X.SYS.USER!=1000)){
-				X.EXCEPTION('Factura nu mai poate fi modificata, a fost deja incarcata si validata in SPV');
-		 } */
+  if ((SALDOC.CCCEXPEFACTURA==1) && (SALDOC.CCCVALDEFACTURA==1) && (SALDOC.CCCIDANAFVIEW!=null) && (SALDOC.CCCIDDWLDVIEW!=null) && (X.SYS.USER!=1) && (X.SYS.USER!=1000)){
+        X.EXCEPTION('Factura nu mai poate fi modificata, a fost deja incarcata si validata in SPV');
+     } */
 }
 
 // Creare bon transfer intre 2 depozite Depozit si Online
@@ -661,11 +679,11 @@ function itereaza() {
 
     DsP = X.GETSQLDATASET(
       "SELECT dbo.fnG_GetCostPrice(MTRL, " +
-        SALDOC.FISCPRD +
-        ", " +
-        SALDOC.PERIOD +
-        " ) CMP, isnull(MINPRCMK,0) MINPRCMK, left(MTRL.ACNMSK1,3) ACNMSK1  FROM MTRL WHERE MTRL=" +
-        ITELINES.MTRL,
+      SALDOC.FISCPRD +
+      ", " +
+      SALDOC.PERIOD +
+      " ) CMP, isnull(MINPRCMK,0) MINPRCMK, left(MTRL.ACNMSK1,3) ACNMSK1  FROM MTRL WHERE MTRL=" +
+      ITELINES.MTRL,
       null
     );
     CMP = DsP.CMP;
@@ -725,7 +743,7 @@ function printare_bon_fprintWin() {
   ) {
     DsP1 = X.GETSQLDATASET(
       "SELECT ISNULL(BOOL01,0) BOOL01 FROM FINDOC WHERE FINDOC=" +
-        SALDOC.FINDOC,
+      SALDOC.FINDOC,
       null
     );
     BOOL01 = DsP1.BOOL01;
@@ -777,7 +795,7 @@ function printare_bon_fprintWin1() {
   ) {
     DsP1 = X.GETSQLDATASET(
       "SELECT ISNULL(BOOL01,0) BOOL01 FROM FINDOC WHERE FINDOC=" +
-        SALDOC.FINDOC,
+      SALDOC.FINDOC,
       null
     );
     BOOL01 = DsP1.BOOL01;
@@ -820,14 +838,14 @@ function printare_bon_fprintWin1() {
 
       f1.WriteLine(
         "S,1,______,_,__;" +
-          ceNume +
-          ";" +
-          cePret +
-          ";" +
-          ceCant +
-          ";1;" +
-          ceGroup +
-          ";1;0;0;"
+        ceNume +
+        ";" +
+        cePret +
+        ";" +
+        ceCant +
+        ";1;" +
+        ceGroup +
+        ";1;0;0;"
       );
 
       ITELINES.NEXT;
@@ -863,27 +881,28 @@ function printare_bon_fprintWin1() {
 function ON_ITELINES_MTRL() {
   if (ITELINES.MTRL != 0) {
     AddPrice();
+    applyPnlDims(ITELINES, resolvePnlLine(ITELINES));
   }
 }
 
 function AddPrice() {
-  if (SALDOC.SERIES != 7130 && SALDOC.SERIES != 7131 && SALDOC.SERIES != 7210) {
+  if (SALDOC.SERIES != 7130 && SALDOC.SERIES != 7131 && SALDOC.SERIES != 7210 && SALDOC.SERIES != 7023 && SALDOC.SERIES != 7047) {
     DateforSQLQuery = X.EVAL("SQLDATE(SALDOC.TRNDATE)");
     DsP = X.GETSQLDATASET(
       "SELECT PRICEW PV, PRICER PAM, MAXPRCDISC Red, dbo.fnG_GetCostPrice(MTRL, " +
-        SALDOC.FISCPRD +
-        ", " +
-        SALDOC.PERIOD +
-        " ) CMP, DBO.fn_GCheckAMA(MTRL.COMPANY, 1351," +
-        SALDOC.FPRMS +
-        ") IsRetail,  dbo.fnG_SalePrice(MTRL.MTRL, " +
-        SALDOC.TRDR +
-        ", " +
-        SALDOC.FPRMS +
-        ", " +
-        DateforSQLQuery +
-        ") PretClient FROM MTRL WHERE MTRL=" +
-        ITELINES.MTRL,
+      SALDOC.FISCPRD +
+      ", " +
+      SALDOC.PERIOD +
+      " ) CMP, DBO.fn_GCheckAMA(MTRL.COMPANY, 1351," +
+      SALDOC.FPRMS +
+      ") IsRetail,  dbo.fnG_SalePrice(MTRL.MTRL, " +
+      SALDOC.TRDR +
+      ", " +
+      SALDOC.FPRMS +
+      ", " +
+      DateforSQLQuery +
+      ") PretClient FROM MTRL WHERE MTRL=" +
+      ITELINES.MTRL,
       null
     );
     CMP = DsP.CMP;
@@ -1022,8 +1041,8 @@ function CheckMinCost() {
       // iau din baza Pret Achizitie
       DsA = X.GETSQLDATASET(
         "SELECT top 1 isnull(REPLPRICE,0) as Ach FROM MTRL WHERE MTRL=" +
-          ITELINES.MTRL +
-          " ",
+        ITELINES.MTRL +
+        " ",
         null
       );
       PretAch = DsA.Ach;
@@ -1038,10 +1057,10 @@ function CheckMinCost() {
       if (PretNet <= PretMin) {
         X.Warning(
           "Pret net (" +
-            PretNet +
-            ") sub pret minim de achizitie (" +
-            PretMin +
-            ")!"
+          PretNet +
+          ") sub pret minim de achizitie (" +
+          PretMin +
+          ")!"
         );
       }
     }
@@ -1054,6 +1073,36 @@ function roundNumber(num, dec) {
 }
 
 function EXECCOMMAND(cmd) {
+  if (cmd == 20260121) {
+    var SERIES_COMPANY = 50;           // Company ID for series lookup
+    var SERIES_SOSOURCE = 1351;
+    var seriesObj = X.CREATEOBJ('SERIES');
+    var seriesPrimaryKey = SERIES_COMPANY + ',' + SERIES_SOSOURCE + ',' + 9221;
+    seriesObj.DBLOCATE(seriesPrimaryKey);
+    var tblSeries = seriesObj.FindTable('SERIES');
+    originalSoisconv = tblSeries.SOISCONV;
+    if (originalSoisconv === true || originalSoisconv === 1) {
+      tblSeries.EDIT;
+      tblSeries.SOISCONV = false;
+      seriesObj.DBPOST;
+    } else {
+      // Free the object if we don't need to restore
+      seriesObj.FREE;
+      seriesObj = null;
+    }
+  }
+
+  //31.03.2025 - trimitere comanda externa in WMS
+  if (cmd == 31032025) {
+    ExportWMS();
+  }
+
+  //29.05.2025 - validare preturi in valuta
+  if (cmd == 29052025) {
+    if (SALDOC.SERIES == 7023)
+      validare_pret();
+  }
+
   if (cmd == 7101000) {
     printare_bon_fprintWin();
   }
@@ -1081,10 +1130,19 @@ function EXECCOMMAND(cmd) {
       exportXMLColumbus();
     }
   }
-  //DEDEMAN
+  //DEDEMAN factura tur
   if (cmd == 20190529) {
     if (SALDOC.TRDR == 11654) {
       exportXMLDedeman();
+    }
+  }
+
+  //DEDEMAN factura retur (seria 7531)
+  if (cmd == 20260511) {
+    if (SALDOC.TRDR == 11654 && SALDOC.SERIES == 7531) {
+      exportXMLDedemanReturn();
+    } else {
+      X.WARNING('Butonul este disponibil doar pentru documentele Dedeman seria 7531.');
     }
   }
 
@@ -1172,6 +1230,63 @@ function EXECCOMMAND(cmd) {
   }
 }
 
+function ExportWMS() {
+  if ((SALDOC.CCCREADYWMS == 0) && (SALDOC.FPRMS == 700)) {
+    var vFindocID;
+    vFindocID = getID();
+    //X.WARNING(GetID());
+    //X.WARNING(vFindocID);
+    X.RUNSQL("UPDATE FINDOC SET CCCREADYWMS = 1 WHERE FINDOC=:1", vFindocID);
+    X.WARNING('Documentul a fost marcat pentru export in WMS');
+  }
+
+}
+
+function validare_pret() {
+  if (SALDOC.TRDR == 0)
+    X.EXCEPTION('Selectati clientul !');
+  //verificare daca clientul este in politica de preturi in valuta 101
+  var vSQL = "SELECT COUNT(DIM1) AS NR " +
+    "FROM PRCRDATA PR " +
+    "WHERE PR.SODTYPE=13 AND PR.PRCRULE=101 " +
+    "AND PR.DIM1=:1";
+  var ds = X.GETSQLDATASET(vSQL, SALDOC.TRDR);
+  var nr = ds.NR;
+  if (nr == 0)
+    X.EXCEPTION("Clientul nu se gaseste in politica de pret 101 de preturi in valuta!");
+  // Validare preturi politica 101
+  X.WARNING('Se incepe verificarea preturilor din linii');
+  var contor = 0;
+  var mesaj = '';
+  ITELINES.FIRST;
+  while (!ITELINES.EOF()) {
+    //verific daca articolul din linie are pret in politica 101
+    vSQL = "SELECT ISNULL(PR.FLD01,0) PRET " +
+      "FROM PRCRDATA PR " +
+      "WHERE PR.SODTYPE=13 AND PR.PRCRULE=101 " +
+      "AND PR.DIM1=:1 " +
+      "AND PR.DIM2=:2 " +
+      "AND :3 BETWEEN PR.FROMDATE AND ISNULL(PR.FINALDATE,'2099-12-31') ";
+    ds = X.GETSQLDATASET(vSQL, SALDOC.TRDR, ITELINES.MTRL, SALDOC.TRNDATE);
+    if (ds.RECORDCOUNT == 0) {
+      DsCod = X.GETSQLDATASET('select code from mtrl where mtrl=' + ITELINES.MTRL, null);
+      //mesaj = mesaj + ' ' + DsCod.code + ' de pe linia  ' + ITELINES.LINENUM  + String.fromCharCode(13) + String.fromCharCode(10);
+      mesaj = mesaj + ' ' + DsCod.code + String.fromCharCode(13) + String.fromCharCode(10);
+      contor = contor + 1;
+      ITELINES.PRICE = 0;
+    }
+    ITELINES.NEXT;
+  } //while
+
+  // X.EXEC('button:Save');
+  if (contor > 0) {
+    X.EXCEPTION('Urmatoarele articole nu se regasesc in politica de preturi in valuta: ' + String.fromCharCode(13) + String.fromCharCode(10) + mesaj);
+  }
+
+  X.WARNING('Preturi linii validate!');
+}
+
+
 function parseFolderFileList(folderspec) {
   var fso, f, fc;
   fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -1221,7 +1336,7 @@ function processXML(xmlFile, xmlStr) {
 
   var deja = X.SQL(
     "select top 1 findoc from findoc where series=7012 and trdr = 11639 and num04=" +
-      orderID,
+    orderID,
     null
   );
   //daca a fost introdus deja
@@ -1234,8 +1349,8 @@ function processXML(xmlFile, xmlStr) {
   bakXmlToDB(xmlDoc.xml, orderID, orderDate);
 
   var endpoint = xmlDoc
-      .selectNodes("Order/DeliveryParty/EndpointID")
-      .item(0).text,
+    .selectNodes("Order/DeliveryParty/EndpointID")
+    .item(0).text,
     delivdate = xmlDoc
       .selectNodes("Order/RequestedDeliveryPeriod/EndDate")
       .item(0).text,
@@ -1267,8 +1382,8 @@ function processXML(xmlFile, xmlStr) {
     for (var i = 0, errCnt = 0; i < coduriArticole.length; i++) {
       var idArticol = X.SQL(
         "select mtrl from CCCS1DXTRDRMTRL where trdr=11639 and code='" +
-          coduriArticole.item(i).text +
-          "'",
+        coduriArticole.item(i).text +
+        "'",
         null
       );
       if (idArticol) {
@@ -1282,41 +1397,41 @@ function processXML(xmlFile, xmlStr) {
           var new_masterid = getFirstAvailMasterid();
           X.RUNSQL(
             "insert into [dbo].[A_IKA_ORDER] (trdr, trdbranch, cusname, whouse, iscancel, apprv, branch, series, imported, imptype, comanda, cccs1dxid, orderdate, " +
-              "filename, masterid, delivdate) values (11639, 3329, 'Dante', 1001, 0, 0, 1000, 7012, 0, 'Doc Process', " +
-              orderID +
-              ", " +
-              orderID +
-              ", '" +
-              orderDate +
-              "', '" +
-              xmlFile +
-              "', " +
-              new_masterid +
-              ", '" +
-              delivdate +
-              "')",
+            "filename, masterid, delivdate) values (11639, 3329, 'Dante', 1001, 0, 0, 1000, 7012, 0, 'Doc Process', " +
+            orderID +
+            ", " +
+            orderID +
+            ", '" +
+            orderDate +
+            "', '" +
+            xmlFile +
+            "', " +
+            new_masterid +
+            ", '" +
+            delivdate +
+            "')",
             null
           );
         }
 
         X.RUNSQL(
           "insert into [dbo].[A_Ika_OrderDetail] (imptype, masterid, filename,qty1, price, LINEVAL, comments1, ean, comments) values ('Doc Process', " +
-            new_masterid +
-            ",'" +
-            xmlFile +
-            "'," +
-            parseFloat(canitati.item(i).text) +
-            ", " +
-            parseFloat(preturi.item(i).text) +
-            "," +
-            parseFloat(sume.item(i).text) +
-            ",'" +
-            coduriArticole.item(i).text +
-            "','" +
-            coduriArticole.item(i).text +
-            "','" +
-            denumiri.item(i).text +
-            "')",
+          new_masterid +
+          ",'" +
+          xmlFile +
+          "'," +
+          parseFloat(canitati.item(i).text) +
+          ", " +
+          parseFloat(preturi.item(i).text) +
+          "," +
+          parseFloat(sume.item(i).text) +
+          ",'" +
+          coduriArticole.item(i).text +
+          "','" +
+          coduriArticole.item(i).text +
+          "','" +
+          denumiri.item(i).text +
+          "')",
           null
         );
         errCnt++;
@@ -1352,9 +1467,9 @@ function processXML(xmlFile, xmlStr) {
     var i = created ? 1 : 0;
     X.RUNSQL(
       "update CCCDOCPROCDANTEXML set orderCreated = " +
-        i +
-        " where orderID=" +
-        orderId,
+      i +
+      " where orderID=" +
+      orderId,
       null
     );
 
@@ -1366,8 +1481,8 @@ function processXML(xmlFile, xmlStr) {
 
   function createTblForXmlBak() {
     var createTblQ =
-        "create table CCCDOCPROCDANTEXML (CCCDOCPROCDANTEXML int not null identity(1,1) primary key, dataExtractie datetime not null default getDate(), xml varchar(max) not null, " +
-        "orderID int not null, orderDate date not null, orderCreated smallint default 0)",
+      "create table CCCDOCPROCDANTEXML (CCCDOCPROCDANTEXML int not null identity(1,1) primary key, dataExtractie datetime not null default getDate(), xml varchar(max) not null, " +
+      "orderID int not null, orderDate date not null, orderCreated smallint default 0)",
       theQ = "if OBJECT_ID('dbo.CCCDOCPROCDANTEXML') is null " + createTblQ;
 
     X.RUNSQL(theQ, null);
@@ -1375,8 +1490,8 @@ function processXML(xmlFile, xmlStr) {
 
   function createTblForXmlErr() {
     var createTblQ =
-        "create table CCCDOCPROCDANTEXMLERR (CCCDOCPROCDANTEXMLERR int not null identity(1,1) primary key, dataExtractie datetime not null default getDate(), xmlFile varchar(max) not null, " +
-        "err varchar(max) not null)",
+      "create table CCCDOCPROCDANTEXMLERR (CCCDOCPROCDANTEXMLERR int not null identity(1,1) primary key, dataExtractie datetime not null default getDate(), xmlFile varchar(max) not null, " +
+      "err varchar(max) not null)",
       theQ = "if OBJECT_ID('dbo.CCCDOCPROCDANTEXMLERR') is null " + createTblQ;
 
     X.RUNSQL(theQ, null);
@@ -1467,7 +1582,8 @@ function ON_SALDOC_SERIES() {
     SALDOC.SERIES == 7011 ||
     SALDOC.SERIES == 7010 ||
     SALDOC.SERIES == 7112 ||
-    SALDOC.SERIES == 7113
+    SALDOC.SERIES == 7113 ||
+    SALDOC.SERIES == 7023
   ) {
     //X.SETPROPERTY('PANEL', 'N_353391016', 'VISIBLE', false)
     X.SETPROPERTY("PANEL", "PanelExel", "VISIBLE", true);
@@ -1499,7 +1615,7 @@ function ON_DELETE() {
     }
   }
 
-  objABC.D();
+  ABC.D();
 
   //update findoc to null in cccsftpxml table daca gasesti findoc-ul
   var findoc = SALDOC.FINDOC
@@ -1528,7 +1644,7 @@ function ON_SALDOC_ISCANCEL() {
     }
   }
 
-  if (SALDOC.ISCANCEL == 1) objABC.D();
+  if (SALDOC.ISCANCEL == 1) ABC.D();
 
   //update findoc to null in cccsftpxml table daca gasesti findoc-ul
   var findoc = SALDOC.FINDOC
@@ -1603,57 +1719,443 @@ function exportXMLDedeman() {
   }
 }
 
-//ABC related
-function ON_ITELINES_NEW() {
-  //init ABC
-  initABC();
+//Export XML Dedeman factura retur (seria 7531)
+function exportXMLDedemanReturn() {
+  var findoc = SALDOC.FINDOC;
+  var buyerOrderNumber = SALDOC.NUM04 ? String(SALDOC.NUM04) : '';
+  var buyerOrderDate = X.FORMATDATE('yyyy-mm-dd', SALDOC.DATE01) ? X.FORMATDATE('yyyy-mm-dd', SALDOC.DATE01) + 'T00:00:00' : '';
 
-  var dims = objABC.setImpliciteLinie();
-  if (dims.length) {
-    ITELINES.CCCABCDIM1 = dims[0];
-    ITELINES.CCCABCDIM2 = dims[1];
-    ITELINES.CCCABCDIM3 = dims[2];
-    ITELINES.CCCABCDIM4 = dims[3];
-    ITELINES.CCCABCDIM5 = dims[4];
-    ITELINES.CCCABCDIM6 = dims[5];
+  // ---- Header query ----
+  var sqlHeader =
+    'SELECT A.findoc Findoc,' +
+    "isnull(A.fincode,'') InvoiceNumber," +
+    "isnull(CONVERT(VARCHAR(10),A.trndate,120),'') Data," +
+    "(SELECT TOP 1 isnull(CONVERT(VARCHAR(10),finaldate,120),'') FROM finpayterms WHERE findoc=A.findoc) InvoiceDueDate," +
+    "(SELECT TOP 1 isnull(datediff(day,A.trndate,finaldate),0) FROM finpayterms WHERE findoc=A.findoc) PaymentTermsDays," +
+    "isnull(C.CCCS1DXGLN,'') ILN," +
+    "isnull(C.BGBULSTAT+C.AFM,'') TaxID," +
+    "isnull(C.NAME,'') BuyerName," +
+    "isnull(C.ADDRESS,'') BuyerStreet," +
+    "isnull(C.ZIP,'') BuyerZip," +
+    "isnull(C.city,'') BuyerCity," +
+    "isnull(D.shortcut,'') BuyerCountry," +
+    "isnull(E.CCCS1DXGLN,'') ShipToILN," +
+    "isnull(E.NAME,'') ShipToName," +
+    "isnull(E.ADDRESS,'') ShipToStreet," +
+    "isnull(E.ZIP,'') ShipToZip," +
+    "isnull(E.city,'') ShipToCity," +
+    "isnull(F.shortcut,'') ShipToCountry," +
+    "isnull(G.CCCS1DXGLN,'') SellerILN," +
+    "isnull(A.CCCSELLERID,'') BuyerSellerID," +
+    "isnull(G.AFM,'') SellerTaxID," +
+    "isnull(Stuff(Stuff(G.BGREPNAME,9,0,'-'),18,0,'-'),'') BankAccount," +
+    "isnull(G.BGREPTITLE,'') BankName," +
+    "isnull(G.NAME,'') SellerName," +
+    "isnull(G.ADDRESS,'') SellerStreet," +
+    "isnull(G.ZIP,'') SellerZip," +
+    "isnull(G.CITY,'') SellerCity," +
+    "isnull(H.SHORTCUT,'') SellerCountry," +
+    "isnull(G.PHONE2,'') SellerTel," +
+    "(SELECT fincode FROM findoc WHERE findoc=(SELECT TOP 1 findocs FROM mtrlines WHERE findoc=A.findoc AND findocs IS NOT NULL)) RefInvoiceNumber," +
+    "(SELECT isnull(replace(convert(varchar(50),trndate,120),' ','T'),'') FROM findoc WHERE findoc=(SELECT TOP 1 findocs FROM mtrlines WHERE findoc=A.findoc AND findocs IS NOT NULL)) RefInvoiceDate," +
+    '(SELECT count(*) FROM mtrlines WHERE findoc=A.findoc AND sodtype=51) NumberOfLines,' +
+    'convert(varchar(36),cast(round(A.NETAMNT*(-1),2) as numeric(36,2))) NetValue,' +
+    'convert(varchar(36),cast(round(A.VATAMNT*(-1),2) as numeric(36,2))) TaxValue,' +
+    'convert(varchar(36),cast(round(A.NETAMNT*(-1),2) as numeric(36,2))) TaxableValue,' +
+    'convert(varchar(36),cast(round(A.SUMAMNT*(-1),2) as numeric(36,2))) GrossValue ' +
+    'FROM findoc A ' +
+    'LEFT OUTER JOIN mtrdoc B ON A.findoc=B.findoc ' +
+    'LEFT OUTER JOIN trdr C ON A.trdr=C.trdr ' +
+    'LEFT OUTER JOIN country D ON C.country=D.country ' +
+    'LEFT OUTER JOIN trdbranch E ON A.trdbranch=E.trdbranch ' +
+    'LEFT OUTER JOIN country F ON E.country=F.country ' +
+    'LEFT OUTER JOIN company G ON A.company=G.company ' +
+    'LEFT OUTER JOIN country H ON G.country=H.country ' +
+    'WHERE A.findoc=' + findoc;
+
+  var dsHeader = X.GETSQLDATASET(sqlHeader, null);
+  if (!dsHeader.RECORDCOUNT) {
+    X.EXCEPTION('Nu s-au gasit date pentru documentul curent.');
+    return;
   }
+  dsHeader.FIRST;
+
+  // ---- Lines query (negated values, per-line RetAnn/Order/Delivery from findocs) ----
+  var sqlLinii =
+    'SELECT A.linenum ItemNum,' +
+    "isnull(B.CODE1,'') EAN," +
+    "isnull(D.CODE,'') BuyerItemID," +
+    "isnull(B.code,'') SellerItemID," +
+    "isnull(E.CODE,'') CustomTariffNumber," +
+    'convert(varchar(36),cast(round(A.QTY1*(-1),2) as numeric(36,2))) QuantityValue,' +
+    "'2D' TaxCategoryCoded," +
+    "isnull(F.percnt,'') TaxPercent," +
+    'convert(varchar(36),cast(round(A.VATAMNT*(-1),2) as numeric(36,2))) TaxAmount,' +
+    'convert(varchar(36),cast(round((A.TRNLINEVAL+A.VATAMNT)*(-1),2) as numeric(36,2))) MonetaryGrossValue,' +
+    'convert(varchar(36),cast(round(A.TRNLINEVAL*(-1),2) as numeric(36,2))) MonetaryNetValue,' +
+    'convert(varchar(36),cast(round((A.TRNLINEVAL+A.VATAMNT)*(-1),2) as numeric(36,2))) MonetaryAmountPayable,' +
+    "isnull(G.SHORTCUT,'') UnitOfMeasure," +
+    'convert(varchar(36),cast(Round(A.TRNLINEVAL/A.QTY1,3) as numeric(36,3))) UnitPriceValue,' +
+    'convert(varchar(36),cast(Round((A.TRNLINEVAL+A.VATAMNT)/A.QTY1,2) as numeric(36,2))) UnitPriceValueGross,' +
+    "replace(B.NAME,'&',' ') LineName," +
+    "isnull((SELECT fincode FROM findoc WHERE findoc=A.findocl),'') RetAnnNumber," +
+    "isnull((SELECT replace(convert(varchar(50),trndate,120),' ','T') FROM findoc WHERE findoc=A.findocl),'') RetAnnDate," +
+    "'" + buyerOrderNumber.replace(/'/g, "''") + "' BuyerOrderNumber," +
+    "'" + buyerOrderDate + "' BuyerOrderDate," +
+    "isnull((SELECT replace(convert(varchar(50),trndate,120),' ','T') FROM findoc WHERE findoc=A.findocl),'') DeliveryDate," +
+    "isnull((SELECT fincode FROM findoc WHERE findoc=A.findocl),'') DeliveryDocumentNumber " +
+    'FROM mtrlines A ' +
+    'LEFT OUTER JOIN mtrl B ON A.mtrl=B.mtrl ' +
+    'LEFT OUTER JOIN findoc C ON A.findoc=C.findoc ' +
+    'LEFT OUTER JOIN CCCS1DXTRDRMTRL D ON A.mtrl=D.mtrl AND C.trdr=D.trdr ' +
+    'LEFT OUTER JOIN intrastat E ON B.intrastat=E.intrastat AND A.company=E.company ' +
+    'LEFT OUTER JOIN vat F ON A.vat=F.vat ' +
+    'LEFT OUTER JOIN mtrunit G ON B.MTRUNIT1=G.MTRUNIT AND A.company=G.company ' +
+    'WHERE A.findoc=' + findoc + ' AND A.sodtype=51';
+
+  var dsLinii = X.GETSQLDATASET(sqlLinii, null);
+
+  // ---- Tax summary query (negated) ----
+  var sqlTax =
+    "SELECT '2D' TaxCategoryCoded," +
+    'convert(varchar(36),cast(round(B.percnt,2) as numeric(36,2))) TaxPercent,' +
+    'convert(varchar(36),cast(round(A.SUBVAL*(-1),2) as numeric(36,2))) TaxNettoAmount,' +
+    'convert(varchar(36),cast(round(A.SUBVAL*(-1),2) as numeric(36,2))) TaxableAmount,' +
+    'convert(varchar(36),cast(round(A.VATVAL*(-1),2) as numeric(36,2))) TaxAmount,' +
+    'convert(varchar(36),cast(round((A.SUBVAL+A.VATVAL)*(-1),2) as numeric(36,2))) TaxGrossAmount ' +
+    'FROM vatanal A ' +
+    'LEFT OUTER JOIN vat B ON A.vat=B.vat ' +
+    'WHERE A.findoc=' + findoc;
+
+  var dsTax = X.GETSQLDATASET(sqlTax, null);
+
+  // ---- Validare campuri obligatorii (M) ----
+  var erori = [];
+
+  // Document
+  if (!buyerOrderNumber) erori.push('<BuyerOrderNumber> (Numar comanda client) lipsa - completati campul NUM04 pe document');
+  if (!buyerOrderDate) erori.push('<BuyerOrderDate> (Data comanda client) lipsa - completati campul DATE01 pe document');
+
+  // Header
+  if (!dsHeader.InvoiceNumber) erori.push('<InvoiceNumber> (numar document) lipsa');
+  if (!dsHeader.ILN) erori.push('<ILN> BuyerParty (GLN Dedeman) lipsa - verificati CCCS1DXGLN pe partener');
+  if (!dsHeader.TaxID) erori.push('<TaxID> BuyerParty (CUI Dedeman) lipsa');
+  if (!dsHeader.BuyerName) erori.push('<Name> BuyerParty (Nume Dedeman) lipsa');
+  if (!dsHeader.BuyerStreet) erori.push('<Street> BuyerParty (Adresa Dedeman) lipsa');
+  if (!dsHeader.BuyerZip) erori.push('<PostalCode> BuyerParty (Cod postal Dedeman) lipsa');
+  if (!dsHeader.BuyerCity) erori.push('<City> BuyerParty (Oras Dedeman) lipsa');
+  if (!dsHeader.BuyerCountry) erori.push('<Country> BuyerParty (Tara Dedeman) lipsa');
+  if (!dsHeader.ShipToILN) erori.push('<ILN> ShipToParty (GLN filiala Dedeman) lipsa - verificati CCCS1DXGLN pe filiala client');
+  if (!dsHeader.ShipToName) erori.push('<Name> ShipToParty (Nume filiala) lipsa');
+  if (!dsHeader.ShipToStreet) erori.push('<Street> ShipToParty (Adresa filiala) lipsa');
+  if (!dsHeader.ShipToZip) erori.push('<PostalCode> ShipToParty (Cod postal filiala) lipsa');
+  if (!dsHeader.ShipToCity) erori.push('<City> ShipToParty (Oras filiala) lipsa');
+  if (!dsHeader.ShipToCountry) erori.push('<Country> ShipToParty (Tara filiala) lipsa');
+  if (!dsHeader.SellerILN) erori.push('<ILN> SellerParty (GLN PetFactory) lipsa - verificati CCCS1DXGLN pe companie');
+  if (!dsHeader.SellerTaxID) erori.push('<TaxID> SellerParty (CUI PetFactory) lipsa');
+  if (!dsHeader.BankAccount) erori.push('<BankAccount> SellerParty (IBAN PetFactory) lipsa - verificati BGREPNAME pe companie');
+  if (!dsHeader.SellerName) erori.push('<Name> SellerParty (Nume PetFactory) lipsa');
+  if (!dsHeader.SellerStreet) erori.push('<Street> SellerParty (Adresa PetFactory) lipsa');
+  if (!dsHeader.SellerZip) erori.push('<PostalCode> SellerParty (Cod postal PetFactory) lipsa');
+  if (!dsHeader.SellerCity) erori.push('<City> SellerParty (Oras PetFactory) lipsa');
+  if (!dsHeader.SellerCountry) erori.push('<Country> SellerParty (Tara PetFactory) lipsa');
+  if (!dsHeader.InvoiceDueDate) erori.push('<InvoiceDueDate> (Termen plata) lipsa - verificati FINPAYTERMS');
+
+  // Linii
+  dsLinii.FIRST;
+  while (!dsLinii.EOF) {
+    var ln = 'Linia ' + dsLinii.ItemNum + ': ';
+    if (!dsLinii.EAN) erori.push(ln + '<EAN> lipsa');
+    if (!dsLinii.BuyerItemID) erori.push(ln + '<BuyerItemID> (cod articol Dedeman) lipsa - verificati CCCS1DXTRDRMTRL');
+    if (!dsLinii.UnitOfMeasure) erori.push(ln + '<UnitOfMeasure> (UM) lipsa');
+    if (!dsLinii.LineName) erori.push(ln + '<Name> (denumire articol) lipsa');
+    if (!dsLinii.RetAnnNumber) erori.push(ln + '<RetAnnNumber> (numar aviz retur) lipsa - verificati FINDOCL');
+    if (!dsLinii.RetAnnDate) erori.push(ln + '<RetAnnDate> (data aviz retur) lipsa - verificati FINDOCL');
+    if (!dsLinii.DeliveryDocumentNumber) erori.push(ln + '<DeliveryDocumentNumber> (numar aviz livrare) lipsa - verificati FINDOCL');
+    if (!dsLinii.DeliveryDate) erori.push(ln + '<DeliveryDate> (data livrare) lipsa - verificati FINDOCL');
+    dsLinii.NEXT;
+  }
+  dsLinii.FIRST;
+
+  if (erori.length > 0) {
+    var ans = X.ASK('XML Dedeman Retur - campuri obligatorii lipsa', '[Ref: INVOICE TECHNICAL SPECIFICATION - DEDICATED FOR DEDEMAN PROJECT - VERSION 4.0 - EDInet XML]\n\n' + erori.join('\n') + '\n\nGenerati XML totusi?');
+    if (ans != 6) return; // 6=Yes, 7=No, 2=Cancel
+  }
+
+  // ---- Build XML ----
+  function tag(name, val) {
+    return '<' + name + '>' + (val !== undefined && val !== null ? val : '') + '</' + name + '>';
+  }
+
+  var xml = [];
+  xml.push('<?xml version="1.0" encoding="UTF-8"?>');
+  xml.push('<Invoice Version="1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.infinite.pl/pub/doc/fmt/xml/invoice/1.0/invoice.xsd">');
+
+  // InvoiceHeader
+  xml.push('<InvoiceHeader>');
+  xml.push('  ' + tag('InvoiceNumber', dsHeader.InvoiceNumber));
+  xml.push('  ' + tag('Date', dsHeader.Data));
+  xml.push('  ' + tag('InvoiceDueDate', dsHeader.InvoiceDueDate || dsHeader.Data));
+  xml.push('  ' + tag('PaymentTerms', dsHeader.PaymentTermsDays));
+  xml.push('  ' + tag('PaymentTermsQualifier', '3'));
+  xml.push('  <PaymentMethod>');
+  xml.push('    ' + tag('Code', '42'));
+  xml.push('    ' + tag('Description', ''));
+  xml.push('  </PaymentMethod>');
+  xml.push('  ' + tag('InvoiceCurrencyCoded', 'RON'));
+  xml.push('  ' + tag('InvoicePurposeCoded', 'O'));
+  xml.push('  ' + tag('DocumentRole', 'R'));
+  xml.push('  ' + tag('InvType', 'RETURN'));
+  xml.push('  ' + tag('Comment', ''));
+  xml.push('</InvoiceHeader>');
+
+  // InvoiceParty
+  xml.push('<InvoiceParty>');
+
+  // BuyerParty = DEDEMAN
+  xml.push('  <BuyerParty>');
+  xml.push('    ' + tag('ILN', dsHeader.ILN));
+  xml.push('    ' + tag('TaxID', dsHeader.TaxID));
+  xml.push('    ' + tag('Name', dsHeader.BuyerName));
+  xml.push('    ' + tag('Street', dsHeader.BuyerStreet));
+  xml.push('    ' + tag('HouseNumber', ''));
+  xml.push('    ' + tag('PostalCode', dsHeader.BuyerZip));
+  xml.push('    ' + tag('City', dsHeader.BuyerCity));
+  xml.push('    ' + tag('Country', dsHeader.BuyerCountry));
+  xml.push('  </BuyerParty>');
+
+  // InvoiceeParty = DEDEMAN (same)
+  xml.push('  <InvoiceeParty>');
+  xml.push('    ' + tag('ILN', dsHeader.ILN));
+  xml.push('    ' + tag('Name', dsHeader.BuyerName));
+  xml.push('    ' + tag('Street', dsHeader.BuyerStreet));
+  xml.push('    ' + tag('HouseNumber', ''));
+  xml.push('    ' + tag('PostalCode', dsHeader.BuyerZip));
+  xml.push('    ' + tag('City', dsHeader.BuyerCity));
+  xml.push('    ' + tag('Country', dsHeader.BuyerCountry));
+  xml.push('  </InvoiceeParty>');
+
+  // ShipToParty = TRDBRANCH (locatia Dedeman)
+  xml.push('  <ShipToParty>');
+  xml.push('    ' + tag('ILN', dsHeader.ShipToILN));
+  xml.push('    ' + tag('Name', dsHeader.ShipToName));
+  xml.push('    ' + tag('Street', dsHeader.ShipToStreet));
+  xml.push('    ' + tag('HouseNumber', ''));
+  xml.push('    ' + tag('PostalCode', dsHeader.ShipToZip));
+  xml.push('    ' + tag('City', dsHeader.ShipToCity));
+  xml.push('    ' + tag('Country', dsHeader.ShipToCountry));
+  xml.push('  </ShipToParty>');
+
+  // SellerParty = PET FACTORY
+  xml.push('  <SellerParty>');
+  xml.push('    ' + tag('ILN', dsHeader.SellerILN));
+  xml.push('    ' + tag('BuyerSellerID', dsHeader.BuyerSellerID));
+  xml.push('    ' + tag('TaxID', dsHeader.SellerTaxID));
+  xml.push('    ' + tag('BankAccount', dsHeader.BankAccount));
+  xml.push('    ' + tag('BankAccountOwner', ''));
+  xml.push('    ' + tag('BankName', dsHeader.BankName));
+  xml.push('    ' + tag('Name', dsHeader.SellerName));
+  xml.push('    ' + tag('Street', dsHeader.SellerStreet));
+  xml.push('    ' + tag('HouseNumber', ''));
+  xml.push('    ' + tag('PostalCode', dsHeader.SellerZip));
+  xml.push('    ' + tag('City', dsHeader.SellerCity));
+  xml.push('    ' + tag('Country', dsHeader.SellerCountry));
+  xml.push('    <Contact>');
+  xml.push('      ' + tag('Person', 'Ion Ion'));
+  xml.push('      ' + tag('Tel', dsHeader.SellerTel));
+  xml.push('    </Contact>');
+  xml.push('  </SellerParty>');
+
+  // ShipFromParty = gol
+  xml.push('  <ShipFromParty>');
+  xml.push('    ' + tag('ILN', ''));
+  xml.push('    ' + tag('Name', ''));
+  xml.push('    ' + tag('Street', ''));
+  xml.push('    ' + tag('HouseNumber', ''));
+  xml.push('    ' + tag('PostalCode', ''));
+  xml.push('    ' + tag('City', ''));
+  xml.push('    ' + tag('Country', ''));
+  xml.push('  </ShipFromParty>');
+
+  xml.push('</InvoiceParty>');
+
+  // InvoiceDetail - linii
+  xml.push('<InvoiceDetail>');
+  var nContor = 0;
+  dsLinii.FIRST;
+  while (!dsLinii.EOF) {
+    nContor++;
+    xml.push('  <Item>');
+    xml.push('    ' + tag('ItemNum', nContor));
+    xml.push('    ' + tag('EAN', dsLinii.EAN));
+    xml.push('    ' + tag('BuyerItemID', dsLinii.BuyerItemID));
+    xml.push('    ' + tag('SellerItemID', dsLinii.SellerItemID));
+    xml.push('    ' + tag('CustomTariffNumber', dsLinii.CustomTariffNumber));
+    xml.push('    ' + tag('ProductIdentifierExt', 'CU'));
+    xml.push('    ' + tag('PacketContentQuantity', ''));
+    xml.push('    ' + tag('PackageType', 'CT'));
+    xml.push('    ' + tag('QuantityValue', dsLinii.QuantityValue));
+    xml.push('    ' + tag('TaxCategoryCoded', '2D'));
+    xml.push('    ' + tag('TaxPercent', dsLinii.TaxPercent));
+    xml.push('    ' + tag('TaxAmount', dsLinii.TaxAmount));
+    xml.push('    ' + tag('MonetaryGrossValue', dsLinii.MonetaryGrossValue));
+    xml.push('    ' + tag('MonetaryNetValue', dsLinii.MonetaryNetValue));
+    xml.push('    ' + tag('MonetaryAmountPayable', dsLinii.MonetaryAmountPayable));
+    xml.push('    ' + tag('UnitOfMeasure', dsLinii.UnitOfMeasure));
+    xml.push('    ' + tag('UnitOfMeasureXCBL', ''));
+    xml.push('    ' + tag('PackUnitOfMeasure', dsLinii.UnitOfMeasure));
+    xml.push('    ' + tag('UnitPriceValue', dsLinii.UnitPriceValue));
+    xml.push('    ' + tag('UnitPriceValueGross', dsLinii.UnitPriceValueGross));
+    xml.push('    ' + tag('Name', dsLinii.LineName));
+    xml.push('    <ReturnsAnnouncement>');
+    xml.push('      ' + tag('RetAnnNumber', dsLinii.RetAnnNumber));
+    xml.push('      ' + tag('RetAnnDate', dsLinii.RetAnnDate));
+    xml.push('    </ReturnsAnnouncement>');
+    xml.push('    <Order>');
+    xml.push('      ' + tag('BuyerOrderNumber', dsLinii.BuyerOrderNumber));
+    xml.push('      ' + tag('BuyerOrderDate', dsLinii.BuyerOrderDate));
+    xml.push('    </Order>');
+    xml.push('    <DeliveryDetail>');
+    xml.push('      ' + tag('DeliveryDate', dsLinii.DeliveryDate));
+    xml.push('      ' + tag('DeliveryDocumentNumber', dsLinii.DeliveryDocumentNumber));
+    xml.push('    </DeliveryDetail>');
+    xml.push('  </Item>');
+    dsLinii.NEXT;
+  }
+  xml.push('</InvoiceDetail>');
+
+  // InvoiceSummary
+  xml.push('<InvoiceSummary>');
+  xml.push('  ' + tag('NumberOfLines', dsHeader.NumberOfLines));
+  xml.push('  ' + tag('NetValue', dsHeader.NetValue));
+  xml.push('  ' + tag('TaxValue', dsHeader.TaxValue));
+  xml.push('  ' + tag('TaxableValue', dsHeader.TaxableValue));
+  xml.push('  ' + tag('GrossValue', dsHeader.GrossValue));
+  xml.push('  <TaxSummary>');
+  dsTax.FIRST;
+  while (!dsTax.EOF) {
+    xml.push('    <Tax>');
+    xml.push('      ' + tag('TaxCategoryCoded', '2D'));
+    xml.push('      ' + tag('TaxPercent', dsTax.TaxPercent));
+    xml.push('      ' + tag('TaxNettoAmount', dsTax.TaxNettoAmount));
+    xml.push('      ' + tag('TaxableAmount', dsTax.TaxableAmount));
+    xml.push('      ' + tag('TaxAmount', dsTax.TaxAmount));
+    xml.push('      ' + tag('TaxGrossAmount', dsTax.TaxGrossAmount));
+    xml.push('    </Tax>');
+    dsTax.NEXT;
+  }
+  xml.push('  </TaxSummary>');
+  xml.push('</InvoiceSummary>');
+  xml.push('</Invoice>');
+
+  // ---- Scrie fisier UTF-8 si deschide in Notepad ----
+  var vFileName = dsHeader.InvoiceNumber + '_' + dsHeader.Data + '.xml';
+  var vPath = 'C:\\EDI\\Dedeman\\Facturi_Retur\\';
+  var vFilePath = vPath + vFileName;
+
+  var fso = new ActiveXObject('Scripting.FileSystemObject');
+  if (!fso.FolderExists(vPath)) {
+    var parts = vPath.replace(/\\+$/, '').split('\\');
+    var cur = '';
+    for (var pi = 0; pi < parts.length; pi++) {
+      cur += parts[pi] + '\\';
+      if (cur.length > 3 && !fso.FolderExists(cur)) {
+        fso.CreateFolder(cur);
+      }
+    }
+  }
+
+  var stream = new ActiveXObject('ADODB.Stream');
+  stream.Type = 2; // text
+  stream.Charset = 'UTF-8';
+  stream.Open();
+  stream.WriteText(xml.join('\r\n'));
+  stream.SaveToFile(vFilePath, 2); // 2 = overwrite
+  stream.Close();
+
+  var shell = new ActiveXObject('WScript.Shell');
+  shell.Run('notepad.exe "' + vFilePath + '"');
+}
+
+//ABC related
+function applyPnlDims(line, dims) {
+  if (!dims) {
+    return;
+  }
+  line.CCCABCDIM2 = dims[2];
+  line.CCCABCDIM4 = dims[4];
+  line.CCCABCDIM6 = dims[6];
+  line.CCCABCDIM7 = dims[7];
+  line.CCCACTGROUP = dims.actgroup;
+  line.CCCABCDIM8 = dims[8];
+}
+
+function resolvePnlLine(line) {
+  return ABC.setImpliciteLinie({
+    mtrl: line.MTRL,
+    trdr: SALDOC.TRDR,
+    salesman: SALDOC.SALESMAN,
+    series: SALDOC.SERIES,
+    fprms: SALDOC.FPRMS,
+    manualDims: {
+      2: line.CCCABCDIM2,
+      4: line.CCCABCDIM4,
+      6: line.CCCABCDIM6,
+      7: line.CCCABCDIM7,
+      8: line.CCCABCDIM8,
+      actgroup: line.CCCACTGROUP
+    }
+  });
+}
+
+function clearPnlActGroupCascade(line) {
+  line.CCCACTGROUP = null;
+  line.CCCABCDIM8 = null;
+}
+
+function clearPnlDim8Cascade(line) {
+  line.CCCABCDIM8 = null;
+}
+
+function ON_ITELINES_NEW() {
+  //applyPnlDims(ITELINES, resolvePnlLine(ITELINES));
+}
+
+function ON_ITELINES_CCCABCDIM4() {
+  ABC.setLineEditors('ITELINES', ITELINES);
+}
+
+function ON_ITELINES_CCCABCDIM7() {
+  clearPnlActGroupCascade(ITELINES);
+}
+
+function ON_ITELINES_CCCACTGROUP() {
+  clearPnlDim8Cascade(ITELINES);
 }
 
 function ON_SRVLINES_NEW() {
-  //init ABC
-  initABC();
-  var dims = objABC.setImpliciteLinie();
-  if (dims.length) {
-    SRVLINES.CCCABCDIM1 = dims[0];
-    SRVLINES.CCCABCDIM2 = dims[1];
-    SRVLINES.CCCABCDIM3 = dims[2];
-    SRVLINES.CCCABCDIM4 = dims[3];
-    SRVLINES.CCCABCDIM5 = dims[4];
-    SRVLINES.CCCABCDIM6 = dims[5];
-  }
+  //applyPnlDims(SRVLINES, resolvePnlLine(SRVLINES));
 }
 
-function loadABC() {
-  var dsSoImport, jsCode;
-  //aceasta functie returneaza un closure ABC, care se foloseste gen objABC.upsert();
-  //daca nu a mai fost executata, ABC global e undefined
-  //se executa global la operare form sau in _POST daca webservice
+function ON_SRVLINES_MTRL() {
+  applyPnlDims(SRVLINES, resolvePnlLine(SRVLINES));
+}
 
-  if (Object.keys(objABC).length === 0 && objABC.constructor === Object) {
-    dsSoImport = X.GETSQLDATASET(
-      "SELECT SOIMPORT FROM SOIMPORT WHERE CODE='ABC'",
-      null
-    );
-    dsSoImport.FIRST;
-    jsCode = dsSoImport.SOIMPORT;
-    eval(jsCode); //returneaza var ABC local
-    objABC = ABC; //o fac accesibila global
-  }
+function ON_SRVLINES_CCCABCDIM4() {
+  ABC.setLineEditors('SRVLINES', SRVLINES);
+}
+
+function ON_SRVLINES_CCCABCDIM7() {
+  clearPnlActGroupCascade(SRVLINES);
+}
+
+function ON_SRVLINES_CCCACTGROUP() {
+  clearPnlDim8Cascade(SRVLINES);
 }
 
 function initABC() {
   var q =
-      "select CCCABCREPRSENTBUSINESS catCom from trdr where trdbusiness=112",
+    "select CCCABCREPRSENTBUSINESS catCom from trdr where trdbusiness=112",
     dsCatCom = X.GETSQLDATASET(q, null),
     trdb = X.SQL(
       "select trdbusiness from trdr where trdr=" + SALDOC.TRDR,
@@ -1675,33 +2177,19 @@ function initABC() {
     }
   }
 
-  var uiFrom = [
-    {
-      ui: SALDOC.TRDR_CUSTOMER_TRDBUSINESS,
-      sql: "",
-    },
-    {
-      ui: reprezentant ? reprezentant : SALDOC.TRDR,
-      sql: "",
-    },
-    {
-      ui: SALDOC.SALESMAN,
-      sql: "select isnull(depart, 0) from prsn where prsn=",
-    },
-    {
-      ui: SALDOC.SALESMAN,
-      sql: "",
-    },
-    {
-      ui: SALDOC.TRDBRANCH,
-      sql: "select isnull(CCCZONAGEO, 0) from trdbranch where trdbranch=",
-    },
-    {
-      ui: SALDOC.SALESMAN,
-      sql: "select isnull(trucks, 0) from prsn where prsn=",
-    },
-  ];
-  objABC.init(SALDOC, ITELINES, SRVLINES, 1000, 1001, 1002, 1003, uiFrom); //paseaza variabilele necesare in closure ABC
+  ABC.init({
+    module: SALDOC,
+    lines1: ITELINES,
+    lines2: SRVLINES,
+    source: 'SALDOC',
+    doc: {
+      trdr: SALDOC.TRDR,
+      salesman: SALDOC.SALESMAN,
+      truck: SALDOC.SALESMAN ? X.SQL('select isnull(trucks, 0) from prsn where prsn=' + SALDOC.SALESMAN, null) : null,
+      trdbranch: SALDOC.TRDBRANCH,
+      trdbusiness: SALDOC.TRDR_CUSTOMER_TRDBUSINESS
+    }
+  });
 }
 
 function ON_SALDOC_TRDR() {
@@ -1713,6 +2201,11 @@ function ON_SALDOC_TRDR() {
     SALDOC.SALESMAN = reprVanzari;
   }
   initABC();
+
+  //verificare preturi valuta din politica 101 pentru comanda externa
+  if (SALDOC.SERIES == 7023)
+    validare_pret();
+
 }
 
 function ON_SALDOC_SALESMAN() {
@@ -1721,10 +2214,48 @@ function ON_SALDOC_SALESMAN() {
 
 function ON_SALDOC_TRDBRANCH() {
   initABC();
+
+  //select CCCS1DXGLN from trdbranch where trdbranch = SALDOC.TRDBRANCH
+  updateSaldocCommentsBasedOnGln();
+}
+
+function updateSaldocCommentsBasedOnGln() {
+  var gln = X.SQL(
+    "select isnull(CCCS1DXGLN, 0) from trdbranch where trdbranch=" +
+    SALDOC.TRDBRANCH,
+    null
+  );
+
+  /*
+  daca gln este unul din urmatoarele, atunci e SALDOC.COMMENTS = 'Banner Profi'
+  5949065001124
+  5949065001131
+  5949065001148
+  5949065001155
+  5949065001162
+  5949065001179
+  */
+  var bannerProfiGlns = [
+    "5949065001124",
+    "5949065001131",
+    "5949065001148",
+    "5949065001155",
+    "5949065001162",
+    "5949065001179"
+  ];
+  //5940475873134, 5940475875190: Mega
+  var bannerMegaGlns = [
+    "5940475873134",
+    "5940475875190"
+  ];
+  if (bannerProfiGlns.indexOf(gln) !== -1) {
+    SALDOC.COMMENTS = "Banner Profi";
+  } else if (bannerMegaGlns.indexOf(gln) !== -1) {
+    SALDOC.COMMENTS = "Banner Mega Image";
+  }
 }
 
 function ON_CREATE() {
-  loadABC(); //creaza var ABC global
   //X.WARNING('__ABC module loaded__');
   ChangeBrowserMenu(); //Change context menu of browser
 }
@@ -1744,6 +2275,7 @@ function ChangeBrowserMenu() {
 function ON_LOCATE() {
   //debugger;
   initABC(); //init la modificare doc
+  ABC.setBaseLineEditors(['ITELINES', 'SRVLINES']);
   if (!aDoua) {
     //saveABC();
   } else {
@@ -1753,7 +2285,7 @@ function ON_LOCATE() {
   X.ABCST.REFRESH;
   X.INVALIDATEFIELD("ITELINES.CCCABCDIM2");
 
-  if (SALDOC.SERIES == 7011 || SALDOC.SERIES == 7011) {
+  if (SALDOC.SERIES == 7011 || SALDOC.SERIES == 7011 || SALDOC.SERIES == 7023) {
     //X.SETPROPERTY('PANEL', 'N_353391016', 'VISIBLE', false)
     X.SETPROPERTY("PANEL", "PanelExel", "VISIBLE", true);
     //X.SETPROPERTY('PANEL', 'Panel15', 'VISIBLE', false)
@@ -1765,271 +2297,12 @@ function ON_LOCATE() {
 }
 
 function saveABC() {
-  reevalueazaModelele();
-  objABC.D();
-
-  objABC.upsert();
+  ABC.D();
+  ABC.upsert();
 }
 
 function ON_INSERT() {
   initABC(); //init la modificare doc
-}
-
-function ON_ITELINES_CCCABCDIMMDL1() {
-  if (ITELINES.CCCABCDIMMDL1)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL1,
-      "CCCABCDIMMDL1",
-      "ITELINES.CCCABCDIMMDL1"
-    );
-}
-
-function ON_ITELINES_CCCABCDIMMDL2() {
-  if (ITELINES.CCCABCDIMMDL2)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL2,
-      "CCCABCDIMMDL2",
-      "ITELINES.CCCABCDIMMDL2"
-    );
-}
-
-function ON_ITELINES_CCCABCDIMMDL3() {
-  if (ITELINES.CCCABCDIMMDL3)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL3,
-      "CCCABCDIMMDL3",
-      "ITELINES.CCCABCDIMMDL3"
-    );
-}
-
-function ON_ITELINES_CCCABCDIMMDL4() {
-  if (ITELINES.CCCABCDIMMDL4)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL4,
-      "CCCABCDIMMDL4",
-      "ITELINES.CCCABCDIMMDL4"
-    );
-}
-
-function ON_ITELINES_CCCABCDIMMDL5() {
-  if (ITELINES.CCCABCDIMMDL5)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL5,
-      "CCCABCDIMMDL5",
-      "ITELINES.CCCABCDIMMDL5"
-    );
-}
-
-function ON_ITELINES_CCCABCDIMMDL6() {
-  if (ITELINES.CCCABCDIMMDL6)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL6,
-      "CCCABCDIMMDL6",
-      "ITELINES.CCCABCDIMMDL6"
-    );
-}
-
-function adminMdl(dimCell, dimSql) {
-  var da = X.FORMATDATE("yyyymmdd", SALDOC.TRNDATE);
-  if (dimCell) {
-    var d = parseInt(objABC.administrareModeleDinamice(dimCell, da));
-    if (dimCell != d) {
-      return d;
-    } else {
-      return 0;
-    }
-  }
-}
-
-function on_linlines_abc(ds, gridCellVal, cellName, fullCellName) {
-  if (itsMeStackOverflow) {
-    itsMeStackOverflow = false;
-    return;
-  }
-  var val = adminMdl(gridCellVal, cellName);
-  X.ABCDIMMDL.REFRESH;
-  if (val) {
-    itsMeStackOverflow = true;
-    switch (cellName) {
-      case "CCCABCDIMMDL1":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL1 = val;
-        break;
-      case "CCCABCDIMMDL2":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL2 = val;
-        break;
-      case "CCCABCDIMMDL3":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL3 = val;
-        break;
-      case "CCCABCDIMMDL4":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL4 = val;
-        break;
-      case "CCCABCDIMMDL5":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL5 = val;
-        break;
-      case "CCCABCDIMMDL6":
-        X.INVALIDATEFIELD(fullCellName);
-        ds.CCCABCDIMMDL6 = val;
-        break;
-    }
-  }
-}
-
-function ON_SRVLINES_CCCABCDIMMDL1() {
-  if (SRVLINES.CCCABCDIMMDL1)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL1,
-      "CCCABCDIMMDL1",
-      "SRVLINES.CCCABCDIMMDL1"
-    );
-}
-
-function ON_SRVLINES_CCCABCDIMMDL2() {
-  if (SRVLINES.CCCABCDIMMDL2)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL2,
-      "CCCABCDIMMDL2",
-      "SRVLINES.CCCABCDIMMDL2"
-    );
-}
-
-function ON_SRVLINES_CCCABCDIMMDL3() {
-  if (SRVLINES.CCCABCDIMMDL3)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL3,
-      "CCCABCDIMMDL3",
-      "SRVLINES.CCCABCDIMMDL3"
-    );
-}
-
-function ON_SRVLINES_CCCABCDIMMDL4() {
-  if (SRVLINES.CCCABCDIMMDL4)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL4,
-      "CCCABCDIMMDL4",
-      "SRVLINES.CCCABCDIMMDL4"
-    );
-}
-
-function ON_SRVLINES_CCCABCDIMMDL5() {
-  if (SRVLINES.CCCABCDIMMDL5)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL5,
-      "CCCABCDIMMDL5",
-      "SRVLINES.CCCABCDIMMDL5"
-    );
-}
-
-function ON_SRVLINES_CCCABCDIMMDL6() {
-  if (SRVLINES.CCCABCDIMMDL6)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL6,
-      "CCCABCDIMMDL6",
-      "SRVLINES.CCCABCDIMMDL6"
-    );
-}
-
-function reevalueazaModelele() {
-  if (ITELINES.CCCABCDIMMDL1)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL1,
-      "CCCABCDIMMDL1",
-      "ITELINES.CCCABCDIMMDL1"
-    );
-  if (ITELINES.CCCABCDIMMDL2)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL2,
-      "CCCABCDIMMDL2",
-      "ITELINES.CCCABCDIMMDL2"
-    );
-  if (ITELINES.CCCABCDIMMDL3)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL3,
-      "CCCABCDIMMDL3",
-      "ITELINES.CCCABCDIMMDL3"
-    );
-  if (ITELINES.CCCABCDIMMDL4)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL4,
-      "CCCABCDIMMDL4",
-      "ITELINES.CCCABCDIMMDL4"
-    );
-  if (ITELINES.CCCABCDIMMDL5)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL5,
-      "CCCABCDIMMDL5",
-      "ITELINES.CCCABCDIMMDL5"
-    );
-  if (ITELINES.CCCABCDIMMDL6)
-    on_linlines_abc(
-      ITELINES,
-      ITELINES.CCCABCDIMMDL6,
-      "CCCABCDIMMDL6",
-      "ITELINES.CCCABCDIMMDL6"
-    );
-  if (SRVLINES.CCCABCDIMMDL1)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL1,
-      "CCCABCDIMMDL1",
-      "SRVLINES.CCCABCDIMMDL1"
-    );
-  if (SRVLINES.CCCABCDIMMDL2)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL2,
-      "CCCABCDIMMDL2",
-      "SRVLINES.CCCABCDIMMDL2"
-    );
-  if (SRVLINES.CCCABCDIMMDL3)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL3,
-      "CCCABCDIMMDL3",
-      "SRVLINES.CCCABCDIMMDL3"
-    );
-  if (SRVLINES.CCCABCDIMMDL4)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL4,
-      "CCCABCDIMMDL4",
-      "SRVLINES.CCCABCDIMMDL4"
-    );
-  if (SRVLINES.CCCABCDIMMDL5)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL5,
-      "CCCABCDIMMDL5",
-      "SRVLINES.CCCABCDIMMDL5"
-    );
-  if (SRVLINES.CCCABCDIMMDL6)
-    on_linlines_abc(
-      SRVLINES,
-      SRVLINES.CCCABCDIMMDL6,
-      "CCCABCDIMMDL6",
-      "SRVLINES.CCCABCDIMMDL6"
-    );
 }
 
 function sfpt2DocProcess(fisier, logFldr, trimis) {
@@ -2038,14 +2311,14 @@ function sfpt2DocProcess(fisier, logFldr, trimis) {
   asiguraCalea(logFldr);
 
   var initialDir =
-      "/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/in/",
+    "/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/in/",
     winscpAction = '"put -delete -resume ' + fisier + " " + initialDir + ' " ';
   connect2SftpDocProc(logFldr, winscpAction, true);
 }
 
 function sfptFromDocProcess(logFldr) {
   var initialDir =
-      "/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/out/",
+    "/001G_rFRDUyK4xAMVFfEFelF5WNqhBNujBx38gMmV1fVqIGLNZoQg5f/out/",
     downloadDir = folderPath + "dante_out\\",
     winscpAction =
       '"get -resume ' + initialDir + "order*.xml " + downloadDir + ' " ';
@@ -2136,7 +2409,7 @@ function preiaDateAviz() {
     if (ITELINES.FINDOCS) {
       var dataset = X.GETSQLDATASET(
         "SELECT FINDOC, FPRMS, TRNDATE, FINCODE FROM FINDOC WHERE FINDOC=" +
-          ITELINES.FINDOCS,
+        ITELINES.FINDOCS,
         null
       );
       if (dataset.RECORDCOUNT > 0) {
@@ -2173,9 +2446,9 @@ function import_fisier() {
 
     DsMtrl = X.GETSQLDATASET(
       "select isnull(mtrl,0) as mtrl from mtrl where code=" +
-        String.fromCharCode(39) +
-        vCod +
-        String.fromCharCode(39),
+      String.fromCharCode(39) +
+      vCod +
+      String.fromCharCode(39),
       null
     );
 
@@ -2200,4 +2473,13 @@ function import_fisier() {
 function ON_SALDOC_VARCHAR01() {
   if (SALDOC.FINDOC < 0) import_fisier();
   else X.WARNING("Documentul are linii, nu pot fi adaugate din Excel");
+}
+
+function docID() {
+  if (SALDOC.FINDOC > 0)
+    vID = SALDOC.FINDOC;
+  else
+    vID = X.NEWID;
+
+  return vID;
 }

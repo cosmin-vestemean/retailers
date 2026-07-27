@@ -1,0 +1,75 @@
+<Retann>
+    <RetannHeader>
+        <RetannNumber><![CDATA[5009843930]]></RetannNumber>
+        <IssueDate>2020-05-18T00:00:00</IssueDate>
+    </RetannHeader>
+    <RetannParty>
+        <BuyerParty>
+            <Name><![CDATA[DEDEMAN SRL]]></Name>
+            <ILN>5940475841003</ILN>
+            <IDInSupplierSys>DEDE</IDInSupplierSys>
+            <AddressDetails>
+                <City><![CDATA[BACAU]]></City>
+                <PostalCode>600093</PostalCode>
+                <Street><![CDATA[ALEXEI TOLSTOI ]]></Street>
+                <CountryCode>
+                    RO</CountryCode>
+            </AddressDetails>
+        </BuyerParty>
+        <ShipToParty>
+            <Name><![CDATA[Magazin 63 BAIA MARE]]></Name>
+            <ILN>5940475841058</ILN>
+            <IDInSupplierSys>TL01</IDInSupplierSys>
+            <AddressDetails>
+                <City><![CDATA[BAIA MARE]]></City>
+                <PostalCode>430013</PostalCode>
+                <Street><![CDATA[Bd. Bucuresti Nr. 104 ]]></Street>
+                <CountryCode>RO</CountryCode>
+            </AddressDetails>
+        </ShipToParty>
+        <SellerParty>
+            <Name><![CDATA[TEST SRL]]></Name>
+            <ILN>8888888888888</ILN>
+            <IDInBuyerSys>0000002751</IDInBuyerSys>
+            <AddressDetails>
+                <City><![CDATA[SUPPLIER CITY]]></City>
+                <PostalCode>/</PostalCode>
+                <Street><![CDATA[STR SUPPLIER STREET, NR. 7.]]></Street>
+                <CountryCode>RO</CountryCode>
+            </AddressDetails>
+        </SellerParty>
+    </RetannParty>
+    <RetannRefDoc>
+        <OrderAtBuyerParty>
+            <DocID>4509164190</DocID>
+            <DocDate>2020-05-14T00:00:00</DocDate>
+        </OrderAtBuyerParty>
+        <DesadvParty>
+            <DocID>5009833687</DocID>
+        </DesadvParty>
+    </RetannRefDoc>
+    <RetannDetail>
+        <Item>
+            <ItemNumber>1</ItemNumber>
+            <OriginalItemNumber>10</OriginalItemNumber>
+            <EAN>7001189</EAN>
+            <Name>PALET 466</Name>
+            <UnitNetPrice>14.0</UnitNetPrice>
+            <MonetaryNetValue>-14</MonetaryNetValue>
+            <QuantityOrdered>-200.0</QuantityOrdered>
+            <QuantityReturned>-200</QuantityReturned>
+            <UnitOfMeassure>BUC</UnitOfMeassure>
+            <BuyerItemID>1027576</BuyerItemID>
+            <SellerItemID>/</SellerItemID>
+            <RetannRefDoc>
+                <OrderAtBuyerParty>
+                    <DocID>4509164190</DocID>
+                    <DocDate>2020-05-14T00:00:00</DocDate>
+                </OrderAtBuyerParty>
+            </RetannRefDoc>
+        </Item>
+    </RetannDetail>
+    <RetannSummary>
+        <TotalReceiptAmount>-1.0</TotalReceiptAmount>
+    </RetannSummary>
+</Retann>
