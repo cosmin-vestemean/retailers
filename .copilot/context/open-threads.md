@@ -41,20 +41,108 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   next: Copy full JSRetailers.js content to ERP AJS editor, save, verify each endpoint responds at https://petfactory.oncloud.gr/s1services/JS/JSRetailers/{functionName}.
 
 - id: manual-flux-retur-docx
-  status: open
+  status: closed
   source: session-N+5
   priority: high
   summary: >
-    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Manual_flux_retur_auchan_dedeman.docx`
-    exists in the working tree, is untracked, and is referenced by no markdown file.
-    Nobody has opened it in any session. Its title points straight at the RETURN flow —
-    exactly the subject we analysed from scratch off the 5 RETANN payloads
-    (valuation price, Soft1 series, whether a PV exists). It may already answer the two
-    questions we just put to the beneficiary, or contradict our reconstruction.
-  next: Extract the docx text and reconcile it against `/memories/repo/edi-retann-real-format.md` and the RETANN sections of the manual/plan/email before sending the email.
+    `Manual_flux_retur_auchan_dedeman.docx` (Sorin Fliundra, 2026-07-24) was extracted and
+    reconciled on 2026-07-28. It ANSWERS both questions we were about to ask the beneficiary:
+    series is `7531` (`RFVQ-`), common to all retailers; price comes from the last dispatch
+    advice to that branch, split FIFO-backwards across several advices when one is not enough.
+    It CONFIRMS our reconstruction on branch anchoring (ShipToParty GLN) and product matching
+    (`BuyerItemID`, both retailers). It contradicts nothing we had established.
+  next: Closed. Two new items were spun off — see `retann-comanda-number-missing` and the
+    RETANN sections of the manual/plan/email, which still need the docx rules folded in.
+
+- id: retann-comanda-number-missing
+  status: open
+  source: session-N+6
+  priority: high
+  summary: >
+    The beneficiary manual requires the return invoice's `Comanda` field to carry the
+    "Numarul de ordine de retur" (Auchan `4497049`, Dedeman `6100352505`). That number is
+    NOT present in the RETANN XML delivered over FTP — the payload only carries
+    `RetannHeader/DocumentNumber`, which is the Edinet internal id (`5017…` for Dedeman,
+    6-digit for Auchan). Confirmed in production 2026-07-28: `Comanda` is `FINDOC.NUM04`
+    (a float, so Auchan's leading zero is lost), and no existing FINDOC field stores the Edinet
+    document number. STORAGE IS NOT THE CONSTRAINT — adding `CCC*` columns is unrestricted, and
+    `A_IKA_RETANN` already ships with `Retann`, `COMANDARETUR` and `AVIZ` columns (0 rows).
+    The constraint is data availability: the value never arrives in the file.
+  next: Ask the beneficiary where the return order number is sourced from, if not the file
+    (Edinet portal / API / a second document type), or whether `Comanda` may instead hold the
+    Edinet `DocumentNumber` that we do receive.
+
+- id: dormant-retann-recadv-staging-tables
+  status: open
+  source: session-N+6
+  priority: medium
+  summary: >
+    Production already contains a designed-but-never-fed RETANN/RECADV import layer.
+    `A_IKA_RETANN` + `A_IKA_RETANNDETAIL` (0 rows) have exactly the columns this flow needs
+    (`Retann`, `COMANDARETUR`, `AVIZ`, `ILNBUYER`, `ILNSHIPTO`, `NUM04`, `FINDOC`, `IMPORTED`).
+    Eleven `A_TMP_DEDEMAN_RETANN_*` shredded-XML tables (0 rows) were modelled on spec v4.0 —
+    they include `_DESADVPARTY` and `_ORDERATBUYERPARTY`, the very elements absent from real
+    payloads. `A_TMP_EXPERT_RECADV` holds 1185 rows (631 RECADV for Remarkt, GLN 5940475747008)
+    with `_Imported=0` and `_FinDoc=0` on every row.
+    Session N+8 measured the layer: the RETANN staging is fed by views/procs
+    `G_DEDEMAN_Retann_Header`, `G_DEDEMAN_Retann_Lines`, `G_DEDEMAN_GetRetann`,
+    `G_DEDEMAN_Get_XML_RETANN` — the only formal description of the RETANN structure ever written
+    by the Soft1 partner, even though it never ran. `A_TMP_EXPERT_RECADV` is **not** fully dead:
+    the last file staged is `..._20260529.xml` (identity 1198), so Remarkt RECADV files still
+    arrive and still never get imported — roughly 6 files since Dec 2025.
+  next: Decide whether to reuse `A_IKA_RETANN` or to route RETANN through the project's own
+    `CCCSFTPXML` pipeline (`EDIDOCTYPE='RETANN'` already planned), which brings DO backup, the
+    status machine, retry and UI for free. Ask who built the dormant tables and why they stalled.
+    Read `G_DEDEMAN_Retann_*` before any cleanup — see
+    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Tabele_vechi_candidate_la_stergere.md`.
+
+- id: legacy-tables-cleanup-approval
+  status: open
+  source: session-N+8
+  priority: low
+  summary: >
+    92 legacy tables (~284 MB) inventoried and tiered in
+    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Tabele_vechi_candidate_la_stergere.md`.
+    The legacy Soft1-side shred path stopped dead at the 2026-06-09 cutover: `A_TMP_AUCHAN_DOCUMENT`
+    went from 38–77 documents/month for 17 months to 9 in June and nothing after 2026-06-05.
+    Every `A_TMP_*` table is referenced by `G_*` views/procs, so those must be dropped with them.
+    `G_XML_ExportDoc` and its three callees are live (invoice export ran 2026-07-28) and must not
+    be touched, nor may `A_IKA_ORDER`/`A_IKA_ORDERDETAIL`/`CCCDOCPROCDANTEXML*`/`CCCEDIPROVIDER`.
+  next: Get beneficiary approval. Before dropping, script the `G_*` objects into `S1/SQL/legacy/`,
+    export `CCCEDIGLNMAPPINGS` (207 GLN→TRDR rows that may still be worth keeping), and prefer
+    `sp_rename` to `ZZ_DEL_*` for one month over an immediate `DROP`.
+
+- id: retann-fifo-advice-allocation
+  status: closed
+  source: session-N+6
+  priority: low
+  summary: >
+    The manual's rule that a return line may not exceed the quantity still available on its source
+    advice is NOT enforced in production. Over the 473 distinct (`FINDOCL`,`MTRLINESL`) advice lines
+    referenced by 2026 returns, 181 (38%) are referenced by more than one return invoice (one by 44),
+    and 127 (27%) have cumulative returned quantity exceeding the source advice line's own `QTY1`.
+    `FINDOCL`/`MTRLINESL` is therefore a documentary PRICE ANCHOR, not a stock drawdown.
+  next: Closed — do NOT build FIFO drawdown accounting; enforcing the manual's cap would fail-close
+    ~27% of real cases. Superseded by `retann-advice-selection-rule-unclear`.
+
+- id: retann-advice-selection-rule-unclear
+  status: open
+  source: session-N+6
+  priority: high
+  summary: >
+    The manual says the price comes from "ultimul aviz catre acea filiala", but production contradicts
+    both halves. Source advices are chosen at CLIENT (TRDR) level, not branch level — none of the 3
+    verified example lines points to an advice for the returning branch (Auchan returns from Brasov Vest
+    were priced off Campus AMBIENT and Deva CALAN advices; the Dedeman Medias return was priced off an
+    Alba Iulia advice). For Auchan branch-level matching is structurally impossible since we only ship
+    to campuses/DCs. Nor is it strictly the latest advice: among 6 equal-priced same-day candidates the
+    operator picked neither the newest nor the highest FINDOC. Only the PRICE TIER is deterministic.
+  next: Ask the beneficiary to state the selection rule precisely (latest advice at client level with
+    remaining quantity? or simply the current price?), since the choice determines which advice is
+    drawn down even when the amount is identical.
 
 - id: analiza-exemplelor-stale-notes
-  status: open
+  status: closed
   source: session-N+5
   priority: low
   summary: >
@@ -64,17 +152,30 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
     GTIN is now known to be populated 1524/1524 but to disagree with `MTRL.CODE1`
     on 42 lines; the `RetAnnNumber`/`DeliveryDocumentNumber` simplification is moot
     because production RETANN carries neither field.
-  next: Update the two paragraphs so the file stops contradicting the manual.
+  next: Closed in session N+7 — all three stale notes updated (GTIN populated but
+    unusable as a key; the RetAnnNumber simplification clarified as having no reciprocal
+    evidence; the "PVs arrive as RETANN" hypothesis marked as refuted on 106 files),
+    and a RETANN subsection was added to "Decizii încă necesare".
 
 - id: recadv-corpus-not-committed
-  status: open
+  status: closed
   source: session-N+5
   priority: medium
   summary: >
-    Nothing from the RECADV/RETANN analysis is committed. The phased plan, the
-    beneficiary email and all six analysis scripts are untracked, so `git clean -fd`
-    would destroy them; the manual and the Infinite spec have uncommitted edits.
-    Separately, `documentatie/infinite_samples/{recadv,retann}/` holds 106 real
-    production payloads in a git-TRACKED folder — those must be ignored or removed,
-    never committed.
-  next: Add `documentatie/infinite_samples/` to `.gitignore`, then commit the docs and scripts on `feat/edi-safety-sftp-tests`.
+    Nothing from the RECADV/RETANN analysis was committed and the payloads sat in a
+    tracked folder.
+  next: Closed by commit e52623ec — `.gitignore` rewritten (it was NUL-corrupted),
+    payloads ignored, docs and scripts committed. Not pushed yet.
+
+- id: rotate-soft1-password-and-rsa-key
+  status: open
+  source: session-N+5
+  priority: high
+  summary: >
+    Commit e52623ec removed the plaintext Soft1 password and the RSA private key from
+    the working tree, but both remain in git history (`git log -S petfactory4321 --all`
+    finds at least 6 commits) and are therefore compromised on every existing clone.
+    Cleaning the tip does not clean history.
+  next: Rotate the Soft1 web-service password and update `CCCRETAILERSCLIENTS.WSPASS`
+    plus `mcp-soft1/.env`; regenerate the SFTP/RSA key pair. Optionally rewrite history
+    with git-filter-repo, which requires coordinating a force-push with everyone who has a clone.

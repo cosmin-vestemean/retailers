@@ -256,7 +256,7 @@ Distribuția țintelor `FINDOCL`, tot pe 2026:
 Concluzii:
 
 - **9221 vine întotdeauna din conversie** și țintește mereu un aviz 7111; `FINDOCL` este acolo un duplicat scris manual al legăturii read-only `FINDOCS`.
-- **7531 este majoritar creat direct**, fără conversie — 71% din linii nu au `FINDOCS`. Acolo `FINDOCL` este singura legătură către documentul stornat.
+- **7531 este majoritar creat direct**, fără conversie — 71% din linii nu au `FINDOCS` pe ansamblul seriei (toți clienții). Pe Auchan și Dedeman proporția este practic totală: **1.737 din 1.738 de linii** din 2026 nu au `FINDOCS`. Acolo `FINDOCL` este singura legătură către documentul stornat.
 - `MTRLINESL` este opțional (764/940 pe 9221) și nu este folosit de validare.
 - **Plafonul de cantitate nu este cumulativ.** Nu scade retururile anterioare, deci același aviz poate fi returnat de mai multe ori integral. În producție: **78 de cazuri** de supraretur, 17 după 2025-01-01, cel mai recent 2026-06-30 (ex. `AEX-AE-028769` / `MTRL 28072`: livrat 6, returnat 18 în trei documente). Automatizarea trebuie să facă propria verificare cumulativă.
 
@@ -329,8 +329,8 @@ Funcția nouă din [SALDOC_EF_27072026.js](S1/JS/SALDOC_EF_27072026.js) (comanda
 
 Două observații de urmărit:
 
-- `RefInvoiceNumber` / `RefInvoiceDate` se iau din primul `findocs` non-null al liniilor, **dar nu sunt validate**. Cum 71% dintre liniile 7531 nu au `FINDOCS`, tag-urile vor fi emise goale fără avertisment.
-- `RetAnnNumber` și `DeliveryDocumentNumber` primesc **aceeași valoare** (`fincode` al lui `FINDOCL`). Dacă specificația cere avizul de retur și avizul de livrare ca documente distincte, aici este o simplificare de confirmat cu Infinite.
+- `RefInvoiceNumber` / `RefInvoiceDate` se iau din primul `findocs` non-null al liniilor, **dar nu sunt validate**. Cum pe Auchan și Dedeman doar 1 linie 7531 din 1.738 are `FINDOCS`, tag-urile vor fi emise goale aproape întotdeauna, fără avertisment.
+- `RetAnnNumber` și `DeliveryDocumentNumber` primesc **aceeași valoare** (`fincode` al lui `FINDOCL`). **Clarificat la 2026-07-28:** fișierele RETANN pe care le *primim* nu conțin niciunul dintre cele două câmpuri (0 din 5), deci nu există dovadă reciprocă despre cum ar trebui completate. Punerea codului de aviz în `DeliveryDocumentNumber` este consistentă cu manualul de retururi, care definește avizul-sursă ca ancoră; refolosirea aceleiași valori pentru `RetAnnNumber` rămâne o simplificare, pentru că numărul avizului de retur este, conform manualului, alt număr.
 
 ### Alte două lucruri observate în trecere
 
@@ -343,7 +343,15 @@ Două observații de urmărit:
 - Comenzile Dedeman cu `PurchasingInfo` de tip `DOAR AVIZ` trebuie blocate înainte de CKEY, conform manualului, sau trebuie reprodus fluxul istoric observat? Manualul marchează regula ca provizorie „(deocamdată)", deci decizia este deschisă, nu o corecție a unei abateri.
 - **Cum se declanșează din cod conversia care creează `FINDOCS`/`MTRLINESS`?** `getTableFields` pe `SALDOC` confirmă că ambele câmpuri sunt `readOnly` atât în antet cât și în `ITELINES`, deci nu pot fi scrise prin `setData`. Trebuie identificat jobul de conversie folosit manual azi. Pentru retururi problema este mai mică: `FINDOCL` este editabil și obligatoriu, deci acoperă legătura.
 - **Cum se dezambiguizează codul Dedeman `7050535`**, mapat la două articole active?
-- ~~Pentru RECADV Dedeman, XML-ul transmite EAN, `BuyerItemID`, ambele sau alt identificator?~~ **Rezolvat 2026-07-27:** specificația v4.0 impune `BuyerItemID` obligatoriu și `GTIN` opțional. Rămâne de confirmat pe un fișier real dacă `GTIN` este efectiv populat.
+- ~~Pentru RECADV Dedeman, XML-ul transmite EAN, `BuyerItemID`, ambele sau alt identificator?~~ **Rezolvat 2026-07-27:** specificația v4.0 impune `BuyerItemID` obligatoriu și `GTIN` opțional. **Confirmat pe corpusul real la 2026-07-28:** `GTIN` este populat pe toate cele 1.524 de linii, dar **nu poate fi folosit ca cheie de potrivire** — pe 42 de linii nu coincide cu `MTRL.CODE1`. Rămâne doar avertisment de calitate a datelor.
 - Cine și când creează returul 7531 pentru surplus: automatizarea Retailers sau un operator Soft1?
 - Cum se leagă identificatorul notei EDInet de documentele Soft1 pentru audit și idempotency? Candidatul natural este `RecadvHeader/DocumentNumber`, dar nu a fost identificat ca document Soft1 distinct în setul analizat. Pentru comandă legătura există deja prin `NUM04`.
-- Unde apare PV-ul de neconformitate în XML? RECADV v4.0 nu conține un număr de PV, ci doar `ReasonForReturnCode` / `ReasonForReturnDescription`, ambele opționale. Ipoteza de verificat este că PV-urile sosesc ca RETANN.
+- ~~Unde apare PV-ul de neconformitate în XML?~~ **Infirmat la 2026-07-28.** Ipoteza că PV-urile sosesc ca RETANN este greșită: pe toate cele 106 fișiere analizate (101 RECADV + 5 RETANN) nu există niciun număr de PV, iar `ReasonForReturnDescription` este gol pe toate cele 1.524 de linii RECADV. Fișierele RETANN nu au niciun câmp de motiv. Rămâne deschis **pe ce canal ajung PV-urile** — posibil deloc prin EDI.
+
+### RETANN (adăugate la 2026-07-28)
+
+Detalii și dovezi în `Manual_flux_retur_RETANN_Auchan_Dedeman.md`.
+
+- **De unde se ia `Numarul de ordine de retur`?** Manualul îl cere în `Comanda` (= `FINDOC.NUM04`), iar `exportXMLDedemanReturn()` îl validează ca obligatoriu, dar payload-ul RETANN nu îl conține — poartă doar `DocumentNumber`, adică numărul avizului de retur. Este singurul blocaj real al automatizării retururilor.
+- **Care este regula reală de alegere a avizului-sursă pentru preț?** Nivelul de client este dovedit; „ultimul aviz către acea filială" este infirmat pe toate cele 3 linii verificate. Contează *care* aviz este referențiat, sau doar treapta de preț?
+- **Confirmat că nu se implementează:** plafonul de disponibilitate pe avizul-sursă din manual. Este încălcat pe 127 din 473 de linii de aviz (27%) referite de retururile din 2026.

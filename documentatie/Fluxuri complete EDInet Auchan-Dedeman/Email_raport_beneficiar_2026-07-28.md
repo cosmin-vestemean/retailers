@@ -8,18 +8,22 @@ găsit, ce propunem și ce rămâne de decis sau de corectat la dumneavoastră.
 Am pus accent pe verificarea pe date reale, nu doar pe specificație — și a fost util: trei
 presupuneri luate din documentație s-au dovedit greșite în producție.
 
+Am inclus și manualul dumneavoastră de retururi, primit între timp: l-am verificat document cu
+document în Soft1, iar rezultatul este în §5bis.
+
 ---
 
 ## 1. Ce am analizat
 
 | Sursă | Volum | Ce am urmărit |
 |---|---|---|
-| Manualul dumneavoastră de integrare | doc. complet, recitit integral | regulile de business |
+| Manualul dumneavoastră de facturare EDI | doc. complet, recitit integral | regulile de business la recepție |
+| **Manualul dumneavoastră de retururi** (24.07) | doc. complet | regulile fluxului RETANN |
 | Specificațiile Infinite EDInet v4.0 / v4.1 | 2 documente | structura XML RECADV / RETANN |
 | **Fișiere RECADV reale de pe FTP** | **101 fișiere, 1.524 linii** (20–28 iul.) | ce sosește efectiv |
 | **Fișiere RETANN reale de pe FTP** | **5 fișiere, 15 linii** (20–24 iul.) | fluxul de retururi din magazine |
 | Documente Soft1 în producție | 868 avize / 19.203 linii (3 luni)<br>2.251 avize (7 luni) | frecvența diferențelor |
-| Istoric retururi Soft1 | tot istoricul | riscuri de duplicare |
+| Istoric retururi Soft1 | tot istoricul, plus 260 facturi 7531 din 2026 | riscuri de duplicare, reguli de retur |
 | Nomenclator `CCCS1DXTRDRMTRL` | toate mapările active | ambiguități de cod |
 
 Fișierele RECADV au fost salvate în backup înainte de orice prelucrare. **Nu s-a creat și nu s-a
@@ -165,7 +169,7 @@ o verificare cumulativă proprie plus o protecție pe identitatea documentului s
 
 ---
 
-## 5bis. Un al doilea flux, pe care nu îl putem lega de livrare
+## 5bis. Al doilea flux: retururile din magazine (RETANN)
 
 Pe lângă confirmările de recepție, retailerii trimit și **anunțuri de retur pentru marfă nevândută sau
 expirată**, direct din magazine. Am preluat toate cele 5 fișiere existente.
@@ -177,22 +181,53 @@ expirată**, direct din magazine. Am preluat toate cele 5 fișiere existente.
 | Dedeman | Magazin 71 Bistrița | 1 | −3 |
 | Dedeman | Magazin 95 Brașov 2 | 1 | −5 |
 
-**Problema:** specificația spune că aceste fișiere conțin numărul avizului, numărul comenzii și prețul.
-**Niciunul dintre cele trei nu există în fișierele reale** (0 din 5). Nu e o limitare a implementării,
-e absența datelor din sursă.
+### Am primit manualul dumneavoastră de retururi și l-am verificat pe documentele reale
 
-Nici nu ar ajuta prea mult: marfa expirată provine dintr-un cumul de livrări vechi de luni, iar
-returul e o operațiune comercială nouă, nu corecția unei livrări. Deci **RETANN rămâne un flux
-paralel**, ancorat la magazin și produs, nu la aviz.
+Manualul din 24.07 răspunde la întrebările pe care urma să vi le punem — deci nu le mai punem — și
+confirmă regulile pe care le dedusesem independent din date. **Am reconstituit ambele exemple din
+manual în Soft1 și se reconciliază la bănuț:**
 
-Ce funcționează deja: produsele s-au identificat 13 din 13, magazinele 4 din 4.
+| Exemplu | Document găsit | Verificare |
+|---|---|---|
+| Auchan, retur `4497049` | `RFVQ-FC-14864` | 52 × 9,10 + 13 × 7,87 → −638,82 lei cu TVA ✓ |
+| Dedeman, retur `6100352505` | `RFVQ-FC-14867` | 1 × 11,03 → −12,24 lei cu TVA ✓ |
 
-Ce ne lipsește — două decizii de la dumneavoastră:
+Confirmate integral: seria **7531**, comună tuturor clienților; prețul copiat de pe o linie de aviz de
+expediție; facturarea pe filiala din câmpul „Transfer către beneficiar", nu pe sediul central;
+identificarea produsului pe codul la client, pentru ambii retaileri. Produsele s-au identificat 13 din
+13, magazinele 4 din 4.
+
+### Trei reguli din manual nu se potrivesc cu ce face de fapt producția dumneavoastră
+
+Le semnalăm pentru că, implementate literal, ar bloca automatizarea mai mult decât ar ajuta-o.
+
+| Regula din manual | Ce arată datele |
+|---|---|
+| Prețul vine de pe **ultimul aviz către acea filială** | Niciuna dintre cele 3 linii verificate nu folosește un aviz către filiala care returnează. Returul din Brașov Vest a fost prețuit după avize către *Campus AMBIENT* și *Deva CALAN*; cel din Medias, după un aviz către *Alba Iulia 66*. La Auchan nici nu ar fi posibil — livrăm doar către campusuri și depozite. |
+| Este **ultimul** aviz | Nu. Pentru Dedeman existau 6 avize în aceeași zi cu același preț, iar cel ales nu era nici cel mai nou. Determinantă este doar **treapta de preț**. |
+| Cantitatea returnată **nu poate depăși** disponibilul de pe avizul-sursă | Regula nu este respectată în practică: din 473 de linii de aviz referite de retururile din 2026, **181 (38%)** sunt folosite de mai multe facturi de retur — una de 44 de ori — iar **127 (27%)** au cantitatea returnată cumulat mai mare decât cantitatea liniei. Cazul extrem: avizul `AEX-AE-048614`, cu 18 bucăți pe linie, este sursa a **499 de bucăți** returnate prin 44 de facturi. |
+
+> **Concluzia noastră:** referința către aviz este o **ancoră de preț**, nu o scădere de stoc. Așa o
+> vom trata. Dacă am implementa plafonul din manual, aproximativ un sfert din retururile pe care le
+> emiteți azi ar fi respinse automat.
+
+### Singurul lucru care chiar ne blochează
+
+Manualul cere ca factura de retur să poarte, în câmpul `Comanda`, **numărul de ordine de retur**
+(Auchan `4497049`, Dedeman `6100352505`). Am confirmat că așa se face azi în Soft1.
+
+**Dar acest număr nu sosește în fișierul pe care îl primim.** Fișierul RETANN conține un singur
+identificator — *numărul avizului de retur* Edinet (Dedeman `5017612837`, Auchan `503498`) — adică
+exact celălalt număr, pe care manualul dumneavoastră îl definește separat.
+
+Nu e o problemă de unde stocăm valoarea, ci de unde o luăm. Mai ales că exportul existent către
+Dedeman validează acest câmp ca obligatoriu, deci fără el pasul rămâne manual chiar dacă tot restul
+se automatizează.
 
 | | Întrebarea |
 |---|---|
-| a | **La ce preț se valorizează returul?** prețul curent din contract, sau prețul ultimei livrări către acel magazin? |
-| b | **Ce serie de document Soft1 primește?** nu poate fi 9221, care e legat obligatoriu de un aviz |
+| a | **De unde luăm „numărul de ordine de retur"**, dacă nu vine în fișier? Din portalul EDInet, dintr-un alt document, sau este acceptabil să folosim numărul avizului de retur pe care îl primim? |
+| b | **Contează *care* aviz este referențiat** pentru preț, sau doar ca prețul să fie corect? |
 
 Volumul e mic (5 fișiere în 8 zile, față de 101 RECADV), deci nu blochează nimic din planul de mai jos.
 
@@ -257,7 +292,8 @@ script offline în interfața platformei, rulat automat.
 | 7 | **Confirmarea variantei B** (decizie la nivel de linie) | înainte de faza 1 |
 | 8 | **Regula „DOAR AVIZ"** — vezi mai jos | oricând până la faza 3 |
 | 9 | Cine aprobă emiterea automată și ce cazuri se rețin obligatoriu pentru validare umană | înainte de faza 1 |
-| 10 | **Cele două întrebări despre retururile din magazine** (§5bis: prețul de valorizare și seria documentului) | nu blochează nimic |
+| 10 | **De unde luăm numărul de ordine de retur** (§5bis) — nu sosește în fișierul RETANN | blochează automatizarea retururilor, nu și fazele 0–3 |
+| 11 | Dacă avizul-sursă referențiat pe returul de preț contează în sine (§5bis) | nu blochează nimic |
 
 ---
 
@@ -295,11 +331,13 @@ prețul retailerului.
 |---|---|
 | **Ce e clar** | formatul, regula de potrivire, ce se poate automatiza și cât — verificat pe date reale, nu presupus |
 | **Ce e gata** | faza 0, ca analiză offline: 101/101 documente și 1.485/1.485 linii potrivite automat |
-| **Ce așteptăm de la dumneavoastră** | confirmarea variantei B (§7.3), clarificarea cazului Auchan (§7.2) și verificarea celor 3 puncte de date din §7.1 |
+| **Fluxul de retur** | manualul dumneavoastră a fost verificat în producție: ambele exemple se reconciliază la bănuț, dar trei reguli din el sunt contrazise de propriile documente (§5bis) |
+| **Ce așteptăm de la dumneavoastră** | confirmarea variantei B (§7.3), clarificarea cazului Auchan (§7.2), verificarea celor 3 puncte de date din §7.1 și sursa numărului de ordine de retur (§5bis) |
 | **Ce nu blochează nimic acum** | decizia „DOAR AVIZ" |
 
 Documentația tehnică detaliată (formatul măsurat, regulile de implementare, întrebările deschise) e
-în manualul de integrare actualizat și în planul pe faze, ambele atașate.
+în manualul de integrare actualizat, în manualul fluxului de retur și în planul pe faze, toate
+atașate.
 
 Rămân la dispoziție pentru orice clarificare.
 

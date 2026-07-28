@@ -1,6 +1,7 @@
 # Automatizarea recepțiilor EDI (RECADV) — plan pe faze
 
-**Data:** 2026-07-28 (actualizat după preluarea și analiza tuturor fișierelor RECADV și RETANN)
+**Data:** 2026-07-28 (actualizat după preluarea și analiza tuturor fișierelor RECADV și RETANN, și
+după primirea manualului de retururi al beneficiarului)
 **Aplicabil:** Dedeman și Auchan (EDInet / Infinite)
 **Status:** propunere de plan; necesită confirmarea beneficiarului pentru pornire
 
@@ -207,7 +208,7 @@ facturare din B; iar dacă ulterior se stabilește o regulă fermă, C devine A 
 
 **A doua întrebare, legată:** cine emite documentul de retur 7531 pentru surplus?
 
-### 5.1 Al doilea flux, descoperit pe 2026-07-28: marfa returnată din magazine (RETANN)
+### 5.1 Al doilea flux: marfa returnată din magazine (RETANN)
 
 Pe lângă confirmările de recepție, retailerii ne trimit și **anunțuri de retur** pentru marfă
 nevândută sau expirată, direct din magazine. Am preluat cele 5 fișiere existente: cantități mici,
@@ -218,15 +219,46 @@ comenzii, nici prețul — deși specificația prevedea toate trei. Nici nu ar a
 provine dintr-un cumul de livrări vechi de luni, iar returul este o operațiune comercială nouă, nu
 corecția unei livrări.
 
-Ce se poate face automat: identificarea produsului (13 din 13 coduri s-au rezolvat) și a magazinului
-(4 din 4). Ce lipsește sunt două decizii:
+> **Actualizat 2026-07-28.** Cele două decizii pe care le ceream aici — prețul de valorizare și seria
+> documentului — **erau deja răspunse în propriul manual al beneficiarului**,
+> `Manual_flux_retur_auchan_dedeman.docx` (24.07.2026), primit între timp. Nu le mai punem.
 
-1. **La ce preț se valorizează returul?** Prețul curent din contract, sau prețul ultimei livrări către
-   acel magazin?
-2. **Ce serie de document Soft1 primește?** Nu poate fi 9221, care e legat obligatoriu de un aviz.
+Ce știm acum, verificat și în producție (detalii în `Manual_flux_retur_RETANN_Auchan_Dedeman.md`):
 
-Până la aceste răspunsuri, fluxul rămâne în afara planului de mai sus. **Nu blochează nimic** — volumul
-este mic (5 fișiere în 8 zile, față de 101 RECADV).
+| Întrebare | Răspuns |
+|---|---|
+| Ce serie primește returul? | **7531** (`RFVQ-`), comună tuturor clienților. Nu 9221, nu o serie per client. |
+| La ce preț se valorizează? | Prețul se **copiază de pe o linie de aviz 7111**, referită prin `MTRLINES.FINDOCL`. |
+| Pe ce filială se facturează? | Pe cea din `ShipToParty/GLN`, niciodată pe sediul central. |
+| Cum se identifică produsul? | `BuyerItemID`, pentru **ambii** clienți. |
+
+Cele două exemple ale manualului au fost regăsite și reconciliate la bănuț: `RFVQ-FC-14864`
+(Auchan, Brașov Vest 036) și `RFVQ-FC-14867` (Dedeman, Medias 20). Produsele s-au identificat 13 din
+13, magazinele 4 din 4.
+
+**Trei dintre regulile manualului sunt însă contrazise de datele beneficiarului** și nu trebuie
+implementate literal:
+
+1. Legătura per linie este `FINDOCL`/`MTRLINESL`, nu `FINDOCS`/`MTRLINESS`.
+2. Avizul-sursă se alege la nivel de **client**, nu de filială — la Auchan potrivirea pe filială este
+   structural imposibilă, pentru că livrăm doar către campusuri și depozite.
+3. Plafonul „cantitatea returnată nu poate depăși disponibilul de pe aviz" **nu există în practică**:
+   din 473 de linii de aviz referite de retururile din 2026, 181 (38%) sunt referite de mai multe
+   facturi de retur, iar 127 (27%) au cantitatea returnată cumulat mai mare decât cantitatea liniei.
+   `FINDOCL` este o **ancoră de preț**, nu o scădere de stoc. O contabilitate FIFO ar bloca ~27% din
+   cazurile reale.
+
+**Ce rămâne cu adevărat deschis — o singură întrebare care blochează:** manualul cere ca factura să
+poarte `Numarul de ordine de retur` în câmpul `Comanda` (Auchan `4497049`, Dedeman `6100352505`).
+**Acest număr nu sosește în fișier.** Payload-ul RETANN conține un singur identificator,
+`DocumentNumber` — care este `Numar avize de retur`, adică alt număr, distins explicit chiar de
+manual. Nu este o problemă de stocare (adăugarea de coloane este liberă), ci de disponibilitate a
+datei.
+
+Secundar: care este regula reală de alegere a avizului-sursă, dat fiind că „ultimul aviz către acea
+filială" este infirmat pe toate cele 3 linii verificate.
+
+**Nu blochează fazele 0-3** — volumul este mic (5 fișiere în 8 zile, față de 101 RECADV).
 
 ---
 
@@ -275,8 +307,14 @@ este mic (5 fișiere în 8 zile, față de 101 RECADV).
    posibil ca un aviz să acopere mai multe magazine. De clarificat înainte de faza 2.
 9. **Retururile de marfă nevândută (RETANN) nu se pot lega de livrare.** Cele 5 fișiere reale nu
    conțin **nici număr de aviz, nici număr de comandă, nici preț** — deși specificația prevedea toate
-   trei. Este un flux separat, care nu intră în reconcilierea din acest plan și care are nevoie de
-   decizii proprii (§5.1).
+   trei. Este un flux separat, care nu intră în reconcilierea din acest plan și care are propriile
+   reguli (§5.1 și `Manual_flux_retur_RETANN_Auchan_Dedeman.md`).
+10. **Numărul de ordine de retur nu sosește prin EDI.** Manualul beneficiarului îl cere pe factura
+    7531, iar exportul existent `exportXMLDedemanReturn()` îl validează ca obligatoriu — dar el nu
+    există în payload. Până la clarificare, pasul rămâne manual chiar dacă restul fluxului se
+    automatizează.
+11. **Plafonul de disponibilitate din manualul de retururi nu se implementează.** Este încălcat pe 27%
+    dintre liniile reale; implementarea lui literală ar bloca mai multe cazuri decât ar proteja.
 
 ---
 
@@ -291,14 +329,19 @@ este mic (5 fișiere în 8 zile, față de 101 RECADV).
 3. **Clarificarea cazului Auchan din §6.8** — dacă un aviz către depozit acoperă mai multe magazine,
    reconcilierea Auchan trebuie să aștepte confirmările tuturor magazinelor înainte de a decide.
 4. Răspunsul la §5 — oricând până la faza 3.
-5. **Cele două decizii pentru fluxul RETANN din §5.1** — prețul de valorizare și seria documentului.
-   Nu blochează fazele 0-3.
+5. **Pentru fluxul RETANN (§5.1): de unde se ia `Numarul de ordine de retur`?** Nu sosește în fișier.
+   Din portalul EDInet, dintr-un al doilea tip de document, sau se acceptă în locul lui
+   `DocumentNumber`-ul pe care îl primim? Secundar: care este regula reală de alegere a avizului-sursă
+   pentru preț. Nu blochează fazele 0-3.
 
 ---
 
 ## 8. Referințe
 
 - `Manual_integrare_facturare_edi_Auchan_Dedeman.md` — specificația de business a beneficiarului
+  pentru facturarea pe bază de aviz și formatul RECADV/RETANN măsurat
+- `Manual_flux_retur_RETANN_Auchan_Dedeman.md` — manualul beneficiarului pentru fluxul de retururi,
+  reconciliat cu producția
 - `Analiza_exemplelor_in_Soft1.md` — verificarea exemplelor în producție
 - `../dedeman/Infinite_EDInet_DESADV_RECADV.md` — specificațiile XML oficiale Infinite (v4.0 / v4.1)
 - Documente Soft1 din exemplul §5: `AEX-AE-053667`, `FAEXD-PF-39575`, `CKEY-00061000`,
