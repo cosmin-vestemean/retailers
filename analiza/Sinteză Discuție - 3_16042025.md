@@ -516,4 +516,4 @@ AC = TVA la incasare"	51.0			DXInvoice/Invoice/TaxTotal/TaxSubtotal/TaxCategory/
 1328	OrderLine/Item/BuyersItemIdentification	1	ITELINES	MTRL			48	select mtrl from CCCS1DXTRDRMTRL where trdr=38804 and code='{value}'					OrderLine/Item/BuyersItemIdentification	ITELINES	MTRL		SQL_TRANSFORM	select mtrl from CCCS1DXTRDRMTRL where trdr=38804 and code='{value}'	1		0		
 
 CCCRETAILERSCLIENTS	TRDR_CLIENT	WSURL	WSUSER	WSPASS	COMPANY	BRANCH
-1	1	https://petfactory.oncloud.gr/s1services	websitepetfactory	petfactory4321	50	1000
+1	1	https://petfactory.oncloud.gr/s1services	<WSUSER>	<WSPASS>	50	1000

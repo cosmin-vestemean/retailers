@@ -8,8 +8,13 @@ export class ConnectToS1Service {
 
   async find(params) {
     const url = resolveS1BaseUrl({ url: params?.query?.url, app: this.options.app })
-    const username = params?.query?.username || process.env.S1_USERNAME || 'websitepetfactory'
-    const password = params?.query?.password || process.env.S1_PASSWORD || 'petfactory4321'
+    const username = params?.query?.username || process.env.S1_USERNAME
+    const password = params?.query?.password || process.env.S1_PASSWORD
+    if (!username || !password) {
+      throw new Error(
+        'Missing Soft1 credentials: pass username/password in the query (normally from CCCRETAILERSCLIENTS) or set S1_USERNAME/S1_PASSWORD.'
+      )
+    }
     const method = 'POST'
     const body = {
       service: 'login',

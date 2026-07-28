@@ -255,6 +255,15 @@ Numele numeric al fișierului FTP nu este identificatorul de business și trebui
 
 ## RETANN v4.0
 
+> **Avertisment 2026-07-28: schema livrată în producție diferă substanțial de această specificație.**
+> Cele 5 fișiere reale preluate din `/retann` (`documentatie/infinite_samples/retann/`) au rădăcina
+> `<Document><Retann>`, folosesc `GLN` în loc de `ILN`, `DocumentNumber`/`DocumentIssueDate` în loc de
+> `RetannNumber`/`IssueDate`, `UnitOfMeasure` cu un singur `s`, și **nu conțin deloc** `RetannRefDoc`,
+> `UnitNetPrice`, `MonetaryNetValue` sau `QuantityOrdered`. Secțiunile de mai jos rămân ca referință
+> a specificației, dar parserul trebuie scris după formatul real, documentat în
+> `Fluxuri complete EDInet Auchan-Dedeman/Manual_integrare_facturare_edi_Auchan_Dedeman.md`,
+> secțiunea „RETANN: formatul real".
+
 ### Structură
 
 ```text
@@ -307,6 +316,10 @@ Rutarea urmează același model ca RECADV: retailer prin `BuyerParty/ILN`, filia
 | `RetannRefDoc/DesadvParty/DocID` | D | Numărul DESADV/avizului nostru |
 
 `DesadvParty/DocID` este legătura directă către avizul Soft1 din seria 7111. Ca și la RECADV, referințele de pe linii sunt autoritare, iar cele din antet sunt folosite pentru validare.
+
+> **Infirmat pe date reale (2026-07-28).** `RetannRefDoc` lipsește din toate cele 5 fișiere de
+> producție, deci nu există nicio referință către aviz sau comandă. RETANN nu poate fi legat de un
+> document sursă; ancorarea practică este `BuyerParty/GLN` + `ShipToParty/GLN` + `BuyerItemID`.
 
 ### Linie RETANN
 

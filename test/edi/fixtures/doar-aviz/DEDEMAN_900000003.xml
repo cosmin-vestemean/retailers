@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document Type="Orders" Version="1.0" Date="2026-07-16T10:02:54">
+<Order>
+<OrderHeader>
+    <BuyerOrderNumber>TEST-DEDE-0003</BuyerOrderNumber>
+    <OrderIssueDate>2026-07-16</OrderIssueDate>
+    <OrderCurrencyCoded>RON</OrderCurrencyCoded>
+    <RequestedDeliveryDate>2026-07-23T00:00:00</RequestedDeliveryDate>
+    <DeliveryDateEarliest/>
+    <DeliveryDateLatest/>
+    <PurchasingInfo>DOAR AVIZ!!!! - Marfa din CDLTest Nume Persoana</PurchasingInfo>
+    <PromotionDealNo/>
+  </OrderHeader>
+  <OrderParty>
+    <BuyerParty>
+       <GLN>0000000000010</GLN>
+       <Name><![CDATA[TEST DEDEMAN BUYER]]></Name>
+       <Street><![CDATA[Test Street 10]]></Street>
+       <PostalCode>600000</PostalCode>
+       <City><![CDATA[BACAU]]></City>
+       <CountryCode>RO</CountryCode>
+    </BuyerParty>
+    <InvoiceeParty>
+       <GLN/>
+       <Name/>
+       <Street/>
+       <PostalCode/>
+       <City/>
+       <CountryCode/>
+    </InvoiceeParty>
+    <ShipToParty>
+       <GLN>0000000000011</GLN>
+       <Name><![CDATA[Test Magazin 95]]></Name>
+       <Street><![CDATA[Test BLD 3]]></Street>
+       <PostalCode>500000</PostalCode>
+       <City><![CDATA[BRASOV]]></City>
+       <CountryCode>RO</CountryCode>
+    </ShipToParty>
+    <SellerParty>
+       <GLN>0000000000099</GLN>
+       <SellerID>0099</SellerID>
+       <Name><![CDATA[PET FACTORY TEST]]></Name>
+       <Street><![CDATA[Test Avenue 99]]></Street>
+       <City><![CDATA[Bucuresti]]></City>
+       <CountryCode>RO</CountryCode>
+    </SellerParty>
+  </OrderParty>
+  <OrderDetail>
+    <Item>
+      <GTIN>5949060000030</GTIN>
+      <BuyerItemNum>10</BuyerItemNum>
+      <BuyerItemID><![CDATA[TEST030]]></BuyerItemID>
+      <SellerItemID><![CDATA[MF.TEST30]]></SellerItemID>
+      <QuantityOrdered>24.000</QuantityOrdered>
+      <UnitOfMeasure>BUC</UnitOfMeasure>
+      <ProductDescription><![CDATA[TEST PRODUCT D]]></ProductDescription>
+      <UnitNetPrice>1.29</UnitNetPrice>
+      <ItemRequestedDeliverDate>2026-07-23</ItemRequestedDeliverDate>
+    </Item>
+  </OrderDetail>
+  <OrderSummary>
+    <NumberOfItems>1</NumberOfItems>
+    <TotalNetAmount>30.96</TotalNetAmount>
+  </OrderSummary>
+</Order>
+<DocumentSummary>
+    <NumberOfOrders>1</NumberOfOrders>
+</DocumentSummary>
+</Document>

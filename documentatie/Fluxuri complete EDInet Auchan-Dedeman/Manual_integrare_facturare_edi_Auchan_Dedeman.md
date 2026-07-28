@@ -3,6 +3,8 @@
 > Specificație tehnică extrasă la 2026-07-27 din `Manual_integrare_facturare_edi_Auchan_Dedeman.docx` cu MCP `python-executor`. Documentul Word nu conține imagini, atașamente sau obiecte încorporate.
 >
 > **Reverificat la 2026-07-27** prin recitirea integrală a DOCX-ului (90 de blocuri, inclusiv tabelele). Prima extragere pierduse mai multe elemente de conținut, reintroduse mai jos: secțiunea de aplicabilitate, definițiile conceptelor, semantica coloanelor `CCCS1DXTRDRMTRL`, statutul PV-ului ca document separat, exemplele concrete de nepotrivire EAN la Auchan, cota de TVA, datele documentelor și nuanța „deocamdată" din regula `Doar aviz`.
+>
+> **Actualizat la 2026-07-28** după preluarea și analiza tuturor celor 101 fișiere RECADV și 5 fișiere RETANN reale de pe FTP. Măsurătoarea a infirmat mai multe presupuneri luate din specificație (liniile RECADV nu conțin numărul comenzii; un fișier nu conține mai multe documente; RETANN nu conține nicio referință documentară, iar schema livrată diferă de v4.0) și a adăugat două reguli obligatorii (cumulare per aviz, oprire la `acceptat > expediat`). Vezi secțiunile „Formatul real, măsurat pe tot corpusul" și „RETANN: formatul real".
 
 ## Scop
 
@@ -48,9 +50,12 @@ Regulile de bază — identificarea lipsei/plusului și consolidarea — sunt **
 
 | Aspect | Dedeman | Auchan | Comun |
 | --- | --- | --- | --- |
-| Schemă XML RECADV/RETANN | v4.0 | v4.0 (de confirmat) | da |
+| Schemă XML RECADV | v4.0 | v4.0 (confirmat 2026-07-28) | da |
+| Schemă XML RETANN | livrată diferit de spec. v4.0 | idem | da |
 | Identificare articol | `BuyerItemID` | `BuyerItemID` | da |
 | Detectare lipsă | expediat − acceptat | expediat − acceptat | da |
+| Referință către aviz în RECADV | prezentă | **absentă** — doar numărul comenzii | **nu** |
+| Referință către aviz în RETANN | **absentă** | **absentă** | da |
 | Consolidare mai multe avize | confirmată | neobservată | mecanism comun |
 | Serie factură | 7123 | 7122 | **nu** |
 | Tratare surplus | `Doar aviz` → 7111 → 7123 | refuzat fizic, N/A | **nu** |
@@ -155,11 +160,154 @@ Specificațiile sunt emise pentru proiectul Dedeman, dar structura este unică p
 Concluziile care afectează direct regulile de facturare din acest manual:
 
 1. **Identificarea produsului este comună.** `BuyerItemID` este obligatoriu în RECADV și RETANN, iar `GTIN`/`EAN` este doar dependent. Matching-ul este `BuyerItemID -> CCCS1DXTRDRMTRL.CODE` pentru ambii clienți.
-2. **Liniile sunt autoritare, nu antetul.** `RecadvHeader/DeliveryDocumentNumber` are lungime limitată și este vizibil trunchiat chiar în exemplul oficial (`DI-00006331/DI-0`), deci nu poate arbitra consolidarea. `Item/BuyerOrderNumber` este obligatoriu pe fiecare linie RECADV, iar RETANN are `RetannRefDoc` per linie.
-3. **Cantitatea de referință pentru lipsă este `QuantityAccepted`.** `QuantityOrdered` și `QuantityReturned` sunt dependente și pot lipsi, deci diferența se calculează prin comparație cu liniile avizului 7111, nu exclusiv din RECADV.
-4. **RETANN transmite valori negative** și leagă direct returul de avizul nostru prin `RetannRefDoc/DesadvParty/DocID`.
-5. **Rutarea se face pe GLN/ILN**, nu pe numele fișierului: fișierele din `/recadv` și `/retann` au nume pur numerice, fără prefix `AUCHAN_`/`DEDEMAN_`. Rutarea trebuie să eșueze controlat dacă GLN-ul nu se rezolvă neechivoc.
-6. **Un fișier RECADV poate conține mai multe documente** (`DocumentSummary/NumberOfDocuments`).
+2. ~~**Liniile sunt autoritare, nu antetul.**~~ **Infirmat pe fișiere reale (2026-07-28).** `Item/BuyerOrderNumber` este **absent din toate cele 1.524 de linii** primite, deși specificația îl marchează obligatoriu. Antetul este deci **singura** referință către comandă și aviz. Trunchierea lui `RecadvHeader/DeliveryDocumentNumber` este reală, dar se rezolvă altfel — vezi secțiunea următoare.
+3. **Cantitatea de referință pentru lipsă este `QuantityAccepted`.** Confirmat: `QuantityOrdered` este gol pe toate liniile Dedeman, iar `QuantityReturned` pe toate cele 1.524. Diferența se calculează exclusiv prin comparație cu liniile avizului 7111.
+4. ~~**RETANN transmite valori negative** și leagă direct returul de avizul nostru prin `RetannRefDoc/DesadvParty/DocID`.~~ **Parțial infirmat (2026-07-28).** Valorile negative sunt confirmate, dar `RetannRefDoc` **lipsește complet** din toate cele 5 fișiere reale: nu există nici număr de aviz, nici număr de comandă. RETANN nu poate fi legat de un aviz — vezi secțiunea „RETANN: formatul real".
+5. **Rutarea se face pe GLN/ILN**, nu pe numele fișierului: fișierele din `/recadv` și `/retann` au nume pur numerice, fără prefix `AUCHAN_`/`DEDEMAN_`. Rutarea trebuie să eșueze controlat dacă GLN-ul nu se rezolvă neechivoc. **Confirmat:** cei doi clienți se disting doar prin `BuyerParty/GLN`.
+6. ~~**Un fișier RECADV poate conține mai multe documente**~~ **Neobservat.** `DocumentSummary/NumberOfDocuments` este `1` în toate cele 101 fișiere (și vine cu spații de umplere, deci trebuie trimuiat). Situația inversă este însă reală: **mai multe fișiere pot descrie același aviz**.
+
+### Formatul real, măsurat pe tot corpusul (101 fișiere, 2026-07-28)
+
+Pe 2026-07-28 au fost preluate **toate cele 101 fișiere** din `/recadv` (2026-07-20 … 2026-07-28,
+1.524 de linii), cu salvare de siguranță în DigitalOcean înainte de orice parsare. Măsurătoarea de
+mai jos înlocuiește presupunerile bazate exclusiv pe specificație.
+
+**`RETR` pe `/recadv` NU consumă fișierele** — 101 înainte, 101 după, verificat de două ori. La fel și
+pe `/retann` (5 înainte, 5 după), deși acolo există un subfolder `sent`. Atenție: pentru `/orders`
+comportamentul rămâne cel vechi — fișierul se mută la citire.
+
+#### Ambii clienți trimit RECADV, dar completează formatul diferit
+
+| | Dedeman `5940475841003` | Auchan `5940475172008` |
+| --- | --- | --- |
+| Fișiere / linii | 78 / 1.304 | 23 / 220 |
+| `SellerId` | mereu `0000003419` | variabil (`3837`, `5613`, `2219`) |
+| `DeliveryDocumentNumber` | prezent 78/78 | **absent 0/23** |
+| `QuantityOrdered` | mereu gol | **mereu completat** |
+| `BuyerOrderNumber` | numărul comenzii Dedeman | 8 cifre, cu zerouri în față |
+
+Auchan trimite deci același format v4.0, dar **fără nicio referință la aviz**: singura cheie
+disponibilă este numărul comenzii. Un singur parser rămâne suficient, cu așteptări de câmp per client.
+
+#### Câmpuri absente sau goale în toate cele 1.524 de linii
+
+| Câmp | Stare reală |
+| --- | --- |
+| `Item/BuyerOrderNumber` | **absent complet**, deși specificația îl marchează obligatoriu |
+| `Item/UnitNetPrice` | **absent complet** — prin RECADV nu sosește niciun preț |
+| `QuantityReturned` | prezent, dar gol 1.524/1.524 |
+| `ReasonForReturnDescription` | prezent, dar gol 1.524/1.524 |
+| `ReasonForReturnCode` | completat doar pe 5 linii |
+| `GoodsReceiptDate`, `BuyerOrderDate`, `DeliveryDocumentDate` | goale 101/101 |
+
+Consecințe directe: lipsa **trebuie** calculată ca `expediat(7111) − QuantityAccepted`, iar valoarea
+liniei trebuie luată din Soft1, nu din RECADV.
+
+Stabile și conforme cu specificația: rădăcina `<Document>`, codarea UTF-8, `UnitOfMeassure` mereu
+`BUC`, `NumberOfItems` corect în 101/101 fișiere, și nicio etichetă de linie în afara tabelului din
+specificație.
+
+#### `DeliveryDocumentNumber` are trei forme
+
+- completă: `AEX-AE-053744`
+- fără prefix și fără zerouri: `53986`
+- **trunchiată la 16 caractere** când recepția consolidează mai multe avize: `AEX-AE-053657/AE`
+  (7 fișiere)
+
+Regula de căutare validată: potrivire pe **ultimele 6 cifre** ale `FINDOC.FINCODE`. Când șirul este
+trunchiat, rezultatul trebuie **reunit cu căutarea după numărul comenzii** (care în antet poate fi o
+listă separată prin virgulă), altfel al doilea aviz se pierde și apar diferențe imposibile.
+
+#### Rezultatul reconcilierii pe tot corpusul
+
+**101 din 101** documente au fost legate de avizul lor, iar **1.485 din 1.485 de linii de produs** au
+fost identificate prin `BuyerItemID → CCCS1DXTRDRMTRL.CODE`. Zero eșecuri. `GTIN` a diferit de
+`MTRL.CODE1` pe 42 de linii — confirmare suplimentară că EAN-ul nu poate fi cheie de matching.
+
+Repartizarea modului de rezolvare: 71 după codul avizului, 7 după aviz **plus** comandă (cazurile
+trunchiate), 23 doar după comandă (Auchan).
+
+#### Două reguli noi, obligatorii
+
+1. **Cantitățile se cumulează per aviz, înainte de calculul diferenței.** Patru recepții din corpus
+   sunt confirmate prin mai multe fișiere RECADV. Exemplu `AEX-AE-053669`: un fișier raportează 16
+   bucăți acceptate, altul 4, iar avizul are 20 — recepția este curată **doar după cumulare**.
+   Procesarea fișier cu fișier ar genera două retururi 9221 pentru același eveniment fizic.
+2. **`acceptat > expediat` este imposibil fizic și trebuie oprit.** Unele perechi de fișiere nu sunt
+   livrări parțiale, ci **duplicate**: pentru `AEX-AE-053774` și `AEX-AE-053986` un document cu
+   `DocumentNumber` care începe cu `5017…` și unul cu `4600…` descriu același aviz, același produs și
+   aceeași cantitate, în aceeași zi. Cumulate, dau 12 acceptate față de 6 expediate. Ce înseamnă
+   familiile de numere `4600…`, `2200…`, `5900…` și `1285…` rămâne de lămurit cu EDInet.
+
+## RETANN: formatul real (5 fișiere, 2026-07-28)
+
+Pe 2026-07-28 au fost preluate și **toate cele 5 fișiere din `/retann`** (2026-07-20 … 2026-07-24),
+cu aceeași procedură de backup. `RETR` nu le-a consumat, deși folderul are subdirectorul `sent`.
+
+RETANN este un **flux paralel, nu o continuare a RECADV**. Conținutul confirmă asta: cantități mici
+de articole asortate, returnate direct din magazine — marfă nevândută sau expirată, nu corecții de
+livrare.
+
+| Fișier | Client | Locație retur | Linii | Cantitate |
+| --- | --- | --- | --- | --- |
+| `636912442` | Dedeman | Depozit 39 On-Line | 4 | −87 |
+| `636912443` | Dedeman | Depozit 39 On-Line | 2 | −38 |
+| `637393663` | **Auchan** | Pitești Găvana 043 | 7 | −371 |
+| `637809502` | Dedeman | Magazin 71 Bistrița | 1 | −3 |
+| `637825192` | Dedeman | Magazin 95 Brașov 2 | 1 | −5 |
+
+### Nu există nicio referință documentară
+
+| Câmp din specificația v4.0 | Prezent în fișierele reale |
+| --- | --- |
+| `RetannRefDoc` (antet și linie) | **0/5** |
+| `OrderAtBuyerParty/DocID` — nr. comandă | **0/5** |
+| `DesadvParty/DocID` — nr. aviz | **0/5** |
+| `UnitNetPrice`, `MonetaryNetValue` | **0/5** |
+| `QuantityOrdered` | 0/5 |
+| `OriginalItemNumber` | 0/5 |
+
+**Consecință: RETANN nu poate fi legat de un aviz 7111 și nici de un RECADV.** Nu e o limitare de
+implementare, ci absența datelor din sursă. Chiar dacă ar exista, legătura ar fi greșită conceptual:
+marfa expirată provine dintr-un cumul de livrări vechi de luni, iar returul este o operațiune
+comercială nouă, nu corecția unei livrări.
+
+**Regulile din fluxul RECADV nu se aplică la RETANN** — nici cumularea per aviz, nici oprirea la
+`acceptat > expediat`. Ancorarea corectă este `client + filială + produs`.
+
+### Schema livrată diferă de specificație
+
+| | Specificația v4.0 | Fișierele reale |
+| --- | --- | --- |
+| Rădăcină | `<Retann>` | `<Document><Retann>` (ca la RECADV) |
+| Identificator părți | `ILN` | `GLN` |
+| Antet | `RetannNumber` / `IssueDate` | `DocumentNumber` / `DocumentIssueDate` |
+| Unitate de măsură | `UnitOfMeassure` | **`UnitOfMeasure`** — un singur `s`, spre deosebire de RECADV |
+| Adrese | grupate în `AddressDetails` | câmpuri plate |
+
+Cele 29 de etichete sunt identice în toate cele 5 fișiere, deci formatul livrat este stabil — doar
+diferit de documentație. Parserul trebuie scris după realitate, nu după schemă.
+
+### Ce se poate rezolva automat
+
+| Element | Rezultat |
+| --- | --- |
+| Produse identificate prin `BuyerItemID → CCCS1DXTRDRMTRL.CODE` | **13 din 13** |
+| Locații identificate prin `ShipToParty/GLN → TRDBRANCH.CCCS1DXGLN` | **4 din 4** |
+
+**Atenție la rutarea filialei:** fiecare GLN de locație returnează **două** rânduri în `TRDBRANCH`, pe
+`TRDR` diferite (ex. `5940475841065` → `TRDR 11654` și `15244`). Filiala trebuie căutată cu
+`BuyerParty/GLN` **și** `ShipToParty/GLN` împreună; căutarea doar după al doilea este ambiguă.
+
+### Alte observații pentru parser
+
+- **Același produs poate apărea pe mai multe linii în același fișier.** În `637393663`, codul Auchan
+  `17916` apare de două ori (−10 și −6). Agregarea per produs este necesară și în interiorul unui
+  singur fișier.
+- `SellerItemID` este gol pe toate liniile Auchan și pe unele Dedeman — nu poate fi cheie.
+- Nu există `ReasonForReturnCode` sau echivalent: **motivul returului nu este transmis**.
+- `NumberOfItems` este corect în 5/5, `NumberOfDocuments` este `1` în 5/5.
+
 
 ## Reguli de facturare
 
@@ -294,8 +442,19 @@ Caz confirmat la Dedeman. O singură notă de recepție poate agrega mai multe a
 
 Semnale de identificare — **oricare dintre ele, singur, indică o consolidare**:
 
-- antetul conține mai multe numere în `Numar aviz de insotire a marfii`, separate prin `/` (ex.: `53184/53186`);
-- liniile conțin mai multe valori distincte pentru `Numar comanda` (ex.: `4516680594` și `4516694275`).
+- antetul conține mai multe numere în `Numar aviz de insotire a marfii`, separate prin `/`
+  (ex.: `53184/53186`);
+- antetul conține mai multe numere de comandă, separate prin **virgulă**
+  (ex.: `4516724252,4516728308,4516736116`).
+
+> **Corecție 2026-07-28.** Al doilea semnal era formulat inițial ca „liniile conțin mai multe valori
+> distincte pentru `Numar comanda`". Este imposibil în practică: `Item/BuyerOrderNumber` lipsește din
+> toate cele 1.524 de linii reale. Consolidarea se vede **exclusiv în antet**, și pe ambele câmpuri.
+>
+> Atenție la lungime: `DeliveryDocumentNumber` este tăiat la **16 caractere**, deci când avizele sunt
+> transmise în forma completă (`AEX-AE-053657/AE`) al doilea număr se pierde. În acest caz lista de
+> comenzi din antet este singura sursă completă — cele două câmpuri trebuie folosite împreună, nu
+> alternativ.
 
 Acțiune:
 
@@ -309,10 +468,12 @@ Rămâne de stabilit regula principală atunci când lista avizelor și lista co
 ## Excluderi și validări obligatorii
 
 - Paleții returnabili `EURO 120x80` nu se facturează. Ei pot apărea în observațiile avizului Soft1 și ca linie fără preț în nota de recepție EDInet.
+- **Liniile de palet trebuie eliminate explicit din RECADV.** În fișierele reale ele sosesc ca `<Item>` obișnuit, cu `QuantityAccepted` completat, dar nu au `MTRL` și nu există în `CCCS1DXTRDRMTRL`. Coduri observate: `9200520` (`PALET RETURNABIL EURO 120x80`) și `9200521` (`PALET RETURNABIL NON-EURO 120x80`) — 39 de linii în cele 101 fișiere. Fără excludere, ele ar bloca întregul document prin eșec de identificare. Criteriu robust: `ProductDescription` care conține `PALET`.
 - O livrare parțială nu este o eroare: valoarea CKEY poate depăși valoarea avizului 7111.
 - Factura trebuie reconciliată strict cu documentele 7111 și 9221, nu cu valoarea CKEY.
 - Regulile sunt validate doar pentru Dedeman și Auchan; nu se generalizează automat la alți retaileri.
 - Automatizarea trebuie să eșueze controlat dacă o linie nu poate fi identificată neechivoc în `CCCS1DXTRDRMTRL`.
+- **Automatizarea trebuie să eșueze controlat și când cantitatea acceptată depășește cantitatea expediată** pe aceeași pereche aviz/produs. Situația este imposibilă fizic și semnalează fie un fișier RECADV duplicat, fie o legare greșită la aviz.
 
 ## Exemple validate
 
@@ -363,19 +524,23 @@ Rămâne de stabilit regula principală atunci când lista avizelor și lista co
 ## Implicații pentru implementare
 
 1. RECADV nu este APERAK și nu trebuie stocat în `CCCAPERAK`.
-2. Parserul RECADV trebuie să normalizeze cel puțin: identificatorul recepției, avizele referite, comenzile referite, clientul/GLN-ul, codurile produselor, EAN-urile, cantitățile acceptate, unitățile, valorile, PV-ul și motivul neconformității când există.
+2. Parserul RECADV trebuie să normalizeze cel puțin: identificatorul recepției, avizele referite, comenzile referite, clientul/GLN-ul, codurile produselor, EAN-urile, cantitățile acceptate și unitățile. **Valorile, PV-ul și motivul neconformității nu sosesc prin RECADV** — `UnitNetPrice` lipsește complet, iar `ReasonForReturnDescription` este gol pe toate liniile reale; valoarea liniei se ia din avizul Soft1.
 3. Motorul de reconciliere trebuie să fie configurabil pe client pentru strategia de matching și seria facturii.
 4. Comenzile Dedeman cu comentariu `Doar aviz` necesită o stare separată în Retailers și trebuie excluse din trimiterea normală către CKEY.
 5. Consolidarea trebuie modelată la nivel de notă de recepție, cu legături multiple către comenzi și avize.
 6. Crearea documentelor Soft1 trebuie să fie idempotentă și să păstreze toate referințele sursă.
 7. **Matching-ul se face exclusiv pe `BuyerItemID`.** EAN-ul nu se folosește nici măcar ca fallback: 9,2% dintre liniile Auchan ar fi mapate greșit. Se loghează doar ca avertisment de calitate a datelor.
-8. **Numărul de aviz din nota de recepție este codul nostru Soft1 fără prefix și fără zerouri în față** (`53186` ↔ `AEX-AE-053186`). Căutarea inversă trebuie să facă zero-padding la 6 cifre și să accepte lista separată prin `/`.
+8. **Numărul de aviz din nota de recepție apare în trei forme:** completă (`AEX-AE-053744`), fără prefix și fără zerouri (`53986`), sau **trunchiată la 16 caractere** când sunt mai multe avize (`AEX-AE-053657/AE`). Căutarea trebuie să facă zero-padding la 6 cifre și să potrivească pe ultimele 6 cifre ale `FINDOC.FINCODE`. **Când șirul este trunchiat, rezultatul trebuie reunit obligatoriu cu căutarea după numărul comenzii**, altfel al doilea aviz se pierde și apar diferențe false. Pentru Auchan câmpul lipsește cu totul, deci comanda este singura cheie.
 9. **Numerele de comandă sosesc zero-pădate** (`01436603` pentru `1436603`); normalizarea este obligatorie înainte de orice căutare, iar Soft1 stochează deja forma normalizată în `NUM04`.
 10. **Legăturile între documente se creează prin conversie, nu prin scriere directă**, pentru că `FINDOCS`/`MTRLINESS` sunt read-only în obiectul `SALDOC`. Excepție: `FINDOCL`/`MTRLINESL` sunt editabile și pot fi scrise din cod.
 11. **Factura poartă direct cantitatea acceptată**, iar 9221 doar diferența; nu se generează factură integrală urmată de storno.
 12. **`FINDOC.NUM04` este cheia de căutare comandă EDI → documente Soft1.** Se propagă prin conversie pe tot lanțul și este populat în 100% din documentele EDI. Se folosește pentru lookup rapid, dar pe facturile consolidate reține o singură comandă, deci nu înlocuiește parcurgerea liniilor. La creare de documente noi, `NUM04` trebuie setat explicit cu numărul comenzii normalizat.
 13. **Orice linie de 9221 sau 7531 trebuie să aibă `FINDOCL` setat**, altfel `ON_POST` din `SALDOC_EF.js` respinge salvarea. Pentru 9221 valoarea corectă este avizul 7111, adică același document ca `FINDOCS`. Se completează și `MTRLINESL`, deși ERP-ul nu îl impune.
 14. **Verificarea cumulativă a cantității returnate cade în sarcina automatizării.** Plafonul din ERP compară doar cu cantitatea livrată, fără să scadă retururi anterioare; în producție există 78 de cazuri de supraretur. Înainte de a emite un 9221 trebuie însumate retururile deja existente pe aceeași pereche aviz/produs.
+15. **Unitatea de procesare este avizul, nu fișierul.** Mai multe fișiere RECADV pot descrie același aviz (4 cazuri în corpusul de 101). Cantitățile acceptate trebuie însumate per `aviz + cod produs` **înainte** de calculul diferenței; altfel o singură recepție fizică ar produce două retururi. Consecință practică: procesarea nu poate fi complet stateless per fișier — trebuie să aștepte sau să recalculeze la sosirea unui fișier suplimentar pentru un aviz deja văzut.
+16. **`acceptat > expediat` este o oprire dură, nu un avertisment.** Situația apare real în corpus și indică fișiere duplicate: același aviz, produs, cantitate și zi, dar `DocumentNumber` din familii diferite (`5017…` vs `4600…`). Deduplicarea nu se poate face pe `DocumentNumber` — trebuie făcută pe conținut (aviz + produs + cantitate + dată), iar cazurile detectate merg la verificare umană.
+17. **RETANN se procesează pe alt lanț decât RECADV.** Nu are referință către aviz, deci nu intră în reconcilierea `expediat − acceptat` și nu se cumulează cu retururile 9221. Parserul este separat (schemă diferită, `UnitOfMeasure` cu un singur `s`), iar ancorarea se face la `client + filială + produs`.
+18. **Filiala se rezolvă cu ambele GLN-uri, nu doar cu `ShipToParty`.** Fiecare GLN de locație apare pe două rânduri `TRDBRANCH`, sub `TRDR` diferite. Căutarea trebuie filtrată și pe `TRDR`-ul rezultat din `BuyerParty/GLN`, altfel rezultatul este ambiguu — iar regula de eșec controlat ar bloca inutil documente valide.
 
 ## Întrebări deschise
 
@@ -383,16 +548,25 @@ Rămâne de stabilit regula principală atunci când lista avizelor și lista co
 
 - ~~Care este structura XML exactă a fișierelor RECADV numerice din `/recadv/`?~~ Documentată în secțiunea „Specificațiile XML EDInet v4.0". Rămâne de validat pe un fișier real că versiunea livrată este tot v4.0.
 - ~~Care câmp conține codul la client pentru Auchan și EAN-ul pentru Dedeman?~~ `BuyerItemID` (M) este codul la client pentru ambii; `GTIN`/`EAN` (D) este EAN-ul. Regula de matching devine comună.
-- ~~În consolidări contradictorii, prevalează numerele de aviz din antet sau numerele de comandă de pe linii?~~ Beneficiarul a lăsat această alegere deschisă la implementare. Răspuns tehnic: prevalează liniile, pentru că `RecadvHeader/DeliveryDocumentNumber` este demonstrabil trunchiat în exemplul oficial Infinite, deci nu poate fi sursă de adevăr. Nu este o preferință, ci o constrângere de format.
+- ~~În consolidări contradictorii, prevalează numerele de aviz din antet sau numerele de comandă de pe linii?~~ **Întrebarea nu se poate pune în practică.** Liniile nu conțin niciun număr de comandă (0 din 1.524). Singura sursă este antetul, iar cele două câmpuri ale lui se folosesc împreună: avizele când sunt complete, comenzile când șirul de avize este trunchiat la 16 caractere.
 - ~~Ce legături Soft1 trebuie setate între 7111, returul 9221 și factura 7122/7123?~~ `MTRLINES.FINDOCS` + `MTRLINES.MTRLINESS`, pe linii, ambele documente indicând aceeași linie de aviz. Câmpurile de antet `CCCOrderId`/`CCCDispatcheId`/`CCCBillingReferenceId` sunt neutilizate. Vezi secțiunea „Legăturile Soft1 între documente".
 - ~~Unde se regăsește numărul comenzii EDI pe documentele Soft1?~~ În `FINDOC.NUM04`, propagat prin conversie pe tot lanțul (indicat de beneficiar și verificat în producție la 2026-07-27). Vezi subsecțiunea „`FINDOC.NUM04` — numărul comenzii EDI".
 
+### Rezolvate la 2026-07-28 pe corpusul complet de 101 fișiere RECADV reale
+
+- ~~Trimite Auchan același format v4.0?~~ **Da.** 23 din cele 101 fișiere sunt Auchan (`5940475172008`), în același plic v4.0. Diferențele sunt de completare, nu de structură: Auchan **nu trimite `DeliveryDocumentNumber`** și **completează mereu `QuantityOrdered`**, exact invers decât Dedeman.
+- ~~Cum se calculează lipsa dacă `QuantityOrdered` lipsește?~~ **Prin comparație cu avizul 7111, întotdeauna.** La Dedeman câmpul e gol pe toate liniile. La Auchan e completat, dar egal cu cantitatea acceptată, deci nu poate semnala nicio lipsă. Comparația cu Soft1 nu este un fallback, ci singura metodă.
+- ~~Versiunea livrată este tot v4.0?~~ **Da pentru RECADV**, confirmat pe toate cele 101 fișiere: rădăcină `<Document>`, UTF-8, nicio etichetă în afara specificației. **Nu pentru RETANN** — schema livrată diferă substanțial de specificație (vezi „RETANN: formatul real").
+- ~~Se leagă RETANN de RECADV sau de avizul 7111?~~ **Nu se poate și nu trebuie.** `RetannRefDoc` lipsește din toate cele 5 fișiere reale, deci nu există nicio referință documentară. RETANN este un flux paralel, ancorat la `client + filială + produs`.
+
 ### Încă deschise
 
-- **Cum sunt reprezentate în XML PV-ul și `Motiv de mutare`?** RECADV are doar `ReasonForReturnCode` / `ReasonForReturnDescription`, ambele opționale, fără număr de PV. Numerele din exemple au prefixe diferite față de nota de recepție (recepție `5017615221` vs PV `9500095574` / `8300225566`). Ipoteză de verificat: PV-urile sosesc ca RETANN — consistent cu volumele observate pe FTP (91 fișiere în `/recadv` vs 5 în `/retann`) — dar exemplul RETANN din specificație este un retur de paleți, nu un PV de lipsă.
-- **Cum se calculează lipsa dacă `QuantityOrdered` lipsește?** Câmpul este opțional în RECADV. Dacă vine gol, diferența trebuie calculată prin comparație cu liniile avizului `7111` din Soft1, nu din RECADV singur.
+- **Cum sunt reprezentate în XML PV-ul și `Motiv de mutare`?** **Confirmat că nu sosesc nici prin RECADV, nici prin RETANN.** În RECADV, `ReasonForReturnDescription` este gol pe toate cele 1.524 de linii, iar `ReasonForReturnCode` e completat doar pe 5. În RETANN nu există niciun câmp de motiv și niciun număr de document. Ipoteza că PV-urile ar sosi prin RETANN, formulată pe baza volumelor de pe FTP, este **infirmată**. Rămâne de aflat pe ce canal ajung — posibil deloc prin EDI.
+- **Cum se valorizează returul RETANN?** Nici `UnitNetPrice`, nici `MonetaryNetValue` nu sosesc. Trebuie stabilit dacă se folosește prețul curent din contract sau prețul ultimei livrări către acea filială — iar fără referință către aviz, a doua variantă este o presupunere, nu o certitudine.
+- **Ce serie Soft1 primește un retur RETANN?** Nu este 9221 (acela e legat de aviz prin `FINDOCL`). Trebuie confirmată seria și dacă documentul se creează fără document sursă.
+- **Ce înseamnă familiile de prefixe din `DocumentNumber`?** În corpus apar `5017…` (73), `1285…` (8), `9774…` (5), `9737…`, `9767…`, `4600…`, `9734…`, `9736…`, `2200…`, `5900…`, `7900…`. În cel puțin două cazuri, un document `5017…` și unul `4600…` descriu **același eveniment fizic** — deci prefixul pare să codifice tipul documentului sau sistemul emitent. De lămurit cu EDInet înainte de a automatiza retururile.
+- **De ce avizul Auchan `AEX-AE-053715` are 7.728 bucăți din codul `340171`, dar recepția confirmă doar 1.392?** Toate cele 23 de avize Auchan sunt emise către depozite (`901 Campus Auchan AMBIENT`, `51940 CAMPUS Deva CALAN`), nu către magazinul din `ShipToParty`. Ipoteză: un aviz către depozit acoperă mai multe magazine, iar fiecare confirmă doar partea lui. Dacă se confirmă, reconcilierea Auchan trebuie să aștepte toate confirmările înainte de a decide o lipsă.
 - **Cum se declanșează din cod conversia care creează legătura `FINDOCS`/`MTRLINESS`?** Câmpurile sunt read-only, deci nu pot fi scrise prin `setData`. Trebuie identificat jobul/obiectul de conversie Soft1 folosit manual azi pentru 7111 → 7122/7123 și 7111 → 9221. **Parțial rezolvat:** pentru retur legătura obligatorie este `FINDOCL`, care este editabilă; întrebarea rămâne deschisă doar pentru factură, unde `FINDOCS` este singura legătură.
 - **Cum se rezolvă codul Dedeman ambiguu `7050535`** (mapat la două articole active, `MTRL 34594` și `MTRL 34294`)? Până la corectarea nomenclatorului, liniile cu acest cod trebuie oprite pentru validare manuală. Același tip de coliziune există și la Carrefour (`112`) și Cora (`334`), iar codul actual (`X.SQL`, primul rând) alege tăcut una dintre variante.
-- **Trimite Auchan același format v4.0?** Ambele specificații sunt emise pentru proiectul Dedeman. Trebuie confirmat pe un fișier Auchan real.
 - **Cine aprobă automatizarea înainte de emiterea documentelor și ce cazuri trebuie ținute pentru validare manuală?**
 - **Regula `Doar aviz`** rămâne o decizie de business nerezolvată; vezi `Analiza_exemplelor_in_Soft1.md`. Comentariul apare pe ORDER, nu pe RECADV, deci este o regulă din fluxul de comenzi, separată de parserul RECADV.

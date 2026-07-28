@@ -4,21 +4,49 @@
  * against the Pet Factory Soft1 ERP system.
  */
 
-const BASE_URL = 'https://petfactory.oncloud.gr/s1services'
+import { existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// MCP servers are launched without a shell profile, so load mcp-soft1/.env when present.
+const ENV_FILE = join(dirname(fileURLToPath(import.meta.url)), '.env')
+if (existsSync(ENV_FILE)) {
+  try {
+    process.loadEnvFile(ENV_FILE)
+  } catch {
+    // Node < 20.12 has no loadEnvFile; the explicit env vars below are then required.
+  }
+}
+
+function required(name) {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(
+      `Missing ${name}. Set it in the MCP server env or in mcp-soft1/.env (see .env.example).`,
+    )
+  }
+  return value
+}
+
+const BASE_URL = process.env.S1_BASE_URL ?? 'https://petfactory.oncloud.gr/s1services'
 const SQL_ENDPOINT = `${BASE_URL}/JS/Utile/getSQLDataSet`
-const APP_ID = '1001'
+const APP_ID = process.env.S1_APP_ID ?? '1001'
 
 const CREDENTIALS = {
-  username: 'websitepetfactory',
-  password: 'petfactory4321',
+  get username() {
+    return required('S1_USERNAME')
+  },
+  get password() {
+    return required('S1_PASSWORD')
+  },
   appId: APP_ID,
 }
 
 const AUTH_TARGET = {
-  company: '50',
-  branch: '1000',
+  company: process.env.S1_COMPANY ?? '50',
+  branch: process.env.S1_BRANCH ?? '1000',
   module: '0',
-  refid: '1000',
+  refid: process.env.S1_REFID ?? '1000',
   userid: '1000',
   appId: APP_ID,
 }

@@ -200,8 +200,8 @@ insert into CCCRETAILERSCLIENTS (
 VALUES (
         1,
         'http://petfactory.oncloud.gr/s1services',
-        'websitepetfactory',
-        'petfactory4321',
+        '<WSUSER>',
+        '<WSPASS>', -- completeaza manual la rulare; nu commita parola reala
         50,
         1000
     );

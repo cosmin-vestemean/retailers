@@ -39,3 +39,42 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
     getAperaks, createAperak, lookupFindoc, getOrdersData, getInvoicesData, sendEmail,
     validatePassword, processSqlAsDataset, processSqlAsDataset1.
   next: Copy full JSRetailers.js content to ERP AJS editor, save, verify each endpoint responds at https://petfactory.oncloud.gr/s1services/JS/JSRetailers/{functionName}.
+
+- id: manual-flux-retur-docx
+  status: open
+  source: session-N+5
+  priority: high
+  summary: >
+    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Manual_flux_retur_auchan_dedeman.docx`
+    exists in the working tree, is untracked, and is referenced by no markdown file.
+    Nobody has opened it in any session. Its title points straight at the RETURN flow —
+    exactly the subject we analysed from scratch off the 5 RETANN payloads
+    (valuation price, Soft1 series, whether a PV exists). It may already answer the two
+    questions we just put to the beneficiary, or contradict our reconstruction.
+  next: Extract the docx text and reconcile it against `/memories/repo/edi-retann-real-format.md` and the RETANN sections of the manual/plan/email before sending the email.
+
+- id: analiza-exemplelor-stale-notes
+  status: open
+  source: session-N+5
+  priority: low
+  summary: >
+    `Analiza_exemplelor_in_Soft1.md` still carries two notes that the 101-file corpus
+    has since settled: "rămâne de confirmat pe un fișier real dacă GTIN este efectiv
+    populat" (~line 346) and "aici este o simplificare de confirmat cu Infinite" (~line 333).
+    GTIN is now known to be populated 1524/1524 but to disagree with `MTRL.CODE1`
+    on 42 lines; the `RetAnnNumber`/`DeliveryDocumentNumber` simplification is moot
+    because production RETANN carries neither field.
+  next: Update the two paragraphs so the file stops contradicting the manual.
+
+- id: recadv-corpus-not-committed
+  status: open
+  source: session-N+5
+  priority: medium
+  summary: >
+    Nothing from the RECADV/RETANN analysis is committed. The phased plan, the
+    beneficiary email and all six analysis scripts are untracked, so `git clean -fd`
+    would destroy them; the manual and the Infinite spec have uncommitted edits.
+    Separately, `documentatie/infinite_samples/{recadv,retann}/` holds 106 real
+    production payloads in a git-TRACKED folder — those must be ignored or removed,
+    never committed.
+  next: Add `documentatie/infinite_samples/` to `.gitignore`, then commit the docs and scripts on `feat/edi-safety-sftp-tests`.
