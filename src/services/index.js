@@ -32,6 +32,7 @@ import { getInvoiceDom } from './get-invoice-dom/get-invoice-dom.service.js'
 import { retailer } from './retailer/retailer.service.js'
 import { retailerStats } from './retailer-stats/retailer-stats.service.js'
 import { edi } from './edi/edi.service.js'
+import { recadv } from './recadv/recadv.service.js'
 import { ediOrders } from './edi-orders/edi-orders.service.js'
 import { ediInvoices } from './edi-invoices/edi-invoices.service.js'
 import { ediAperaks } from './edi-aperaks/edi-aperaks.service.js'
@@ -103,6 +104,8 @@ export const services = (app) => {
   app.configure(ediAperaks)
 
   app.configure(edi)
+
+  app.configure(recadv)
 
   // All services will be registered here
 }

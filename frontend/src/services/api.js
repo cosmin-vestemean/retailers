@@ -51,6 +51,7 @@ const SERVICES = {
   // Paginated data (AJS)
   'orders-data': { methods: ['find'] },
   'invoices-data': { methods: ['find'] },
+  recadv: { methods: ['find'] },
   'lookup-findoc': { methods: ['create'] },
   'mark-invoice-sent': { methods: ['create'] },
   'edi-orders': { methods: ['create'] },
@@ -306,6 +307,13 @@ export async function getOrdersPaged(trdr, { page = 1, pageSize = 25, daysOlder 
 export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30, sosource = 1351, fprms = 712, series = 7121, includeSent = false } = {}) {
   return client.service('invoices-data').find({
     query: { trdr, page, pageSize, daysOlder, sosource, fprms, series, includeSent }
+  })
+}
+
+/** Fetch RECADV receptions (paginated), reconciled against shipped advice lines on demand. */
+export async function getReceptionsPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30 } = {}) {
+  return client.service('recadv').find({
+    query: { trdr, page, pageSize, daysOlder }
   })
 }
 

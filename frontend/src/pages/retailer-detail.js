@@ -4,6 +4,11 @@ import { dashboardUrl } from '@/routing/ui-routes.js'
 import { RETAILERS } from '@/state/app-context.js'
 import '@/components/orders-table.js'
 import '@/components/invoice-table.js'
+import '@/components/reception-table.js'
+
+// RECADV only flows through Infinite Edinet today (Dedeman + Auchan) — see infinite.provider.js
+// RETAILER_GLNS. Other retailers have no RECADV data, so the tab would only ever show empty rows.
+const RECADV_RETAILERS = ['11654', '13248']
 
 export class RetailerDetail extends LightElement {
   static properties = {
@@ -18,6 +23,10 @@ export class RetailerDetail extends LightElement {
 
   get retailer() {
     return RETAILERS.find(r => r.trdr === this.trdr)
+  }
+
+  get _hasReceptions() {
+    return RECADV_RETAILERS.includes(this.trdr)
   }
 
   render() {
@@ -37,6 +46,12 @@ export class RetailerDetail extends LightElement {
             <a class="nav-link ${this._tab === 'orders' ? 'active' : ''}"
                href="#" @click=${(e) => { e.preventDefault(); this._tab = 'orders' }}>Comenzi</a>
           </li>
+          ${this._hasReceptions ? html`
+            <li class="nav-item">
+              <a class="nav-link ${this._tab === 'receptions' ? 'active' : ''}"
+                 href="#" @click=${(e) => { e.preventDefault(); this._tab = 'receptions' }}>Recepții</a>
+            </li>
+          ` : ''}
           <li class="nav-item">
             <a class="nav-link ${this._tab === 'invoices' ? 'active' : ''}"
                href="#" @click=${(e) => { e.preventDefault(); this._tab = 'invoices' }}>Facturi</a>
@@ -46,6 +61,8 @@ export class RetailerDetail extends LightElement {
         <div class="tab-content">
           ${this._tab === 'orders' ? html`
             <orders-table .trdr=${this.trdr}></orders-table>
+          ` : this._tab === 'receptions' && this._hasReceptions ? html`
+            <reception-table .trdr=${this.trdr}></reception-table>
           ` : html`
             <invoice-table .trdr=${this.trdr}></invoice-table>
           `}
@@ -56,3 +73,4 @@ export class RetailerDetail extends LightElement {
 }
 
 customElements.define('retailer-detail', RetailerDetail)
+
