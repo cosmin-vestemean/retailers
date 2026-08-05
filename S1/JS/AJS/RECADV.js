@@ -156,6 +156,8 @@ function getAdviceLines(params) {
 /**
  * Paginated list of advices (FINDOC.SERIES=7111) for the reception screen, with the invoiced
  * state computed by the verified TFPRMS=103 predicate (never FPRMS=712 — that is Auchan-only).
+ * Pallet-only advices are excluded: measured on 60 days, all 74 Auchan ones carry a single
+ * AM.00006 line, no source order, no NUM04 and are never invoiced — nothing to reconcile.
  * params: { trdr, daysOlder=30, page=1, pageSize=25 }
  * returns: { success, data, total, page, pageSize } or { success: false, error }
  */
@@ -174,7 +176,10 @@ function getReceptionsData(params) {
   var fromClause = 'FROM FINDOC f'
     + ' WHERE f.TRDR = ' + trdr
     + ' AND f.SERIES = 7111 AND f.ISCANCEL = 0'
-    + ' AND f.TRNDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())';
+    + ' AND f.TRNDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())'
+    // Keeps advices with at least one merchandise line, so a mixed advice would still show up.
+    + ' AND EXISTS (SELECT 1 FROM MTRLINES l INNER JOIN MTRL m ON m.MTRL = l.MTRL'
+    + "   WHERE l.FINDOC = f.FINDOC AND m.NAME NOT LIKE '%PALET%')";
 
   var total = 0;
   try {
