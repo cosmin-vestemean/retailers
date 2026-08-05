@@ -141,7 +141,7 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
     const cutoff = new Date(Date.now() - DOWNLOAD_AGE_DAYS * 86400_000)
     const matching = entries.filter(
       (e) => (prefixes.length === 0 || prefixes.some((p) => e.name.startsWith(p)))
-        && isXmlLikeFile(e.name)
+        && isXmlLikeFile(e.name, docType)
         && (!e.modifyTime || e.modifyTime >= cutoff)
     )
 
@@ -547,8 +547,16 @@ function joinRemote(a, b) {
   return left + right
 }
 
-function isXmlLikeFile(fileName) {
-  return /\.(xml|confirm)$/i.test(String(fileName || ''))
+function isXmlLikeFile(fileName, docType) {
+  const name = String(fileName || '')
+  // recadv/retann live in a dedicated remote directory and Infinite names them inconsistently:
+  // bare numeric IDs with no extension (measured live, e.g. "639471174"), "<id>.xml", or
+  // "DEDEMAN_RECADV_<id>.xml". Requiring .xml/.confirm silently dropped the bare-numeric ones,
+  // which is most of the live traffic. Only exclude the directory's own known non-document entries.
+  if (docType === 'recadv' || docType === 'retann') {
+    return !/\.(zip|tmp|log)$/i.test(name)
+  }
+  return /\.(xml|confirm)$/i.test(name)
 }
 
 function formatSqlDate(d) {
