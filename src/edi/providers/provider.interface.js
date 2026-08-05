@@ -2,6 +2,11 @@
  * EDI provider contract. Encapsulates protocol-specific knowledge:
  * remote directory layout, file naming conventions, XML schema parsing.
  *
+ * `docTypes` alone decides what the scanner fetches — a type absent from it is never listed,
+ * so parked flows stay off the live FTP account. `filenamePrefixes` is only a filter on top:
+ * an empty array means "accept every XML in that directory", which is safe only for a docType
+ * with a dedicated `remoteSubdir` (never for a shared inbox).
+ *
  * @typedef {Object} ParsedOrder
  * @property {string}  orderId        - Buyer order number (e.g. "01038016")
  * @property {string=} buyerGln       - GLN of the buyer / ordering party
@@ -24,8 +29,9 @@
  *
  * @typedef {Object} EdiProvider
  * @property {string} code                                                  // 'docprocess' | 'infinite'
- * @property {(docType: 'orders'|'retann'|'aperak', sftpRow?: object) => string[]}   filenamePrefixes
- * @property {(docType: 'orders'|'retann'|'invoice'|'aperak') => string}   remoteSubdir
+ * @property {Array<'orders'|'retann'|'recadv'|'aperak'>} docTypes          // inbound types the scanner may fetch
+ * @property {(docType: string, sftpRow?: object) => string[]}   filenamePrefixes
+ * @property {(docType: 'orders'|'retann'|'recadv'|'invoice'|'aperak') => string}   remoteSubdir
  * @property {(xml: string) => Promise<ParsedOrder>}              parseOrder
  * @property {(xml: string) => Promise<object>}                   parseAperak
  * @property {(xml: string) => Promise<ParsedRecadv>=}            parseRecadv

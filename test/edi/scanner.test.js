@@ -102,7 +102,8 @@ describe('EDI scanner against local ftp-srv', function () {
     assert.strictEqual(stats.duplicates, 0)
 
     const filenames = store.map((r) => r.XMLFILENAME).sort()
-    assert.deepStrictEqual(filenames, ['AUCHAN_900000001.xml', 'DEDEMAN_900000002.xml'])
+    assert.deepStrictEqual(filenames, ['AUCHAN_900000001.xml', 'DEDEMAN_900000002.xml'],
+      'the /retann/ fixture must stay untouched — that flow is parked and must not hit the FTP')
 
     for (const row of store) {
       assert.strictEqual(row.EDIDOCTYPE, 'ORDERS')

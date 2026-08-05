@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Anonymized. Present only to prove the scanner does NOT fetch the parked retann flow.
+     Filename is numeric, matching the real Infinite /retann layout. -->
+<Document Type="RetAnn">
+   <RetannHeader>
+      <DocumentNumber>9000000004</DocumentNumber>
+      <DocumentIssueDate>2026-07-24</DocumentIssueDate>
+   </RetannHeader>
+   <RetannParty>
+      <BuyerParty>
+         <GLN>5940475841003</GLN>
+      </BuyerParty>
+      <ShipToParty>
+         <GLN>5949111999801</GLN>
+      </ShipToParty>
+   </RetannParty>
+   <RetannDetail>
+      <Item>
+         <BuyerItemID>900001</BuyerItemID>
+         <GTIN>5900000000001</GTIN>
+         <QuantityReturned>4</QuantityReturned>
+         <UnitOfMeasure>BUC</UnitOfMeasure>
+      </Item>
+   </RetannDetail>
+</Document>

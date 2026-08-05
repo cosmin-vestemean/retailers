@@ -65,6 +65,9 @@ function normalizeDocumentReference(reference, detail) {
 export const docProcessProvider = {
   code: 'docprocess',
 
+  docTypes: ['orders', 'aperak'],
+
+  // Both types share one inbox, so a prefix is mandatory here — never return [].
   filenamePrefixes(docType) {
     if (docType === 'orders') return ['ORDERS_']
     if (docType === 'aperak') return ['APERAK_']

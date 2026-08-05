@@ -44,18 +44,23 @@ function text(value) {
 export const infiniteProvider = {
   code: 'infinite',
 
+  // `retann` is parked pending Infinite ticket RO-7627 and `recadv` until the reception screen
+  // replaces the EDInet portal — listing either would re-set the portal's "citit" flag.
+  docTypes: ['orders'],
+
+  // Only orders are named per retailer. RECADV and RETANN filenames are purely numeric
+  // (e.g. 636912442.xml), so those two route by GLN and take no prefix filter.
   filenamePrefixes(docType, sftpRow = {}) {
-    const retailerPrefixes = RETAILER_PREFIXES[parseInt(sftpRow.TRDR_RETAILER, 10)]
-    if (docType === 'orders') return retailerPrefixes || ['AUCHAN_', 'DEDEMAN_']
-    if (docType === 'retann') return retailerPrefixes || ['AUCHAN_', 'DEDEMAN_']
-    return []
+    if (docType !== 'orders') return []
+    return RETAILER_PREFIXES[parseInt(sftpRow.TRDR_RETAILER, 10)] || ['AUCHAN_', 'DEDEMAN_']
   },
 
   remoteSubdir(docType) {
     if (docType === 'orders') return '/orders/'
-    if (docType === 'retann') return '/retanns/'
+    // The EDInet Connector doc says "/retanns/"; production only has "/retann/" (measured 2026-07-28).
+    if (docType === 'retann') return '/retann/'
+    if (docType === 'recadv') return '/recadv/'
     if (docType === 'invoice') return '/invoice/'
-    if (docType === 'aperak') return '/recadv/'
     return '/'
   },
 

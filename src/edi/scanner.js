@@ -99,10 +99,10 @@ async function logScanSummary(app, stats) {
 
 async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []) {
   const stats = { downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, failed: 0, errors: [] }
-  // Per provider: scan each supported docType.
-  for (const docType of ['orders', 'retann', 'aperak']) {
-    const prefixes = provider.filenamePrefixes(docType, sftpRow)
-    if (!prefixes || prefixes.length === 0) continue
+  // The provider decides what is scanned; a docType it does not declare is never listed.
+  for (const docType of provider.docTypes || []) {
+    // Empty prefix list = no filename filter (docType has its own remote subdirectory).
+    const prefixes = provider.filenamePrefixes(docType, sftpRow) || []
 
     const subdir = provider.remoteSubdir(docType)
     const remoteDir = joinRemote(sftpRow.INITIALDIRIN, subdir)
@@ -125,7 +125,9 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
 
     const cutoff = new Date(Date.now() - DOWNLOAD_AGE_DAYS * 86400_000)
     const matching = entries.filter(
-      (e) => prefixes.some((p) => e.name.startsWith(p)) && isXmlLikeFile(e.name) && (!e.modifyTime || e.modifyTime >= cutoff)
+      (e) => (prefixes.length === 0 || prefixes.some((p) => e.name.startsWith(p)))
+        && isXmlLikeFile(e.name)
+        && (!e.modifyTime || e.modifyTime >= cutoff)
     )
 
     for (const file of matching) {
