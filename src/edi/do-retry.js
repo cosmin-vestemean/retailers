@@ -31,6 +31,10 @@ export async function retryDoObject(app, key) {
     return retryAperakObject(app, { key, xml: object.body, metadata: meta })
   }
 
+  if (doctype === 'RECADV') {
+    return retryRecadvObject(app, { key, xml: object.body, metadata: meta })
+  }
+
   if (doctype !== 'ORDERS') {
     return { key, skipped: true, processed: false, error: `Unsupported retry doctype ${doctype}` }
   }
@@ -63,6 +67,27 @@ async function retryAperakObject(app, { key, xml, metadata }) {
     // insertAperakRow returns false when the APERAK already exists; both cases
     // mean the object no longer needs to live in DO retry.
     await insertAperakRow(app, { xml, file: { name: filename }, sftpRow, provider })
+    await doStorage.deleteSuccess(key)
+    return { key, processed: true, success: true, deleted: true }
+  } catch (e) {
+    return { key, processed: true, success: false, error: e.message }
+  }
+}
+
+async function retryRecadvObject(app, { key, xml, metadata }) {
+  const { getProvider } = await import('./providers/factory.js')
+  const { insertRecadvRow } = await import('./scanner.js')
+  const doStorage = app.service('do-storage')
+  const filename = metadata.filename || filenameFromKey(key)
+  try {
+    const provider = getProvider({ CODE: metadata.provider })
+    const sftpRow = {
+      TRDR_RETAILER: parseInt(metadata.retailer) || 0,
+      TRDR_CLIENT: parseInt(metadata.trdrclient) || 1
+    }
+    // insertRecadvRow re-resolves the retailer from the payload's buyer GLN, so the (possibly
+    // wrong) retailer in the DO metadata is only a fallback for TRDR_CLIENT.
+    await insertRecadvRow(app, { xml, file: { name: filename }, sftpRow, provider })
     await doStorage.deleteSuccess(key)
     return { key, processed: true, success: true, deleted: true }
   } catch (e) {

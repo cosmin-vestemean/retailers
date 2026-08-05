@@ -33,7 +33,7 @@
  * @property {(docType: string, sftpRow?: object) => string[]}   filenamePrefixes
  * @property {(docType: 'orders'|'retann'|'recadv'|'invoice'|'aperak') => string}   remoteSubdir
  * @property {(xml: string) => Promise<ParsedOrder>}              parseOrder
- * @property {(xml: string) => Promise<object>}                   parseAperak
+ * @property {(xml: string) => Promise<object>=}                  parseAperak
  * @property {(xml: string) => Promise<ParsedRecadv>=}            parseRecadv
  */
 export {}

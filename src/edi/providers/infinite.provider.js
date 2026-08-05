@@ -24,6 +24,10 @@ const RETAILER_GLNS = {
 
 const PALLET_DESCRIPTION = /palet/i
 
+// LIST/RETR on /recadv re-sets the EDInet portal's "citit" flag, which is the manual invoicer's
+// worklist — so ingestion stays off until the reception screen replaces the portal (phase F7).
+const recadvEnabled = () => String(process.env.EDI_ENABLE_RECADV || '').toLowerCase() === 'true'
+
 function text(value) {
   if (value === undefined || value === null) return ''
   if (typeof value === 'object' && value._ !== undefined) return String(value._).trim()
@@ -44,9 +48,10 @@ function text(value) {
 export const infiniteProvider = {
   code: 'infinite',
 
-  // `retann` is parked pending Infinite ticket RO-7627 and `recadv` until the reception screen
-  // replaces the EDInet portal — listing either would re-set the portal's "citit" flag.
-  docTypes: ['orders'],
+  // `retann` is parked pending Infinite ticket RO-7627; `recadv` is implemented but off by default.
+  get docTypes() {
+    return recadvEnabled() ? ['orders', 'recadv'] : ['orders']
+  },
 
   // Only orders are named per retailer. RECADV and RETANN filenames are purely numeric
   // (e.g. 636912442.xml), so those two route by GLN and take no prefix filter.
@@ -85,11 +90,7 @@ export const infiniteProvider = {
     }
   },
 
-  async parseAperak(xml) {
-    // Infinite delivers RECADV instead of DocProcess-style APERAK.
-    // Stub: return parsed tree; mapping to CCCAPERAK comes in a later step.
-    return parseXml(cleanXml(xml))
-  },
+  // No `parseAperak`: Infinite acknowledges with RECADV, which must never land in CCCAPERAK.
 
   /**
    * Parses a RECADV (goods-receipt advice) payload. Format is measured on the full 101-file

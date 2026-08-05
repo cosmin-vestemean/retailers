@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+   <RecadvHeader>
+           <DocumentNumber><![CDATA[5900000010]]></DocumentNumber>
+           <DocumentIssueDate>2026-07-22T00:00:00</DocumentIssueDate>
+           <GoodsReceiptDate></GoodsReceiptDate>
+           <BuyerOrderNumber>4500000010</BuyerOrderNumber>
+           <BuyerOrderDate></BuyerOrderDate>
+           <DeliveryDocumentNumber>AEX-AE-900010</DeliveryDocumentNumber>
+           <DeliveryDocumentDate></DeliveryDocumentDate>
+   </RecadvHeader>
+   <RecadvParty>
+           <BuyerParty>
+                <GLN>5940475841003</GLN>
+                <Name><![CDATA[DEDEMAN SRL]]></Name>
+                <Street><![CDATA[TEST STREET 1]]></Street>
+                <PostalCode>000001</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </BuyerParty>
+           <ShipToParty>
+                <GLN>5940475841000</GLN>
+                <Name><![CDATA[Magazin TEST 01]]></Name>
+                <Street><![CDATA[TEST STREET 2]]></Street>
+                <PostalCode>000002</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </ShipToParty>
+           <SellerParty>
+                <GLN>5940475754006</GLN>
+                <SellerId>0000000001</SellerId>
+                <Name><![CDATA[PET FACTORY SRL]]></Name>
+                <Street><![CDATA[TEST STREET 3]]></Street>
+                <PostalCode>000003</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </SellerParty>
+   </RecadvParty>
+   <RecadvDetail>           <Item>
+                        <BuyerItemNum>1</BuyerItemNum>
+                        <GTIN>5949060000010</GTIN>
+                        <BuyerItemID>TEST0010</BuyerItemID>
+                        <SellerItemID>MF.00010</SellerItemID>
+                        <QuantityOrdered></QuantityOrdered>
+                        <QuantityAccepted>12</QuantityAccepted>
+                        <QuantityReturned></QuantityReturned>
+                        <ReasonForReturnCode></ReasonForReturnCode>
+                        <ReasonForReturnDescription><![CDATA[]]></ReasonForReturnDescription>
+                        <UnitOfMeassure>BUC</UnitOfMeassure>
+                        <ProductDescription><![CDATA[TEST PRODUCT J]]></ProductDescription>
+           </Item>
+   </RecadvDetail>
+   <RecadvSummary>
+           <NumberOfItems>1</NumberOfItems>
+   </RecadvSummary>
+   <DocumentSummary>
+           <NumberOfDocuments>1 </NumberOfDocuments>
+   </DocumentSummary>
+</Document>

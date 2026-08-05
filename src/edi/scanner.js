@@ -18,6 +18,10 @@ const ORDER_SOSOURCE = 1351
 const ORDER_FPRMS = 701
 const ORDER_SERIES = 7012
 
+// RECADV never becomes an S1 document, so it gets a terminal status of its own — `NEW` means
+// "still to be turned into a SALDOC" everywhere else in this pipeline.
+const RECADV_STATUS = 'INGESTED'
+
 /**
  * One full pass: download new files from every active EDI provider/SFTP row,
  * dedupe + insert into CCCSFTPXML, then process pending NEW rows into SALDOC.
@@ -172,6 +176,8 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
             if (doBackup?.key && await deleteDoSuccess(app, doBackup.key)) stats.deletedFromDo += 1
             continue
           }
+        } else if (docType === 'recadv') {
+          await insertRecadvRow(app, { xml, file, sftpRow, provider })
         } else {
           const insertRow = await resolveInsertSftpRow(app, { xml, sftpRow, provider, docType, sftpRows })
           await insertXmlRow(app, { xml, file, sftpRow: insertRow, provider, docType })
@@ -272,8 +278,49 @@ async function insertRoutingErrorRow(app, { xml, file, sftpRow, provider, docTyp
   })
 }
 
+/**
+ * Stores a RECADV payload as a CCCSFTPXML row. RECADV never becomes an S1 document — the row
+ * exists so the filename dedupe works (without it every pass would re-download ~200 files and
+ * re-light the EDInet portal's read flag) and so the payload survives as commercial evidence.
+ * Routing is by buyer GLN and fail-closed: an unknown GLN becomes a routing-error row.
+ */
+export async function insertRecadvRow(app, { xml, file, sftpRow, provider }) {
+  let parsed
+  try {
+    parsed = await provider.parseRecadv(xml)
+  } catch (error) {
+    throw routingError(`RECADV routing error: XML parse failed (${error.message})`, { reason: 'xml_parse_failed' })
+  }
+
+  const routingContext = {
+    documentNumber: parsed.documentNumber,
+    buyerGln: parsed.buyerGln || '',
+    advice: parsed.adviceRaw,
+    orders: parsed.orders,
+    lineCount: parsed.items.length
+  }
+  if (!parsed.trdr) {
+    throw routingError(
+      `RECADV routing error: unknown buyer GLN (${parsed.buyerGln || 'empty'})`,
+      { ...routingContext, reason: 'unknown_buyer_gln', routingGln: parsed.buyerGln || '' }
+    )
+  }
+
+  // `raw` is dropped — XMLDATA already holds the source document.
+  const { raw, ...payload } = parsed
+  await insertXmlRow(app, {
+    xml,
+    file,
+    sftpRow: { ...sftpRow, TRDR_RETAILER: parsed.trdr },
+    provider,
+    docType: 'recadv',
+    status: RECADV_STATUS,
+    jsonData: JSON.stringify(payload)
+  })
+}
+
 async function insertXmlRow(app, { xml, file, sftpRow, provider, docType, status = 'NEW', error = '', jsonData = '' }) {
-  const ediDocType = docType.toUpperCase() // ORDERS | RETANN | APERAK
+  const ediDocType = docType.toUpperCase() // ORDERS | RECADV | RETANN | APERAK
   await app.service('CCCSFTPXML').create({
     TRDR_CLIENT: sftpRow.TRDR_CLIENT || 1,
     TRDR_RETAILER: sftpRow.TRDR_RETAILER,

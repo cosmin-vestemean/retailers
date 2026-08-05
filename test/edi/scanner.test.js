@@ -103,7 +103,7 @@ describe('EDI scanner against local ftp-srv', function () {
 
     const filenames = store.map((r) => r.XMLFILENAME).sort()
     assert.deepStrictEqual(filenames, ['AUCHAN_900000001.xml', 'DEDEMAN_900000002.xml'],
-      'the /retann/ fixture must stay untouched — that flow is parked and must not hit the FTP')
+      'the /retann/ and /recadv/ fixtures must stay untouched — those flows are off by default')
 
     for (const row of store) {
       assert.strictEqual(row.EDIDOCTYPE, 'ORDERS')
@@ -209,5 +209,58 @@ describe('EDI scanner against local ftp-srv', function () {
     const files = await fs.readdir(ordersDir)
     assert.ok(files.some((f) => f.startsWith('AUCHAN_')), 'AUCHAN_ fixture present')
     assert.ok(files.some((f) => f.startsWith('DEDEMAN_')), 'DEDEMAN_ fixture present')
+  })
+
+  describe('RECADV ingestion (EDI_ENABLE_RECADV=true)', () => {
+    const recadvRow = {
+      CCCSFTP: 999, TRDR_CLIENT: 1, TRDR_RETAILER: 99999,
+      URL: '127.0.0.1', PORT: TEST_PORT, USERNAME: 'testuser', PASSPHRASE: 'testpass',
+      INITIALDIRIN: '/', INITIALDIROUT: '/',
+      PROVIDER_CODE: 'infinite', PROVIDER_NAME: 'Infinite Edinet', PROVIDER_CONNTYPE: 4
+    }
+
+    beforeEach(() => { process.env.EDI_ENABLE_RECADV = 'true' })
+    afterEach(() => { delete process.env.EDI_ENABLE_RECADV })
+
+    it('stores RECADV as INGESTED, routed by buyer GLN, and fails closed on an unknown one', async () => {
+      const store = []
+      const stats = await scanAll(buildMockApp(recadvRow, store))
+
+      assert.strictEqual(stats.downloaded, 4, 'two orders plus two recadv fixtures')
+      assert.strictEqual(stats.inserted, 4, 'the unrouteable recadv still gets a routing-error row')
+      assert.strictEqual(stats.failed, 1)
+
+      const ingested = store.find((r) => r.XMLFILENAME === '900000010.xml')
+      assert.strictEqual(ingested.EDIDOCTYPE, 'RECADV')
+      assert.strictEqual(ingested.XMLSTATUS, 'INGESTED', 'NEW would make the order processor look at it')
+      assert.strictEqual(ingested.TRDR_RETAILER, 11654, 'routed by BuyerParty GLN, not by the config row')
+
+      const payload = JSON.parse(ingested.JSONDATA)
+      assert.strictEqual(payload.documentNumber, '5900000010')
+      assert.deepStrictEqual(payload.adviceSuffixes, ['900010'])
+      assert.strictEqual(payload.items.length, 1)
+      assert.strictEqual(payload.items[0].accepted, 12)
+      assert.strictEqual(payload.raw, undefined, 'XMLDATA already holds the source document')
+
+      const unrouted = store.find((r) => r.XMLFILENAME === '900000011.xml')
+      assert.strictEqual(unrouted.XMLSTATUS, 'ERROR')
+      assert.strictEqual(unrouted.TRDR_RETAILER, 0, 'never guess a retailer for an unknown GLN')
+      assert.match(unrouted.XMLERROR, /unknown buyer GLN \(5940000000009\)/)
+      assert.strictEqual(JSON.parse(unrouted.JSONDATA).routing.reason, 'unknown_buyer_gln')
+    })
+
+    it('never re-downloads a RECADV file it already stored', async () => {
+      const store = [
+        { CCCSFTPXML: 1, XMLFILENAME: 'AUCHAN_900000001.xml', TRDR_RETAILER: 99999 },
+        { CCCSFTPXML: 2, XMLFILENAME: 'DEDEMAN_900000002.xml', TRDR_RETAILER: 99999 },
+        { CCCSFTPXML: 3, XMLFILENAME: '900000010.xml', TRDR_RETAILER: 11654 },
+        { CCCSFTPXML: 4, XMLFILENAME: '900000011.xml', TRDR_RETAILER: 0 }
+      ]
+      const stats = await scanAll(buildMockApp(recadvRow, store))
+
+      assert.strictEqual(stats.downloaded, 0, 'each RETR re-lights the EDInet portal read flag')
+      assert.strictEqual(stats.duplicates, 4)
+      assert.strictEqual(store.length, 4)
+    })
   })
 })

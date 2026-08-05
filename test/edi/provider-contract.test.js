@@ -8,8 +8,22 @@ import { infiniteProvider } from '../../src/edi/providers/infinite.provider.js'
 import { docProcessProvider } from '../../src/edi/providers/docprocess.provider.js'
 
 describe('EDI provider contract', () => {
-  it('Infinite scans orders only — retann waits on RO-7627, recadv on the reception screen', () => {
+  afterEach(() => { delete process.env.EDI_ENABLE_RECADV })
+
+  it('Infinite scans orders only by default — retann waits on RO-7627, recadv on the reception screen', () => {
     assert.deepStrictEqual(infiniteProvider.docTypes, ['orders'])
+  })
+
+  it('Infinite picks up recadv only when EDI_ENABLE_RECADV is explicitly true', () => {
+    process.env.EDI_ENABLE_RECADV = 'true'
+    assert.deepStrictEqual(infiniteProvider.docTypes, ['orders', 'recadv'])
+    process.env.EDI_ENABLE_RECADV = '1'
+    assert.deepStrictEqual(infiniteProvider.docTypes, ['orders'], 'only the literal string "true" activates it')
+  })
+
+  it('Infinite exposes no parseAperak — its acknowledgements are RECADV, never CCCAPERAK rows', () => {
+    assert.strictEqual(infiniteProvider.parseAperak, undefined)
+    assert.strictEqual(typeof infiniteProvider.parseRecadv, 'function')
   })
 
   it('Infinite retann lives in /retann/, not the /retanns/ of the vendor doc', () => {
@@ -28,6 +42,7 @@ describe('EDI provider contract', () => {
 
   it('DocProcess keeps its real aperak flow and always filters — its docTypes share one inbox', () => {
     assert.deepStrictEqual(docProcessProvider.docTypes, ['orders', 'aperak'])
+    assert.strictEqual(typeof docProcessProvider.parseAperak, 'function')
     assert.strictEqual(docProcessProvider.remoteSubdir('aperak'), '')
     for (const docType of docProcessProvider.docTypes) {
       const prefixes = docProcessProvider.filenamePrefixes(docType)
