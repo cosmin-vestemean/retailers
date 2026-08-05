@@ -10,6 +10,12 @@ import '@/components/reception-table.js'
 // RETAILER_GLNS. Other retailers have no RECADV data, so the tab would only ever show empty rows.
 const RECADV_RETAILERS = ['11654', '13248']
 
+// Every retailer invoices on 712/7121 except these two, whose Facturi tab was empty until this map.
+const INVOICE_SERIES = {
+  '11654': { fprms: 716, series: 7123 },
+  '13248': { fprms: 712, series: 7122 }
+}
+
 export class RetailerDetail extends LightElement {
   static properties = {
     trdr: { type: String },
@@ -27,6 +33,10 @@ export class RetailerDetail extends LightElement {
 
   get _hasReceptions() {
     return RECADV_RETAILERS.includes(this.trdr)
+  }
+
+  get _invoiceSeries() {
+    return INVOICE_SERIES[this.trdr] || { fprms: 712, series: 7121 }
   }
 
   render() {
@@ -64,7 +74,10 @@ export class RetailerDetail extends LightElement {
           ` : this._tab === 'receptions' && this._hasReceptions ? html`
             <reception-table .trdr=${this.trdr}></reception-table>
           ` : html`
-            <invoice-table .trdr=${this.trdr}></invoice-table>
+            <invoice-table
+              .trdr=${this.trdr}
+              .fprms=${this._invoiceSeries.fprms}
+              .series=${this._invoiceSeries.series}></invoice-table>
           `}
         </div>
       </div>
