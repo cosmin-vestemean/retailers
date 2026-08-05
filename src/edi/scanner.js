@@ -36,6 +36,7 @@ export async function scanAll(app) {
   const stats = { providers: 0, downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, processed: 0, held: 0, failed: 0, errors: [] }
   try {
     const configs = await app.service('CCCSFTP').list({ onlyActive: true })
+    const scannedDirs = new Set()
 
     for (const row of configs.data) {
       stats.providers += 1
@@ -43,7 +44,7 @@ export async function scanAll(app) {
       try {
         const providerImpl = getProvider({ CODE: row.PROVIDER_CODE, NAME: row.PROVIDER_NAME })
         transport = buildTransport(row, row.PROVIDER_CONNTYPE)
-        const dlStats = await downloadAndStore(app, row, providerImpl, transport, configs.data)
+        const dlStats = await downloadAndStore(app, row, providerImpl, transport, configs.data, scannedDirs)
         stats.downloaded += dlStats.downloaded
         stats.inserted += dlStats.inserted
         stats.duplicates += dlStats.duplicates
@@ -101,7 +102,7 @@ async function logScanSummary(app, stats) {
   }
 }
 
-async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []) {
+async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = [], scannedDirs = new Set()) {
   const stats = { downloaded: 0, inserted: 0, duplicates: 0, backedUp: 0, deletedFromDo: 0, retryBackedUp: 0, failed: 0, errors: [] }
   // The provider decides what is scanned; a docType it does not declare is never listed.
   for (const docType of provider.docTypes || []) {
@@ -110,6 +111,16 @@ async function downloadAndStore(app, sftpRow, provider, transport, sftpRows = []
 
     const subdir = provider.remoteSubdir(docType)
     const remoteDir = joinRemote(sftpRow.INITIALDIRIN, subdir)
+
+    // Infinite serves both retailers from one account, so an unfiltered docType would be listed
+    // once per config row even though the first pass already takes every file. That is wasted
+    // access on the account whose LIST/RETR sets the EDInet portal read-flag.
+    if (prefixes.length === 0) {
+      const dirKey = `${sftpRow.URL}|${sftpRow.USERNAME}|${remoteDir}`
+      if (scannedDirs.has(dirKey)) continue
+      scannedDirs.add(dirKey)
+    }
+
     const localDir = path.join(
       'data',
       provider.code,

@@ -262,5 +262,20 @@ describe('EDI scanner against local ftp-srv', function () {
       assert.strictEqual(stats.duplicates, 4)
       assert.strictEqual(store.length, 4)
     })
+
+    it('lists the shared /recadv directory once even with both Infinite retailers configured', async () => {
+      const store = []
+      const stats = await scanAll(buildMockApp([
+        { ...recadvRow, CCCSFTP: 11654, TRDR_RETAILER: 11654 },
+        { ...recadvRow, CCCSFTP: 13248, TRDR_RETAILER: 13248 }
+      ], store))
+
+      assert.strictEqual(stats.providers, 2)
+      assert.strictEqual(stats.downloaded, 4, 'one prefix-matched order each, plus the two recadv files once')
+      // A second unfiltered pass over the same account+directory would re-list it and report the
+      // already-inserted recadv files as duplicates. Zero proves it was skipped, not re-scanned.
+      assert.strictEqual(stats.duplicates, 0)
+      assert.strictEqual(store.filter((r) => r.EDIDOCTYPE === 'RECADV').length, 2)
+    })
   })
 })

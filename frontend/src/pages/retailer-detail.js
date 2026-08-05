@@ -11,9 +11,10 @@ import '@/components/reception-table.js'
 const RECADV_RETAILERS = ['11654', '13248']
 
 // Every retailer invoices on 712/7121 except these two, whose Facturi tab was empty until this map.
+// They send one invoice at a time (beneficiary decision 2026-08-05), so only bulk send is hidden.
 const INVOICE_SERIES = {
-  '11654': { fprms: 716, series: 7123 },
-  '13248': { fprms: 712, series: 7122 }
+  '11654': { fprms: 716, series: 7123, manualSend: true },
+  '13248': { fprms: 712, series: 7122, manualSend: true }
 }
 
 export class RetailerDetail extends LightElement {
@@ -36,7 +37,7 @@ export class RetailerDetail extends LightElement {
   }
 
   get _invoiceSeries() {
-    return INVOICE_SERIES[this.trdr] || { fprms: 712, series: 7121 }
+    return INVOICE_SERIES[this.trdr] || { fprms: 712, series: 7121, manualSend: false }
   }
 
   render() {
@@ -77,7 +78,8 @@ export class RetailerDetail extends LightElement {
             <invoice-table
               .trdr=${this.trdr}
               .fprms=${this._invoiceSeries.fprms}
-              .series=${this._invoiceSeries.series}></invoice-table>
+              .series=${this._invoiceSeries.series}
+              .manualSend=${this._invoiceSeries.manualSend}></invoice-table>
           `}
         </div>
       </div>

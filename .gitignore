@@ -20,3 +20,7 @@ heroku-logs/
 # Payload-uri reale capturate de pe FTP-ul Infinite (date de productie)
 documentatie/infinite_samples/recadv/
 documentatie/infinite_samples/retann/
+
+# Fisierele descarcate live de scanner odata cu cuplarea RECADV (date reale de retailer)
+data/infinite/*/recadv/
+data/infinite/*/retann/

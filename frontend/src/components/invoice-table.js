@@ -14,6 +14,8 @@ export class InvoiceTable extends LightElement {
     sosource:    { type: Number },
     fprms:       { type: Number },
     series:      { type: Number },
+    // Suppresses only the bulk send; per-invoice Send stays, that IS the manual action.
+    manualSend:  { type: Boolean },
     _invoices:   { state: true },
     _loading:    { state: true },
     _sending:    { state: true },
@@ -33,6 +35,7 @@ export class InvoiceTable extends LightElement {
     this.sosource = 1351
     this.fprms = 712
     this.series = 7121
+    this.manualSend = false
     this._page = 1
     this._pageSize = 25
     this._total = 0
@@ -372,9 +375,11 @@ export class InvoiceTable extends LightElement {
           Download APERAKs
         </button>
         ${this._unsentCount > 0 ? html`
-          <button class="btn btn-success btn-sm" @click=${this._sendAllUnsent}>
-            Trimite toate (${this._unsentCount})
-          </button>
+          ${this.manualSend ? '' : html`
+            <button class="btn btn-success btn-sm" @click=${this._sendAllUnsent}>
+              Trimite toate (${this._unsentCount})
+            </button>
+          `}
           <button class="btn btn-outline-secondary btn-sm" @click=${this._markAllAsSent}>
             ✓ Marchează toate ca trimise
           </button>
