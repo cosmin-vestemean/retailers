@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+   <RecadvHeader>
+           <DocumentNumber><![CDATA[5900000003]]></DocumentNumber>
+           <DocumentIssueDate>2026-07-20T00:00:00</DocumentIssueDate>
+           <GoodsReceiptDate></GoodsReceiptDate>
+           <BuyerOrderNumber>4500000003,4500000004</BuyerOrderNumber>
+           <BuyerOrderDate></BuyerOrderDate>
+           <DeliveryDocumentNumber>AEX-AE-900003/AE</DeliveryDocumentNumber>
+           <DeliveryDocumentDate></DeliveryDocumentDate>
+   </RecadvHeader>
+   <RecadvParty>
+           <BuyerParty>
+                <GLN>5940475841003</GLN>
+                <Name><![CDATA[DEDEMAN SRL]]></Name>
+                <Street><![CDATA[TEST STREET 1]]></Street>
+                <PostalCode>000001</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </BuyerParty>
+           <ShipToParty>
+                <GLN>5940475841430</GLN>
+                <Name><![CDATA[Magazin TEST 03]]></Name>
+                <Street><![CDATA[TEST STREET 2]]></Street>
+                <PostalCode>000002</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </ShipToParty>
+           <SellerParty>
+                <GLN>5940475754006</GLN>
+                <SellerId>0000000001</SellerId>
+                <Name><![CDATA[PET FACTORY SRL]]></Name>
+                <Street><![CDATA[TEST STREET 3]]></Street>
+                <PostalCode>000003</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </SellerParty>
+   </RecadvParty>
+   <RecadvDetail>           <Item>
+                        <BuyerItemNum>1</BuyerItemNum>
+                        <GTIN>5949060000003</GTIN>
+                        <BuyerItemID>TEST0003</BuyerItemID>
+                        <SellerItemID>MF.00003</SellerItemID>
+                        <QuantityOrdered></QuantityOrdered>
+                        <QuantityAccepted>16</QuantityAccepted>
+                        <QuantityReturned></QuantityReturned>
+                        <ReasonForReturnCode></ReasonForReturnCode>
+                        <ReasonForReturnDescription><![CDATA[]]></ReasonForReturnDescription>
+                        <UnitOfMeassure>BUC</UnitOfMeassure>
+                        <ProductDescription><![CDATA[TEST PRODUCT D]]></ProductDescription>
+           </Item>           <Item>
+                        <BuyerItemNum>2</BuyerItemNum>
+                        <GTIN>7612895809632</GTIN>
+                        <BuyerItemID>9200520</BuyerItemID>
+                        <SellerItemID></SellerItemID>
+                        <QuantityOrdered></QuantityOrdered>
+                        <QuantityAccepted>2</QuantityAccepted>
+                        <QuantityReturned></QuantityReturned>
+                        <ReasonForReturnCode></ReasonForReturnCode>
+                        <ReasonForReturnDescription><![CDATA[]]></ReasonForReturnDescription>
+                        <UnitOfMeassure>BUC</UnitOfMeassure>
+                        <ProductDescription><![CDATA[PALET RETURNABIL EURO 
+120x80]]></ProductDescription>
+           </Item>           <Item>
+                        <BuyerItemNum>3</BuyerItemNum>
+                        <GTIN>9200521</GTIN>
+                        <BuyerItemID>9200521</BuyerItemID>
+                        <SellerItemID></SellerItemID>
+                        <QuantityOrdered></QuantityOrdered>
+                        <QuantityAccepted>1</QuantityAccepted>
+                        <QuantityReturned></QuantityReturned>
+                        <ReasonForReturnCode></ReasonForReturnCode>
+                        <ReasonForReturnDescription><![CDATA[]]></ReasonForReturnDescription>
+                        <UnitOfMeassure>BUC</UnitOfMeassure>
+                        <ProductDescription><![CDATA[PALET RETURNABIL NON-EURO 
+120x80]]></ProductDescription>
+           </Item>   </RecadvDetail>
+   <RecadvSummary>
+        <NumberOfItems>3</NumberOfItems>
+   </RecadvSummary>    <DocumentSummary>
+        <NumberOfDocuments>1        </NumberOfDocuments>
+   </DocumentSummary>
+</Document>

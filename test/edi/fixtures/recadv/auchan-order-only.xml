@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+   <RecadvHeader>
+           <DocumentNumber><![CDATA[900002]]></DocumentNumber>
+           <DocumentIssueDate>2026-07-20T00:00:00</DocumentIssueDate>
+           <GoodsReceiptDate></GoodsReceiptDate>
+           <BuyerOrderNumber>01900002</BuyerOrderNumber>
+           <BuyerOrderDate></BuyerOrderDate>
+           <DeliveryDocumentNumber></DeliveryDocumentNumber>
+           <DeliveryDocumentDate></DeliveryDocumentDate>
+   </RecadvHeader>
+   <RecadvParty>
+           <BuyerParty>
+                <GLN>5940475172008</GLN>
+                <Name><![CDATA[AUCHAN Romania SA]]></Name>
+                <Street><![CDATA[TEST STREET 1]]></Street>
+                <PostalCode>000001</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </BuyerParty>
+           <ShipToParty>
+                <GLN>5949084999556</GLN>
+                <Name><![CDATA[AUCHAN TEST PLATFORM]]></Name>
+                <Street><![CDATA[TEST STREET 2]]></Street>
+                <PostalCode>000002</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode>RO</CountryCode>
+           </ShipToParty>
+           <SellerParty>
+                <GLN>5940475754006</GLN>
+                <SellerId>0002</SellerId>
+                <Name><![CDATA[PET FACTORY SRL]]></Name>
+                <Street><![CDATA[TEST STREET 3]]></Street>
+                <PostalCode>000003</PostalCode>
+                <City><![CDATA[TEST CITY]]></City>
+                <CountryCode></CountryCode>
+           </SellerParty>
+   </RecadvParty>
+   <RecadvDetail>           <Item>
+                        <BuyerItemNum>1</BuyerItemNum>
+                        <GTIN>5949060000010</GTIN>
+                        <BuyerItemID>TEST0010</BuyerItemID>
+                        <SellerItemID></SellerItemID>
+                        <QuantityOrdered>100</QuantityOrdered>
+                        <QuantityAccepted>100</QuantityAccepted>
+                        <QuantityReturned></QuantityReturned>
+                        <ReasonForReturnCode></ReasonForReturnCode>
+                        <ReasonForReturnDescription><![CDATA[]]></ReasonForReturnDescription>
+                        <UnitOfMeassure>BUC</UnitOfMeassure>
+                        <ProductDescription><![CDATA[TEST PRODUCT C]]></ProductDescription>
+           </Item>   </RecadvDetail>
+   <RecadvSummary>
+        <NumberOfItems>1</NumberOfItems>
+   </RecadvSummary>    <DocumentSummary>
+        <NumberOfDocuments>1        </NumberOfDocuments>
+   </DocumentSummary>
+</Document>
