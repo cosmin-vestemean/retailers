@@ -9,6 +9,10 @@
  * Nothing here writes to Soft1 and nothing is persisted: reconciliation is computed on demand,
  * so the answer never goes stale when an advice is invoiced later.
  *
+ * The dispatch advice is the base of comparison, not the RECADV (Sorin Fliundra, 2026-08-05):
+ * every advice line is scored, and a line the retailer never mentions is a full shortage
+ * (accepted=0), flagged `omittedFromReceipt` rather than left out of `lines` unscored.
+ *
  * The SQL access is injected as a `lookup` object so this module stays offline-testable.
  * F4/F5 supply the real implementation, backed by AJS `S1/JS/AJS/RECADV.js` with bound
  * parameters — this module never builds SQL itself.
@@ -176,18 +180,34 @@ function reconcileGroup(group, linesByFindoc) {
       description: item.description,
       shipped: source.qty,
       accepted: item.accepted,
-      delta
+      delta,
+      omittedFromReceipt: false
     })
 
     if (delta < 0) worsen(RECEPTION_STATUS.BLOCKED)
     else if (delta > 0) worsen(RECEPTION_STATUS.DIFFERENCE)
   }
 
-  // Shipped lines the receipt does not mention at all. Reported but deliberately not scored:
-  // a later phase decides whether that is a full shortage or a reception still in progress.
-  const missingOnReceipt = [...shipped.entries()]
-    .filter(([code]) => !group.accepted.has(code))
-    .map(([code, source]) => ({ retailerCode: code, shipped: source.qty }))
+  // THE MODEL CHANGE (Sorin Fliundra, 2026-08-05): the dispatch advice is the base of
+  // comparison, not the RECADV. A shipped line the retailer never mentions is a full
+  // shortage (accepted=0), not an unscored footnote — silently dropping it hid real
+  // shortfalls (see /memories/repo/recadv-reception-screen-todo.md). `omittedFromReceipt`
+  // keeps "retailer stayed silent" distinguishable from "retailer reported a partial
+  // quantity", since silence can mean quality-rejection or a reception still in progress.
+  const missingOnReceipt = []
+  for (const [code, source] of shipped) {
+    if (group.accepted.has(code)) continue
+    missingOnReceipt.push({ retailerCode: code, shipped: source.qty })
+    lines.push({
+      buyerItemId: code,
+      description: undefined,
+      shipped: source.qty,
+      accepted: 0,
+      delta: source.qty,
+      omittedFromReceipt: true
+    })
+    if (source.qty > 0) worsen(RECEPTION_STATUS.DIFFERENCE)
+  }
 
   return {
     key: group.key,

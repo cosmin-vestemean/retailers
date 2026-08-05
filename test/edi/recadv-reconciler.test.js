@@ -81,7 +81,14 @@ describe('recadv reconciler', () => {
 
     assert.strictEqual(receptions[0].status, RECEPTION_STATUS.DIFFERENCE)
     assert.deepStrictEqual(receptions[0].differenceLines, [
-      { buyerItemId: 'TEST0002', description: 'TEST PRODUCT B', shipped: 8, accepted: 5, delta: 3 }
+      {
+        buyerItemId: 'TEST0002',
+        description: 'TEST PRODUCT B',
+        shipped: 8,
+        accepted: 5,
+        delta: 3,
+        omittedFromReceipt: false
+      }
     ])
   })
 
@@ -205,7 +212,7 @@ describe('recadv reconciler', () => {
     ])
   })
 
-  it('reports advice lines missing from the receipt without scoring them', async () => {
+  it('scores an advice line the retailer omitted as a full shortage, flagged omittedFromReceipt', async () => {
     const documents = [await parseFixture('dedeman-split-part1.xml')]
     const lookup = makeLookup({
       advices: [{ FINDOC: 500005, FINCODE: 'AEX-AE-900005', TRDR: DEDEMAN, NUM04: 4500000005 }],
@@ -217,7 +224,24 @@ describe('recadv reconciler', () => {
 
     const { receptions } = await reconcileRecadv({ documents, lookup })
 
-    assert.strictEqual(receptions[0].status, RECEPTION_STATUS.CLEAN)
+    // Omitted line turns the whole reception into a difference, not a false clean.
+    assert.strictEqual(receptions[0].status, RECEPTION_STATUS.DIFFERENCE)
+    assert.deepStrictEqual(
+      receptions[0].lines.find((l) => l.buyerItemId === 'TEST0099'),
+      {
+        buyerItemId: 'TEST0099',
+        description: undefined,
+        shipped: 3,
+        accepted: 0,
+        delta: 3,
+        omittedFromReceipt: true
+      }
+    )
+    assert.ok(
+      receptions[0].differenceLines.some((l) => l.buyerItemId === 'TEST0099'),
+      'the omitted line is scored, not left out of differenceLines'
+    )
+    // Kept for reporting/back-compat: same set, in the old shape.
     assert.deepStrictEqual(receptions[0].missingOnReceipt, [{ retailerCode: 'TEST0099', shipped: 3 }])
   })
 

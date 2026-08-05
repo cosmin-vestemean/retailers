@@ -20,21 +20,21 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   priority: high
   summary: >
     Beneficiary ruling (Sorin Fliundra, 2026-08-05): the DISPATCH ADVICE must be the base of
-    comparison, not the RECADV. Today `reconcileRecadv` iterates the retailer's accepted items and
-    puts advice lines the retailer never mentions into `missingOnReceipt`, deliberately UNSCORED.
-    That is a real defect, proven the same day: advice `AEX-AE-053715` has 9 lines, Sorin reported
-    TWO products rejected at reception (`PF.00133` 7,968 and `PF.00130` 7,728), and the engine
-    reported ONE — `PF.00133` was absent from the RECADV so it was never scored. Financially it
-    matters because we would invoice the full shipped quantity for goods never received.
-  next: Measure the blind spot first (how many advice lines are unscored across the 128 ingested
-    documents) — that figure belongs in the beneficiary report. Then change
-    `src/edi/recadv-reconciler.js` to iterate advice lines with `accepted = 0` for omissions.
-    Resolve two risks: multi-file receptions are temporal (4 of 74 in the corpus — a second file
-    arriving next day would show false full-shortages in between), and „omitted" must stay
-    distinguishable from „explicitly short" (silence can mean quality-rejected or not-yet-processed).
-    Verify pallet/unmapped lines stay excluded or every article without a `CCCS1DXTRDRMTRL` mapping
-    becomes a phantom shortage. Existing tests assert the OLD semantics and must be updated
-    deliberately. Full spec in `/memories/repo/recadv-reception-screen-todo.md`.
+    comparison, not the RECADV. **IMPLEMENTED session N+19** in `src/edi/recadv-reconciler.js`:
+    every advice line is now scored; a line the retailer never mentions gets `accepted=0`,
+    `delta=shipped`, and `omittedFromReceipt: true`, instead of being left in an unscored
+    `missingOnReceipt` footnote. Explicit lines carry `omittedFromReceipt: false`. `missingOnReceipt`
+    is kept, unchanged in shape, as a reporting/back-compat view. Tests updated deliberately
+    (`test/edi/recadv-reconciler.test.js`), `npm test` 81 passing. Not yet committed/deployed or
+    re-run live — re-running reconciliation after deploy will show larger shortage numbers than
+    the N+18 baseline (76 unscored lines / 10,578 units / 6 of 195 receptions), which measured the
+    OLD under-reporting behavior and must be told to the beneficiary as "what changes".
+  next: Commit + push. Fold the N+18 measurement into the beneficiary report as "what changes once
+    this ships". Then resolve the one deliberately-deferred risk: multi-file receptions are
+    temporal (4-6 of ~195 in the corpus) — a second confirming file arriving the next day will show
+    a false full-shortage in between, and no grace period was added because the reconciler has no
+    date data available yet (`findAdvices`/`findAdviceLines`/`parseRecadv` carry no dates — would
+    need new plumbing). Full spec in `/memories/repo/recadv-reception-screen-todo.md`.
 
 - id: reception-screen-invoice-and-send-buttons
   status: open
@@ -61,9 +61,11 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
     Infinite re-sends the same advice under two document numbers from different families
     (`5017…` plus one of `4600…` / `2200…` / `5900…` / `1285…` / `7900…`). Summing them yields
     `accepted > shipped`, which is physically impossible, so the hard guard routes them to a human.
-    Confirmed THREE times and now on LIVE data, so it is a recurring production pattern, not a
-    corpus artefact: `AEX-AE-053986` and `AEX-AE-053774` (product 7052359, 6 shipped vs 12 accepted)
-    and `AEX-AE-054181`+`AEX-AE-054189` (product 7050928, 24 vs 48).
+    Confirmed FOUR times now (session N+18 measurement): `AEX-AE-053774`, `AEX-AE-053986`,
+    `AEX-AE-053561`, and the live `AEX-AE-054181`+`AEX-AE-054189` pair — each is a DIFFERENT Soft1
+    advice independently affected, not one advice hit twice. Each gets two RECADV files from
+    different document-number families that each independently report the FULL accepted quantity,
+    so summing doubles it. This is a recurring production pattern, not a corpus artefact.
   next: Ask Infinite via the beneficiary what the families mean. Until answered, every occurrence
     costs manual handling. If it turns out to be a plain retransmission, the reconciler could
     de-duplicate by (advice, product, quantity, date) instead of blocking.
