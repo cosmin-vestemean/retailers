@@ -177,11 +177,17 @@ function getReceptionsData(params) {
   }
 
   var search = params.search ? String(params.search).replace(/^\s+|\s+$/g, '') : '';
+  // NUM04 is a float: default FLOAT->VARCHAR conversion (style 0) renders it in scientific
+  // notation past 6 significant digits, so every real order number needs the BIGINT detour.
+  // Retailers also send the order zero-padded (Auchan `01433687`) but it lands in NUM04 without
+  // the leading zero, so the order-search term is stripped of leading zeros the same way
+  // `normalizeOrderNumber` does in src/edi/recadv-reconciler.js.
+  var orderSearch = search.replace(/^0+(?=\d)/, '');
   var searchClause = '';
   if (search) {
     searchClause = ' AND ('
       + ' f.FINCODE LIKE :1'
-      + ' OR CAST(f.NUM04 AS VARCHAR(30)) LIKE :2'
+      + ' OR CAST(CAST(ISNULL(f.NUM04, 0) AS BIGINT) AS VARCHAR(30)) LIKE :2'
       + ' OR EXISTS (SELECT 1 FROM MTRLINES l2 INNER JOIN MTRL m2 ON m2.MTRL = l2.MTRL'
       + '   WHERE l2.FINDOC = f.FINDOC AND m2.CODE LIKE :3)'
       + ' OR EXISTS (SELECT 1 FROM MTRLINES l3 INNER JOIN CCCS1DXTRDRMTRL x3'
@@ -200,11 +206,12 @@ function getReceptionsData(params) {
     + searchClause;
 
   var like = '%' + search + '%';
+  var likeOrder = '%' + orderSearch + '%';
 
   var total = 0;
   try {
     total = parseInt(search
-      ? X.SQL('SELECT COUNT(*) ' + fromClause, like, like, like, like)
+      ? X.SQL('SELECT COUNT(*) ' + fromClause, like, likeOrder, like, like)
       : X.SQL('SELECT COUNT(*) ' + fromClause, null)) || 0;
   } catch (e) {
     return { success: false, error: 'Count failed: ' + e.message };
@@ -226,7 +233,7 @@ function getReceptionsData(params) {
 
   try {
     var ds = search
-      ? X.GETSQLDATASET(sql, like, like, like, like)
+      ? X.GETSQLDATASET(sql, like, likeOrder, like, like)
       : X.GETSQLDATASET(sql, null);
     return {
       success: true,

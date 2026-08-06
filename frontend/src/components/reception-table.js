@@ -82,6 +82,13 @@ export class ReceptionTable extends LightElement {
     await this.loadReceptions()
   }
 
+  async _clearSearch() {
+    if (!this._search) return
+    this._search = ''
+    this._page = 1
+    await this.loadReceptions()
+  }
+
   get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
 
   async _prevPage() {
@@ -184,11 +191,17 @@ export class ReceptionTable extends LightElement {
                  @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 30; this._page = 1; this.loadReceptions() }} />
           zile
         </label>
-        <input type="text" class="form-control form-control-sm" style="width:260px;"
-               placeholder="Cod S1, cod retailer, comandă sau aviz..."
-               .value=${this._search}
-               @input=${(e) => { this._search = e.target.value }}
-               @keyup=${(e) => { if (e.key === 'Enter') this._runSearch() }} />
+        <div class="position-relative" style="width:260px;">
+          <input type="text" class="form-control form-control-sm" style="padding-right:1.75rem;"
+                 placeholder="Cod S1, cod retailer, comandă sau aviz..."
+                 .value=${this._search}
+                 @input=${(e) => { this._search = e.target.value }}
+                 @keyup=${(e) => { if (e.key === 'Enter') this._runSearch() }} />
+          ${this._search ? html`
+            <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
+                    style="font-size:0.6rem;" title="Șterge căutarea" @click=${this._clearSearch}></button>
+          ` : ''}
+        </div>
         <button class="btn btn-secondary btn-sm" @click=${this._runSearch} ?disabled=${this._loading}>
           Caută
         </button>
