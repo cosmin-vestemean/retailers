@@ -311,9 +311,9 @@ export async function getInvoicesPaged(trdr, { page = 1, pageSize = 25, daysOlde
 }
 
 /** Fetch RECADV receptions (paginated), reconciled against shipped advice lines on demand. */
-export async function getReceptionsPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30 } = {}) {
+export async function getReceptionsPaged(trdr, { page = 1, pageSize = 25, daysOlder = 30, search = '' } = {}) {
   return client.service('recadv').find({
-    query: { trdr, page, pageSize, daysOlder }
+    query: { trdr, page, pageSize, daysOlder, search }
   })
 }
 

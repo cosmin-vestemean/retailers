@@ -17,12 +17,12 @@ export class RecadvService {
   }
 
   async find(params) {
-    const { trdr, page = 1, pageSize = 25, daysOlder = 30 } = params.query || {}
+    const { trdr, page = 1, pageSize = 25, daysOlder = 30, search = '' } = params.query || {}
     const trdrNum = parseInt(trdr, 10)
     if (!trdrNum) return { success: false, error: 'Invalid retailer ID (trdr) provided.' }
 
     try {
-      const receptionsResult = await this.callAjs('getReceptionsData', { trdr: trdrNum, page, pageSize, daysOlder })
+      const receptionsResult = await this.callAjs('getReceptionsData', { trdr: trdrNum, page, pageSize, daysOlder, search })
       if (!receptionsResult.success) return receptionsResult
 
       const documents = await this.loadDocuments({ trdr: trdrNum, daysOlder })

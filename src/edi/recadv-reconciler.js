@@ -18,7 +18,7 @@
  * parameters — this module never builds SQL itself.
  *
  *   lookup.findAdvices({ trdr, suffixes, orders }) -> [{ FINDOC, FINCODE, TRDR, NUM04 }]
- *   lookup.findAdviceLines({ findocs })            -> [{ FINDOC, RETAILERCODE, EAN, QTY1 }]
+ *   lookup.findAdviceLines({ findocs })            -> [{ FINDOC, RETAILERCODE, MTRLCODE, EAN, QTY1 }]
  */
 
 // Defence in depth: every value handed to `lookup` is re-validated here, even though the parser
@@ -149,7 +149,11 @@ function reconcileGroup(group, linesByFindoc) {
       if (!line.RETAILERCODE) continue
       const code = String(line.RETAILERCODE)
       const prev = shipped.get(code)
-      shipped.set(code, { qty: (prev?.qty || 0) + Number(line.QTY1), ean: prev?.ean || String(line.EAN ?? '') })
+      shipped.set(code, {
+        qty: (prev?.qty || 0) + Number(line.QTY1),
+        ean: prev?.ean || String(line.EAN ?? ''),
+        mtrlCode: prev?.mtrlCode || (line.MTRLCODE ?? null)
+      })
     }
   }
 
@@ -177,6 +181,7 @@ function reconcileGroup(group, linesByFindoc) {
     const delta = source.qty - item.accepted
     lines.push({
       buyerItemId: item.buyerItemId,
+      mtrlCode: source.mtrlCode,
       description: item.description,
       shipped: source.qty,
       accepted: item.accepted,
@@ -200,6 +205,7 @@ function reconcileGroup(group, linesByFindoc) {
     missingOnReceipt.push({ retailerCode: code, shipped: source.qty })
     lines.push({
       buyerItemId: code,
+      mtrlCode: source.mtrlCode,
       description: undefined,
       shipped: source.qty,
       accepted: 0,

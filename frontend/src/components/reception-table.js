@@ -30,6 +30,7 @@ export class ReceptionTable extends LightElement {
     _total:      { state: true },
     _expanded:   { state: true },
     _xmlByFile:  { state: true },
+    _search:     { state: true },
   }
 
   constructor() {
@@ -42,6 +43,7 @@ export class ReceptionTable extends LightElement {
     this._total = 0
     this._expanded = new Set()
     this._xmlByFile = new Map()
+    this._search = ''
   }
 
   connectedCallback() {
@@ -60,7 +62,7 @@ export class ReceptionTable extends LightElement {
     this._loading = true
     try {
       const res = await getReceptionsPaged(this.trdr, {
-        page: this._page, pageSize: this._pageSize, daysOlder: this.daysOlder
+        page: this._page, pageSize: this._pageSize, daysOlder: this.daysOlder, search: this._search
       })
       if (res?.success) {
         this._receptions = res.data || []
@@ -73,6 +75,11 @@ export class ReceptionTable extends LightElement {
     } finally {
       this._loading = false
     }
+  }
+
+  async _runSearch() {
+    this._page = 1
+    await this.loadReceptions()
   }
 
   get _totalPages() { return Math.max(1, Math.ceil(this._total / this._pageSize)) }
@@ -127,12 +134,13 @@ export class ReceptionTable extends LightElement {
     return html`
       <table class="table table-sm table-bordered mb-2">
         <thead>
-          <tr><th>Cod retailer</th><th>Descriere</th><th>Expediat</th><th>Acceptat</th><th>Diferență</th></tr>
+          <tr><th>Cod retailer</th><th>Cod Soft1</th><th>Descriere</th><th>Expediat</th><th>Acceptat</th><th>Diferență</th></tr>
         </thead>
         <tbody>
           ${lines.map((l) => html`
             <tr class="${l.delta < 0 ? 'table-danger' : l.delta > 0 ? 'table-warning' : ''}">
               <td>${l.buyerItemId}</td>
+              <td>${l.mtrlCode || ''}</td>
               <td>${l.description || ''}</td>
               <td>${l.shipped}</td>
               <td>${l.accepted}</td>
@@ -176,6 +184,14 @@ export class ReceptionTable extends LightElement {
                  @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 30; this._page = 1; this.loadReceptions() }} />
           zile
         </label>
+        <input type="text" class="form-control form-control-sm" style="width:260px;"
+               placeholder="Cod S1, cod retailer, comandă sau aviz..."
+               .value=${this._search}
+               @input=${(e) => { this._search = e.target.value }}
+               @keyup=${(e) => { if (e.key === 'Enter') this._runSearch() }} />
+        <button class="btn btn-secondary btn-sm" @click=${this._runSearch} ?disabled=${this._loading}>
+          Caută
+        </button>
       </div>
 
       ${this._loading && !this._receptions.length ? html`

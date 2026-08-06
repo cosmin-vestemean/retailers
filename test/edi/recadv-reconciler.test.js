@@ -72,8 +72,8 @@ describe('recadv reconciler', () => {
     const lookup = makeLookup({
       advices: [{ FINDOC: 500001, FINCODE: 'AEX-AE-900001', TRDR: DEDEMAN, NUM04: 4500000001 }],
       lines: [
-        { FINDOC: 500001, RETAILERCODE: 'TEST0001', EAN: '5949060000001', QTY1: 10 },
-        { FINDOC: 500001, RETAILERCODE: 'TEST0002', EAN: '5949060000002', QTY1: 8 }
+        { FINDOC: 500001, RETAILERCODE: 'TEST0001', MTRLCODE: 'PF.00001', EAN: '5949060000001', QTY1: 10 },
+        { FINDOC: 500001, RETAILERCODE: 'TEST0002', MTRLCODE: 'PF.00002', EAN: '5949060000002', QTY1: 8 }
       ]
     })
 
@@ -83,6 +83,7 @@ describe('recadv reconciler', () => {
     assert.deepStrictEqual(receptions[0].differenceLines, [
       {
         buyerItemId: 'TEST0002',
+        mtrlCode: 'PF.00002',
         description: 'TEST PRODUCT B',
         shipped: 8,
         accepted: 5,
@@ -217,8 +218,8 @@ describe('recadv reconciler', () => {
     const lookup = makeLookup({
       advices: [{ FINDOC: 500005, FINCODE: 'AEX-AE-900005', TRDR: DEDEMAN, NUM04: 4500000005 }],
       lines: [
-        { FINDOC: 500005, RETAILERCODE: 'TEST0005', EAN: '5949060000005', QTY1: 16 },
-        { FINDOC: 500005, RETAILERCODE: 'TEST0099', EAN: '5949060000099', QTY1: 3 }
+        { FINDOC: 500005, RETAILERCODE: 'TEST0005', MTRLCODE: 'PF.00005', EAN: '5949060000005', QTY1: 16 },
+        { FINDOC: 500005, RETAILERCODE: 'TEST0099', MTRLCODE: 'PF.00099', EAN: '5949060000099', QTY1: 3 }
       ]
     })
 
@@ -230,6 +231,7 @@ describe('recadv reconciler', () => {
       receptions[0].lines.find((l) => l.buyerItemId === 'TEST0099'),
       {
         buyerItemId: 'TEST0099',
+        mtrlCode: 'PF.00099',
         description: undefined,
         shipped: 3,
         accepted: 0,

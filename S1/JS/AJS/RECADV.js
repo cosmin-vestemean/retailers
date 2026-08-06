@@ -120,9 +120,10 @@ function getAdvicesByOrder(params) {
 }
 
 /**
- * Advice lines, with the retailer-specific product code and the EAN, for a set of advices.
+ * Advice lines, with the retailer-specific product code, the Soft1 product code and the EAN,
+ * for a set of advices.
  * params: { findocs } — comma-separated string or array of FINDOC ids
- * returns: { success, data: [{FINDOC, RETAILERCODE, EAN, QTY1}] } or { success: false, error }
+ * returns: { success, data: [{FINDOC, RETAILERCODE, MTRLCODE, EAN, QTY1}] } or { success: false, error }
  */
 function getAdviceLines(params) {
   var findocs;
@@ -133,7 +134,7 @@ function getAdviceLines(params) {
   }
   if (!findocs.length) return { success: true, data: [] };
 
-  var sql = 'SELECT l.FINDOC, ml.CODE AS RETAILERCODE, m.CODE1 AS EAN, l.QTY1'
+  var sql = 'SELECT l.FINDOC, ml.CODE AS RETAILERCODE, m.CODE AS MTRLCODE, m.CODE1 AS EAN, l.QTY1'
     + ' FROM MTRLINES l'
     + ' INNER JOIN FINDOC f ON f.FINDOC = l.FINDOC AND f.ISCANCEL = 0'
     + ' INNER JOIN MTRL m ON m.MTRL = l.MTRL'
@@ -158,7 +159,9 @@ function getAdviceLines(params) {
  * state computed by the verified TFPRMS=103 predicate (never FPRMS=712 — that is Auchan-only).
  * Pallet-only advices are excluded: measured on 60 days, all 74 Auchan ones carry a single
  * AM.00006 line, no source order, no NUM04 and are never invoiced — nothing to reconcile.
- * params: { trdr, daysOlder=30, page=1, pageSize=25 }
+ * params: { trdr, daysOlder=30, page=1, pageSize=25, search }
+ * `search` (optional) matches the aviz FINCODE, the EDI order number (NUM04), the Soft1
+ * product code (MTRL.CODE) or the retailer product code (CCCS1DXTRDRMTRL.CODE) on any line.
  * returns: { success, data, total, page, pageSize } or { success: false, error }
  */
 function getReceptionsData(params) {
@@ -173,17 +176,36 @@ function getReceptionsData(params) {
     return { success: false, error: 'Invalid retailer ID (trdr) provided.' };
   }
 
+  var search = params.search ? String(params.search).replace(/^\s+|\s+$/g, '') : '';
+  var searchClause = '';
+  if (search) {
+    searchClause = ' AND ('
+      + ' f.FINCODE LIKE :1'
+      + ' OR CAST(f.NUM04 AS VARCHAR(30)) LIKE :2'
+      + ' OR EXISTS (SELECT 1 FROM MTRLINES l2 INNER JOIN MTRL m2 ON m2.MTRL = l2.MTRL'
+      + '   WHERE l2.FINDOC = f.FINDOC AND m2.CODE LIKE :3)'
+      + ' OR EXISTS (SELECT 1 FROM MTRLINES l3 INNER JOIN CCCS1DXTRDRMTRL x3'
+      + '   ON x3.MTRL = l3.MTRL AND x3.TRDR = f.TRDR'
+      + '   WHERE l3.FINDOC = f.FINDOC AND x3.CODE LIKE :4)'
+      + ')';
+  }
+
   var fromClause = 'FROM FINDOC f'
     + ' WHERE f.TRDR = ' + trdr
     + ' AND f.SERIES = 7111 AND f.ISCANCEL = 0'
     + ' AND f.TRNDATE >= DATEADD(day, -' + daysOlder + ', GETDATE())'
     // Keeps advices with at least one merchandise line, so a mixed advice would still show up.
     + ' AND EXISTS (SELECT 1 FROM MTRLINES l INNER JOIN MTRL m ON m.MTRL = l.MTRL'
-    + "   WHERE l.FINDOC = f.FINDOC AND m.NAME NOT LIKE '%PALET%')";
+    + "   WHERE l.FINDOC = f.FINDOC AND m.NAME NOT LIKE '%PALET%')"
+    + searchClause;
+
+  var like = '%' + search + '%';
 
   var total = 0;
   try {
-    total = parseInt(X.SQL('SELECT COUNT(*) ' + fromClause, null)) || 0;
+    total = parseInt(search
+      ? X.SQL('SELECT COUNT(*) ' + fromClause, like, like, like, like)
+      : X.SQL('SELECT COUNT(*) ' + fromClause, null)) || 0;
   } catch (e) {
     return { success: false, error: 'Count failed: ' + e.message };
   }
@@ -203,7 +225,9 @@ function getReceptionsData(params) {
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
 
   try {
-    var ds = X.GETSQLDATASET(sql, null);
+    var ds = search
+      ? X.GETSQLDATASET(sql, like, like, like, like)
+      : X.GETSQLDATASET(sql, null);
     return {
       success: true,
       data: convertDatasetToArray(ds),
