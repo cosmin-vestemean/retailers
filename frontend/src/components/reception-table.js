@@ -19,6 +19,14 @@ const STATUS_BADGE_CLASS = {
   not_received: 'bg-light text-muted'
 }
 
+const STATUS_EXPLANATION = {
+  clean: 'Toate liniile acceptate de retailer coincid cu cele expediate pe avizul 7111. Nicio acțiune necesară.',
+  difference: 'Retailerul a acceptat mai puțin decât am expediat pe una sau mai multe linii, sau nu a confirmat deloc o linie expediată (caz în care apare cu acceptat 0). Cauze posibile: recepție parțială, produs respins la recepție (retur emis de retailer) sau un fișier RECADV care încă nu a sosit pentru restul cantității.',
+  unresolved: 'Retailerul a confirmat un cod de produs care nu apare pe avizul de expediere (7111) căutat. Verificați maparea de cod retailer -> Soft1 (CCCS1DXTRDRMTRL) sau dacă avizul corect a fost identificat.',
+  blocked: 'Cantitatea acceptată raportată de retailer este MAI MARE decât cea expediată — fizic imposibil, deci nu poate fi doar o lipsă. Cauza confirmată cel mai des: aceeași avizare a primit două fișiere RECADV din familii diferite de numere de document (ex. o serie 5017... și o serie 7900...), fiecare raportând independent cantitatea totală acceptată, iar sistemul le-a însumat pe amândouă. Recepția este blocată deliberat de la facturare automată — necesită verificare manuală în Soft1 înainte de a factura.',
+  not_received: 'Nu a sosit încă niciun fișier RECADV de la retailer pentru acest aviz.'
+}
+
 export class ReceptionTable extends LightElement {
   static properties = {
     trdr:        { type: String },
@@ -31,6 +39,7 @@ export class ReceptionTable extends LightElement {
     _expanded:   { state: true },
     _xmlByFile:  { state: true },
     _search:     { state: true },
+    _infoStatus: { state: true },
   }
 
   constructor() {
@@ -44,6 +53,7 @@ export class ReceptionTable extends LightElement {
     this._expanded = new Set()
     this._xmlByFile = new Map()
     this._search = ''
+    this._infoStatus = null
   }
 
   connectedCallback() {
@@ -127,6 +137,14 @@ export class ReceptionTable extends LightElement {
 
   _toggleXml(file) {
     this._toggleDetail(`xml:${file}`)
+  }
+
+  _showStatusInfo(status) {
+    this._infoStatus = status
+  }
+
+  _closeStatusInfo() {
+    this._infoStatus = null
   }
 
   _toast(msg, type) {
@@ -239,7 +257,10 @@ export class ReceptionTable extends LightElement {
                     <td>${row.NUM04 || ''}</td>
                     <td>${(reception.documentNumbers || []).join(', ') || '—'}</td>
                     <td>${reception.lines?.length ?? '—'}</td>
-                    <td><span class="badge ${STATUS_BADGE_CLASS[reception.status] || 'bg-light text-muted'}">${STATUS_LABEL[reception.status] || reception.status}</span></td>
+                    <td>
+                      <span class="badge ${STATUS_BADGE_CLASS[reception.status] || 'bg-light text-muted'}">${STATUS_LABEL[reception.status] || reception.status}</span>
+                      <button type="button" class="status-info-icon" title="Vezi explicații" @click=${() => this._showStatusInfo(reception.status)}>i</button>
+                    </td>
                     <td>${row.INVOICED ? html`<span class="badge bg-success">Da</span>` : html`<span class="badge bg-light text-muted">Nu</span>`}</td>
                     <td>
                       <div class="actions">
@@ -278,6 +299,23 @@ export class ReceptionTable extends LightElement {
           <button class="btn btn-sm" ?disabled=${this._page >= this._totalPages} @click=${this._nextPage}>Next &rarr;</button>
         </div>
       </div>
+
+      ${this._infoStatus ? html`
+        <div class="modal-overlay" @click=${(e) => { if (e.target === e.currentTarget) this._closeStatusInfo() }}>
+          <div class="modal-box">
+            <div class="modal-head">
+              <span>
+                <span class="badge ${STATUS_BADGE_CLASS[this._infoStatus] || 'bg-light text-muted'} me-2">${STATUS_LABEL[this._infoStatus] || this._infoStatus}</span>
+                Ce înseamnă acest status?
+              </span>
+              <button class="modal-close-btn" @click=${this._closeStatusInfo}>&times;</button>
+            </div>
+            <div class="modal-body">
+              <p>${STATUS_EXPLANATION[this._infoStatus] || 'Fără explicație disponibilă pentru acest status.'}</p>
+            </div>
+          </div>
+        </div>
+      ` : ''}
     `
   }
 }

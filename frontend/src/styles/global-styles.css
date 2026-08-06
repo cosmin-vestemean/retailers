@@ -159,6 +159,41 @@ login-form .modal-figure img {
 }
 
 /* ============================================================
+   reception-table
+   ============================================================ */
+reception-table .status-info-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; margin-left: 0.35rem;
+  border-radius: 50%; border: 1px solid var(--tblr-secondary);
+  background: transparent; color: var(--tblr-secondary);
+  font-size: 0.7rem; font-style: italic; font-weight: 600; line-height: 1;
+  cursor: pointer; padding: 0; vertical-align: middle;
+}
+reception-table .status-info-icon:hover {
+  background: var(--tblr-secondary); color: var(--bs-body-bg);
+}
+reception-table .modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+reception-table .modal-box {
+  background: var(--bs-body-bg); color: var(--bs-body-color); border-radius: 10px; max-width: 520px; width: 90%;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18); overflow: hidden;
+}
+reception-table .modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--tblr-border-color);
+  font-weight: 600; font-size: 1rem;
+}
+reception-table .modal-close-btn {
+  background: none; border: none; font-size: 1.3rem; cursor: pointer;
+  color: var(--tblr-secondary); line-height: 1; padding: 0;
+}
+reception-table .modal-close-btn:hover { color: var(--tblr-body-color); }
+reception-table .modal-body { padding: 1.25rem 1.5rem 1.5rem; font-size: 0.93rem; line-height: 1.6; color: var(--tblr-secondary); }
+
+/* ============================================================
    batch-progress
    ============================================================ */
 batch-progress { display: block; }
