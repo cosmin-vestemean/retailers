@@ -191,7 +191,7 @@ export class ReceptionTable extends LightElement {
                  @change=${(e) => { this.daysOlder = parseInt(e.target.value) || 30; this._page = 1; this.loadReceptions() }} />
           zile
         </label>
-        <div class="position-relative" style="width:260px;">
+        <div class="position-relative" style="width:260px;align-self:center;">
           <input type="text" class="form-control form-control-sm" style="padding-right:1.75rem;"
                  placeholder="Cod S1, cod retailer, comandă sau aviz..."
                  .value=${this._search}
