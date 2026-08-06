@@ -163,14 +163,14 @@ login-form .modal-figure img {
    ============================================================ */
 reception-table .status-info-icon {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 16px; height: 16px; margin-left: 0.35rem;
-  border-radius: 50%; border: 1px solid var(--tblr-secondary);
-  background: transparent; color: var(--tblr-secondary);
-  font-size: 0.7rem; font-style: italic; font-weight: 600; line-height: 1;
-  cursor: pointer; padding: 0; vertical-align: middle;
+  width: 14px; height: 14px; margin-left: 0.35rem;
+  border-radius: 50%; border: 1px solid currentColor;
+  background: transparent; color: inherit;
+  font-size: 0.65rem; font-style: italic; font-weight: 600; line-height: 1;
+  cursor: pointer; padding: 0; vertical-align: middle; opacity: 0.85;
 }
 reception-table .status-info-icon:hover {
-  background: var(--tblr-secondary); color: var(--bs-body-bg);
+  opacity: 1; background: rgba(255, 255, 255, 0.3);
 }
 reception-table .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.45);

@@ -502,8 +502,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
                     <td>${(t.documentNumbers||[]).join(`, `)||`—`}</td>
                     <td>${t.lines?.length??`—`}</td>
                     <td>
-                      <span class="badge ${ya[t.status]||`bg-light text-muted`}">${va[t.status]||t.status}</span>
-                      <button type="button" class="status-info-icon" title="Vezi explicații" @click=${()=>this._showStatusInfo(t.status)}>i</button>
+                      <span class="badge ${ya[t.status]||`bg-light text-muted`}">
+                        ${va[t.status]||t.status}
+                        <button type="button" class="status-info-icon" title="Vezi explicații" @click=${()=>this._showStatusInfo(t.status)}>i</button>
+                      </span>
                     </td>
                     <td>${e.INVOICED?V`<span class="badge bg-success">Da</span>`:V`<span class="badge bg-light text-muted">Nu</span>`}</td>
                     <td>

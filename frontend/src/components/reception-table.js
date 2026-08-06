@@ -258,8 +258,10 @@ export class ReceptionTable extends LightElement {
                     <td>${(reception.documentNumbers || []).join(', ') || '—'}</td>
                     <td>${reception.lines?.length ?? '—'}</td>
                     <td>
-                      <span class="badge ${STATUS_BADGE_CLASS[reception.status] || 'bg-light text-muted'}">${STATUS_LABEL[reception.status] || reception.status}</span>
-                      <button type="button" class="status-info-icon" title="Vezi explicații" @click=${() => this._showStatusInfo(reception.status)}>i</button>
+                      <span class="badge ${STATUS_BADGE_CLASS[reception.status] || 'bg-light text-muted'}">
+                        ${STATUS_LABEL[reception.status] || reception.status}
+                        <button type="button" class="status-info-icon" title="Vezi explicații" @click=${() => this._showStatusInfo(reception.status)}>i</button>
+                      </span>
                     </td>
                     <td>${row.INVOICED ? html`<span class="badge bg-success">Da</span>` : html`<span class="badge bg-light text-muted">Nu</span>`}</td>
                     <td>
