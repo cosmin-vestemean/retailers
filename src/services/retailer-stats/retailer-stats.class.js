@@ -1,3 +1,8 @@
+// RECADV (goods-receipt advice) only flows through Infinite Edinet today (Dedeman + Auchan) —
+// see infinite.provider.js RETAILER_GLNS and frontend/src/pages/retailer-detail.js. Other
+// retailers have no advices (FINDOC.SERIES=7111), so the count would always be 0/misleading.
+const RECADV_RETAILERS = [11654, 13248]
+
 export class RetailerStatsService {
   constructor(options) {
     this.options = options
@@ -35,14 +40,31 @@ export class RetailerStatsService {
     const invoicesCountSql = `SELECT COUNT(*) nrFacturiDeTrimis FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) ${invoicesWhere}`
     const invoicesListSql = `SELECT fincode, FORMAT(trndate, 'dd.MM.yyyy') trndate FROM findoc f INNER JOIN mtrdoc m ON (f.findoc=m.findoc) ${invoicesWhere}`
 
-    const [ordersRes, invoicesCountRes, invoicesListRes] = await Promise.all([
+    // Mirrors the invoiced predicate + pallet-line exclusion from S1/JS/AJS/RECADV.js's
+    // getReceptionsData (soft1-schema-facts.md: SALFPRMS.TFPRMS = 103, never FPRMS=712).
+    const hasReceptions = RECADV_RETAILERS.includes(trdr)
+    const receiptsSql = `SELECT COUNT(*) nrReceptiiNefacturate FROM FINDOC f`
+      + ` WHERE f.TRDR = ${trdr} AND f.SERIES = 7111 AND f.ISCANCEL = 0`
+      + ` AND f.TRNDATE >= DATEADD(day, -${daysOlder}, GETDATE())`
+      + ` AND EXISTS (SELECT 1 FROM MTRLINES l INNER JOIN MTRL m ON m.MTRL = l.MTRL`
+      + `   WHERE l.FINDOC = f.FINDOC AND m.NAME NOT LIKE '%PALET%')`
+      + ` AND NOT EXISTS (SELECT 1 FROM MTRLINES l`
+      + `   INNER JOIN FINDOC i ON i.FINDOC = l.FINDOC AND i.ISCANCEL = 0`
+      + `   INNER JOIN SALFPRMS p ON p.FPRMS = i.FPRMS AND p.COMPANY = i.COMPANY`
+      + `   WHERE l.FINDOCS = f.FINDOC AND p.TFPRMS = 103)`
+
+    const [ordersRes, invoicesCountRes, invoicesListRes, receiptsRes] = await Promise.all([
       this.app.service('getDataset').find({ query: { sqlQuery: ordersSql } }),
       this.app.service('getDataset').find({ query: { sqlQuery: invoicesCountSql } }),
-      this.app.service('getDataset1').find({ query: { sqlQuery: invoicesListSql } })
+      this.app.service('getDataset1').find({ query: { sqlQuery: invoicesListSql } }),
+      hasReceptions
+        ? this.app.service('getDataset').find({ query: { sqlQuery: receiptsSql } })
+        : Promise.resolve(null)
     ])
 
     const pendingOrders = Number(this.getScalarValue(ordersRes.data) || 0)
     const pendingInvoices = Number(this.getScalarValue(invoicesCountRes.data) || 0)
+    const pendingReceipts = hasReceptions ? Number(this.getScalarValue(receiptsRes.data) || 0) : null
     const invoiceRows = invoicesListRes.success && Array.isArray(invoicesListRes.data)
       ? invoicesListRes.data
       : []
@@ -53,6 +75,7 @@ export class RetailerStatsService {
       daysOlder,
       pendingOrders,
       pendingInvoices,
+      pendingReceipts,
       invoiceList: invoiceRows.map((item) => `${item.fincode} ${item.trndate}`).join('; '),
       invoiceRows
     }

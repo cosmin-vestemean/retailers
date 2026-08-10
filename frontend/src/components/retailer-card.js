@@ -10,6 +10,7 @@ export class RetailerCard extends LightElement {
     logo:  { type: String },
     _pendingOrders:   { state: true },
     _pendingInvoices: { state: true },
+    _pendingReceipts: { state: true },
     _invoiceList:     { state: true },
     _loading:         { state: true },
   }
@@ -18,6 +19,7 @@ export class RetailerCard extends LightElement {
     super()
     this._pendingOrders = null
     this._pendingInvoices = null
+    this._pendingReceipts = null
     this._invoiceList = ''
     this._loading = true
   }
@@ -33,10 +35,12 @@ export class RetailerCard extends LightElement {
       const res = await getRetailerStats(parseInt(this.trdr), { daysOlder: 30 })
       this._pendingOrders = res.pendingOrders ?? 0
       this._pendingInvoices = res.pendingInvoices ?? 0
+      this._pendingReceipts = res.pendingReceipts ?? null
       this._invoiceList = res.invoiceList || ''
     } catch {
       this._pendingOrders = 0
       this._pendingInvoices = 0
+      this._pendingReceipts = null
       this._invoiceList = ''
     } finally {
       this._loading = false
@@ -80,6 +84,12 @@ export class RetailerCard extends LightElement {
               <span class="fw-medium">Facturi de trimis</span>
               ${this._renderValue(this._pendingInvoices)}
             </li>
+            ${this._pendingReceipts !== null ? html`
+              <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                <span class="fw-medium">Recepții nefacturate</span>
+                ${this._renderValue(this._pendingReceipts)}
+              </li>
+            ` : ''}
           </ul>
         </a>
         <div class="card-footer d-flex p-0">
