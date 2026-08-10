@@ -27,4 +27,8 @@ export const RETAILERS = [
   { trdr: '12649', name: 'Mega Image', logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg' },
   { trdr: '11654', name: 'Dedeman',    logo: 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg' },
   { trdr: '13248', name: 'Auchan',     logo: 'https://www.hellopark.ro/pictures/original/318255e7cfa2c1093c-auchan.jpg' },
+  // TRDR distinct from 11639 (Dante International / eMAG Marketplace) — separate S1 entity & business relationship
+  { trdr: '69999',  name: 'eMAG Retail', logo: 'https://ui-avatars.com/api/?name=eMAG+Retail&background=1a73e8&color=fff' },
+  { trdr: '78991',  name: 'REWE',        logo: 'https://ui-avatars.com/api/?name=REWE&background=cc0000&color=fff' },
+  { trdr: '126888', name: 'Sezamo',      logo: 'https://ui-avatars.com/api/?name=Sezamo&background=6a1b9a&color=fff' },
 ]
