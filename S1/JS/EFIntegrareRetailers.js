@@ -796,7 +796,7 @@ function ON_ITELINES_CCCUNITPACK() {
 }
 
 function boxToQty1() {
-  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+  if ((SALDOC.TRDR == 12349 || SALDOC.TRDR == 78991) && SALDOC.FPRMS == 701) {
     var cutii = ITELINES.CCCCUTII || 0;
     var unitpack = ITELINES.CCCUNITPACK || 0;
     var oldQty1 = ITELINES.QTY1 || 0;

@@ -954,9 +954,9 @@ function ON_ITELINES_CCCREDUCERE() {
 var everybodyWantsQty1 = false;
 
 function ON_ITELINES_QTY1() {
-  //Kaufland si comanda
+  //Kaufland si REWE, comanda: cantitatea vine in cutii, se converteste in QTY1 via CCCUNITPACK
   if (
-    SALDOC.TRDR == 12349 &&
+    (SALDOC.TRDR == 12349 || SALDOC.TRDR == 78991) &&
     SALDOC.FPRMS == 701 &&
     ITELINES.MTRL != 0 &&
     ITELINES.QTY1 != 0
@@ -1015,7 +1015,7 @@ function ON_ITELINES_CCCUNITPACK() {
 }
 
 function boxToQty1() {
-  if (SALDOC.TRDR == 12349 && SALDOC.FPRMS == 701) {
+  if ((SALDOC.TRDR == 12349 || SALDOC.TRDR == 78991) && SALDOC.FPRMS == 701) {
     var qty1 = ITELINES.CCCCUTII * ITELINES.CCCUNITPACK;
     if (qty1 && qty1 != ITELINES.QTY1) {
       everybodyWantsQty1 = true;
