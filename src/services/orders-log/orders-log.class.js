@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import { buildS1Url } from '../../s1-base-url.js'
+import { sanitizeForS1 } from '../../edi/text-sanitize.js'
 
 export class OrdersLogService {
   constructor(options) {
@@ -21,7 +22,7 @@ export class OrdersLogService {
     const url = buildS1Url('/JS/JSRetailers/createOrderLog', { app: this.options.app })
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({ ...data, MESSAGETEXT: sanitizeForS1(data.MESSAGETEXT) })
     })
     return response.json()
   }

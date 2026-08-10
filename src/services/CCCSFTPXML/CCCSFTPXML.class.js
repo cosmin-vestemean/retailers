@@ -3,6 +3,7 @@ import { buildS1Url } from '../../s1-base-url.js'
 import { parseS1Json } from '../../s1-response.js'
 import { getProvider } from '../../edi/providers/factory.js'
 import { resolveInsertSftpRow } from '../../edi/scanner.js'
+import { sanitizeForS1 } from '../../edi/text-sanitize.js'
 
 export class CccsftpxmlService {
   constructor(options) {
@@ -54,7 +55,7 @@ export class CccsftpxmlService {
       FINDOC: data.FINDOC,
       SET_TRDR_RETAILER: data.SET_TRDR_RETAILER,
       XMLSTATUS: data.XMLSTATUS,
-      XMLERROR: data.XMLERROR,
+      XMLERROR: sanitizeForS1(data.XMLERROR),
       JSONDATA: data.JSONDATA,
       XMLFILENAME: query.XMLFILENAME,
       TRDR_RETAILER: query.TRDR_RETAILER

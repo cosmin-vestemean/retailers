@@ -57,7 +57,9 @@ export function formatMappingErrorMessage(err, { includeSql = false } = {}) {
   let base
   if (err.type && REMEDY_LOCATION[err.type]) {
     const desc = err.xmlDescription ? ` (${err.xmlDescription})` : ''
-    base = `[${err.type}] ${err.field}="${err.xmlValue}"${desc} nerezolvat — verificați maparea. Remediere: ${err.remedyLocation}`
+    // err.xmlValue is the retailer's own product/store code, not a value of err.field —
+    // it is what we tried (and failed) to map to that S1 field.
+    base = `[${err.type}] cod retailer "${err.xmlValue}"${desc} nu este mapat la ${err.field} — verificați maparea. Remediere: ${err.remedyLocation}`
   } else {
     base = `[${err.field}] valoarea "${err.value}" nerezolvată — ${err.message}`
   }

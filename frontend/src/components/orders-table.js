@@ -166,7 +166,7 @@ export class OrdersTable extends LightElement {
   _formatSendError(e) {
     if (e?.type === 'MTRL_NOTFOUND' || e?.type === 'TRDBRANCH_NOTFOUND') {
       const desc = e.xmlDescription ? ` (${e.xmlDescription})` : ''
-      return `[${e.type}] ${e.field}="${e.xmlValue}"${desc} — ${e.remedyLocation}`
+      return `[${e.type}] cod retailer "${e.xmlValue}"${desc} nu este mapat la ${e.field} — ${e.remedyLocation}`
     }
     return e?.message || String(e)
   }
