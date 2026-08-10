@@ -150,7 +150,7 @@ export async function getOrders(trdr) {
   })
 }
 
-/** Fetch orders from direct DB (Fixie SOCKS fallback). */
+/** Fetch stored order XML rows via the CCCSFTPXML service (S1 AJS). */
 export async function getOrdersDirect(trdr, limit = 50) {
   return client.service('CCCSFTPXML').find({
     query: { TRDR_RETAILER: trdr, $limit: limit, $sort: { XMLDATE: -1 } },

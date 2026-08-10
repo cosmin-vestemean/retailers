@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 
-const HEROKU_PROXY_TARGET = 'https://retailers1-0691020d207c.herokuapp.com'
+const HEROKU_PROXY_TARGET = 'https://retailers4-4617928ecd76.herokuapp.com'
 const LOCAL_PROXY_TARGET = 'http://localhost:5000'
 
 function logProxyDecision({ source, target, reason }) {
