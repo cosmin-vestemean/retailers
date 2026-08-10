@@ -5,14 +5,14 @@ import { configUrl, retailerUrl } from '@/routing/ui-routes.js'
 
 export class RetailerCard extends LightElement {
   static properties = {
-    trdr:  { type: String },
-    name:  { type: String },
-    logo:  { type: String },
-    _pendingOrders:   { state: true },
+    trdr: { type: String },
+    name: { type: String },
+    logo: { type: String },
+    _pendingOrders: { state: true },
     _pendingInvoices: { state: true },
     _pendingReceipts: { state: true },
-    _invoiceList:     { state: true },
-    _loading:         { state: true },
+    _invoiceList: { state: true },
+    _loading: { state: true },
   }
 
   constructor() {
@@ -80,16 +80,16 @@ export class RetailerCard extends LightElement {
               <span class="fw-medium">Comenzi de trimis</span>
               ${this._renderValue(this._pendingOrders)}
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
-              <span class="fw-medium">Facturi de trimis</span>
-              ${this._renderValue(this._pendingInvoices)}
-            </li>
             ${this._pendingReceipts !== null ? html`
               <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
                 <span class="fw-medium">Recepții nefacturate</span>
                 ${this._renderValue(this._pendingReceipts)}
               </li>
             ` : ''}
+            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+              <span class="fw-medium">Facturi de trimis</span>
+              ${this._renderValue(this._pendingInvoices)}
+            </li>
           </ul>
         </a>
         <div class="card-footer d-flex p-0">
