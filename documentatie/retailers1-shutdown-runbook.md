@@ -54,11 +54,15 @@ Aplicația nu mai consumă dyno-uri și nu mai răspunde, dar poate fi repornit�
 
 ```bash
 # numele exact al add-on-ului reiese din `heroku addons --app retailers1`
-heroku addons:destroy <fixie-socks-addon-name> --app retailers1 --confirm retailers1-0691020d207c
-heroku apps:destroy --app retailers1-0691020d207c --confirm retailers1-0691020d207c
+heroku addons:destroy <fixie-socks-addon-name> --app retailers1 --confirm retailers1
+heroku apps:destroy --app retailers1 --confirm retailers1
 ```
 
-(Înlocuiește numele aplicației cu cel real din `heroku apps` dacă diferă.)
+> **Numele aplicației este `retailers1`, nu `retailers1-0691020d207c`.** Sufixul hexazecimal
+> apare doar în hostname-ul `retailers1-0691020d207c.herokuapp.com` (URL generat de Heroku) —
+> `--app` și `--confirm` cer numele aplicației. Toate comenzile care au rulat efectiv pe această
+> aplicație folosesc forma scurtă (vezi `heroku config:set ENABLE_SFTP_SCANNER=... --app retailers1`
+> în [BACKEND_ROADMAP.md](../BACKEND_ROADMAP.md)). Confirmă totuși cu `heroku apps` la Faza 0.
 
 ## Faza 3 — Firewall-ul clientului (decizie separată)
 
