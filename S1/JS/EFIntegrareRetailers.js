@@ -796,9 +796,9 @@ function ON_ITELINES_CCCUNITPACK() {
 }
 
 function boxToQty1() {
-  if ((SALDOC.TRDR == 12349 || SALDOC.TRDR == 78991) && SALDOC.FPRMS == 701) {
+  if (((SALDOC.TRDR == 12349) || (SALDOC.TRDR == 78991)) && SALDOC.FPRMS == 701) {
     var cutii = ITELINES.CCCCUTII || 0;
-    var unitpack = ITELINES.CCCUNITPACK || 0;
+    var unitpack = ITELINES.CCCUNITPACK || X.SQL('SELECT unitpack FROM CCCS1DXTRDRMTRL WHERE mtrl=' + ITELINES.MTRL + ' AND trdr=' + SALDOC.TRDR, null) || 0;
     var oldQty1 = ITELINES.QTY1 || 0;
     var qty1 = cutii * unitpack;
     if (qty1 > 0 && qty1 != oldQty1) {

@@ -19,16 +19,56 @@ export const dataSourceContext = createContext('dataSource')
 // ---- Retailer static data ----
 
 export const RETAILERS = [
-  { trdr: '13248', name: 'Auchan',     logo: 'https://www.hellopark.ro/pictures/original/318255e7cfa2c1093c-auchan.jpg' },
-  { trdr: '11322', name: 'Carrefour',  logo: 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png' },
-  { trdr: '11654', name: 'Dedeman',    logo: 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg' },
-  { trdr: '11639', name: 'eMAG',       logo: 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg' },
+  {
+    trdr: '13248',
+    name: 'Auchan',
+    logo: 'https://www.hellopark.ro/pictures/original/318255e7cfa2c1093c-auchan.jpg'
+  },
+  {
+    trdr: '11322',
+    name: 'Carrefour',
+    logo: 'https://cdn-static.carrefour.ro/unified/assets/images/dist/logo/default/carrefour.png'
+  },
+  {
+    trdr: '11654',
+    name: 'Dedeman',
+    logo: 'https://cdn.dedeman.ro/static/version1718221031/frontend/Dedeman/white/ro_RO/images/logo.svg'
+  },
+  {
+    trdr: '11639',
+    name: 'eMAG',
+    logo: 'https://s13emagst.akamaized.net/layout/ro/images/logo//59/88362.svg'
+  },
   // TRDR distinct from 11639 (Dante International / eMAG Marketplace) — separate S1 entity & business relationship
-  { trdr: '69999',  name: 'eMAG Retail', logo: 'https://ui-avatars.com/api/?name=eMAG+Retail&background=1a73e8&color=fff' },
-  { trdr: '12349', name: 'Kaufland',   logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg' },
-  { trdr: '12649', name: 'Mega Image', logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg' },
-  { trdr: '12664', name: 'Metro',      logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg' },
-  { trdr: '78991',  name: 'REWE',        logo: 'https://shop.rewe-static.de/mmds/aa5534e5ced0f7618987b63917bf8c7d63ec9156/rewe-logo.svg' },
-  { trdr: '126888', name: 'Sezamo',      logo: 'https://cdn.sezamo.ro/images/company/sezamo-logo.svg' },
-  { trdr: '78631', name: 'Supeco',     logo: 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg' },
+  {
+    trdr: '69999',
+    name: 'eMAG Retail',
+    logo: 'https://www.freshful.ro/_next/image?url=%2Fimages%2Fbranding%2Flogo.svg&w=640&q=75'
+  },
+  {
+    trdr: '12349',
+    name: 'Kaufland',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Kaufland_201x_logo.svg'
+  },
+  {
+    trdr: '12649',
+    name: 'Mega Image',
+    logo: 'https://static.mega-image.ro/static/next/images/logo_header_mega-image.svg'
+  },
+  {
+    trdr: '12664',
+    name: 'Metro',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Logo_METRO.svg'
+  },
+  {
+    trdr: '78991',
+    name: 'REWE',
+    logo: 'https://shop.rewe-static.de/mmds/aa5534e5ced0f7618987b63917bf8c7d63ec9156/rewe-logo.svg'
+  },
+  {
+    trdr: '126888',
+    name: 'Sezamo',
+    logo: 'https://www.vivnetworks.com/wp-content/uploads/2025/02/Sezamo_Katalog.png'
+  },
+  { trdr: '78631', name: 'Supeco', logo: 'https://www.supeco.ro/wp-content/uploads/2018/07/Asset-1.svg' }
 ]
