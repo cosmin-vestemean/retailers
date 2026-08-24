@@ -23,6 +23,12 @@ approved-but-not-implemented UI items. Full status, code map and specs:
   Infinite SFTP send path).
 - The reconciler's model change (score every advice line, including ones the retailer omits) is
   implemented and pushed but **not yet deployed** — see Next Step.
+- **retailers1 decommissioning (2026-08-10)** — analysis concluded the legacy app (build from
+  `main`) can be shut down completely: cutover to retailers4 happened 2026-06-09, retailers4 has
+  zero dependencies on it. Code cleanup (Fixie SOCKS tunnel, `outbound-ip` service, dead
+  `mssql` config + deps) is on this branch; the phased Heroku shutdown steps are in
+  [`documentatie/retailers1-shutdown-runbook.md`](../../documentatie/retailers1-shutdown-runbook.md).
+  Execution (scale-down → grace period → destroy → firewall de-whitelist) is pending.
 
 ## Active Area
 
