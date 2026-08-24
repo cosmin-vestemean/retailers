@@ -635,3 +635,35 @@ function UpdatePRJC(vPRJCID, vnewTRDR, vnewBOOL01) {
 }
 ```
 
+## graphify
+
+For any question about this repo's architecture, structure, components, or how to add/modify/find
+code, your first action should be `graphify query "<question>"` when `graphify-out/graph.json`
+exists. Use `graphify path "<A>" "<B>"` for relationship questions and `graphify explain "<concept>"`
+for focused-concept questions. These return a scoped subgraph, usually much smaller than the full
+report or raw grep output.
+
+Triggers: "how do I…", "where is…", "what does … do", "add/modify a <component>",
+"explain the architecture", or anything that depends on how files or classes relate.
+
+If `graphify-out/wiki/index.md` exists, use it for broad navigation. Read `graphify-out/GRAPH_REPORT.md`
+only for broad architecture review or when query/path/explain do not surface enough context. Only read
+source files when (a) modifying/debugging specific code, (b) the graph lacks the needed detail, or
+(c) the graph is missing or stale.
+
+Treat the graph as a routing index and hypothesis map, not as the source of truth. For every concrete
+query or task, verify consequential graph claims in their cited code, tests, documentation, or live
+runtime evidence before relying on them. AST imports/calls are high-trust; semantic `INFERRED` edges
+require confirmation; semantic `EXTRACTED` edges should be spot-checked at their cited location;
+`_unverified` nodes must be confirmed; production/deployment claims require live evidence when the
+task depends on them.
+
+When a task establishes a stable fact, update its canonical source (usually `.copilot/wiki/*.md` or
+`.copilot/context/current-focus.md`) and then run `graphify --update`. Prefer this just-in-time
+validation over a one-off audit of the whole graph. Do not fix facts by hand-editing `graph.json`.
+The current graph includes directed, provenance- and evidence-preserving refinements, so do not run
+a blind full rebuild: after any update/rebuild validate semantic coverage, dangling/missing endpoints,
+directed edge collapse, source provenance, current-fact retrieval, and unexpected graph shrinkage.
+Full operating policy: `.copilot/wiki/graphify-workflow.md`.
+
+Type `/graphify` in Copilot Chat to build or update the graph.

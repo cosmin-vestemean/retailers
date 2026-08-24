@@ -1,0 +1,40 @@
+{
+  "runs": [
+    {
+      "date": "2026-08-24T18:41:10.211559+00:00",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "files": 284
+    },
+    {
+      "date": "2026-08-24T19:04:11.519242+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "token_accounting": "unavailable_for_host_subagents",
+      "files": 284,
+      "semantic_sources_represented": 86,
+      "semantic_sources_intentionally_excluded": 2
+    },
+    {
+      "date": "2026-08-24T19:22:06.904771+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "token_accounting": "manual_source_grounded_extraction",
+      "files": 285,
+      "semantic_sources_represented": 87,
+      "semantic_sources_intentionally_excluded": 2
+    },
+    {
+      "date": "2026-08-24T19:22:53.523241+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "token_accounting": "manual_source_grounded_extraction",
+      "files": 285,
+      "semantic_sources_represented": 87,
+      "semantic_sources_intentionally_excluded": 2
+    }
+  ],
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "has_untracked_runs": true
+}

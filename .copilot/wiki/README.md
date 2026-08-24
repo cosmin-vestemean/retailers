@@ -33,6 +33,9 @@ facts change, never appended to as a chronological log. See
   a new DocProcess retailer, plus the "never auto-add a GLN" business rule.
 
 ## Repo/ops conventions
+- [graphify-workflow.md](graphify-workflow.md) — graph-as-index operating model: query first,
+  verify consequential claims in canonical sources, promote stable discoveries, update and
+  validate the graph incrementally.
 - [legacy-tables-cleanup.md](legacy-tables-cleanup.md) — 92 legacy Soft1 tables inventoried for
   deletion, cutover dates, do-not-touch list, deletion procedure. Awaiting beneficiary approval.
 - [security-secrets.md](security-secrets.md) — secrets cleanup history, git hygiene traps,

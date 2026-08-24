@@ -2,11 +2,10 @@
 
 ## Last Updated
 
-- 2026-08-24 (session C: trimmed this file from a ~400-line chronological log to a short
-  operational pointer, as part of the LLM Wiki migration. Full session-by-session history moved
-  to [`CHANGELOG.md`](./CHANGELOG.md) verbatim (nothing lost). Durable facts now live in
-  `.copilot/wiki/*.md` topic pages, linked below instead of repeated inline. See
-  `.copilot/context/wiki-migration-plan.md` for the migration's own status.)
+- 2026-08-24 (session D: the refined directed Graphify graph and the Wiki + Graphify feedback
+  workflow are published and validated. The operating policy lives in
+  [graphify-workflow.md](../wiki/graphify-workflow.md). This file remains a short operational
+  pointer; pre-2026-08-24 history is archived in [`CHANGELOG.md`](./CHANGELOG.md).)
 
 ## Current Goal
 
@@ -16,13 +15,14 @@ approved-but-not-implemented UI items. Full status, code map and specs:
 [reception-screen.md](../wiki/reception-screen.md), [recadv-pipeline.md](../wiki/recadv-pipeline.md).
 
 - **Item B ("Facturează" button)** — creates the invoice from a clean reception. Analysis-only
-  completed 2026-08-24 (DB flow, `EF` view, hooks all verified live); not yet implemented. One
-  decision blocks it — see Open Questions.
+  completed 2026-08-24 (DB flow, `EF` view, hooks all verified live); not yet implemented. Config
+  source decided (reuse `CCCDOCUMENTES1MAPPINGS`) and both hook risks resolved — see
+  [reception-screen.md](../wiki/reception-screen.md); no blocking decisions remain, ready to build.
 - **Item A ("Trimite" button)** and **Item C (invoice identity column)** — approved, spec written,
   not yet implemented. Item A should be done first (small, and validates the never-exercised
   Infinite SFTP send path).
 - The reconciler's model change (score every advice line, including ones the retailer omits) is
-  implemented and pushed but **not yet deployed** — see Next Step.
+  implemented, pushed, and **deployed** (2026-08-24) — see Next Step.
 - **retailers1 decommissioning (2026-08-10)** — analysis concluded the legacy app (build from
   `main`) can be shut down completely: cutover to retailers4 happened 2026-06-09, retailers4 has
   zero dependencies on it. Code cleanup (Fixie SOCKS tunnel, `outbound-ip` service, dead
@@ -33,26 +33,19 @@ approved-but-not-implemented UI items. Full status, code map and specs:
   confirmed, config vars backed up to `~/retailers1-config-backup-20260824.txt` (local, not in
   git), `ps:scale web=0` + `maintenance:on` done — `retailers1` has zero dynos now. Grace period
   (2-4 weeks, monitor retailers4) runs until ~2026-09-07/21. Faza 2 (destroy, irreversible) and
-  Faza 3 (firewall de-whitelist) still pending. A small uncommitted fix also sits in the runbook
-  file (corrects the app name used in the Faza 2 destroy commands from a stale hostname to
-  `retailers1`) — commit it before Faza 2.
+  Faza 3 (firewall de-whitelist) still pending. The runbook's stale-hostname fix (Faza 2 destroy
+  commands) is already committed (`37986a62`).
 
 ## Active Area
 
 - Soft1 AJS: `S1/JS/AJS/RECADV.js` (5 functions, deployed to ERP).
+- Soft1 hook: `S1/JS/SALDOC_EF_27072026.js` (`preiaDateAviz()` extended to Dedeman FPRMS 716,
+  2026-08-24 — edited locally, still needs manual copy into the ERP's live SALDOC/EF view script).
 - Backend: `src/edi/recadv-reconciler.js`, `src/services/recadv/`.
 - Frontend: `frontend/src/components/reception-table.js`, `frontend/src/pages/retailer-detail.js`.
 
 ## Open Questions
 
-- **Item B config source**: reuse `CCCDOCUMENTES1MAPPINGS` for invoice-series-per-retailer
-  (recommended) or keep the hardcoded `INVOICE_SERIES` map in `retailer-detail.js`? Detail in
-  [reception-screen.md](../wiki/reception-screen.md#b-facturează-button-in-the-recepții-actions-column-analysis-only-not-implemented).
-  Awaiting user decision.
-- Does `ON_AFTERPOST`/`CCCFINDOCPOST` GL-posting fire the same way for an AJS-created invoice as a
-  UI-created one? Not yet empirically tested — needed before item B ships.
-- Does Dedeman need an equivalent to Auchan's `preiaDateAviz()`? Unclear if this is a gap or
-  intentional (see [reception-screen.md](../wiki/reception-screen.md)).
 - RETANN stays blocked on Infinite ticket RO-7627 (return order number missing from the XML) —
   see [retann.md](../wiki/retann.md). Nothing to do until it lands.
 - Legacy Soft1 table cleanup (92 tables, ~284 MB) is scoped and tiered, awaiting beneficiary
@@ -65,11 +58,12 @@ approved-but-not-implemented UI items. Full status, code map and specs:
 
 ## Next Step
 
-1. Deploy the reconciler model change (committed+pushed, session N+19) and re-run reconciliation
-   live; report the corrected (larger) shortage numbers to the beneficiary as "what changed".
+1. Re-run reconciliation live now that the model change is deployed; report the corrected (larger)
+   shortage numbers to the beneficiary as "what changed".
 2. Implement Item A ("Trimite" button in Recepții).
-3. Get the Item B config-source decision from the user, then implement Item B per
-   [reception-screen.md](../wiki/reception-screen.md).
+3. Copy the updated `S1/JS/SALDOC_EF_27072026.js` (`preiaDateAviz()` Dedeman fix) into the ERP's
+   live SALDOC/EF view script, then implement Item B per
+   [reception-screen.md](../wiki/reception-screen.md) — no blocking decisions remain.
 
 ## See also — wiki
 
@@ -83,6 +77,7 @@ approved-but-not-implemented UI items. Full status, code map and specs:
 - [legacy-tables-cleanup.md](../wiki/legacy-tables-cleanup.md) — pending table cleanup.
 - [security-secrets.md](../wiki/security-secrets.md) — secrets hygiene, rotation status.
 - [onboard-new-docprocess-retailer.md](../wiki/onboard-new-docprocess-retailer.md) — retailer onboarding runbook.
+- [graphify-workflow.md](../wiki/graphify-workflow.md) — graph-first routing, source verification and incremental updates.
 - [soft1-text-encoding-mojibake.md](../wiki/soft1-text-encoding-mojibake.md), [spa-routing.md](../wiki/spa-routing.md),
   [documentatie-folder-map.md](../wiki/documentatie-folder-map.md) — smaller reference pages.
 
