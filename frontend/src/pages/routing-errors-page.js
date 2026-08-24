@@ -70,7 +70,11 @@ export class RoutingErrorsPage extends LightElement {
   }
 
   async _delete(row) {
-    if (!window.confirm(`Ștergi XML-ul ${row.XMLFILENAME}?`)) return
+    const filename = value(row.XMLFILENAME, 'acest XML')
+    const routing = parseRouting(row)
+    const orderId = value(routing.orderId, 'fără număr de comandă')
+    if (!window.confirm(`Ștergerea este definitivă și elimină XML-ul din lista erorilor de rutare. Continui?`)) return
+    if (!window.confirm(`Confirmi ștergerea XML-ului ${filename} pentru comanda ${orderId}?`)) return
     this._workingId = row.CCCSFTPXML
     this._error = ''
     try {

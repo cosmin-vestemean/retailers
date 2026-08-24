@@ -25,11 +25,11 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
     `delta=shipped`, and `omittedFromReceipt: true`, instead of being left in an unscored
     `missingOnReceipt` footnote. Explicit lines carry `omittedFromReceipt: false`. `missingOnReceipt`
     is kept, unchanged in shape, as a reporting/back-compat view. Tests updated deliberately
-    (`test/edi/recadv-reconciler.test.js`), `npm test` 81 passing. Not yet committed/deployed or
-    re-run live — re-running reconciliation after deploy will show larger shortage numbers than
+    (`test/edi/recadv-reconciler.test.js`), `npm test` 81 passing. Committed and pushed on
+    2026-08-24; not yet deployed or re-run live — re-running reconciliation after deploy will show larger shortage numbers than
     the N+18 baseline (76 unscored lines / 10,578 units / 6 of 195 receptions), which measured the
     OLD under-reporting behavior and must be told to the beneficiary as "what changes".
-  next: Commit + push. Fold the N+18 measurement into the beneficiary report as "what changes once
+  next: Deploy and re-run reconciliation live. Fold the N+18 measurement into the beneficiary report as "what changes once
     this ships". Then resolve the one deliberately-deferred risk: multi-file receptions are
     temporal (4-6 of ~195 in the corpus) — a second confirming file arriving the next day will show
     a false full-shortage in between, and no grace period was added because the reconciler has no
