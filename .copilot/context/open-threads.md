@@ -20,38 +20,25 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   priority: high
   summary: >
     Beneficiary ruling (Sorin Fliundra, 2026-08-05): the DISPATCH ADVICE must be the base of
-    comparison, not the RECADV. **IMPLEMENTED session N+19** in `src/edi/recadv-reconciler.js`:
-    every advice line is now scored; a line the retailer never mentions gets `accepted=0`,
-    `delta=shipped`, and `omittedFromReceipt: true`, instead of being left in an unscored
-    `missingOnReceipt` footnote. Explicit lines carry `omittedFromReceipt: false`. `missingOnReceipt`
-    is kept, unchanged in shape, as a reporting/back-compat view. Tests updated deliberately
-    (`test/edi/recadv-reconciler.test.js`), `npm test` 81 passing. Committed and pushed on
-    2026-08-24; not yet deployed or re-run live — re-running reconciliation after deploy will show larger shortage numbers than
-    the N+18 baseline (76 unscored lines / 10,578 units / 6 of 195 receptions), which measured the
-    OLD under-reporting behavior and must be told to the beneficiary as "what changes".
-  next: Deploy and re-run reconciliation live. Fold the N+18 measurement into the beneficiary report as "what changes once
-    this ships". Then resolve the one deliberately-deferred risk: multi-file receptions are
-    temporal (4-6 of ~195 in the corpus) — a second confirming file arriving the next day will show
-    a false full-shortage in between, and no grace period was added because the reconciler has no
-    date data available yet (`findAdvices`/`findAdviceLines`/`parseRecadv` carry no dates — would
-    need new plumbing). Full spec in `/memories/repo/recadv-reception-screen-todo.md`.
+    comparison, not the RECADV. IMPLEMENTED session N+19 (score every advice line, incl. omitted
+    ones as `omittedFromReceipt: true`) — committed+pushed 2026-08-24, **not yet deployed**. Full
+    detail: [reception-screen.md](../wiki/reception-screen.md#model-change-score-every-advice-line-implemented-2026-08-05).
+  next: Deploy and re-run reconciliation live; report the corrected (larger) shortage numbers to
+    the beneficiary as "what changed" vs the N+18 baseline. Then resolve the one deliberately
+    deferred risk (multi-file temporal receptions, no date data available yet) — see the wiki page.
 
 - id: reception-screen-invoice-and-send-buttons
   status: open
   source: session-N+16
   priority: medium
   summary: >
-    Both approved by Sorin, agreed order A then B.
-    A. „Trimite" button in the Recepții actions column (same as the Facturi tab send), plus showing
-    the invoice `FINCODE` + `TRNDATE` instead of the „Da" badge.
-    B. „Facturează" button — phase 1 of `Plan_implementare_receptii_EDI.md`, creates the 7122/7123
-    invoice with `FINDOCS`/`MTRLINESS` links from a clean reception.
-  next: For A — only render where an invoice exists, reflect sent state (there is NO duplicate guard
-    on the invoice flow), extract a shared helper instead of copying `invoice-table._sendInvoice`,
-    and treat the first click as a TEST because the Infinite SFTP path has never run in production
-    (0 of 521). Also change `getReceptionsData`: `EXISTS` hides cardinality, so verify whether one
-    advice can be covered by several invoices, and return `CCCXMLSendDate`. For B — higher risk,
-    mistakes cost a storno; must stay behind explicit user action.
+    Both approved by Sorin, agreed order A then B: A. „Trimite" button (send an existing invoice,
+    same as Facturi tab) + invoice identity column (item C). B. „Facturează" button (create the
+    7122/7123 invoice from a clean reception) — analysis-only completed session N+20, not yet
+    implemented. Full spec for all three:
+    [reception-screen.md](../wiki/reception-screen.md).
+  next: Implement A first (small, tests the never-exercised Infinite SFTP send path), then decide
+    B's config-source question (see `current-focus.md` Open Questions) and implement B.
 
 - id: edinet-duplicate-document-number-families
   status: open
@@ -59,13 +46,10 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   priority: high
   summary: >
     Infinite re-sends the same advice under two document numbers from different families
-    (`5017…` plus one of `4600…` / `2200…` / `5900…` / `1285…` / `7900…`). Summing them yields
-    `accepted > shipped`, which is physically impossible, so the hard guard routes them to a human.
-    Confirmed FOUR times now (session N+18 measurement): `AEX-AE-053774`, `AEX-AE-053986`,
-    `AEX-AE-053561`, and the live `AEX-AE-054181`+`AEX-AE-054189` pair — each is a DIFFERENT Soft1
-    advice independently affected, not one advice hit twice. Each gets two RECADV files from
-    different document-number families that each independently report the FULL accepted quantity,
-    so summing doubles it. This is a recurring production pattern, not a corpus artefact.
+    (`5017…` plus one of `4600…`/`2200…`/`5900…`/`1285…`/`7900…`), so summing them yields the
+    physically-impossible `accepted > shipped` and the hard guard routes them to a human. Confirmed
+    recurring on live data (not a corpus artefact), latest `AEX-AE-054181`+`AEX-AE-054189`. Detail
+    and running tally: [recadv-pipeline.md](../wiki/recadv-pipeline.md#known-ongoing-pattern-not-a-bug-needs-an-external-answer).
   next: Ask Infinite via the beneficiary what the families mean. Until answered, every occurrence
     costs manual handling. If it turns out to be a plain retransmission, the reconciler could
     de-duplicate by (advice, product, quantity, date) instead of blocking.
@@ -117,58 +101,39 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   source: session-N+6
   priority: high
   summary: >
-    The beneficiary manual requires the return invoice's `Comanda` field to carry the
-    "Numarul de ordine de retur" (Auchan `4497049`, Dedeman `6100352505`). That number is
-    NOT present in the RETANN XML delivered over FTP — the payload only carries
-    `RetannHeader/DocumentNumber`, which is the Edinet internal id (`5017…` for Dedeman,
-    6-digit for Auchan). Confirmed in production 2026-07-28: `Comanda` is `FINDOC.NUM04`
-    (a float, so Auchan's leading zero is lost), and no existing FINDOC field stores the Edinet
-    document number. STORAGE IS NOT THE CONSTRAINT — adding `CCC*` columns is unrestricted, and
-    `A_IKA_RETANN` already ships with `Retann`, `COMANDARETUR` and `AVIZ` columns (0 rows).
-    The constraint is data availability: the value never arrives in the file.
-  next: Ask the beneficiary where the return order number is sourced from, if not the file
-    (Edinet portal / API / a second document type), or whether `Comanda` may instead hold the
-    Edinet `DocumentNumber` that we do receive.
+    The beneficiary manual requires the return invoice's `Comanda` field to carry the return order
+    number (Auchan `4497049`, Dedeman `6100352505`), but that value never arrives in the RETANN XML
+    — only the Edinet-internal `DocumentNumber` does. Storage is not the constraint (unrestricted
+    `CCC*` columns, and a dormant `A_IKA_RETANN` table already has the right columns) — data
+    availability is. **Answered 2026-08-05**: Infinite ticket RO-7627 is open to add it to the XML;
+    blocks the whole RETANN flow until it ships. Full detail:
+    [retann.md](../wiki/retann.md#gap-the-manual-exposes-the-return-order-number-is-not-in-the-xml).
+  next: Nothing to do until RO-7627 ships. Do not re-derive — see the wiki page.
 
 - id: dormant-retann-recadv-staging-tables
   status: open
   source: session-N+6
   priority: medium
   summary: >
-    Production already contains a designed-but-never-fed RETANN/RECADV import layer.
-    `A_IKA_RETANN` + `A_IKA_RETANNDETAIL` (0 rows) have exactly the columns this flow needs
-    (`Retann`, `COMANDARETUR`, `AVIZ`, `ILNBUYER`, `ILNSHIPTO`, `NUM04`, `FINDOC`, `IMPORTED`).
-    Eleven `A_TMP_DEDEMAN_RETANN_*` shredded-XML tables (0 rows) were modelled on spec v4.0 —
-    they include `_DESADVPARTY` and `_ORDERATBUYERPARTY`, the very elements absent from real
-    payloads. `A_TMP_EXPERT_RECADV` holds 1185 rows (631 RECADV for Remarkt, GLN 5940475747008)
-    with `_Imported=0` and `_FinDoc=0` on every row.
-    Session N+8 measured the layer: the RETANN staging is fed by views/procs
-    `G_DEDEMAN_Retann_Header`, `G_DEDEMAN_Retann_Lines`, `G_DEDEMAN_GetRetann`,
-    `G_DEDEMAN_Get_XML_RETANN` — the only formal description of the RETANN structure ever written
-    by the Soft1 partner, even though it never ran. `A_TMP_EXPERT_RECADV` is **not** fully dead:
-    the last file staged is `..._20260529.xml` (identity 1198), so Remarkt RECADV files still
-    arrive and still never get imported — roughly 6 files since Dec 2025.
-  next: Decide whether to reuse `A_IKA_RETANN` or to route RETANN through the project's own
-    `CCCSFTPXML` pipeline (`EDIDOCTYPE='RETANN'` already planned), which brings DO backup, the
-    status machine, retry and UI for free. Ask who built the dormant tables and why they stalled.
-    Read `G_DEDEMAN_Retann_*` before any cleanup — see
-    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Tabele_vechi_candidate_la_stergere.md`.
+    Production already contains a designed-but-never-fed RETANN/RECADV import layer
+    (`A_IKA_RETANN`/`A_IKA_RETANNDETAIL`, eleven `A_TMP_DEDEMAN_RETANN_*` tables, `A_TMP_EXPERT_RECADV`
+    — all effectively 0 imported rows). Full schema, feeding views and lessons (what NOT to copy):
+    [retann.md](../wiki/retann.md#prior-art-already-in-the-db-all-dormant-discovered-2026-07-28).
+  next: Decision already made — route RETANN through the project's own `CCCSFTPXML` pipeline
+    (`EDIDOCTYPE='RETANN'`), not the dormant tables; see the wiki page. Still open: ask who built
+    the dormant tables and why they stalled, before any legacy-cleanup pass touches them.
 
 - id: legacy-tables-cleanup-approval
   status: open
   source: session-N+8
   priority: low
   summary: >
-    92 legacy tables (~284 MB) inventoried and tiered in
-    `documentatie/Fluxuri complete EDInet Auchan-Dedeman/Tabele_vechi_candidate_la_stergere.md`.
-    The legacy Soft1-side shred path stopped dead at the 2026-06-09 cutover: `A_TMP_AUCHAN_DOCUMENT`
-    went from 38–77 documents/month for 17 months to 9 in June and nothing after 2026-06-05.
-    Every `A_TMP_*` table is referenced by `G_*` views/procs, so those must be dropped with them.
-    `G_XML_ExportDoc` and its three callees are live (invoice export ran 2026-07-28) and must not
-    be touched, nor may `A_IKA_ORDER`/`A_IKA_ORDERDETAIL`/`CCCDOCPROCDANTEXML*`/`CCCEDIPROVIDER`.
+    92 legacy tables (~284 MB) inventoried and tiered, awaiting beneficiary approval. Full
+    inventory, do-not-touch list and deletion procedure:
+    [legacy-tables-cleanup.md](../wiki/legacy-tables-cleanup.md).
   next: Get beneficiary approval. Before dropping, script the `G_*` objects into `S1/SQL/legacy/`,
     export `CCCEDIGLNMAPPINGS` (207 GLN→TRDR rows that may still be worth keeping), and prefer
-    `sp_rename` to `ZZ_DEL_*` for one month over an immediate `DROP`.
+    `sp_rename` to `ZZ_DEL_*` for one month over an immediate `DROP` — see the wiki page.
 
 - id: retann-fifo-advice-allocation
   status: closed
@@ -188,16 +153,13 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   source: session-N+6
   priority: high
   summary: >
-    The manual says the price comes from "ultimul aviz catre acea filiala", but production contradicts
-    both halves. Source advices are chosen at CLIENT (TRDR) level, not branch level — none of the 3
-    verified example lines points to an advice for the returning branch (Auchan returns from Brasov Vest
-    were priced off Campus AMBIENT and Deva CALAN advices; the Dedeman Medias return was priced off an
-    Alba Iulia advice). For Auchan branch-level matching is structurally impossible since we only ship
-    to campuses/DCs. Nor is it strictly the latest advice: among 6 equal-priced same-day candidates the
-    operator picked neither the newest nor the highest FINDOC. Only the PRICE TIER is deterministic.
-  next: Ask the beneficiary to state the selection rule precisely (latest advice at client level with
-    remaining quantity? or simply the current price?), since the choice determines which advice is
-    drawn down even when the amount is identical.
+    The manual says the price comes from "ultimul aviz catre acea filiala", but production
+    contradicts both halves — source advices are chosen at CLIENT level not branch level, and not
+    strictly by recency either; only the price tier is deterministic. Full evidence:
+    [retann.md](../wiki/retann.md#db-verification-of-the-manuals-2-examples-production-read-only-2026-07-28).
+  next: Ask the beneficiary to state the selection rule precisely (latest advice at client level
+    with remaining quantity? or simply the current price?), since the choice determines which
+    advice is drawn down even when the amount is identical.
 
 - id: analiza-exemplelor-stale-notes
   status: closed
@@ -237,3 +199,18 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   next: Rotate the Soft1 web-service password and update `CCCRETAILERSCLIENTS.WSPASS`
     plus `mcp-soft1/.env`; regenerate the SFTP/RSA key pair. Optionally rewrite history
     with git-filter-repo, which requires coordinating a force-push with everyone who has a clone.
+
+- id: llm-wiki-migration
+  status: closed
+  source: session-2026-08-24
+  priority: medium
+  summary: >
+    Meta-task, orthogonal to the RECADV/business work: replaced the growing chronological-log
+    pattern (`current-focus.md`'s ~400+ line "Last Updated" history, plus 12 opaque
+    `/memories/repo/*.md` files) with a Karpathy-style "LLM Wiki" — 14 topic pages under
+    `.copilot/wiki/`, edited in place instead of appended to. Full migration done across 4
+    sessions (A: 10 pages promoted; B: 4 pages synthesized + README index; C: current-focus.md
+    trimmed + CHANGELOG.md archive created + open-threads.md links updated; D: the 3 global
+    user-level prompts and the repo's session-memory instructions updated to target the wiki).
+  next: None. Full history in `.copilot/context/wiki-migration-plan.md` if ever needed again.
+
