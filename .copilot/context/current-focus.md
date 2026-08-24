@@ -26,9 +26,16 @@ approved-but-not-implemented UI items. Full status, code map and specs:
 - **retailers1 decommissioning (2026-08-10)** — analysis concluded the legacy app (build from
   `main`) can be shut down completely: cutover to retailers4 happened 2026-06-09, retailers4 has
   zero dependencies on it. Code cleanup (Fixie SOCKS tunnel, `outbound-ip` service, dead
-  `mssql` config + deps) is on this branch; the phased Heroku shutdown steps are in
-  [`documentatie/retailers1-shutdown-runbook.md`](../../documentatie/retailers1-shutdown-runbook.md).
-  Execution (scale-down → grace period → destroy → firewall de-whitelist) is pending.
+  `mssql` config + deps) merged via PR #2 into `feat/edi-safety-sftp-tests` (retailers4's deploy
+  branch). Runbook: [`documentatie/retailers1-shutdown-runbook.md`](../../documentatie/retailers1-shutdown-runbook.md).
+  **Faza 0 (pre-checks) and Faza 1 (scale-down) executed 2026-08-24**: no custom domain, Fixie
+  add-on is `fixie-socks-parallel-09822` (only on retailers1), `ENABLE_SFTP_SCANNER=false`
+  confirmed, config vars backed up to `~/retailers1-config-backup-20260824.txt` (local, not in
+  git), `ps:scale web=0` + `maintenance:on` done — `retailers1` has zero dynos now. Grace period
+  (2-4 weeks, monitor retailers4) runs until ~2026-09-07/21. Faza 2 (destroy, irreversible) and
+  Faza 3 (firewall de-whitelist) still pending. A small uncommitted fix also sits in the runbook
+  file (corrects the app name used in the Faza 2 destroy commands from a stale hostname to
+  `retailers1`) — commit it before Faza 2.
 
 ## Active Area
 
