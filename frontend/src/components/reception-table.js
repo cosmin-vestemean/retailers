@@ -1,6 +1,6 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
-import { getReceptionsPaged, client } from '@/services/api.js'
+import { getReceptionsPaged, createReceptionInvoice, sendInvoiceXml, client } from '@/services/api.js'
 import './xml-viewer.js'
 
 const STATUS_LABEL = {
@@ -40,6 +40,8 @@ export class ReceptionTable extends LightElement {
     _xmlByFile:  { state: true },
     _search:     { state: true },
     _infoStatus: { state: true },
+    _invoicing:  { state: true },
+    _sending:    { state: true },
   }
 
   constructor() {
@@ -54,6 +56,8 @@ export class ReceptionTable extends LightElement {
     this._xmlByFile = new Map()
     this._search = ''
     this._infoStatus = null
+    this._invoicing = new Set()
+    this._sending = new Set()
   }
 
   connectedCallback() {
@@ -145,6 +149,53 @@ export class ReceptionTable extends LightElement {
 
   _closeStatusInfo() {
     this._infoStatus = null
+  }
+
+  async _createInvoice(row) {
+    const findoc = row.FINDOC
+    this._invoicing = new Set([...this._invoicing, findoc])
+    try {
+      const res = await createReceptionInvoice(findoc)
+      if (res?.success) {
+        this._receptions = this._receptions.map((r) => r.FINDOC === findoc ? {
+          ...r,
+          INVOICE_FINDOC: res.findoc,
+          INVOICE_FINCODE: res.fincode,
+          INVOICE_TRNDATE: res.trndate,
+          INVOICE_COUNT: (r.INVOICE_COUNT || 0) + 1,
+        } : r)
+        this._toast(`Factură ${res.fincode} creată`, 'is-success')
+      } else {
+        this._toast('Facturare eșuată: ' + (res?.error || 'Eroare necunoscută'), 'is-danger')
+      }
+    } catch (e) {
+      this._toast('Facturare eșuată: ' + e.message, 'is-danger')
+    } finally {
+      this._invoicing = new Set([...this._invoicing].filter((f) => f !== findoc))
+    }
+  }
+
+  async _sendInvoice(row, override = false) {
+    const invoiceFindoc = row.INVOICE_FINDOC
+    if (!invoiceFindoc) return
+    this._sending = new Set([...this._sending, invoiceFindoc])
+    try {
+      const res = await sendInvoiceXml(invoiceFindoc, this.trdr, { override })
+      if (res.alreadySent) {
+        this._toast(`Factura ${res.filename} a fost deja trimisă`, 'is-warning')
+        return
+      }
+      if (!res.success) throw new Error(res.error || 'Trimitere eșuată')
+      this._receptions = this._receptions.map((r) => r.FINDOC === row.FINDOC ? {
+        ...r,
+        INVOICE_SENT_DATE: res.sentDate || r.INVOICE_SENT_DATE,
+      } : r)
+      this._toast(`Factură ${res.filename} trimisă`, 'is-success')
+    } catch (e) {
+      this._toast('Trimitere eșuată: ' + e.message, 'is-danger')
+    } finally {
+      this._sending = new Set([...this._sending].filter((f) => f !== invoiceFindoc))
+    }
   }
 
   _toast(msg, type) {
@@ -263,7 +314,30 @@ export class ReceptionTable extends LightElement {
                         <button type="button" class="status-info-icon" title="Vezi explicații" @click=${() => this._showStatusInfo(reception.status)}>i</button>
                       </span>
                     </td>
-                    <td>${row.INVOICED ? html`<span class="badge bg-success">Da</span>` : html`<span class="badge bg-light text-muted">Nu</span>`}</td>
+                    <td>
+                      ${row.INVOICE_FINCODE ? html`
+                        <span class="badge bg-success">${row.INVOICE_FINCODE} - ${row.INVOICE_TRNDATE}</span>
+                        ${row.INVOICE_COUNT > 1 ? html`<span class="badge bg-secondary ms-1">+${row.INVOICE_COUNT - 1}</span>` : ''}
+                        ${row.INVOICE_SENT_DATE ? html`
+                          <button class="btn btn-sm btn-warning ms-1" title=${row.INVOICE_SENT_DATE}
+                                  ?disabled=${this._sending.has(row.INVOICE_FINDOC)}
+                                  @click=${() => this._sendInvoice(row, true)}>
+                            ${this._sending.has(row.INVOICE_FINDOC) ? 'Se trimite...' : 'Retrimite'}
+                          </button>
+                        ` : html`
+                          <button class="btn btn-sm btn-primary ms-1"
+                                  ?disabled=${this._sending.has(row.INVOICE_FINDOC)}
+                                  @click=${() => this._sendInvoice(row)}>
+                            ${this._sending.has(row.INVOICE_FINDOC) ? 'Se trimite...' : 'Trimite'}
+                          </button>
+                        `}
+                      ` : reception.status === 'clean' ? html`
+                        <button class="btn btn-sm btn-success" ?disabled=${this._invoicing.has(findoc)}
+                                @click=${() => this._createInvoice(row)}>
+                          ${this._invoicing.has(findoc) ? 'Se facturează...' : 'Facturează'}
+                        </button>
+                      ` : html`<span class="badge bg-light text-muted">Nu</span>`}
+                    </td>
                     <td>
                       <div class="actions">
                         ${files.map((file) => html`

@@ -51,7 +51,7 @@ const SERVICES = {
   // Paginated data (AJS)
   'orders-data': { methods: ['find'] },
   'invoices-data': { methods: ['find'] },
-  recadv: { methods: ['find'] },
+  recadv: { methods: ['find', 'create'] },
   'lookup-findoc': { methods: ['create'] },
   'mark-invoice-sent': { methods: ['create'] },
   'edi-orders': { methods: ['create'] },
@@ -217,6 +217,33 @@ export async function markDocumentSent(findoc, xmlFilename) {
   return client.service('mark-invoice-sent').create({ findoc, xmlFilename })
 }
 
+/**
+ * Shared "Trimite" orchestration for the Facturi and Recepții tabs: reuses/builds the invoice
+ * DOM, refuses a resend unless overridden, uploads via SFTP, then marks CCCXMLSendDate in S1.
+ * Callers own their own UI state (loading flags, toasts) around this single call.
+ */
+export async function sendInvoiceXml(findoc, trdr, { domObj, buildFilename, override = false } = {}) {
+  if (!domObj) {
+    domObj = await getInvoiceDom({ appID: '1001', findoc })
+  }
+  if (domObj.trimis && !override) {
+    return { success: false, alreadySent: true, filename: domObj.filename, domObj }
+  }
+
+  const filename = buildFilename ? buildFilename(domObj) : domObj.filename
+  const uploadRes = await uploadInvoice(findoc, domObj.dom, filename, trdr)
+  if (!uploadRes?.success) {
+    return { success: false, error: uploadRes?.error || 'Upload failed', domObj }
+  }
+
+  const markResult = await markDocumentSent(findoc, filename)
+  if (!markResult?.success) {
+    return { success: false, error: markResult?.error || 'Mark sent failed', domObj }
+  }
+
+  return { success: true, filename, domObj, sentDate: markResult.CCCXMLSendDate }
+}
+
 // --------------- APERAK ---------------
 
 /** Download and store APERAK responses. */
@@ -315,6 +342,11 @@ export async function getReceptionsPaged(trdr, { page = 1, pageSize = 25, daysOl
   return client.service('recadv').find({
     query: { trdr, page, pageSize, daysOlder, search }
   })
+}
+
+/** Create the invoice for one clean reception (Item B) — never automatic, one explicit click. */
+export async function createReceptionInvoice(findoc) {
+  return client.service('recadv').create({ findoc })
 }
 
 // --------------- Scan operations ---------------

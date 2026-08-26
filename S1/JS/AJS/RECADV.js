@@ -217,16 +217,30 @@ function getReceptionsData(params) {
     return { success: false, error: 'Count failed: ' + e.message };
   }
 
-  var invoicedPredicate = 'CASE WHEN EXISTS ('
-    + '   SELECT 1 FROM MTRLINES l'
-    + '   INNER JOIN FINDOC i ON i.FINDOC = l.FINDOC AND i.ISCANCEL = 0'
-    + '   INNER JOIN SALFPRMS p ON p.FPRMS = i.FPRMS AND p.COMPANY = i.COMPANY'
-    + '   WHERE l.FINDOCS = f.FINDOC AND p.TFPRMS = 103'
-    + ' ) THEN 1 ELSE 0 END AS INVOICED';
+  // Invoice identity (FINCODE/TRNDATE), not just a Da/Nu flag, so the reception screen can
+  // show which invoice already covers an advice instead of only that one exists (item C).
+  // Same TFPRMS=103 predicate as before — never FPRMS=712, that is Auchan-only.
+  // FINDOC/CCCXMLSendDate are also returned so the Trimite button (item A) can act on the
+  // invoice document itself and know whether it was already sent via SFTP.
+  var invoiceFrom = 'MTRLINES l INNER JOIN FINDOC i ON i.FINDOC = l.FINDOC AND i.ISCANCEL = 0'
+    + ' INNER JOIN SALFPRMS p ON p.FPRMS = i.FPRMS AND p.COMPANY = i.COMPANY'
+    + ' LEFT JOIN MTRDOC md ON md.FINDOC = i.FINDOC'
+    + ' WHERE l.FINDOCS = f.FINDOC AND p.TFPRMS = 103';
+  // Verified 2026-08-24: 0 advices currently have more than one invoice, but INVOICE_COUNT is
+  // still returned so the frontend can flag it (+N) if consolidation/partial invoicing ever occurs.
+  var invoiceColumns = '(SELECT TOP 1 i.FINDOC FROM ' + invoiceFrom
+      + ' ORDER BY i.TRNDATE DESC, i.FINDOC DESC) AS INVOICE_FINDOC, '
+    + '(SELECT TOP 1 i.FINCODE FROM ' + invoiceFrom
+      + ' ORDER BY i.TRNDATE DESC, i.FINDOC DESC) AS INVOICE_FINCODE, '
+    + '(SELECT TOP 1 CONVERT(VARCHAR(19), i.TRNDATE, 120) FROM ' + invoiceFrom
+      + ' ORDER BY i.TRNDATE DESC, i.FINDOC DESC) AS INVOICE_TRNDATE, '
+    + '(SELECT TOP 1 CONVERT(VARCHAR(19), md.CCCXMLSendDate, 120) FROM ' + invoiceFrom
+      + ' ORDER BY i.TRNDATE DESC, i.FINDOC DESC) AS INVOICE_SENT_DATE, '
+    + '(SELECT COUNT(DISTINCT i.FINDOC) FROM ' + invoiceFrom + ') AS INVOICE_COUNT';
 
   var sql = 'SELECT f.FINDOC, f.FINCODE, f.TRDBRANCH, ISNULL(f.NUM04, 0) AS NUM04, '
     + "CONVERT(VARCHAR(19), f.TRNDATE, 120) AS TRNDATE, "
-    + invoicedPredicate + ' '
+    + invoiceColumns + ' '
     + fromClause
     + ' ORDER BY f.TRNDATE DESC, f.FINDOC DESC'
     + ' OFFSET ' + offset + ' ROWS FETCH NEXT ' + pageSize + ' ROWS ONLY';
@@ -276,5 +290,109 @@ function getRecadvDocuments(params) {
     return { success: true, data: convertDatasetToArray(ds) };
   } catch (e) {
     return { success: false, error: e.message };
+  }
+}
+
+/**
+ * Creates the invoice (Auchan 7122 / Dedeman 7123) for one clean 7111 advice, via
+ * X.CreateObj('SALDOC;EF') so the ON_RESTOREEVENTS/preiaDateAviz and ON_AFTERPOST hooks bound
+ * to that view fire exactly as they do for a UI-created invoice (see reception-screen.md item B).
+ * Series is read from CCCDOCUMENTES1MAPPINGS joined to SALFPRMS.TFPRMS=103 - never hardcoded.
+ * "Clean reception" gating happens in the caller (reconciliation status); this function only
+ * guards against inserting a second invoice for the same advice.
+ * params: { findoc } - the source advice's FINDOC (SERIES=7111)
+ * returns: { success, findoc, fincode, trndate } or { success: false, error }
+ */
+function createInvoiceFromReception(params) {
+  var advFindoc = parseInt(params.findoc) || 0;
+  if (!advFindoc || advFindoc <= 0) {
+    return { success: false, error: 'Invalid advice FINDOC provided.' };
+  }
+
+  var adv = X.GETSQLDATASET(
+    'SELECT TRDR, TRDBRANCH, ISNULL(NUM04, 0) AS NUM04, CCCORDERDOC'
+    + ' FROM FINDOC WHERE FINDOC=:1 AND SERIES=7111 AND ISCANCEL=0',
+    advFindoc
+  );
+  if (!adv.RECORDCOUNT) {
+    return { success: false, error: 'Advice not found, cancelled, or not a 7111 document.' };
+  }
+  adv.FIRST;
+
+  // Same TFPRMS=103 idempotency predicate as getReceptionsData - never FPRMS=712 (Auchan-only).
+  var already = X.SQL(
+    'SELECT TOP 1 i.FINCODE FROM MTRLINES l'
+    + ' INNER JOIN FINDOC i ON i.FINDOC = l.FINDOC AND i.ISCANCEL = 0'
+    + ' INNER JOIN SALFPRMS p ON p.FPRMS = i.FPRMS AND p.COMPANY = i.COMPANY'
+    + ' WHERE l.FINDOCS = :1 AND p.TFPRMS = 103',
+    advFindoc
+  );
+  if (already) {
+    return { success: false, error: 'Advice already invoiced (' + already + ').' };
+  }
+
+  var mapping = X.GETSQLDATASET(
+    'SELECT TOP 1 m.SERIES FROM CCCDOCUMENTES1MAPPINGS m'
+    + ' INNER JOIN SALFPRMS p ON p.FPRMS = m.FPRMS AND p.COMPANY = :1'
+    + ' WHERE m.TRDR_RETAILER = :2 AND p.TFPRMS = 103 AND m.ACTIVE = 1',
+    X.SYS.COMPANY, adv.TRDR
+  );
+  if (!mapping.RECORDCOUNT) {
+    return { success: false, error: 'No active invoice series mapped for TRDR ' + adv.TRDR + ' in CCCDOCUMENTES1MAPPINGS.' };
+  }
+  mapping.FIRST;
+  var series = mapping.SERIES;
+
+  var lines = X.GETSQLDATASET(
+    'SELECT MTRLINES, MTRL, QTY1, PRICE, DISC1PRC, VAT FROM MTRLINES WHERE FINDOC=:1 ORDER BY LINENUM',
+    advFindoc
+  );
+  if (!lines.RECORDCOUNT) {
+    return { success: false, error: 'Advice has no lines to invoice.' };
+  }
+
+  var obj = null;
+  try {
+    obj = X.CreateObj('SALDOC;EF');
+    obj.DBINSERT;
+
+    var tblFINDOC = obj.FindTable('FINDOC');
+    tblFINDOC.Edit;
+    tblFINDOC.SERIES = series;
+    tblFINDOC.TRDR = adv.TRDR;
+    tblFINDOC.TRDBRANCH = adv.TRDBRANCH;
+    tblFINDOC.NUM04 = adv.NUM04;
+    tblFINDOC.CCCORDERDOC = adv.CCCORDERDOC;
+
+    var tblITELINES = obj.FindTable('ITELINES');
+    lines.FIRST;
+    while (!lines.EOF) {
+      tblITELINES.APPEND;
+      tblITELINES.MTRL = lines.MTRL;
+      tblITELINES.QTY1 = lines.QTY1;
+      tblITELINES.PRICE = lines.PRICE;
+      tblITELINES.DISC1PRC = lines.DISC1PRC;
+      tblITELINES.VAT = lines.VAT;
+      tblITELINES.FINDOCS = advFindoc;
+      tblITELINES.MTRLINESS = lines.MTRLINES;
+      tblITELINES.POST;
+      lines.NEXT;
+    }
+
+    var newFindoc = obj.DBPOST;
+    if (!(newFindoc > 0)) {
+      return { success: false, error: 'DBPOST did not return a new FINDOC id.' };
+    }
+
+    var created = X.GETSQLDATASET(
+      'SELECT FINCODE, CONVERT(VARCHAR(19), TRNDATE, 120) AS TRNDATE FROM FINDOC WHERE FINDOC=:1',
+      newFindoc
+    );
+    created.FIRST;
+    return { success: true, findoc: newFindoc, fincode: created.FINCODE, trndate: created.TRNDATE };
+  } catch (e) {
+    return { success: false, error: e.message + (obj ? ' | ' + obj.GETLASTERROR : '') };
+  } finally {
+    if (obj) { obj.FREE; obj = null; }
   }
 }

@@ -16,6 +16,14 @@ export class RecadvService {
     this.fetch = options.fetch || fetch
   }
 
+  // Item B: creates the invoice for one clean 7111 advice via S1/JS/AJS/RECADV.js's
+  // createInvoiceFromReception (X.CreateObj('SALDOC;EF')). Never automatic — one explicit click.
+  async create(data) {
+    const findoc = parseInt(data?.findoc, 10)
+    if (!findoc) return { success: false, error: 'Invalid advice FINDOC provided.' }
+    return this.callAjs('createInvoiceFromReception', { findoc })
+  }
+
   async find(params) {
     const { trdr, page = 1, pageSize = 25, daysOlder = 30, search = '' } = params.query || {}
     const trdrNum = parseInt(trdr, 10)

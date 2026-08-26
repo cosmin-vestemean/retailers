@@ -1,7 +1,7 @@
 import { html } from 'lit'
 import { LightElement } from '@/light-element.js'
 import {
-  getInvoicesPaged, getInvoiceDom, uploadInvoice, markDocumentSent,
+  getInvoicesPaged, getInvoiceDom, sendInvoiceXml, markDocumentSent,
   downloadAperaks, getAperaks, getToken, client,
 } from '@/services/api.js'
 import './xml-viewer.js'
@@ -156,38 +156,28 @@ export class InvoiceTable extends LightElement {
     )
 
     try {
-      // Get DOM if not cached
-      let domObj = inv._domObj
-      if (!domObj) {
-        domObj = await getInvoiceDom({ appID: '1001', findoc: inv.findoc })
-      }
-      if (domObj.trimis && !override) {
-        this._toast(`Invoice ${domObj.filename} already sent`, 'is-warning')
+      const res = await sendInvoiceXml(inv.findoc, this.trdr, {
+        domObj: inv._domObj,
+        buildFilename: (domObj) => this._getFilename({ ...inv, _domObj: domObj }),
+        override,
+      })
+      if (res.alreadySent) {
+        this._toast(`Invoice ${res.filename} already sent`, 'is-warning')
         return
       }
+      if (!res.success) throw new Error(res.error || 'Send failed')
 
-      const filename = this._getFilename({ ...inv, _domObj: domObj })
-
-      // Upload via SFTP
-      const res = await uploadInvoice(inv.findoc, domObj.dom, filename, this.trdr)
-      if (res?.success) {
-        // Mark as sent in S1
-        const markResult = await markDocumentSent(inv.findoc, filename)
-        if (!markResult?.success) throw new Error(markResult?.error || 'Mark sent failed')
-        this._invoices = this._invoices.map((item, i) =>
-          i === index ? {
-            ...item,
-            sent: true,
-            sentDate: markResult.CCCXMLSendDate || item.sentDate,
-            _sending: false,
-            _domObj: domObj,
-            xmlData: domObj.dom,
-          } : item
-        )
-        this._toast(`Invoice ${filename} sent`, 'is-success')
-      } else {
-        throw new Error('Upload failed')
-      }
+      this._invoices = this._invoices.map((item, i) =>
+        i === index ? {
+          ...item,
+          sent: true,
+          sentDate: res.sentDate || item.sentDate,
+          _sending: false,
+          _domObj: res.domObj,
+          xmlData: res.domObj.dom,
+        } : item
+      )
+      this._toast(`Invoice ${res.filename} sent`, 'is-success')
     } catch (e) {
       this._toast('Send failed: ' + e.message, 'is-danger')
     } finally {

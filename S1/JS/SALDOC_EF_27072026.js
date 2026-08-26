@@ -2404,7 +2404,8 @@ function ON_RESTOREEVENTS() {
 }
 
 function preiaDateAviz() {
-  if (SALDOC.FPRMS == 712) {
+  if (SALDOC.FPRMS == 712 || SALDOC.FPRMS == 716) {
+    // 712 Auchan, 716 Dedeman - aviz sursa e mereu FPRMS 711 pentru ambii
     ITELINES.FIRST;
     if (ITELINES.FINDOCS) {
       var dataset = X.GETSQLDATASET(

@@ -21,9 +21,9 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   summary: >
     Beneficiary ruling (Sorin Fliundra, 2026-08-05): the DISPATCH ADVICE must be the base of
     comparison, not the RECADV. IMPLEMENTED session N+19 (score every advice line, incl. omitted
-    ones as `omittedFromReceipt: true`) — committed+pushed 2026-08-24, **not yet deployed**. Full
-    detail: [reception-screen.md](../wiki/reception-screen.md#model-change-score-every-advice-line-implemented-2026-08-05).
-  next: Deploy and re-run reconciliation live; report the corrected (larger) shortage numbers to
+    ones as `omittedFromReceipt: true`) — committed+pushed+deployed 2026-08-24.
+    Full detail: [reception-screen.md](../wiki/reception-screen.md#model-change-score-every-advice-line-implemented-2026-08-05).
+  next: Re-run reconciliation live and report the corrected (larger) shortage numbers to
     the beneficiary as "what changed" vs the N+18 baseline. Then resolve the one deliberately
     deferred risk (multi-file temporal receptions, no date data available yet) — see the wiki page.
 

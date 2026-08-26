@@ -6,7 +6,8 @@ sections honest about what is analysis-only vs. implemented, don't present unfin
 ## Status overview (as of 2026-08-24)
 - **Model change (score every advice line, incl. omitted ones): IMPLEMENTED** 2026-08-05.
 - **Item A ("Trimite" button): approved by beneficiary, spec below, NOT yet implemented.**
-- **Item B ("Facturează" button): approved, analysis-only completed 2026-08-24, NOT yet implemented.**
+- **Item B ("Facturează" button): approved, analysis-only completed 2026-08-24, config-source
+  decision made (reuse `CCCDOCUMENTES1MAPPINGS`), NOT yet implemented.**
 - **Item C (invoice identity column): approved, spec below, NOT yet implemented.**
 - Also pending: revert an over-correction in `invoice-table.js` (see bottom).
 
@@ -100,12 +101,13 @@ now in [soft1-schema-facts.md](soft1-schema-facts.md#seriesfprms-map-confirmed-v
   invoice-creation script must use this view name so the hooks below actually fire (a plain
   `CreateObj('SALDOC')` would bypass them).
 - **Hooks that fire on the EF view relevant to invoice creation** (read in full, not just grepped):
-  - `ON_RESTOREEVENTS` -> `preiaDateAviz()`: **only for `SALDOC.FPRMS==712` (Auchan)** — reads the
-    source aviz's `TRNDATE`/`FINCODE` via `ITELINES.FINDOCS` and stamps
-    `MTRDOC.CCCDispatcheDate`/`CCCDispatcheDoc` on the invoice, but only when the source doc's own
-    `FPRMS==711`. **No equivalent branch exists for Dedeman (FPRMS 716)** — open question whether
-    Dedeman invoices are simply not expected to carry these two fields, or whether this is a gap to
-    replicate manually if the button targets Dedeman too.
+  - `ON_RESTOREEVENTS` -> `preiaDateAviz()`: reads the source aviz's `TRNDATE`/`FINCODE` via
+    `ITELINES.FINDOCS` and stamps `MTRDOC.CCCDispatcheDate`/`CCCDispatcheDoc` on the invoice, when
+    the source doc's own `FPRMS==711` (the aviz FPRMS, same for both retailers). **Decided
+    2026-08-24: extended to Dedeman** — was gated on `SALDOC.FPRMS==712` (Auchan) only; now also
+    fires on `716` (Dedeman). Implemented in `S1/JS/SALDOC_EF_27072026.js`; still needs to be copied
+    into the ERP's live SALDOC/EF view script before it takes effect (same manual-deploy step as
+    AJS files).
   - `exportXML1()` (FPRMS==712) and `exportXMLDedeman()` (SERIES==7123 or 7033): both call
     `X.EXEC('XCMD:ClientImport,ScriptName: ..., myFindoc:' + SALDOC.FINDOC)`. These are **rich-client
     desktop macros** — almost certainly not invokable from a headless AJS web service call the way
@@ -114,9 +116,11 @@ now in [soft1-schema-facts.md](soft1-schema-facts.md#seriesfprms-map-confirmed-v
     macros, so whether they fire during AJS-based creation no longer matters.
   - `ON_AFTERPOST`: no longer calls `G_FINDOC_POST` synchronously (commented out) — instead inserts
     the FINDOC id into a `CCCFINDOCPOST` table for an external background job to post to GL later.
-    This table-insert is generic document-level logic (not gated by FPRMS/SERIES), so it should fire
-    for an AJS-created invoice the same as a UI-created one, **if** `ON_AFTERPOST` itself fires for
-    CreateObj-based saves (still to verify empirically).
+    This table-insert is generic document-level logic (not gated by FPRMS/SERIES). **Resolved
+    2026-08-24: `X.CreateObj` instantiates the same business object the UI form uses** (it is not a
+    separate/lighter code path), so `ON_AFTERPOST` and the other document-level hooks fire
+    identically for an AJS-created invoice and a UI-created one. No separate empirical test needed
+    for this specific concern.
   - The FINDOCL-mandatory check for SERIES 9221/7531 (see
     [soft1-schema-facts.md](soft1-schema-facts.md)) is unrelated to invoicing a *clean* reception —
     it only matters once a difference/return flow is built.
@@ -125,11 +129,11 @@ now in [soft1-schema-facts.md](soft1-schema-facts.md#seriesfprms-map-confirmed-v
   copied 1:1 from the source line, `FINDOCS`/`MTRLINESS` set to the source FINDOC/line-id) via
   `CreateObj('SALDOC;EF')` -> `DBINSERT` -> `FindTable('ITELINES')` per line -> `DBPOST`, using
   `SERIES=7122, FPRMS=712` for Auchan and `SERIES=7123, FPRMS=716` for Dedeman. The existing
-  `TFPRMS=103` predicate from `RECADV.js` remains the correct idempotency guard. Remaining risk is
-  entirely in the two hook behaviours above (whether `ON_AFTERPOST` fires outside the UI, and the
-  unverified Dedeman `preiaDateAviz` gap) — both need a single empirical test invoice before this is
-  implemented, not further reading. DocProcess retailers are explicitly out of scope — different
-  flow, not analyzed.
+  `TFPRMS=103` predicate from `RECADV.js` remains the correct idempotency guard. Both previously-open
+  hook risks are now resolved (`ON_AFTERPOST` parity confirmed, Dedeman `preiaDateAviz` implemented —
+  see above); a single empirical test invoice is still recommended before this ships, but as
+  confirmation rather than open-risk investigation. DocProcess retailers are explicitly out of
+  scope — different flow, not analyzed.
 - **Scope clarified: the „Facturează" button does NOT need its own send-to-EDI step.** A newly
   created invoice simply shows up in the existing **Facturi tab** (`invoice-table.js`) next time it
   refreshes, and the operator sends it from there with the already-built `Create XML`/`Send` buttons
@@ -158,9 +162,10 @@ now in [soft1-schema-facts.md](soft1-schema-facts.md#seriesfprms-map-confirmed-v
     TRDR_RETAILER=13248`) — addable through the existing "Add Document" UI, no schema/code change.
     The `soft1-petfactory` MCP `run_sql` tool is read-only by design, so this insert needs the user
     (via UI/Database Explorer) or a one-off AJS/SQL script prepared for them to run.
-  - Not yet decided: whether to actually wire a new consumer to this table (replacing the
-    `retailer-detail.js` hardcode) as part of implementing button B, or keep it hardcoded and use
-    `CCCDOCUMENTES1MAPPINGS` only as documentation.
+  - **Decided 2026-08-24: reuse `CCCDOCUMENTES1MAPPINGS`** for invoice-series-per-retailer instead
+    of the hardcoded `INVOICE_SERIES` map in `retailer-detail.js`. Implementation must still filter
+    via `SALFPRMS.TFPRMS = 103` (not `DOCUMENT_TYPE`, per the caveat above) and needs the one missing
+    Auchan row added first (`FPRMS=712, SERIES=7122, TRDR_RETAILER=13248`).
 
 ## C. Invoice identity in the „Facturat" column (spec, not implemented — part of A's data work)
 

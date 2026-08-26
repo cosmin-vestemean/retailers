@@ -90,4 +90,33 @@ describe('recadv service', () => {
     assert.strictEqual(result.success, false)
     assert.match(result.error, /trdr/i)
   })
+
+  it('create() forwards the advice FINDOC to createInvoiceFromReception', async () => {
+    const calls = []
+    const service = new RecadvService({
+      app: { get: () => 'https://s1.example/s1services' },
+      async fetch(url, options) {
+        calls.push({ url, body: JSON.parse(options.body) })
+        return jsonResponse({ success: true, findoc: 999, fincode: 'FAEX1-PF-40999', trndate: '2026-08-24 00:00:00' })
+      }
+    })
+
+    const result = await service.create({ findoc: '2203231' })
+    assert.strictEqual(result.success, true)
+    assert.strictEqual(result.fincode, 'FAEX1-PF-40999')
+    assert.strictEqual(calls.length, 1)
+    assert.ok(calls[0].url.endsWith('/JS/RECADV/createInvoiceFromReception'))
+    assert.strictEqual(calls[0].body.findoc, 2203231)
+  })
+
+  it('create() rejects a missing/invalid findoc without calling AJS', async () => {
+    const service = new RecadvService({
+      app: { get: () => 'https://s1.example/s1services' },
+      async fetch() { throw new Error('fetch should not be called') }
+    })
+
+    const result = await service.create({})
+    assert.strictEqual(result.success, false)
+    assert.match(result.error, /findoc/i)
+  })
 })
