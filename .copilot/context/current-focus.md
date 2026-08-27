@@ -3,11 +3,15 @@
 ## Last Updated
 - 2026-08-27 (session: reception screen Item A — "Trimite" button. Fixed transport/signing/
   credentials bugs, discovered `runCmd20210915.js` generates the wrong invoice XML schema for
-  Infinite retailers, specced the fix, implemented it (`InfiniteInvoice.js` builder), deployed it,
-  and **live-verified it**: sent 2 real Auchan invoices through the app, one got a positive
-  `MessageAcknowledgement` from Infinite. Also added post-upload FTP verification + `sendInvoice`
-  logging to `edi-invoices.class.js` (not yet deployed — needs `git push`). `npm test` 101
-  passing. See [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
+  Infinite retailers, specced the fix, implemented it (`InfiniteInvoice.js` builder), deployed it.
+  Sent 6 test invoices; **all 6 were REJECTED by Infinite** ("Invalid file structure" in the
+  EDInet web portal — the FTP-level ack looked clean for all of them, that signal is NOT
+  reliable). Root cause found + fixed: `RECADV.js`'s `createInvoiceFromReception` never copied
+  `SALDOC.DATE01`, leaving `<OrderParty><BuyerOrderDate>` empty on every Infinite invoice it
+  creates. Needs redeploy + resend + a fresh portal check before this can be called done. Also
+  added post-upload FTP verification + `sendInvoice` logging to `edi-invoices.class.js` (not yet
+  deployed — needs `git push`). `npm test` 101 passing.
+  See [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
 
 ## Current Goal
 RECADV ingestion/reconciliation is **live in production** on `retailers4` since 2026-08-05.
@@ -18,20 +22,32 @@ Active work is finishing the Recepții screen's remaining approved UI items — 
 - **Item A ("Trimite")**: UI was already implemented. Backend send-path bugs (transport ignoring
   `CONNTYPE`, dead S/MIME signing code, missing `S1_USERNAME`/`S1_PASSWORD`/`EDINET_P12_*`
   config, missing 7122/7123 series recognition in the legacy invoice binder) are all fixed —
-  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite's schema problem is
-  DONE AND LIVE-VERIFIED (2026-08-27)**: `runCmd20210915.js` built DocProcess's `DXInvoice`
-  schema; Infinite needs its own native `Invoice v1.0.1` schema, ported field-for-field from the
-  two proven `SOIMPORT` scripts (`AR_ORIGINAL_INVOICE` Auchan, `ExpFactDedeman_ButonNew` Dedeman)
-  into a new `S1/JS/AJS/InfiniteInvoice.js` AJS module (deployed to the ERP, `SellerTel` sourced
-  from `COMPANY.PHONE1` only per user — `PHONE2` is never populated at Pet Factory).
-  `get-invoice-dom.class.js` routes to it by looking up the retailer's `CCCSFTP` provider
-  (`provider.code === 'infinite'`), logs pre-validation failures to `orders-log`
-  (`OPERATION:'buildInvoiceXml'`), falls back to the legacy DocProcess endpoint otherwise.
-  **Sent 2 real Auchan invoices through the live app** (`FAEX1-PF-40689`/`40690`, after a one-time
-  manual `DELIVDATE` backfill for these pre-fix documents — new invoices get it automatically via
-  the already-deployed `preiaDateAviz()` fix): both uploaded successfully, and `FAEX1-PF-40689`
-  got a positive `MessageAcknowledgement` from Infinite (moved to their `/invoice/archive/`, zero
-  entries in `/invoice/logs/err/`) — **definitive proof the new schema is accepted in production**.
+  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite's schema builder is
+  written, deployed, and structurally correct (confirmed by direct diff against a real historic
+  archived invoice) — but NOT YET actually accepted by Infinite (2026-08-27).**
+  `runCmd20210915.js` built DocProcess's `DXInvoice` schema; Infinite needs its own native
+  `Invoice v1.0.1` schema, ported field-for-field from the two proven `SOIMPORT` scripts
+  (`AR_ORIGINAL_INVOICE` Auchan, `ExpFactDedeman_ButonNew` Dedeman) into a new
+  `S1/JS/AJS/InfiniteInvoice.js` AJS module (deployed to the ERP, `SellerTel` sourced from
+  `COMPANY.PHONE1` only per user, `PostalCode` relaxed to non-blocking after finding 84% of real
+  branches have no ZIP). `get-invoice-dom.class.js` routes to it by looking up the retailer's
+  `CCCSFTP` provider (`provider.code === 'infinite'`), logs pre-validation failures to
+  `orders-log` (`OPERATION:'buildInvoiceXml'`), falls back to the legacy DocProcess endpoint
+  otherwise.
+  **Sent 6 real Auchan invoices through the live app — all 6 rejected by Infinite**
+  (`FAEX1-PF-40689/90/93/94/95/96`): the EDInet **web portal** shows "Error: Document processing.
+  Invalid file structure." for each. The FTP-level `MessageAcknowledgement` (empty
+  `AcknowledgementNote`, moved to `/invoice/archive/`) looked clean for all of them — **that was
+  wrongly reported earlier in this session as "definitive proof of acceptance"; it only confirms
+  transport-level receipt, not real validation.** Root cause, found by diffing our actual sent
+  XML against a genuinely-successful real historic Dedeman invoice: `<OrderParty>
+  <BuyerOrderDate>` was empty on every one of the 6 (verified: `SALDOC.DATE01` was `NULL` on all
+  6 created invoices even though their source avize's own `DATE01` was populated in every case).
+  **Fixed**: `S1/JS/AJS/RECADV.js`'s `createInvoiceFromReception` now also copies `DATE01` from
+  the source aviz (it already copied `NUM04`/`TRDBRANCH`/`CCCORDERDOC` but never this field).
+  **Not yet done**: redeploy `RECADV.js`, one-time `DATE01` backfill for the 6 existing test
+  invoices (real source dates known, SQL in the wiki page), resend, and check the **EDInet
+  portal** (not just FTP) for a clean result.
   Also added (per user request, **not yet deployed — needs `git push`**): `edi-invoices.class.js`
   now verifies the file is actually listed on the FTP after upload before reporting success, and
   logs every send outcome to `orders-log` (`OPERATION:'sendInvoice'`) — previously only XML-build

@@ -1,17 +1,24 @@
 # Infinite invoice XML — real format, gap analysis, implementation plan
 
-**Status: VERIFIED LIVE 2026-08-27 — Infinite accepted both test invoices.** `S1/JS/AJS/InfiniteInvoice.js`
-(new AJS module, ported field-for-field from the two proven SOIMPORT scripts, see "The proven
-reference implementation" below) + `src/services/get-invoice-dom/get-invoice-dom.class.js`
-(routes to it for `provider.code === 'infinite'`, logs validation failures to `orders-log`) +
-frontend `trdr` threading (`api.js` `sendInvoiceXml`, `invoice-table.js` `_createXml`) so the
-routing decision has a retailer to look up. Covered by
-`test/services/get-invoice-dom/get-invoice-dom.test.js` (routing + logging); full `npm test`
-101 passing (also added `edi-invoices.test.js` — post-upload FTP verification + `sendInvoice`
-logging, see "Already correct" below). **Deployed and live-tested 2026-08-27**: `FAEX1-PF-40689`
-and `FAEX1-PF-40690` (Auchan) both sent successfully through the app; `FAEX1-PF-40689` has a
-positive `MessageAcknowledgement` from Infinite (see "Live verification" section below) —
-confirms the new native schema is genuinely accepted, not just structurally plausible.
+**Status: SCHEMA BUILT AND DEPLOYED, but EVERY invoice sent so far was REJECTED by Infinite
+(2026-08-27) — TWO root causes found and fixed, needs redeploy + resend.** `S1/JS/AJS/InfiniteInvoice.js`
+builds the correct native `<Invoice Version="1.0.1">` schema (structure confirmed correct by
+direct diff against a real historic archived invoice). But **all 6 invoices sent through the app
+so far (`FAEX1-PF-40689/90/93/94/95/96`) show "Error: Document processing. Invalid file
+structure." in the Infinite EDInet web portal** — see "Live verification" below for the full story
+of how this was found (the FTP-level `MessageAcknowledgement` looked clean for all of them; it is
+**NOT a reliable success signal**, only the portal is authoritative). **Root causes found**: (1)
+`S1/JS/AJS/RECADV.js`'s `createInvoiceFromReception` never copied `SALDOC.DATE01` (order date)
+from the source aviz, so every Infinite invoice it creates has an empty `<OrderParty>
+<BuyerOrderDate>` — fixed in `RECADV.js`. (2) **Deeper mechanism, found 2026-08-27 via
+`mcp_s1-api_s1_query_dataset`**: `X.GETSQLDATASET`'s web-service bridge corrupts a nested
+`isnull(replace(convert(...)))`-style SQL expression built on a NULL date into a stray control
+byte (confirmed: renders as "?" in a text viewer) instead of an empty string — a genuinely new,
+previously-undocumented SoftOne WS quirk, distinct from the DATE01 gap. Fixed in
+`InfiniteInvoice.js`: every date field is now selected RAW in SQL and formatted in JS via a new
+`fmtDate()`/`X.FORMATDATE()` helper, never pre-stringified in SQL. Both fixes need an ERP
+redeploy, plus a one-time `DATE01` backfill for the 6 already-created test invoices (see "Live
+verification").
 
 ## Why this page exists
 
@@ -397,47 +404,115 @@ flow) fetches — for the new Infinite builder use `TRDR.ADDRESS`/`TRDBRANCH.ADD
 7. **Do NOT enable bulk/automatic sending** — this remains a deliberate one-invoice-at-a-time
    manual action per the beneficiary's existing `manualSend` decision, unchanged by this work.
 
-## Live verification (2026-08-27) — Infinite actually accepted the new schema
+## Live verification (2026-08-27) — CORRECTED: the FTP ack is not proof of acceptance
 
-Sent both Auchan test invoices through the live app (`https://retailers4-4617928ecd76.herokuapp.com`,
-logged in as Admin) via the Recepții screen's "Trimite" button:
+**Initial (wrong) conclusion**: sent `FAEX1-PF-40689`/`40690` through the live app; both got a
+clean, empty-`AcknowledgementNote` `MessageAcknowledgement_*.xml` in `/invoice/logs/ok/` and moved
+to `/invoice/archive/`. This was reported as "definitive proof the schema is accepted" — **that
+was wrong.**
 
-- **`FAEX1-PF-40689`** (FINDOC 2208760): `MTRDOC.CCCXMLSendDate` set (15:03:27), file uploaded to
-  `/invoice/FAEX1-PF-40689_2026-08-27.xml` (18061 bytes). A few minutes later Infinite's own batch
-  job picked it up: the file moved from `/invoice/` into **`/invoice/archive/`** (their
-  success/processed location, alongside 113 other real archived invoices), and a
-  `MessageAcknowledgement_FAEX1-PF-40689_2026-08-27.xml` landed in **`/invoice/logs/ok/`**:
-  ```xml
-  <MessageAcknowledgement><AcknowledgementLocation>INFINITE</AcknowledgementLocation>
-  <AcknowledgementReferenceNumber>FAEX1-PF-40689_2026-08-27.xml</AcknowledgementReferenceNumber>
-  <AcknowledgementNote></AcknowledgementNote>
-  </MessageAcknowledgement>
-  ```
-  Empty `AcknowledgementNote` = clean acceptance, no error. `/invoice/logs/err/` was empty (0
-  entries) the whole time — this is the definitive proof the new native `<Invoice Version="1.0.1">`
-  schema is valid and accepted by Infinite in production, not just structurally plausible.
-- **`FAEX1-PF-40690`** (FINDOC 2208761): same flow, sent successfully (`CCCXMLSendDate` 15:12:44,
-  file uploaded, 31294 bytes) — uploaded just after Infinite's batch cycle ran, so at verification
-  time it was still sitting in `/invoice/` awaiting their next processing pass, not yet archived/
-  acknowledged. Same schema as `40689`, no reason to expect a different outcome.
+**What actually happened, found by checking the Infinite EDInet web portal (a separate system
+from the FTP, not something this repo can query — the user checked it directly and shared
+screenshots):** every single invoice sent through the app so far shows:
+```
+File name: FAEX1-PF-40689_2026-08-27.xml   Infinite file id: 215609120
+Error: Document processing. Invalid file structure.
+```
+Same error for `40690`, and (checked via FTP acks, which for these all *also* looked clean)
+likely `40693`/`40694`/`40695`/`40696` too — **all 6 invoices created via `createInvoiceFromReception`
+so far have this defect, with 100% correlation.**
 
-**Discovered along the way — Infinite's real directory layout under `/invoice/`** (not previously
-documented, useful for any future work here): `archive/` (processed/sent, keeps history),
-`confirm/send/` + `confirm/failed/` (currently both empty — purpose unconfirmed, possibly a
-legacy/alternate ack path), `duplicate/`, `error/`, `omit/` (all empty in this account), `logs/ok/`
-(per-invoice `MessageAcknowledgement_<filename>.xml` on success) and `logs/err/` (presumably the
-failure counterpart, empty so far), `temp/`.
+**Root cause, found by fetching the actual sent XML from `/invoice/archive/` and diff'ing it
+against a genuinely-successful real historic Dedeman invoice
+(`documentatie/infinite_samples/invoice_archive/FAEXD-PF-38344_2026-05-25.xml`)**: our XML has
+`<OrderParty><BuyerOrderDate></BuyerOrderDate></OrderParty>` — **empty**, while the real reference
+file always has a populated date (`2026-05-08`). Traced to the SQL source: `SALDOC.DATE01` was
+`NULL` on **all 6** created invoices, while their source avice's own `DATE01` was populated in
+every case (verified live: 2202772/2203286/2204418/2204576/2205048/2206364 all have real dates).
+**`S1/JS/AJS/RECADV.js`'s `createInvoiceFromReception` copies `NUM04`/`TRDBRANCH`/`CCCORDERDOC`
+from the source aviz onto the new invoice but never copied `DATE01`** — fixed 2026-08-27
+(`tblFINDOC.DATE01 = adv.DATE01`, mirroring the existing `NUM04` copy). An empty `<BuyerOrderDate>`
+(a date-typed XSD element) is a very plausible trigger for a generic "Invalid file structure"
+message rather than a field-specific one.
 
-**Idea for later (not implemented, noted per user 2026-08-27): poll `/invoice/logs/ok/` +
-`/invoice/logs/err/` for `MessageAcknowledgement` files and surface them in the app** — symmetric
-to how DocProcess's APERAK flow already closes the loop for that side (`CCCAPERAK`,
-`downloadAperaks`, `invoice-table.js`). Would need: (1) a scanner/service that lists+downloads new
-`MessageAcknowledgement_*.xml` files (same read-only-LIST-then-RETR pattern already used for
-RECADV), (2) parse `AcknowledgementReferenceNumber`/`AcknowledgementNote` to match back to a
-FINDOC by filename, (3) a place to store/show the result (new column on the Facturi/Recepții
-screen, or a dedicated log entry). Out of scope for this session — the manual FTP check done here
-was sufficient to validate the schema; only worth building if the beneficiary wants automated
-confirmation instead of an occasional manual FTP check.
+**Key lesson for this workstream**: the FTP `MessageAcknowledgement`/`archive` move only confirms
+Infinite's **transport layer received and parsed a well-formed XML document** — it does NOT mean
+their business/schema validation passed. **The EDInet web portal is the only authoritative source
+for real acceptance/rejection status**, and this repo/session has no credentials for it — always
+ask the user to check it directly rather than trusting a clean FTP ack alone.
+
+## Deeper root cause (2026-08-27) — GETSQLDATASET's WS bridge corrupts null-date SQL expressions
+
+The `DATE01` fix above only prevents `<BuyerOrderDate>` from being empty **going forward** (once
+the source aviz's own `DATE01` is populated). But the actual failure mode — an empty/malformed
+date element in the sent XML — turned out to be a more general bug, found by reproducing it
+directly against production data via `mcp_s1-api_s1_query_dataset` (which calls the same
+`X.GETSQLDATASET` web-service path our AJS code uses):
+
+```sql
+SELECT DATE01 AS RawDate01,
+       convert(varchar(50),DATE01,120) AS ConvertedDate01,
+       isnull(replace(convert(varchar(50),DATE01,120),' ','T'),'') AS OurExpr
+FROM FINDOC WHERE FINDOC=2208761   -- DATE01 is NULL here
+```
+
+Result: `RawDate01` and `ConvertedDate01` both come back as clean JSON `null` — but `OurExpr`
+(our actual SQL pattern: `isnull(replace(convert(...),...),'')`, the exact style used for
+`BuyerOrderDate`/`DeliveryDate`/`InvoiceDueDate`/`DeliveryDocumentDate` everywhere in
+`InfiniteInvoice.js`) comes back as the literal string `"\u0001"` — **a stray control byte, not an
+empty string**. That control character survives into the generated XML and renders as `?` in a
+text viewer/browser (exactly what was visible in the sent `FAEX1-PF-40690` XML: a highlighted `?`
+inside `<BuyerOrderDate>`). A control character inside a date-typed XSD element is a very
+plausible trigger for Infinite's generic "Invalid file structure" rejection.
+
+**Root cause**: SQL Server's query-plan metadata still tags a `CONVERT`/`REPLACE`/`ISNULL` chain
+built on top of a `datetime` column as date-lineaged, even after casting to `VARCHAR` — and
+Soft1's dataset-to-JSON bridge, when it sees that lineage on a column whose *runtime* value ends
+up an empty string, emits a stray placeholder byte instead of a clean `''`/`null`. A plain
+non-date-derived empty string (`CAST('' AS VARCHAR(10))`) does NOT trigger this — it round-trips
+as clean `null`. So the bug is specific to **date-derived** expressions, and only manifests when
+the underlying date is actually `NULL` (which is common: `DeliveryDate`/`InvoiceDueDate`/
+`DeliveryDocumentDate` can all legitimately be null, independent of the `DATE01` gap above).
+
+**Fix (per user, confirmed from prior direct experience with this exact SoftOne quirk)**: never
+pre-stringify a nullable date in SQL. **Attempted 2026-08-27**: switched `InfiniteInvoice.js` to
+select raw date columns and format them via a new `X.FORMATDATE`-based `fmtDate()` helper — **this
+regressed live**: after redeploy, every date field on every invoice came back empty, even ones
+where the underlying value was verified non-null (backfilled `DATE01`, populated `DELIVDATE`).
+`X.FORMATDATE` does not appear to work on a raw field read from an ad-hoc `X.GETSQLDATASET`
+dataset the way it does on a real object-bound field (`SALDOC.TRNDATE` etc.) — **reverted** back
+to the original SQL-side `CONVERT`/`ISNULL` string formatting (same commit). This is safe now
+because the actual trigger for the NULL dates was the missing `DATE01`/`DELIVDATE` at the source,
+both now fixed (`RECADV.js`, `preiaDateAviz()`) — with the underlying date columns populated, the
+nested-conversion corruption described above simply doesn't get an empty input to corrupt.
+**`fmtDate`/raw-column selection is not a viable fix in this codebase and should not be
+reattempted** without first proving `X.FORMATDATE` works on a `GETSQLDATASET` dataset field in
+isolation.
+
+**Remaining before this is truly verified**:
+1. Redeploy `RECADV.js` (the `DATE01` fix) AND `InfiniteInvoice.js` (the `fmtDate`/raw-date fix)
+   to the ERP.
+2. One-time backfill for the 6 already-created test invoices (their own source avice's `DATE01`
+   is known and real — no proxy/guessing needed, unlike the earlier `DELIVDATE` case):
+   ```sql
+   UPDATE INV SET INV.DATE01 = SRC.DATE01
+   FROM FINDOC INV
+   CROSS APPLY (
+     SELECT TOP 1 S.DATE01 FROM MTRLINES L
+     INNER JOIN FINDOC S ON S.FINDOC = L.FINDOCS
+     WHERE L.FINDOC = INV.FINDOC AND L.FINDOCS IS NOT NULL
+   ) SRC
+   WHERE INV.FINDOC IN (2208760,2208761,2209180,2209181,2209182,2209183);
+   ```
+3. Resend all 6 ("Retrimite") and check the **EDInet portal** (not just the FTP) for a clean
+   "processed" result this time.
+4. Only then is this item genuinely done — the earlier "live-verified" claim in this page's status
+   line was premature.
+
+**Still true / not affected by this correction**: the Infinite directory layout discovered
+(`archive/`, `confirm/send`, `confirm/failed`, `duplicate/`, `error/`, `logs/ok/`, `logs/err/`,
+`omit/`), and the "idea for later" of polling acks — just recalibrate what "ok" in `logs/ok/`
+actually means (received+parsed, not accepted).
 
 ## Deferred: the correct architecture (mostly moot for Infinite — see scope directive above)
 

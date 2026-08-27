@@ -310,7 +310,7 @@ function createInvoiceFromReception(params) {
   }
 
   var adv = X.GETSQLDATASET(
-    'SELECT TRDR, TRDBRANCH, ISNULL(NUM04, 0) AS NUM04, CCCORDERDOC'
+    'SELECT TRDR, TRDBRANCH, ISNULL(NUM04, 0) AS NUM04, CCCORDERDOC, DATE01'
     + ' FROM FINDOC WHERE FINDOC=:1 AND SERIES=7111 AND ISCANCEL=0',
     advFindoc
   );
@@ -367,6 +367,11 @@ function createInvoiceFromReception(params) {
     tblFINDOC.TRDBRANCH = adv.TRDBRANCH;
     tblFINDOC.NUM04 = adv.NUM04;
     tblFINDOC.CCCORDERDOC = adv.CCCORDERDOC;
+    // Never copied before 2026-08-27 - left <OrderParty><BuyerOrderDate> empty on every Infinite
+    // invoice created here, which Infinite's schema validation rejects as "Invalid file structure"
+    // (confirmed live via the EDInet portal - the FTP-level MessageAcknowledgement stays clean
+    // even when this fails, so it is NOT a reliable success signal on its own).
+    tblFINDOC.DATE01 = adv.DATE01;
 
     var tblITELINES = obj.FindTable('ITELINES');
     lines.FIRST;

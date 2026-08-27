@@ -290,6 +290,11 @@ function dedemanLines(findoc) {
 }
 
 // ---- Validation (M fields only - D/optional fields are allowed to be blank) ----
+// BuyerParty/ShipToParty <PostalCode> is deliberately NOT checked here (spec marks it M) - live
+// data shows TRDR.ZIP/TRDBRANCH.ZIP is NULL for the large majority of real invoices (measured
+// 2026-08-27: 84% of the last 90 days, both retailers), and the proven scripts never gated on it
+// either. Same "spec says M, real practice is lenient" pattern as HouseNumber - still emitted
+// blank in the XML when absent, just not treated as a blocking error.
 
 function validate(dsHeader, dsLinii) {
   var erori = [];
@@ -307,12 +312,10 @@ function validate(dsHeader, dsLinii) {
   need(dsHeader.TaxID, '<BuyerParty><TaxID> lipsa');
   need(dsHeader.Name, '<BuyerParty><Name> lipsa');
   need(dsHeader.Street, '<BuyerParty><Street> lipsa');
-  need(dsHeader.PostalCode, '<BuyerParty><PostalCode> lipsa');
   need(dsHeader.City, '<BuyerParty><City> lipsa');
   need(dsHeader.ShipToILN, '<ShipToParty><ILN> lipsa - verificati CCCS1DXGLN pe filiala (TRDBRANCH)');
   need(dsHeader.ShipToName, '<ShipToParty><Name> lipsa');
   need(dsHeader.ShipToStreet, '<ShipToParty><Street> lipsa');
-  need(dsHeader.ShipToPostalCode, '<ShipToParty><PostalCode> lipsa');
   need(dsHeader.ShipToCity, '<ShipToParty><City> lipsa');
   need(dsHeader.SellerILN, '<SellerParty><ILN> lipsa - verificati CCCS1DXGLN pe companie');
   need(dsHeader.SellerTaxID, '<SellerParty><TaxID> lipsa');
