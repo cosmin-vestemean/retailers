@@ -261,6 +261,26 @@ intermediate `EFIntegrareRetailers` form swap was a red herring - the form was n
 Separately, the Greek object-layer error that made this hard to diagnose (`GETLASTERROR` text
 coming back as `??????`) was a real bug in this repo's own `parseS1Json`, unrelated to the series
 restriction — see [soft1-text-encoding-mojibake.md](soft1-text-encoding-mojibake.md).
+
+### FOUND + FIXED 2026-08-27: FULLYTRANSF/QTY1COV never got set on the source advice
+
+User flagged (correctly) that the invoice above links perfectly via `FINDOCS`/`MTRLINESS` but the
+source advice's own conversion-state flag never moved. Verified live: `FINDOC=2206364` stayed
+`FULLYTRANSF=0` and all 14 lines stayed `QTY1COV=0` after creating `2208760`. This contradicts the
+previous wiki note ("S1 maintains them automatically, even via X.CREATEOBJ") — that fact was only
+ever verified on the sibling MultiRetur project's Conversie/`FINDOCL` path, not this plain-insert
+one. Full correction in
+[soft1-schema-facts.md](soft1-schema-facts.md#fullytransf--qty1cov-conversion-bookkeeping--verified-2026-08-05).
+
+**Fix**: `RECADV.js` now calls `markFullyTransfIfCovered(advFindoc)` right after a successful
+`DBPOST`. It computes coverage itself (sum of `QTY1` across every active document whose lines
+point `FINDOCS`/`MTRLINESS` back at each source line, compared to the source line's own `QTY1`) and
+only then `X.RUNSQL`s `FINDOC.FULLYTRANSF=1` on the source. This does not touch `QTY1COV` (kept as
+S1's own field, per-line, higher risk to hand-write) and is best-effort — a failure here does not
+undo the already-committed invoice. Since `FULLYTRANSF` was never the reliable "is this invoiced?"
+signal anyway (the `FINDOCS`/`TFPRMS=103` predicate is), this is bookkeeping hygiene, not a
+correctness fix for the invoicing flow itself.
+
 - **Scope clarified: the „Facturează" button does NOT need its own send-to-EDI step.** A newly
   created invoice simply shows up in the existing **Facturi tab** (`invoice-table.js`) next time it
   refreshes, and the operator sends it from there with the already-built `Create XML`/`Send` buttons

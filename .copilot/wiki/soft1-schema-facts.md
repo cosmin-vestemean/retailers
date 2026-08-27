@@ -73,6 +73,18 @@ Verified 2026-08-05.
   with a "reality check" (does an ACTIVE `ISCANCEL=0` doc still reference the source?) rather than
   trusting the flag alone. Pattern documented in `documentatie/FULLYTRANSF_CONVERSION_GUARD.md`
   (from the sibling SmartDocs/MultiRetur project).
+- **CORRECTION, verified 2026-08-27: "even via X.CREATEOBJ" above does NOT hold for a plain
+  `CreateObj('SALDOC;EF')` + manual `ITELINES.FINDOCS=` insert** (the pattern `RECADV.js`
+  `createInvoiceFromReception` uses). Live check on advice `FINDOC=2206364` → invoice `2208760`
+  (14/14 lines linked, `FINDOCS`/`MTRLINESS` matching exactly): source `FULLYTRANSF` and every
+  line's `QTY1COV` stayed **0** after `DBPOST`. The MultiRetur project's "S1 updates it
+  automatically" finding was verified on its own (different) Conversie/`FINDOCL` path, not this
+  one — the two document-creation mechanisms are NOT equivalent for this bookkeeping. Fix applied
+  in `RECADV.js` (`markFullyTransfIfCovered`): after `DBPOST`, compute per-line coverage directly
+  from `MTRLINES.FINDOCS`/`MTRLINESS` (not from `QTY1COV`, which this path never populates) and
+  `X.RUNSQL('UPDATE FINDOC SET FULLYTRANSF=1 ...')` by hand only when every source line is fully
+  covered. Deliberate, scoped exception to "never write it by hand" — justified because the
+  automatic mechanism is proven not to fire on this path, so there is no double-write risk.
 
 ## "Is this advice invoiced?" — the correct predicate
 Verified 2026-08-05.

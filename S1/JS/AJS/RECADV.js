@@ -294,6 +294,33 @@ function getRecadvDocuments(params) {
 }
 
 /**
+ * S1's native ExtraUpdates bookkeeping (FINDOC.FULLYTRANSF / MTRLINES.QTY1COV) does NOT fire for
+ * the CreateObj('SALDOC;EF') + manual FINDOCS path used below - confirmed empirically 2026-08-27
+ * (FINDOC 2206364 -> 2208760, 14/14 lines linked, source's FULLYTRANSF/QTY1COV both stayed 0).
+ * That mechanism was only ever verified for the sibling MultiRetur project's real Conversie/
+ * FINDOCL path (documentatie/FULLYTRANSF_CONVERSION_GUARD.md), not this plain-insert one - so the
+ * coverage is computed here from the actual FINDOCS/MTRLINESS links instead of trusting QTY1COV,
+ * and FULLYTRANSF is set by hand, only on this path. Best-effort: never surfaced to the caller,
+ * since the reliable "is this advice invoiced?" check is still the FINDOCS/TFPRMS=103 predicate.
+ * params: advFindoc - the source advice's FINDOC
+ */
+function markFullyTransfIfCovered(advFindoc) {
+  try {
+    var uncovered = X.SQL(
+      'SELECT COUNT(*) FROM MTRLINES src WHERE src.FINDOC=:1 AND ISNULL(('
+      + ' SELECT SUM(d.QTY1) FROM MTRLINES d INNER JOIN FINDOC df ON df.FINDOC=d.FINDOC'
+      + ' WHERE d.MTRLINESS=src.MTRLINES AND d.FINDOCS=:1 AND df.ISCANCEL=0), 0) < src.QTY1',
+      advFindoc, advFindoc
+    );
+    if (uncovered == '0') {
+      X.RUNSQL('UPDATE FINDOC SET FULLYTRANSF=1 WHERE FINDOC=:1', advFindoc);
+    }
+  } catch (e) {
+    // bookkeeping only - a failure here must not undo the already-committed invoice
+  }
+}
+
+/**
  * Creates the invoice (Auchan 7122 / Dedeman 7123) for one clean 7111 advice, via
  * X.CreateObj('SALDOC;EF') so the ON_RESTOREEVENTS/preiaDateAviz and ON_AFTERPOST hooks bound
  * to that view fire exactly as they do for a UI-created invoice (see reception-screen.md item B).
@@ -310,7 +337,7 @@ function createInvoiceFromReception(params) {
   }
 
   var adv = X.GETSQLDATASET(
-    'SELECT TRDR, TRDBRANCH, ISNULL(NUM04, 0) AS NUM04, CCCORDERDOC, DATE01'
+    'SELECT TRDR, TRDBRANCH, ISNULL(NUM04, 0) AS NUM04, CCCORDERDOC, DATE01, CCCSELLERID'
     + ' FROM FINDOC WHERE FINDOC=:1 AND SERIES=7111 AND ISCANCEL=0',
     advFindoc
   );
@@ -372,6 +399,9 @@ function createInvoiceFromReception(params) {
     // (confirmed live via the EDInet portal - the FTP-level MessageAcknowledgement stays clean
     // even when this fails, so it is NOT a reliable success signal on its own).
     tblFINDOC.DATE01 = adv.DATE01;
+    // Never copied before 2026-08-27 either - left <SellerParty><BuyerSellerID> empty (confirmed
+    // live: source advice AEX-AE-054960 has CCCSELLERID='05613', invoice FAEX1-PF-40696 had NULL).
+    tblFINDOC.CCCSELLERID = adv.CCCSELLERID;
 
     var tblITELINES = obj.FindTable('ITELINES');
     lines.FIRST;
@@ -392,6 +422,8 @@ function createInvoiceFromReception(params) {
     if (!(newFindoc > 0)) {
       return { success: false, error: 'DBPOST did not return a new FINDOC id.' };
     }
+
+    markFullyTransfIfCovered(advFindoc);
 
     var created = X.GETSQLDATASET(
       'SELECT FINCODE, CONVERT(VARCHAR(19), TRNDATE, 120) AS TRNDATE FROM FINDOC WHERE FINDOC=:1',

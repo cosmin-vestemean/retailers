@@ -441,6 +441,23 @@ their business/schema validation passed. **The EDInet web portal is the only aut
 for real acceptance/rejection status**, and this repo/session has no credentials for it — always
 ask the user to check it directly rather than trusting a clean FTP ack alone.
 
+**Caveat found 2026-08-27 (weakens confidence in the DATE01 theory, doesn't refute it):**
+`documentatie/dedeman/FAEX1-PF-22065_2024-06-26.xml` is a genuine, complete, real **Auchan**
+invoice produced by the old proven manual process back in 2024 (`Name>Auchan Romania S.A.`,
+well-formed throughout) — and its `<OrderParty><BuyerOrderDate>` is **also empty**, same as our
+pre-fix bug state. There is no local record of whether this specific file was ever accepted or
+rejected by Infinite, so this is not proof the DATE01 fix was pointless — but it means an empty
+`BuyerOrderDate` alone may not be sufficient to trigger "Invalid file structure", and the real
+defect (if the resend is still rejected) may lie elsewhere. If the 6 resent invoices are rejected
+again, diff the full generated XML byte-for-byte against this specific Auchan reference file
+(not the Dedeman `FAEXD-*` ones used for the original diff) instead of assuming BuyerOrderDate.
+Separately confirmed as *not* a formatting bug: the header `BuyerOrderDate` value now renders as
+`2026-08-19T00:00:00` (datetime with `T`, seen live in the app's XML preview after resend) — this
+exactly matches Auchan's own proven script (`AR_ORIGINAL_INVOICE.soimport.txt` line 54:
+`CONVERT(varchar(50), A.date01, 120)` + `replace(' ','T')`), unlike Dedeman's script which uses
+`VARCHAR(10)` (date-only, no time). Do not "fix" this to a plain date — it already matches the
+proven per-retailer format documented in the field-mapping table above.
+
 ## Deeper root cause (2026-08-27) — GETSQLDATASET's WS bridge corrupts null-date SQL expressions
 
 The `DATE01` fix above only prevents `<BuyerOrderDate>` from being empty **going forward** (once
@@ -508,6 +525,30 @@ isolation.
    "processed" result this time.
 4. Only then is this item genuinely done — the earlier "live-verified" claim in this page's status
    line was premature.
+
+**Third gap found 2026-08-27, same category as `DATE01` — `CCCSELLERID` also never copied.**
+User pasted the app's XML preview for the resent `FAEX1-PF-40696` and asked to review it field by
+field against the real Auchan reference (`FAEX1-PF-22065_2024-06-26.xml`). The preview's
+per-line-indented look was a red herring — confirmed (user: "Este de aici") to be purely
+`frontend/src/components/xml-viewer.js`'s `_formatXml()` display pretty-printer, not the actual
+bytes sent (`InfiniteInvoice.js`'s own `tag()` helper emits compact `<Tag>value</Tag>`, one line
+per field, matching the real reference exactly). But one real value WAS wrong: `<SellerParty>
+<BuyerSellerID>` was empty, while the reference file has `02219`. Both proven scripts
+(`AR_ORIGINAL_INVOICE.soimport.txt`, `ExpFactDedeman_ButonNew.soimport.txt`) read this from
+`FINDOC.CCCSELLERID` — same column `InfiniteInvoice.js` already reads correctly (line ~131/184).
+Confirmed live via SQL: source advice `AEX-AE-054960` (FINDOC 2202772) has `CCCSELLERID='05613'`,
+but the created invoice `FAEX1-PF-40696` (FINDOC 2209183) has it `NULL` — **`RECADV.js`'s
+`createInvoiceFromReception` never copied it**, same class of bug as the `DATE01` miss. **Fixed
+2026-08-27** (added to the SELECT + `tblFINDOC.CCCSELLERID = adv.CCCSELLERID`, same place as the
+`DATE01` assignment) — **needs ERP redeploy + backfill for the 6 test invoices before the next
+resend**, same as `DATE01` above (`CCCSELLERID` backfill can reuse the identical
+`CROSS APPLY`-on-`MTRLINES.FINDOCS` pattern).
+
+**Also observed, likely NOT a bug**: `<CustomTariffNumber>` was empty on 2 of 4 lines
+(`PF.00031`/`PF.00030`). Traced to `InfiniteInvoice.js`'s `LEFT OUTER JOIN intrastat E ON
+B.intrastat=E.intrastat` — those two `MTRL` rows simply have no `INTRASTAT` set, a per-product
+master-data gap, not something `createInvoiceFromReception`/`InfiniteInvoice.js` can fix. Lower
+priority than `CCCSELLERID`; revisit only if the portal flags it as fatal.
 
 **Still true / not affected by this correction**: the Infinite directory layout discovered
 (`archive/`, `confirm/send`, `confirm/failed`, `duplicate/`, `error/`, `logs/ok/`, `logs/err/`,
