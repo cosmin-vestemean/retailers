@@ -1445,7 +1445,8 @@ function createInvoice() {
                 _Invoice.Count++;
             if (bindUI(IssueDate.UIRef, IssueDate.UIVal, _Invoice.IssueDate))
                 _Invoice.Count++;
-            if (parseInt(Series.UIVal) == 7121) {
+            // 7121 = legacy/other retailers, 7122 = Auchan, 7123 = Dedeman - all "tur" (regular) invoices.
+            if (parseInt(Series.UIVal) == 7121 || parseInt(Series.UIVal) == 7122 || parseInt(Series.UIVal) == 7123) {
                 if (bindUI(Series.UIRef, 380, _Invoice.InvoiceTypeCode))
                     _Invoice.Count++;
             } else if (parseInt(Series.UIVal) == 7531) {
