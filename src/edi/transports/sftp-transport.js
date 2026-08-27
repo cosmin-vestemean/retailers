@@ -59,6 +59,12 @@ export class SftpTransport {
     await this.client.fastPut(localPath, remotePath)
   }
 
+  /** Upload an in-memory payload without touching disk (e.g. generated XML). */
+  async uploadBuffer(buffer, remotePath) {
+    await this.connect()
+    await this.client.put(buffer, remotePath)
+  }
+
   async remove(remotePath) {
     await this.connect()
     await this.client.delete(remotePath)

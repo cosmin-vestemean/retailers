@@ -353,6 +353,10 @@ function createInvoiceFromReception(params) {
 
   var obj = null;
   try {
+    // 2026-08-27: 'SALDOC;EF' initially failed with "document number must be provided" because
+    // series 7122 was admin-flagged "Doar din conversie" (conversion-only) - not a form issue.
+    // Fixed at the source: SALDOC_EF_27072026.js ON_SALDOC_SERIES now allows SERIES=7122 for the
+    // WEB user (X.SYS.USER==1002, i.e. this AJS call) once the series-level flag was removed.
     obj = X.CreateObj('SALDOC;EF');
     obj.DBINSERT;
 

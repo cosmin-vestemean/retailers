@@ -3,11 +3,12 @@
 **This is a LIVING page.** Parts of it (button B) are still mid-design — keep the "Open work"
 sections honest about what is analysis-only vs. implemented, don't present unfinished design as done.
 
-## Status overview (as of 2026-08-24)
+## Status overview (as of 2026-08-27)
 - **Model change (score every advice line, incl. omitted ones): IMPLEMENTED** 2026-08-05.
-- **Item A ("Trimite" button): approved by beneficiary, spec below, NOT yet implemented.**
-- **Item B ("Facturează" button): approved, analysis-only completed 2026-08-24, config-source
-  decision made (reuse `CCCDOCUMENTES1MAPPINGS`), NOT yet implemented.**
+- **Item A ("Trimite" button): IMPLEMENTED. Backend send-path bug found and fixed 2026-08-27** —
+  see the dated note at the end of section A.
+- **Item B ("Facturează" button): IMPLEMENTED and verified live 2026-08-27.** See the dated note
+  inside section B for the conversion-only series fix that unblocked it.
 - **Item C (invoice identity column): approved, spec below, NOT yet implemented.**
 - Also pending: revert an over-correction in `invoice-table.js` (see bottom).
 
@@ -57,20 +58,55 @@ across 2 lines** once omitted lines are scored. A second case, reception `11654|
    report/email** — re-running `reconcileRecadv()` live post-deploy shows the corrected (larger)
    shortage numbers, which the beneficiary should be told to expect.
 
-## A. "Trimite" button in the Recepții actions column (spec, not implemented)
+## A. "Trimite" button in the Recepții actions column — IMPLEMENTED
 
-Same behaviour as the Facturi tab send: `getInvoiceDom` -> `uploadInvoice` -> `markDocumentSent`.
+Same behaviour as the Facturi tab send: `getInvoiceDom` -> `uploadInvoice` -> `markDocumentSent`,
+shared via `sendInvoiceXml()` in `frontend/src/services/api.js` (both `invoice-table.js` and
+`reception-table.js` call it — no duplicated ~50-line copy, per the original spec below).
 
 - **Only render it where an invoice exists.** On „Nu" rows there is nothing to send.
 - **Must reflect sent state** — `Trimite` / `Retrimite` / already-sent badge. There is **no
   duplicate guard on the invoice flow** (unlike orders, which have `duplicateGuard` in
   `order-sender.js`), so a blind button would let the operator send twice.
-- **Do NOT copy `invoice-table._sendInvoice`** (~50 lines: DOM fetch, upload, mark sent, per-row
-  state, error paths). Extract a shared helper (e.g. `frontend/src/services/invoice-send.js`) and
-  have both `invoice-table.js` and `reception-table.js` call it, or the two copies will drift.
-- **First click is a TEST, not a routine.** The SFTP path to Infinite has never run in production:
-  0 of 521 Dedeman+Auchan invoices in 60 days have `CCCXMLSendDate` set. Validate on one invoice and
-  diff the generated XML against what the operator uploads by hand before trusting it.
+
+### BUG FOUND AND FIXED 2026-08-27: backend send-path ignored CCCEDIPROVIDER.CONNTYPE
+
+The frontend/shared-helper part above was already implemented and matched spec — the docs here
+were stale. What was actually broken (and never caught, because it was never exercised): the
+backend `src/services/edi-invoices/edi-invoices.class.js` hardcoded `ssh2-sftp-client` for
+**every** retailer, regardless of `CCCEDIPROVIDER.CONNTYPE`.
+
+- **DocProcess (CONNTYPE=1, real SFTP, private key in `CCCSFTP.PRIVATEKEY`): worked by accident**
+  — the hardcoded assumption happened to match reality. Measured: 125/410 invoices sent via the
+  app in the last 60 days.
+- **Infinite (CONNTYPE=4, plain FTP on `ftp.infinite.pl:21`, no private key): always broken.**
+  The code tried an SSH2 handshake against an FTP-only port. Measured: **0/616** Infinite
+  invoices ever sent via the app in 60 days — matches the earlier "0 of 521 in 60 days" finding,
+  now root-caused instead of just observed.
+- Two more stacked bugs on the Infinite path: (1) it uploaded to raw `CCCSFTP.INITIALDIROUT`
+  (`/` for Infinite) instead of the provider's real `/invoice/` subdirectory; (2) `signSmime()` in
+  `src/edi/sign-smime.js` — whose own doc comment says S/MIME is "required by Infinite Edinet for
+  invoices" — was dead code, never called.
+- **Verified read-only against both live servers** (LIST only, no writes) before fixing: both
+  `CCCSFTP` rows are structurally correct (`ftp.infinite.pl` really has `/invoice/` with
+  `archive/confirm/duplicate/error/logs/omit/temp` subfolders and files land directly under
+  `/invoice/`; `dx.doc-process.com` `INITIALDIRIN`/`INITIALDIROUT` really are the DocProcess
+  `out`/`in` folders). The bug was 100% code, not config.
+- **Fix**: `edi-invoices.class.js` now resolves the transport the same way `scanner.js` does —
+  `getProvider()` + `buildTransport(row, row.PROVIDER_CONNTYPE)` — builds the remote path via
+  `joinRemote(sftpRow.INITIALDIROUT, provider.remoteSubdir('invoice'))`, and signs the payload
+  with `signSmime()` when `provider.code === 'infinite'` before upload. Added `uploadBuffer()` to
+  both `SftpTransport` and `FtpTransport` (upload an in-memory XML string without touching disk;
+  the existing `upload()` only took a local file path). `joinRemote` exported from `scanner.js`
+  instead of duplicated.
+- **Known remaining gap, not a code bug: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` are not set
+  anywhere** (checked `retailers4` Heroku config vars 2026-08-27 — absent). Until that PKCS#12
+  keystore is provisioned, Infinite sends fail closed with a clear "S/MIME signing failed" error
+  instead of silently uploading unsigned/wrong-transport XML. DocProcess is unaffected and works
+  today. Full test suite (91 tests) passing after the change.
+- **Still true from the original spec, unchanged:** first real Infinite send is still a TEST, not
+  a routine — validate on one invoice once the P12 cert is provisioned, and check whether it lands
+  in `/invoice/confirm` (accepted) vs `/invoice/error`/`/invoice/omit` (rejected) on the remote end.
 
 ## B. "Facturează" button in the Recepții actions column (analysis-only, not implemented)
 
@@ -134,6 +170,76 @@ now in [soft1-schema-facts.md](soft1-schema-facts.md#seriesfprms-map-confirmed-v
   see above); a single empirical test invoice is still recommended before this ships, but as
   confirmation rather than open-risk investigation. DocProcess retailers are explicitly out of
   scope — different flow, not analyzed.
+  **SUPERSEDED 2026-08-27 — this conclusion was wrong on the numbering mechanism, confirmed by the
+  first real empirical test (see below).**
+
+### CORRECTION 2026-08-27: series 7122 is conversion-only, plain `DBINSERT` cannot create it
+
+First live test of `createInvoiceFromReception` (advice `AEX-AE-055138`, FINDOC 2206364) failed
+with a Soft1 object-layer error that was initially unreadable (see
+[soft1-text-encoding-mojibake.md](soft1-text-encoding-mojibake.md) for the separate windows-1253
+decoding bug that hid it). Once decoded, the real message is **"Πρέπει να δοθεί ο αριθμός του
+παραστατικού"** ("the document number must be provided") — i.e. auto-numbering never fired.
+
+Root cause, confirmed in the ERP UI (Documente vânzări -> Administrare serii document):
+- Series **7122 (`FAEX1-`, "Factura cf Aviz Expeditie - Auchan-")** has **"Doar din conversie" =
+  Da** on its own admin record — it is NOT a general-purpose series, it can only be produced by
+  Soft1's document **Conversie** action.
+- Series 7111 (`AEX-`, aviz)'s own admin record lists its `CONVERTIT IN` targets: `FAEX-`, `AAEX-`,
+  `FAEXD-`, and **`7122`/`FAEX1-`** — confirming 7122 is reachable ONLY via conversion from 7111 (or
+  another listed source), never as a free-standing "New" document.
+- Manually confirmed in the UI: opening a brand-new sales document and picking a Serie, typing
+  `7122` into the Serie picker returns **`<No data to display>`** — the series is filtered out of
+  direct/manual creation entirely, matching the conversion-only flag.
+- This means `X.CreateObj('SALDOC;EF')` -> `DBINSERT` -> set `SERIES=7122` by hand can never work as
+  designed: Soft1 only assigns the document number (`FINCODE`) through the real conversion
+  operation on the source document (matching the right-click **Conversie** menu on a 7111 row), not
+  through a plain insert that merely sets `SERIES` to a conversion-only value.
+
+**This is a genuine Pet Factory business rule** (guards against inventing a 7122 invoice with no
+real source aviz), not a bug to route around silently. Two ways forward, both requiring a decision
+before continuing implementation:
+1. **Use Soft1's actual conversion mechanism** instead of `DBINSERT`/`SERIES=`. Not yet
+   reverse-engineered in this repo — no existing AJS/SALDOC script here calls a conversion method;
+   the UI's **Conversie** action is the only known-working path so far. Needs investigation into
+   what business-object call the rich client issues for it (likely a dedicated conversion method on
+   the SALDOC object, not a field assignment).
+2. **Ask Pet Factory/Sorin to relax "Doar din conversie" on 7122** so the reception screen can create
+   it directly like any other series — a deliberate policy change, not ours to decide unilaterally.
+
+Do not attempt a workaround that fakes the conversion (e.g. forcing a `FINCODE`/number by hand) —
+that would defeat the business rule's purpose (guaranteed 7111->7122 provenance) rather than
+honour it.
+
+### RESOLVED 2026-08-27: series-level flag relocated to a scoped code guard
+
+Decision taken (not option 1 - the real `CONVERTDLG`/`XCMD` conversion mechanism was not pursued;
+see `.env`/session history for the reverse-engineering notes if ever needed): **removed "Doar din
+conversie" on series 7121, 7122 and 7123 entirely** (7121 = `13249` legacy/inactive entity, 7122 =
+Auchan, 7123 = Dedeman — all three share the same `X.CreateObj('SALDOC;EF')` invoice-creation path
+in `RECADV.js`, just with a different `series` from `CCCDOCUMENTES1MAPPINGS`), and re-implemented
+the equivalent restriction as a scoped code guard in `S1/JS/SALDOC_EF_27072026.js`
+`ON_SALDOC_SERIES`:
+```js
+if ((SALDOC.SERIES == 7121 || SALDOC.SERIES == 7122 || SALDOC.SERIES == 7123) && X.SYS.USER != 1002) {
+  X.EXCEPTION('Seria ' + SALDOC.SERIES + ' se creeaza doar prin conversie din aviz sau din integrarea EDI (Pet Factory Retailers).');
+}
+```
+`X.SYS.USER == 1002` is the `WEB` service user (`USERS` table, `CODE='WEB'`) that this repo's AJS
+endpoints authenticate as — confirmed via existing precedent in `S1/JS/AJS/runCmd20210915.js`
+(lines 35, 504), which already gates logic on the same user id for the same purpose. A human on
+the desktop client is still blocked exactly as before (must use Conversie); only this repo's
+already-guarded (idempotent, `FINDOCS`-linked) `createInvoiceFromReception` call is let through.
+
+**Verified live 2026-08-27**: `createInvoiceFromReception({findoc: 2206364})` (advice
+`AEX-AE-055138`) succeeded end-to-end — created `FINDOC=2208760`, `FINCODE=FAEX1-PF-40689`,
+`SERIES=7122`, all 14/14 lines linked via `FINDOCS=2206364`, `NETAMNT`/`SUMAMNT` matching the
+source advice exactly (8342.82 / 9260.53). `RECADV.js` uses `X.CreateObj('SALDOC;EF')` again (the
+intermediate `EFIntegrareRetailers` form swap was a red herring - the form was never the problem).
+
+Separately, the Greek object-layer error that made this hard to diagnose (`GETLASTERROR` text
+coming back as `??????`) was a real bug in this repo's own `parseS1Json`, unrelated to the series
+restriction — see [soft1-text-encoding-mojibake.md](soft1-text-encoding-mojibake.md).
 - **Scope clarified: the „Facturează" button does NOT need its own send-to-EDI step.** A newly
   created invoice simply shows up in the existing **Facturi tab** (`invoice-table.js`) next time it
   refreshes, and the operator sends it from there with the already-built `Create XML`/`Send` buttons

@@ -1,9 +1,7 @@
-import Client from 'ssh2-sftp-client'
-import { assertSafeHost } from '../../edi/transports/safe-host.js'
-
-function joinRemotePath(dir, filename) {
-  return String(dir || '').replace(/\/+$/, '') + '/' + filename
-}
+import { buildTransport } from '../../edi/transports/factory.js'
+import { getProvider } from '../../edi/providers/factory.js'
+import { joinRemote } from '../../edi/scanner.js'
+import { signSmime } from '../../edi/sign-smime.js'
 
 export class EdiInvoicesService {
   constructor(options) {
@@ -20,37 +18,39 @@ export class EdiInvoicesService {
     if (!xml) return { success: false, message: 'Missing XML data' }
     if (!filename) return { success: false, message: 'Missing XML filename' }
 
-    const sftpRows = await this.app.service('CCCSFTP').find({ query: { TRDR_RETAILER: retailer } })
-    const sftpRow = sftpRows.data?.[0]
+    const configs = await this.app.service('CCCSFTP').list({ onlyActive: true })
+    const sftpRow = (configs.data || []).find((r) => parseInt(r.TRDR_RETAILER, 10) === retailer)
     if (!sftpRow) return { success: false, message: `Missing SFTP config for retailer ${retailer}` }
-    if (!sftpRow.INITIALDIROUT) return { success: false, message: `Missing INITIALDIROUT for retailer ${retailer}` }
 
-    const client = new Client()
-    const config = {
-      host: sftpRow.URL,
-      port: sftpRow.PORT,
-      username: sftpRow.USERNAME,
-      readyTimeout: 99999
+    const provider = getProvider({ CODE: sftpRow.PROVIDER_CODE, NAME: sftpRow.PROVIDER_NAME })
+    const remoteDir = joinRemote(sftpRow.INITIALDIROUT, provider.remoteSubdir('invoice'))
+    if (!remoteDir || remoteDir === '/') return { success: false, message: `Missing invoice upload directory for retailer ${retailer}` }
+
+    // Infinite requires a detached S/MIME signature over the raw XML; DocProcess does not.
+    let payload = xml
+    if (provider.code === 'infinite') {
+      try {
+        payload = signSmime(xml)
+      } catch (error) {
+        return { findoc, filename, success: false, message: `S/MIME signing failed: ${error.message}` }
+      }
     }
-    assertSafeHost(config.host)
-    if (sftpRow.PRIVATEKEY) {
-      config.privateKey = Buffer.from(sftpRow.PRIVATEKEY)
-      if (sftpRow.PASSPHRASE) config.passphrase = sftpRow.PASSPHRASE
-    } else if (sftpRow.PASSWORD || sftpRow.PASSPHRASE) {
-      config.password = sftpRow.PASSWORD || sftpRow.PASSPHRASE
-    } else {
-      return { success: false, message: 'Missing SFTP private key or password' }
+
+    let transport
+    try {
+      transport = buildTransport(sftpRow, sftpRow.PROVIDER_CONNTYPE)
+    } catch (error) {
+      return { findoc, filename, success: false, message: error.message }
     }
 
     try {
-      await client.connect(config)
-      await client.put(Buffer.from(xml, 'utf8'), joinRemotePath(sftpRow.INITIALDIROUT, filename))
+      await transport.uploadBuffer(Buffer.from(payload, 'utf8'), joinRemote(remoteDir, filename))
       return { findoc, filename, success: true }
     } catch (error) {
       console.error(error)
       return { findoc, filename, success: false, message: error.message }
     } finally {
-      try { await client.end() } catch { /* ignore */ }
+      try { await transport.close() } catch { /* ignore */ }
     }
   }
 }

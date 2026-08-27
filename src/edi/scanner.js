@@ -539,7 +539,7 @@ async function processPendingOrders(app, sftpRows) {
   return stats
 }
 
-function joinRemote(a, b) {
+export function joinRemote(a, b) {
   if (!b) return a || '/'
   if (!a) return b
   const left = a.endsWith('/') ? a.slice(0, -1) : a

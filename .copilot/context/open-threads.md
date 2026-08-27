@@ -33,12 +33,12 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
   priority: medium
   summary: >
     Both approved by Sorin, agreed order A then B: A. „Trimite" button (send an existing invoice,
-    same as Facturi tab) + invoice identity column (item C). B. „Facturează" button (create the
-    7122/7123 invoice from a clean reception) — analysis-only completed session N+20, not yet
-    implemented. Full spec for all three:
+    same as Facturi tab) + invoice identity column (item C) — not yet implemented. B. „Facturează"
+    button (create the 7122/7123 invoice from a clean reception) — **IMPLEMENTED and verified live
+    2026-08-27** for Auchan/Dedeman/legacy (7121/7122/7123), including logging. Full detail:
     [reception-screen.md](../wiki/reception-screen.md).
-  next: Implement A first (small, tests the never-exercised Infinite SFTP send path), then decide
-    B's config-source question (see `current-focus.md` Open Questions) and implement B.
+  next: Implement A (small, tests the never-exercised Infinite SFTP send path) + item C (invoice
+    identity column).
 
 - id: edinet-duplicate-document-number-families
   status: open

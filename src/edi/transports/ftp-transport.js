@@ -52,6 +52,12 @@ export class FtpTransport {
     await this.client.uploadFrom(localPath, remotePath)
   }
 
+  /** Upload an in-memory payload without touching disk (e.g. generated XML). */
+  async uploadBuffer(buffer, remotePath) {
+    await this.connect()
+    await this.client.uploadFrom(Readable.from(buffer), remotePath)
+  }
+
   async remove(remotePath) {
     await this.connect()
     await this.client.remove(remotePath)

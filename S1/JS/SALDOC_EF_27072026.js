@@ -1574,6 +1574,16 @@ function ON_SALDOC_SERIES() {
     );
   }
 
+  // Seriile 7121 (FAEX-, retailer legacy/inactiv 13249), 7122 (FAEX1-, Auchan) si 7123 (Dedeman)
+  // nu mai sunt restrictionate "Doar din conversie" la nivel de serie - restrictia e mutata aici:
+  // doar conversia din aviz (acelasi user logat) sau integrarea EDI Pet Factory Retailers
+  // (user WEB=1002) pot crea direct aceste serii.
+  if ((SALDOC.SERIES == 7121 || SALDOC.SERIES == 7122 || SALDOC.SERIES == 7123) && X.SYS.USER != 1002) {
+    X.EXCEPTION(
+      "Seria " + SALDOC.SERIES + " se creeaza doar prin conversie din aviz sau din integrarea EDI (Pet Factory Retailers)."
+    );
+  }
+
   if (SALDOC.SERIES == 7210) {
     SALDOC.TRDR = 40225;
   }
