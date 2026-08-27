@@ -46,7 +46,8 @@
     "prettier": "npx prettier \"**/*.js\" --write",
     "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
     "test": "cross-env NODE_ENV=test npm run mocha",
-    "bundle:client": "npm pack --pack-destination ./public"
+    "bundle:client": "npm pack --pack-destination ./public",
+    "heroku-postbuild": "npm --prefix frontend install --include=dev && npm --prefix frontend run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
