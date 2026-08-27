@@ -224,7 +224,7 @@ export async function markDocumentSent(findoc, xmlFilename) {
  */
 export async function sendInvoiceXml(findoc, trdr, { domObj, buildFilename, override = false } = {}) {
   if (!domObj) {
-    domObj = await getInvoiceDom({ appID: '1001', findoc })
+    domObj = await getInvoiceDom({ appID: '1001', findoc, trdr })
   }
   if (domObj.trimis && !override) {
     return { success: false, alreadySent: true, filename: domObj.filename, domObj }

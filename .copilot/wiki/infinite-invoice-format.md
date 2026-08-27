@@ -1,6 +1,15 @@
 # Infinite invoice XML — real format, gap analysis, implementation plan
 
-**Status: NOT implemented. This page is the handoff plan for a fresh session.**
+**Status: IMPLEMENTED 2026-08-27, not yet deployed/tested live.** `S1/JS/AJS/InfiniteInvoice.js`
+(new AJS module, ported field-for-field from the two proven SOIMPORT scripts, see "The proven
+reference implementation" below) + `src/services/get-invoice-dom/get-invoice-dom.class.js`
+(routes to it for `provider.code === 'infinite'`, logs validation failures to `orders-log`) +
+frontend `trdr` threading (`api.js` `sendInvoiceXml`, `invoice-table.js` `_createXml`) so the
+routing decision has a retailer to look up. Covered by
+`test/services/get-invoice-dom/get-invoice-dom.test.js` (routing + logging); full `npm test`
+96 passing. **Remaining before this is truly done**: (1) deploy `InfiniteInvoice.js` to the ERP's
+Advanced JavaScript Editor (same manual step as every other AJS file in this repo), (2) one live
+test end-to-end per the "Test plan" section below — this has never run against real Soft1 data.
 
 ## Why this page exists
 
@@ -18,6 +27,67 @@ further field-binding fixes in that script would have produced an XML Infinite a
 correct long-term architecture is a generic, data-driven outbound XML engine (see "Deferred:
 the correct architecture" below). Do not let the dedicated builder quietly become permanent
 without revisiting this.
+
+**Scope directive (user, 2026-08-27): the dedicated builder is the target, not a stepping stone —
+do not over-build it.** The beneficiary intends future new retailers to be onboarded on
+**DocProcess**, not Infinite — Infinite stays a closed set of exactly these two retailers
+(Auchan, Dedeman). So there is no near-term pressure to generalize the Infinite side: two
+hardcoded per-retailer branches (per the reference table below) in one AJS file is the right
+shape, not a config-driven abstraction. The two proven `SOIMPORT` buttons already demonstrate
+this exact scope has worked in production for years — matching their behavior 1:1 is success
+criteria, not a stopgap.
+
+## The proven reference implementation (found 2026-08-27) — read this before touching gaps
+
+The "old manual process" that produced the real archived files is **not lost/undocumented** — it's
+two SoftOne **`SOIMPORT`** rows (a "ClientImport" script format, different dialect from AJS: pseudo-
+SQL `dsX = SELECT ... FROM ...` blocks + a procedural section that writes the XML file line-by-line
+via `PILib.WriteLine`/`PILib.CreateText`). Queryable directly: `SELECT CAST(SOIMPORT AS
+NVARCHAR(MAX)) AS SCRIPT FROM SOIMPORT WHERE CODE = '<code>'`. Full text saved to
+`documentatie/infinite_samples/*.soimport.txt` for reference (not deployed from here — these already
+live in Soft1).
+
+- **Auchan**: `AR_ORIGINAL_INVOICE` (button `RUNB_7103000`, i.e. `EXECCOMMAND` cmd `7103000` ->
+  `exportXML1()` -> `X.EXEC('XCMD:ClientImport,ScriptName: AR_ORIGINAL_INVOICE,...')` when
+  `SALDOC.EXPN == 0`, or `AR_ORIGINAL_INVOICE_WGT` when `EXPN > 0` — "WGT" = green tax/"timbru
+  verde" line added). WHERE clause: `A.expn=0 AND A.fprms=712 AND A.findoc=:vFindoc`.
+- **Dedeman**: `ExpFactDedeman_ButonNew` (button `RUNB_20190529`, cmd `20190529` ->
+  `exportXMLDedeman()` -> same `XCMD:ClientImport` mechanism, series 7123 or 7033). WHERE clause:
+  `A.Series IN (7123,7033) AND A.sosource=1351 AND A.company=50 AND A.trdr=11654 AND
+  A.trndate > '20190328'`.
+- Related sibling rows exist for storno/correction (`AR_STORNO_INVOICE`, `AR_CORRECTION_INVOICE`,
+  `ExpFactRDedeman`/return) — out of scope for Item A, noted for whenever return/storno invoicing
+  is tackled.
+
+**These have been used successfully in production up to now — the beneficiary vouches for them
+(user, 2026-08-27).** But they are **`XCMD:ClientImport` calls: they only run inside the Windows
+desktop S1 client** (an operator clicks the button; the script runs client-side, writes the XML
+to a local/network path — no FTP/signing inside the script itself, that's a separate manual or
+scheduled step). **They cannot be invoked from our server-side AJS/web-service flow** — the whole
+point of Item A is to automate what these buttons do manually. **Decision (user, 2026-08-27): do
+not call these scripts, but mine their SQL for the proven field mappings** — they are the
+authoritative, tested source for every field the spec PDF and archived-file reverse-engineering
+had left ambiguous. This supersedes several conclusions below that were guessed from only 2
+archived files before these scripts were found.
+
+**Retailer-specific values found in these scripts (this is the important part — do NOT assume a
+single universal value across retailers):**
+
+| Field | Auchan (`AR_ORIGINAL_INVOICE`) | Dedeman (`ExpFactDedeman_ButonNew`) |
+|---|---|---|
+| `BuyerParty`/`InvoiceeParty` Street/PostalCode/City | `TRDR.ADDRESS`/`ZIP`/`city` (same row for both parties) | same — `TRDR.ADDRESS`/`ZIP`/`city` |
+| `HouseNumber` (all 4 parties) | always hardcoded `''` | always hardcoded `''` |
+| `ShipToParty` Street/PostalCode/City | `TRDBRANCH.ADDRESS`/`ZIP`/`CITY` (joined on `SALDOC.TRDBRANCH`) | same — `TRDBRANCH` |
+| `SellerParty` Street/PostalCode/City | `COMPANY.ADDRESS`/`ZIP`/`CITY` | same — `COMPANY` |
+| `TaxCategoryCoded` (header + line + summary) | hardcoded **`'S'`** | hardcoded **`'3D'`** |
+| `PacketContentQuantity` | `CCCS1DXTRDRMTRL.UnitPack` (per retailer-article mapping) | hardcoded `''` |
+| `PackageType` | hardcoded **`'CT'`** | hardcoded `''` |
+| `PackUnitOfMeasure` | `MTRUNIT.SHORTCUT` (same as `UnitOfMeasure`) | same — mirrors `UnitOfMeasure` |
+| Filename | `<InvoiceNumber>_<Data>.xml` | same pattern |
+| XML declared encoding | `iso-8859-2` in the `<?xml ...?>` prolog, but every string is run through `PILib.AnsiToUTF8` before `PILib.WriteLine` — i.e. **the declared encoding and the actual bytes don't match**, and Infinite has accepted this for years. Replicate the mismatch as-is (declare `iso-8859-2`, write UTF-8 bytes) rather than "fixing" it — don't risk being the first to test whether Infinite actually cares. | same quirk |
+
+This resolves gaps 1, 3 and 4 below outright (retailer-specific, not a single constant) — no
+beneficiary question needed for those. See each gap for the updated status.
 
 ## Proof: two schemas, confirmed from three independent sources
 
@@ -37,9 +107,31 @@ without revisiting this.
    the SFTP send path for these two retailers was never actually exercised until this session
    (0/616 sent via the app in 60 days, confirmed earlier this session).
 
-## The real schema (full field list, extracted from the v4.0 PDF)
+## The real schema (full field list, corrected 2026-08-27 against the proven scripts + real archive)
 
 `M` = mandatory, `D` = dependent/conditional, `O` = optional. Format notes in parens.
+
+**Corrections made 2026-08-27**: this block was originally transcribed from the PDF spec alone and
+had gaps, found by diffing it against `AR_ORIGINAL_INVOICE`/`ExpFactDedeman_ButonNew` AND the real
+archived files (both agree, so this is now high-confidence):
+- **`<PaymentTerms>` (the standalone days field) is never emitted** by either proven script or
+  either archived file — zero occurrences confirmed by grep. The spec marks it `M`, real practice
+  omits it entirely. Follow proven practice: only `<PaymentTermsQualifier>` is written.
+- **Missing entirely from the original transcription**: a header-level `<OrderParty>` (with its own
+  `BuyerOrderNumber`/`BuyerOrderDate`) and `<DeliveryParty>` (`DeliveryDate`/`DeliveryDocumentNumber`/
+  `DeliveryDocumentDate`) block inside `<InvoiceParty>`, appearing **before** `<BuyerParty>`. Both
+  are present in every real archived file. These are in *addition* to the per-item `<Order>`/
+  `<DeliveryDetail>` — both header-level and per-item versions exist and are populated from the
+  same `dsHeader` values in both proven scripts.
+- **Missing**: `<Contact><Person>/<Tel></Contact>` under `SellerParty`. Retailer-specific:
+  Auchan hardcodes `Person = 'Ion Ion'`; Dedeman hardcodes `Person = ''` (empty). Both use
+  `COMPANY.PHONE2` for `Tel`.
+- **Missing**: `<UnitOfMeasureXCBL>` per item — always empty in both proven scripts and both
+  archived files, but structurally present on every line.
+- **Formula correction**: `MonetaryAmountPayable` is not computed via a discount formula in
+  practice — both proven scripts just set it equal to `MonetaryGrossValue`. There is no discount/
+  allowance tracking anywhere (`AllowancesAndCharges` and any `Discount` tag: zero occurrences in
+  the real archive) — don't build discount logic for this.
 
 ```
 <Invoice Version="1.0.1" xsi:noNamespaceSchemaLocation=".../invoice.xsd">        M
@@ -47,22 +139,35 @@ without revisiting this.
     <InvoiceNumber>                              M  AN(14)   FINCODE
     <Date>                                       M  YYYY-MM-DD   TRNDATE
     <InvoiceDueDate>                              M  YYYY-MM-DD   FINPAYTERMS.FINALDATE
-    <PaymentTerms>                                M  N        days (already computed as `dm` in
-                                                                the current script via PAYMENT/PAYDAYS)
-    <PaymentTermsQualifier>3</PaymentTermsQualifier>  M  N(1)  fixed = 3 (fixed date)
+    <PaymentTermsQualifier>3</PaymentTermsQualifier>  M  N(1)  fixed = 3 (fixed date).
+                                                        NOTE: no standalone <PaymentTerms> (days) —
+                                                        confirmed never emitted, do not add it.
     <PaymentMethod><Code>42</Code>                M  N(2)     fixed = 42 (bank transfer)
-      <Description>                              O  AN(14)
+      <Description>                              O  AN(14)   always empty in practice
     </PaymentMethod>
-    <AllowancesAndCharges>                        O  (not applicable at the moment per spec)
+    <AllowancesAndCharges>                        O  never emitted in practice — omit
     <InvoiceCurrencyCoded>RON</InvoiceCurrencyCoded>  M AN(3)
     <InvoicePurposeCoded>O</InvoicePurposeCoded>  M  N(1)   fixed = "O" (commercial); "C" not applicable
     <DocumentRole>O</DocumentRole>                M  N(1)   "O"=original, "R"=return (RETANN-based),
                                                              "A"=storno (not applicable now) — only
                                                              need "O" for the clean-reception case
-    <Comment>                                     D  AN(1000)  optional, SALDOC.REMARKS
+    <Comment>                                     D  AN(1000)  Auchan+Dedeman both emit empty in
+                                                                practice — safe to leave empty
     <RefInvoiceNumber>/<RefInvoiceDate>           D  storno/correction only — not needed yet
   </InvoiceHeader>
   <InvoiceParty>                                                                M
+    <OrderParty>                                  M   header-level, once per invoice — ADDED 2026-08-27,
+      <BuyerOrderNumber> M   SALDOC.NUM04          was missing from the original transcription
+      <BuyerOrderDate> M     SALDOC.DATE01
+    </OrderParty>
+    <DeliveryParty>                                M   header-level, once per invoice — ADDED 2026-08-27
+      <DeliveryDate> M              MTRDOC.CCCDispatcheDate (source aviz's TRNDATE)
+      <DeliveryDocumentNumber> M    MTRDOC.CCCDispatcheDoc (source aviz's FINCODE)
+      <DeliveryDocumentDate> M      the source aviz's own TRNDATE too (both proven scripts select
+                                     it via the same `mtrlines.findocs -> findoc` join, just as a
+                                     separate `dsHeader` column) — same value as `DeliveryDate` in
+                                     practice, sourced independently rather than copied
+    </DeliveryParty>
     <BuyerParty>                                  M   (party receiving goods/services)
       <ILN> M N(13) GLN          <TaxID> M AN(35)     <Name> M AN(175)
       <Street> M AN(175)         <HouseNumber> M AN(9) <PostalCode> M AN(9)
@@ -75,37 +180,46 @@ without revisiting this.
       <ILN> M   <BuyerSellerID> D AN(14)   <TaxID> M
       <BankAccount> M   <BankAccountOwner> O   <BankName> O
       <Name> M   <Street>/<HouseNumber>/<PostalCode>/<City>/<Country> all M
-    <ShipFromParty>                                D   only if different from SellerParty
+      <Contact>                                    M   ADDED 2026-08-27, was missing
+        <Person>  retailer-specific: Auchan hardcodes 'Ion Ion', Dedeman hardcodes ''
+        <Tel>     both: COMPANY.PHONE2
+      </Contact>
+    <ShipFromParty>                                D   only if different from SellerParty —
+                                                         always emitted empty in both proven scripts
   </InvoiceParty>
   <InvoiceDetail>                                                               M
     <Item> (repeated per line)                     M
       <ItemNum> M AN(1000) line number
       <EAN> M (GTIN-8/13/14)             <BuyerItemID> M AN(14)  (CCCS1DXTRDRMTRL.CODE)
       <SellerItemID> D AN(14)            <CustomTariffNumber> D AN(14)
-      <ProductIdentifierExt> D AN(2)      ("CU"=commercial unit, "RC"=returnable asset)
-      <PacketContentQuantity> M N(15.2)   ***gap: no current data source, see below***
-      <PackageType> D AN(3)               ("CT"=carton/box, "RC"=returnable asset)
+      <ProductIdentifierExt> D AN(2)      "CU" hardcoded by both retailers
+      <PacketContentQuantity> M N(15.2)   retailer-specific — see reference table above
+      <PackageType> D AN(3)               retailer-specific — see reference table above
       <QuantityValue> M N(15.2)           QTY1
-      <TaxCategoryCoded> M AN(1)          ***gap: VAT-type code, not just percent — see below***
+      <TaxCategoryCoded> M AN(1)          retailer-specific hardcoded constant — see reference table
       <TaxPercent> M N(4)                 VAT.PERCNT
       <TaxAmount> M N(18)
       <MonetaryGrossValue> M N(18)  = MonetaryNetValue + TaxAmount
       <MonetaryNetValue> M N(18)
-      <MonetaryAmountPayable> M N(18) = QuantityValue*UnitPriceValue - UnitDiscount
+      <MonetaryAmountPayable> M N(18)  = MonetaryGrossValue in practice (no discount tracking exists
+                                          anywhere in the real schema/archive — don't build one)
       <UnitOfMeasure> M AN(3)             MTRUNIT.shortcut (or CCCALTTRDRMTRUNIT override,
                                             already resolved by the existing calcInvoicedQuantity())
-      <PackUnitOfMeasure> M AN(3)         ***gap, see below***
+      <UnitOfMeasureXCBL>                 ADDED 2026-08-27, was missing — always empty in practice
+      <PackUnitOfMeasure> M AN(3)         same value as UnitOfMeasure — see reference table above
       <UnitPriceValue> M N(18)            PRICE
       <UnitPriceValueGross> M N(18) = UnitPriceValue + TaxPercent*UnitPriceValue
-      <Name> M AN(35)                     MTRL.name (spec truncates to 35 chars — current script
-                                            does not truncate, must add)
+      <Name> M AN(35)                     MTRL.name (spec truncates to 35 chars — neither proven
+                                            script actually truncates; matching proven practice is
+                                            safer than "fixing" it, but flag if a name >35 chars
+                                            causes an Infinite rejection)
       <ReturnsAnnouncement>                M only for return invoices — not needed for clean case
-      <Order>
-        <BuyerOrderNumber> M               SALDOC.NUM04
-        <BuyerOrderDate> M                 SALDOC.DATE01
+      <Order>                              M per-item (in addition to header-level OrderParty above)
+        <BuyerOrderNumber> M               same value as header OrderParty.BuyerOrderNumber
+        <BuyerOrderDate> M                 same value as header OrderParty.BuyerOrderDate
       <DeliveryDetail>
-        <DeliveryDate> M                   MTRDOC.CCCDispatcheDate (same value per line is fine)
-        <DeliveryDocumentNumber> M         MTRDOC.CCCDispatcheDoc
+        <DeliveryDate> M                   same value as header DeliveryParty.DeliveryDate
+        <DeliveryDocumentNumber> M         same value as header DeliveryParty.DeliveryDocumentNumber
   </InvoiceDetail>
   <InvoiceSummary>                                                              M
     <NumberOfLines> M       <NetValue> M (sum MonetaryNetValue)
@@ -118,7 +232,26 @@ without revisiting this.
 </Invoice>
 ```
 
+**Answering "do we have all fields + mappings covered?" (2026-08-27 audit)**: **yes, fully.** Every
+field in the corrected block above now has a confirmed source from one or both proven scripts
+and/or the real archived files — including the ones the original PDF-only transcription had missed
+entirely (`OrderParty`/`DeliveryParty`/`Contact`/`UnitOfMeasureXCBL`, plus the wrongly-assumed
+`<PaymentTerms>` that turned out to never be emitted). Nothing in the clean/original-invoice path
+is still unsourced. The two previously-marked "gaps" (`TaxCategoryCoded`, packaging fields) and the
+address sourcing are resolved per-retailer, not per-VAT-percent or a single shared constant — see
+the reference table above. The only intentionally-out-of-scope fields are the return/storno ones
+(`ReturnsAnnouncement`, `RefInvoiceNumber`/`RefInvoiceDate`, `DocumentRole` values other than `"O"`)
+and the still-genuinely-unknown 0%/exempt `TaxCategoryCoded` value, both deferred per gap 7/4.
+  </InvoiceSummary>
+</Invoice>
+```
+
 ## Confirmed reusable data (already fetched by the existing script — same SQL sources apply)
+
+**Note (2026-08-27): the address sub-bullets below describe what `runCmd20210915.js` (DocProcess
+flow) fetches — for the new Infinite builder use `TRDR.ADDRESS`/`TRDBRANCH.ADDRESS`/
+`COMPANY.ADDRESS` instead, per the proven scripts (see the reference table above), not
+`CCCNUMESTREDIDX`/`CCCBUILDINGNUMBER`.**
 
 - `SALDOC`/`MTRDOC`/`FINPAYTERMS` header fields (FINCODE, TRNDATE, NUM04, DATE01, PAYDAYS via
   `PAYMENT`, `CCCDispatcheDate`/`CCCDispatcheDoc`).
@@ -126,8 +259,7 @@ without revisiting this.
   (customer's own GLN toward us), `CCCGLNFORCUSTOMER` (our GLN as known to this customer),
   `TRDBANKACC`/`BANK` join for IBAN/bank name.
 - `TRDBRANCH` row for the delivery point (`depozitLivrare`) — `CCCS1DXGLN`, name, address, city,
-  `CCCBUILDINGNUMBER`, zip. **Confirmed non-null for the Auchan test case** (unlike the company/
-  customer StreetName gap below).
+  `CCCBUILDINGNUMBER`, zip. **Confirmed non-null for the Auchan test case.**
 - `COMPANY` row (`companyData`) — AFM, name, city, district, zip, `CCCNUMESTREDIDX` (street).
 - Per-line: `MTRLINES`/`MTRL` (MTRL, QTY1, PRICE, DISC1PRC, VAT, name, CODE/CODE1),
   `CCCS1DXTRDRMTRL` (buyer's own article code), `VATANAL`/`VAT` (percent, amounts),
@@ -135,37 +267,46 @@ without revisiting this.
 
 ## Genuine gaps — need a data source or a beneficiary answer before this can ship
 
-1. **`TRDR.CCCNUMESTREDIDX`/`CCCNREDIDX` (street/house number) are NULL for Auchan (13248)**
-   confirmed via SQL this session. `BuyerParty.Street`/`HouseNumber` are `M` (mandatory) in the
-   real schema too — this is not a schema-format artifact, it's missing Soft1 master data.
-   **Action: ask the beneficiary to fill Auchan's address fields in Soft1** (Dedeman's own values
-   were never checked — verify before assuming they're fine).
-2. **`MTRDOC.DELIVDATE` is frequently NULL** (73% of 7111 avize have it; the specific test
-   reception, `AEX-AE-055138`/FINDOC 2206364, does not). Real invoices are 99.6% populated
-   (2121/2130 over 90 days), so something normally fills it — likely the native Soft1
-   "Conversie" mechanism, which the app's `createInvoiceFromReception` (`RECADV.js`) bypasses.
-   Per user 2026-08-27: **"nu se mai face conversia manual din soft, trebuie sa asiguram noi ceea
-   ce se transfera prin ON_RESTOREEVENTS"** — extend `preiaDateAviz()` in
-   `S1/JS/SALDOC_EF_27072026.js` to also copy `MTRDOC.DELIVDATE` from the source aviz's own
-   `MTRDOC` row (same join already used for `CCCDispatcheDate`/`CCCDispatcheDoc`), **without
-   fabricating a value when the source itself has none** (this repo's established anti-silent-
-   fallback rule — see `/memories/repo` docDate() lesson). If the source aviz has no DELIVDATE
-   either, that is a genuine upstream data gap to surface to the beneficiary, not to paper over.
-   **Not yet implemented — do this as part of the new session's work.**
-3. **`PacketContentQuantity` (M) and `PackUnitOfMeasure` (M)** — no current data source identified.
-   Likely maps to a packaging/pallet-quantity concept that may not exist cleanly in this MTRL
-   setup. Needs investigation (possibly `MTRL` packaging fields, or defaults to 1×`UnitOfMeasure`
-   if Pet Factory doesn't track multi-level packaging) — **flag to beneficiary if no clean source
-   is found**, do not guess silently.
-4. **`TaxCategoryCoded` (M, AN(1))** is a VAT **type** code (spec example `"2D"`), not the percent.
-   Need the actual Infinite/EDInet VAT category coding table (not in this PDF) — check
-   `documentatie/EDInet_Connector/` or ask the beneficiary/Infinite helpdesk for the code list
-   mapped to Pet Factory's VAT rates (19%/9%/5%/0% etc.).
-5. **Which GLN goes in `SellerParty.ILN` and `BuyerParty.ILN`?** The current script's
-   `danteData.SupplierLocationCoordinate` (`CCCGLNFORCUSTOMER`) and
-   `danteData.CustomerLocationCoordinate` (`CCCS1DXGLN`) are named confusingly — verify the actual
-   direction against a real archived invoice's `<BuyerParty><ILN>` vs `<SellerParty><ILN>` before
-   wiring them, don't assume the DXInvoice naming convention carries over correctly.
+1. **RESOLVED 2026-08-27** — no address gap at all; the earlier framing (chase
+   `TRDR.CCCNUMESTREDIDX`/`CCCNREDIDX`, ask the beneficiary to fill them) was wrong. The proven
+   scripts never read those columns. `BuyerParty`/`InvoiceeParty` = `TRDR.ADDRESS`/`ZIP`/`city`
+   (Auchan's `TRDR.ADDRESS` and Dedeman's both already populated — checked live); `ShipToParty` =
+   `TRDBRANCH.ADDRESS`/`ZIP`/`CITY` (confirmed non-null for the Auchan test case, per
+   "Confirmed reusable data" below); `SellerParty` = `COMPANY.ADDRESS`/`ZIP`/`CITY`. `HouseNumber`
+   is hardcoded empty on **every** party in both proven scripts — never split out, ever. See the
+   reference table above ("The proven reference implementation").
+2. **Fix written, deployed 2026-08-27 — needs a fresh post-deploy test to confirm.** `MTRDOC.DELIVDATE`
+   was frequently NULL (73% of 7111 avize) because the app's `createInvoiceFromReception`
+   (`RECADV.js`) bypasses the native Soft1 "Conversie" mechanism that used to fill it. Per user:
+   *"nu se mai face conversia manual din soft, trebuie sa asiguram noi ceea ce se transfera prin
+   ON_RESTOREEVENTS"* — `preiaDateAviz()` in `S1/JS/SALDOC_EF_27072026.js` now copies
+   `MTRDOC.DELIVDATE` from the source aviz's own `MTRDOC` row (same join as
+   `CCCDispatcheDate`/`CCCDispatcheDoc`), without fabricating a value when the source itself has
+   none (anti-silent-fallback rule — see `/memories/repo` docDate() lesson). **Deployed to the ERP
+   script editor by the user 2026-08-27.** Existing invoices created before the deploy
+   (`FAEX1-PF-40689`/`40690`, checked live) still show `DELIVDATE IS NULL` as expected — that's
+   pre-deploy data, not a sign the fix failed. Verify by creating a **new** invoice from a
+   reception now and checking `MTRDOC.DELIVDATE` populates.
+3. **RESOLVED 2026-08-27, retailer-specific — see the reference table above.** Auchan:
+   `PacketContentQuantity` = `CCCS1DXTRDRMTRL.UnitPack`, `PackageType` hardcoded `'CT'`. Dedeman:
+   both hardcoded `''`. `PackUnitOfMeasure` = `MTRUNIT.SHORTCUT` (same as `UnitOfMeasure`) for
+   both. Do not use a single shared constant across retailers for the packaging fields.
+4. **RESOLVED 2026-08-27, retailer-specific — see the reference table above.** `TaxCategoryCoded`
+   is a **hardcoded constant per retailer, not a per-VAT-percent lookup**: Auchan's proven script
+   (`AR_ORIGINAL_INVOICE`) uses `'S'`; Dedeman's (`ExpFactDedeman_ButonNew`) uses `'3D'` — matches
+   the real archived Dedeman files exactly (both 11% and 21% lines use `3D`). Do **not** apply
+   Dedeman's `'3D'` to Auchan or vice versa. Still genuinely unconfirmed: the code for a 0%/exempt
+   line (neither proven script has one) — out of scope until that case actually occurs. A generic
+   Polish vendor template (`documentatie/dedeman/invoice_return_example.xml`, not Pet Factory data)
+   uses `D1`/`P3` — do not reuse those, they don't match either of our real per-retailer codes.
+   Also note: the existing in-repo AJS `exportXMLDedemanReturn()` (return invoices) hardcodes
+   `'2D'`, different again from the original-invoice `'3D'` — plausibly a legitimate
+   return-vs-original distinction, not a bug; out of scope for Item A (original invoices only).
+5. **RESOLVED 2026-08-27** — `SellerParty.ILN`/`BuyerParty.ILN` direction confirmed directly from
+   the proven scripts: `BuyerParty.ILN` = `TRDR.CCCS1DXGLN` (customer's own GLN), `SellerParty.ILN`
+   = `COMPANY.CCCS1DXGLN` (Pet Factory's own GLN), `ShipToParty.ILN` = `TRDBRANCH.CCCS1DXGLN`. No
+   further verification against archived files needed — this is what the beneficiary-guaranteed
+   scripts already do.
 6. **Filename convention differs.** Current script builds `INVOIC_<seriesnum>_VAT_<afm>.xml`
    (DocProcess convention). Real archived Infinite files are named `<FINCODE>_<YYYY-MM-DD>.xml`
    (e.g. `FAEXD-PF-38344_2026-05-25.xml`). The new builder must use the Infinite convention.
@@ -192,67 +333,88 @@ without revisiting this.
 - **`createInvoiceFromReception`** (`RECADV.js`, Item B) is unaffected by any of this — it only
   creates the SALDOC/MTRLINES rows, never generates XML.
 
-## Implementation plan for the new session
+## Implementation plan — status per step (implemented 2026-08-27)
 
-1. **Decide + confirm the two open gaps that need a human answer before coding**: `TaxCategoryCoded`
-   code table, and `PacketContentQuantity`/`PackUnitOfMeasure` source (or confirm Auchan/Dedeman
-   invoices genuinely don't need packaging detail and a fixed default is acceptable — get this
-   confirmed explicitly, don't assume).
-2. **Ask/confirm Auchan's (and check Dedeman's) `TRDR.CCCNUMESTREDIDX`/`CCCNREDIDX`** are filled
-   in Soft1 before testing — otherwise the same "StreetName missing" failure will recur regardless
-   of schema.
-3. **Extend `preiaDateAviz()`** in `S1/JS/SALDOC_EF_27072026.js` to copy `MTRDOC.DELIVDATE` from
-   the source aviz (best-effort, no fabrication) — small, do this first, independent of the rest.
-4. **Write the new dedicated builder** — recommend a new file `S1/JS/AJS/InfiniteInvoice.js`
-   (`//Cod specific S1 - AJS` marker, ES5) rather than extending `runCmd20210915.js`, to avoid
-   destabilizing the working DocProcess path. Reuse the existing SQL data-gathering pattern from
-   `runCmd20210915.js` (`companyData`/`danteData`/`depozitLivrare`/line dedup logic) but emit the
-   `Invoice v1.0.1` shape above. Build a pre-validation pass **before** attempting XML assembly
-   that checks every `M` field has a value and returns one structured, human-readable error per
-   missing field (see "logging" below) instead of the generic bind-error dump style used today.
-5. **Wire routing**: `src/services/get-invoice-dom/get-invoice-dom.class.js` currently always
-   calls `/JS/runCmd20210915/runExternalCode`. It needs to look up the retailer's provider (same
-   `CCCSFTP.list({onlyActive:true})` + match by `TRDR_RETAILER` pattern already used in
-   `edi-invoices.class.js`) and call the new AJS endpoint for `provider.code === 'infinite'`,
-   keeping the existing endpoint for `docprocess`. Filename logic in `sendInvoiceXml()`
-   (`frontend/src/services/api.js`) already just uses `domObj.filename` — as long as the new AJS
-   function returns the corrected `<FINCODE>_<YYYY-MM-DD>.xml` filename, no frontend change needed.
-6. **Logging + user-facing message (explicit ask from this session)**: pre-validation failures
-   should (a) insert a row into `CCCORDERSLOG` via the existing `orders-log` service /
-   `createOrderLog` AJS function (mirror the pattern in `src/services/recadv/recadv.class.js`,
-   `OPERATION: 'sendInvoice'` or similar, visible on the app's Logs screen) **and** (b) return a
-   clear, field-by-field message in the API response (not the raw multi-line Soft1 bind-error
-   dump) so the operator knows exactly what to fix in Soft1 without reading logs.
-7. **Test plan**: single invoice (`FAEX1-PF-40689` / FINDOC 2208760, or a fresh clean reception)
+1. **RESOLVED 2026-08-27** — all field-sourcing questions (address parties, `TaxCategoryCoded`,
+   packaging fields, GLN direction, filename, encoding quirk) are settled per-retailer from the
+   proven `SOIMPORT` scripts — see "The proven reference implementation" table near the top of
+   this page. No beneficiary question remains for the clean/original invoice case.
+2. **DONE 2026-08-27** — `preiaDateAviz()` in `S1/JS/SALDOC_EF_27072026.js` now copies
+   `MTRDOC.DELIVDATE` from the source aviz, and the user deployed it to the ERP script editor.
+   Still needs a fresh post-deploy test (create a new invoice from a reception, check
+   `DELIVDATE` populates) — existing pre-deploy invoices won't be retroactively fixed.
+3. **DONE 2026-08-27 — written, not yet deployed to the ERP.** `S1/JS/AJS/InfiniteInvoice.js`:
+   `buildInvoiceXml({findoc})` determines Auchan (`FPRMS=712`) vs Dedeman (`SERIES IN
+   (7123,7033)`) from the invoice's own `FINDOC` row, runs the ported per-retailer `dsHeader`/
+   `dsHeaderTax`/`dsLinii` SQL (adapted from `AR_ORIGINAL_INVOICE`/`ExpFactDedeman_ButonNew`,
+   `:1` parameterized instead of `:$ImpTable.vFindoc`), pre-validates every `M` field and returns
+   one message per missing field instead of assembling XML, then builds the XML with a `tag()`
+   helper (same style as `exportXMLDedemanReturn()`). Retailer differences are branched, not
+   config-driven, per the scope directive: `TaxCategoryCoded` (`S`/`3D`), packaging fields,
+   `Contact><Person>`, and Dedeman-only per-item `<Order>`/`<DeliveryDetail>`. `ItemNum` is a
+   running fetch-order counter, not a SQL column — confirmed both proven scripts actually do this
+   (the SQL's own `ItemNum`/`linenum` column is written to a JS var but never used in the
+   file-write loop). Declares `iso-8859-2` in the prolog while emitting real UTF-8 bytes, matching
+   the proven mismatch on purpose. Returns `{success, dom, trimis, filename, computername,
+   message, errors}` — `dom`/`trimis`/`filename`/`computername` mirror `runCmd20210915.js`'s
+   contract so the frontend needs no shape changes; `message`/`errors` are new.
+4. **DONE 2026-08-27.** `get-invoice-dom.class.js` now takes an optional `trdr` query param,
+   resolves the provider via `CCCSFTP.list({onlyActive:true})` (same match-by-`TRDR_RETAILER`
+   pattern as `edi-invoices.class.js`), and calls `/JS/InfiniteInvoice/buildInvoiceXml` when
+   `provider.code === 'infinite'`, else keeps `/JS/runCmd20210915/runExternalCode`. Missing/invalid
+   `trdr` falls back to the legacy DocProcess path (no regression for any caller not yet updated).
+   `trdr` is now threaded from the frontend: `sendInvoiceXml()` (`frontend/src/services/api.js`)
+   and `invoice-table.js`'s `_createXml()` both pass `this.trdr`/the retailer id through to
+   `getInvoiceDom()`. `reception-table.js` already passed `trdr` into `sendInvoiceXml()`, so no
+   change was needed there. Also switched the service to `parseS1Json` (charset-aware) instead of
+   a bare `response.json()`, consistent with every other AJS-calling service in this repo.
+5. **DONE 2026-08-27.** Pre-validation failures on the Infinite path insert one `orders-log` row
+   (`OPERATION: 'buildInvoiceXml'`, `LEVEL: 'error'`, field-by-field message) — mirrors
+   `recadv.class.js`'s `logInvoiceResult` pattern. Only failures are logged (a successful "create
+   XML" is just a preview step, not an action worth a log row); the legacy DocProcess path is
+   untouched, no double-logging. The AJS response's `message` field already carries the
+   field-by-field text (not a raw bind-error dump) for any future UI surface to use.
+   Test coverage: `test/services/get-invoice-dom/get-invoice-dom.test.js` (5 cases — Infinite
+   routing, DocProcess routing, missing-`trdr` fallback, failure logging, no logging on success).
+6. **NOT YET DONE — needs the ERP deploy + a live document.** Test plan unchanged from the
+   original spec: single invoice (`FAEX1-PF-40689` / FINDOC 2208760, or a fresh clean reception)
    end to end: generate → validate against the real schema informally (compare structure to a
-   real archived file) → sign → upload to `/invoice/` → **check `/invoice/confirm` vs
-   `/invoice/error`/`/invoice/omit` on the FTP afterwards** (read-only LIST, credentials from
-   `CCCSFTP` via `mcp_s1-api_s1_query_dataset`, same safe pattern used this session) before
-   declaring it works.
-8. **Do NOT enable bulk/automatic sending** — this remains a deliberate one-invoice-at-a-time
+   real archived file, and/or diff against what `AR_ORIGINAL_INVOICE`/`ExpFactDedeman_ButonNew`
+   would have produced for the same `FINDOC`) → sign → upload to `/invoice/` → **check
+   `/invoice/confirm` vs `/invoice/error`/`/invoice/omit` on the FTP afterwards** (read-only LIST,
+   credentials from `CCCSFTP` via `mcp_s1-api_s1_query_dataset`, same safe pattern used this
+   session) before declaring it works. Requires: (a) copy `InfiniteInvoice.js` into ERP →
+   Customization tools → Advanced JavaScript Editor, (b) deploy this session's Node changes to
+   `retailers4` (Heroku auto-deploy from `git push origin <branch>`).
+7. **Do NOT enable bulk/automatic sending** — this remains a deliberate one-invoice-at-a-time
    manual action per the beneficiary's existing `manualSend` decision, unchanged by this work.
 
-## Deferred: the correct architecture (the promise)
+## Deferred: the correct architecture (mostly moot for Infinite — see scope directive above)
 
 **Acknowledged debt, recorded per explicit user request (2026-08-27): this dedicated builder is
 being written under the same time pressure that produced `runCmd20210915.js` in 2021.** The
 architecturally correct fix — for both DocProcess and Infinite, and for any future retailer/
-provider — is a **generic outbound XML engine**, symmetric to `src/edi/order-builder.js`'s
+provider — would be a **generic outbound XML engine**, symmetric to `src/edi/order-builder.js`'s
 existing **inbound** engine (`buildOrderPayload`, XML → SALDOC via `CCCXMLS1MAPPINGS` +
 `runMappingSql`). That table already has a per-field mapping for Carrefour's `DXInvoice` (doc id
 38, admin UI `doc-mappings-editor.js`/`xml-mapping-table.js`) but **nothing reads it for outbound
 generation today** — it is documentation of the legacy script, not a live generator (confirmed by
 reading every consumer of `CCCXMLS1MAPPINGS` this session).
 
-When there is time to do this properly:
+**Updated priority (2026-08-27): this is now low-value specifically for Infinite.** Per the scope
+directive above, Infinite is a closed set of 2 retailers that already have proven, working
+generators to port from — there's no future-Infinite-retailer onboarding cost this would save.
+If this is ever revisited, its real justification is the **DocProcess** side (where new retailers
+do keep arriving) — populating Dedeman's empty `DXInvoice` mapping row (id 45) and building a
+real outbound reader for `CCCXMLS1MAPPINGS` would pay for itself there. Do not resurrect this as
+a reason to delay or complicate the Infinite builder.
+
+If DocProcess-side work on this is ever scheduled:
 - Build `src/edi/invoice-builder.js` (or similar): SALDOC + `CCCXMLS1MAPPINGS` row (keyed by
   FPRMS/SERIES like the inbound side) → generated XML, SQL-per-field like the existing `SQL`
   column already supports.
-- Populate real field mappings for **both** schemas: DocProcess's `DXInvoice` (Dedeman's own
-  INVIOCE mapping row, id 45, currently has **zero** child field rows — empty placeholder) and
-  Infinite's `Invoice v1.0.1` (would need a new set of ~50 rows, using the field table above).
-- Retire the dedicated `InfiniteInvoice.js` builder (and eventually `runCmd20210915.js`'s
-  DXInvoice path) once the generic engine covers both schemas and is verified equivalent.
+- Populate real field mappings for DocProcess's `DXInvoice` (Dedeman's own INVIOCE mapping row,
+  id 45, currently has **zero** child field rows — empty placeholder).
 - This is a genuine "planning/architecture" scope item, not a quick patch — treat it as its own
   planned session, not a drive-by addition to whatever else is in flight.
 

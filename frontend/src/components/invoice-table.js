@@ -114,7 +114,7 @@ export class InvoiceTable extends LightElement {
 
   async _createXml(inv, index) {
     try {
-      const domObj = await getInvoiceDom({ appID: '1001', findoc: inv.findoc })
+      const domObj = await getInvoiceDom({ appID: '1001', findoc: inv.findoc, trdr: this.trdr })
       this._invoices = this._invoices.map((item, i) =>
         i === index ? { ...item, xmlData: domObj.dom, _domObj: domObj } : item
       )

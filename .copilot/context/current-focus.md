@@ -2,9 +2,11 @@
 
 ## Last Updated
 - 2026-08-27 (session: reception screen Item A — "Trimite" button. Fixed transport/signing/
-  credentials bugs, then discovered the real blocker: `runCmd20210915.js` generates the wrong
-  invoice XML schema entirely for Infinite retailers. Full handoff plan written for a fresh
-  session — see [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
+  credentials bugs, discovered `runCmd20210915.js` generates the wrong invoice XML schema for
+  Infinite retailers, specced the fix, then **implemented it the same day**: new
+  `S1/JS/AJS/InfiniteInvoice.js` builder + `get-invoice-dom.class.js` routing/logging + frontend
+  `trdr` threading. `npm test` 96 passing. Not yet deployed/tested live — see
+  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
 
 ## Current Goal
 RECADV ingestion/reconciliation is **live in production** on `retailers4` since 2026-08-05.
@@ -15,17 +17,23 @@ Active work is finishing the Recepții screen's remaining approved UI items — 
 - **Item A ("Trimite")**: UI was already implemented. Backend send-path bugs (transport ignoring
   `CONNTYPE`, dead S/MIME signing code, missing `S1_USERNAME`/`S1_PASSWORD`/`EDINET_P12_*`
   config, missing 7122/7123 series recognition in the legacy invoice binder) are all fixed —
-  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite sending is still
-  blocked on a bigger problem, not yet started: `runCmd20210915.js` builds DocProcess's
-  `DXInvoice` schema, but Infinite requires its own native `Invoice v1.0.1` schema** (confirmed
-  against the official spec PDF and real archived files on the live FTP). A dedicated new
-  builder is needed — full field-by-field spec, known data gaps, and a step-by-step
-  implementation plan are written up in
-  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md). **Do this in a fresh session**
-  (per user request 2026-08-27) rather than continuing in an already-long one.
-  Acknowledged as expedient-not-ideal: the correct long-term fix is a generic outbound
-  XML-generation engine (mirroring `order-builder.js`'s inbound one) — recorded as deferred
-  debt in that same wiki page, not forgotten.
+  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite's schema problem is
+  now IMPLEMENTED (2026-08-27), not yet deployed/tested live**: `runCmd20210915.js` built
+  DocProcess's `DXInvoice` schema; Infinite needs its own native `Invoice v1.0.1` schema, ported
+  field-for-field from the two proven `SOIMPORT` scripts (`AR_ORIGINAL_INVOICE` Auchan,
+  `ExpFactDedeman_ButonNew` Dedeman) into a new `S1/JS/AJS/InfiniteInvoice.js` AJS module.
+  `get-invoice-dom.class.js` now routes to it by looking up the retailer's `CCCSFTP` provider
+  (`provider.code === 'infinite'`), logs pre-validation failures to `orders-log`, and falls back
+  to the legacy DocProcess endpoint otherwise. Frontend (`api.js` `sendInvoiceXml`,
+  `invoice-table.js` `_createXml`) now threads `trdr` through so that lookup has a retailer id.
+  Covered by `test/services/get-invoice-dom/get-invoice-dom.test.js`; full `npm test` 96 passing.
+  **Two things remain, both require the ERP/live environment**: (1) paste `InfiniteInvoice.js`
+  into ERP → Advanced JavaScript Editor (2) one live end-to-end test (generate → sign → upload →
+  check `/invoice/confirm` vs `/error`/`/omit`). Full detail:
+  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
+  The generic outbound XML-generation engine idea (mirroring `order-builder.js`'s inbound one)
+  stays de-prioritized for Infinite (closed set of 2 retailers, hardcoded branches per the scope
+  directive) — only relevant if DocProcess-side mapping work is ever scheduled.
 - **Item C (invoice identity column)**: approved, spec written, not yet implemented.
 Active area: nothing pending here until the new session picks up
 [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) or Item C starts.

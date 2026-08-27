@@ -1,0 +1,809 @@
+//////////////////////////////////////////////////////
+//                                                  //
+// Customer = *                                     //
+// Dealer   = SERRA SOFTWARE INTERNATIONAL          //
+//                               	                  //
+// Created by Anna Rebei                            //
+// Last Update 29.01.2016 by Anna Rebei             //
+//////////////////////////////////////////////////////
+
+Form
+{
+     [TABLES]
+     ImpTable=;;;;Master;3;0
+
+     [ImpTable]
+     vImpOk=2;15;0;1;0;Confirmati executia;$Y;;1;
+     vPath=1;100;0;1;0;Cale export;;;;\\Office-server\EDInet\INVOICE\
+     vMess=16;100;0;1;0;Mesaje;;;;
+     vCompany=3;20;1;1;1;Compania sursa;COMPANY;;;:X.SYS.COMPANY
+		 vFindoc=3;25;1;1;0;Document;;;&myFindoc
+     
+			
+     [PANELS]
+     PANEL11=0;General;0;40
+     PANEL13=4;Mesaje;;100,N,H50
+
+     [PANEL11]
+     ImpTable.vImpOk
+		 ImpTable.vPath
+			
+     [PANEL13]
+     ImpTable.vMess
+}
+
+Connect Xplorer GenXML
+{
+	connect();	
+
+	dsHeader = SELECT  isnull(A.fincode ,cast('' as varchar))                                       InvoiceNumber, 
+										 isnull(CONVERT(VARCHAR(10), A.trndate, 120),cast('' as varchar))             Data, 
+										 (SELECT TOP 1 
+														 isnull(CONVERT(VARCHAR(10), finaldate, 120),cast('' as varchar)) 
+											FROM   finpayterms 
+											WHERE  findoc = A.findoc)                                  InvoiceDueDate, 
+										 3                                                           PaymentTermsQualifier, 
+										 42                                                          Code, 
+										 cast('' as varchar)                                                          Description, 
+										 cast('RON' as varchar)                                                      InvoiceCurrencyCoded, 
+										 cast('O' as varchar)                                                         InvoicePurposeCoded, 
+										 cast('O' as varchar)                                                        DocumentRole, 
+										 isnull(C.REMARKS ,cast('' as varchar))                                       Comment, 
+										 isnull(A.num04 ,cast('' as varchar))                                         BuyerOrderNumber, 
+										 isnull(replace(convert(varchar(50),A.date01,120)
+																										,cast(' ' as varchar),cast('T' as varchar)),cast('' as varchar))                BuyerOrderDate, 
+										 isnull(convert(varchar(10),B.delivdate,120),cast('' as varchar))             DeliveryDate, 
+										 (SELECT TOP 1 isnull(b1.fincode,cast('' as varchar)) 
+											FROM   mtrlines a1 
+														 LEFT OUTER JOIN findoc b1 
+																					ON a1.findocs = b1.findoc 
+											WHERE  a1.findoc = A.findoc 
+														 AND a1.findocs IS NOT NULL)                         DeliveryDocumentNumber, 
+										 (SELECT TOP 1 isnull(CONVERT(VARCHAR(10), b1.trndate , 120),cast('' as varchar)) 
+											FROM   mtrlines a1 
+														 LEFT OUTER JOIN findoc b1 
+																					ON a1.findocs = b1.findoc 
+											WHERE  a1.findoc = A.findoc 
+														 AND a1.findocs IS NOT NULL)                         DeliveryDocumentDate, 
+										 isnull(C.CCCS1DXGLN ,cast('' as varchar))                                    ILN, 
+										 isnull(C.BGBULSTAT + C.AFM ,cast('' as varchar))                             TaxID, 
+										 isnull(C.NAME ,cast('' as varchar))                                          NAME, 
+										 isnull(C.ADDRESS  ,cast('' as varchar))                                      Street, 
+										 cast('' as varchar)                                                          HouseNumber, 
+										 isnull(C.ZIP  ,cast('' as varchar))                                          PostalCode, 
+										 isnull(C.city  ,cast('' as varchar))                                         City, 
+										 isnull(D.shortcut  ,cast('' as varchar))                                     Country, 
+										 isnull(C.CCCS1DXGLN   ,cast('' as varchar))                                  ILN1, 
+										 isnull(C.NAME  ,cast('' as varchar))                                         Name1, 
+										 isnull(C.ADDRESS   ,cast('' as varchar))                                     Street1, 
+										 cast('' as varchar)                                                          HouseNumber1, 
+										 isnull(C.ZIP ,cast('' as varchar))                                           PostalCode1, 
+										 isnull(C.city ,cast('' as varchar))                                          City1, 
+										 isnull(D.shortcut ,cast('' as varchar))                                      Country1, 
+										 isnull(E.CCCS1DXGLN ,cast('' as varchar))                                    ILN2, 
+										 isnull(E.NAME  ,cast('' as varchar))                                         Name2, 
+										 isnull(E.ADDRESS ,cast('' as varchar))                                       Street2, 
+										 cast('' as varchar)                                                          HouseNumber2, 
+										 isnull(E.ZIP ,cast('' as varchar))                                           PostalCode2, 
+										 isnull(E.CITY ,cast('' as varchar))                                          City2, 
+										 isnull(F.SHORTCUT ,cast('' as varchar))                                      Country2, 
+										 isnull(G.CCCS1DXGLN ,cast('' as varchar))                                    ILN3, 
+										 isnull (A.CCCSELLERID,cast('' as varchar))                                   BuyerSellerID, 
+										 isnull(G.AFM,cast('' as varchar))                                            TaxID3, 
+										 isnull(Stuff(Stuff(G.BGREPNAME, 9, 0, cast('-' as varchar)), 18, 0, cast('-' as varchar)),cast('' as varchar)) BankAccount, 
+										 cast('' as varchar)                                                          BankAccountOwner, 
+										 isnull(G.BGREPTITLE ,cast('' as varchar))                                    BankName, 
+										 isnull(G.NAME ,cast('' as varchar))                                          Name3, 
+										 isnull(G.ADDRESS  ,cast('' as varchar))                                      Street3, 
+										 cast('' as varchar)                                                          HouseNumber3, 
+										 isnull(G.ZIP,cast('' as varchar))                                            PostalCode3, 
+										 isnull(G.CITY   ,cast('' as varchar))                                        City3, 
+										 isnull(H.SHORTCUT,cast('' as varchar))                                       Country3, 
+										 cast('Ion Ion' as varchar)                                                   Person, 
+										 isnull(G.PHONE2,cast('' as varchar))                                         Tel, 
+										 cast('' as varchar)                                                          ILN4, 
+										 cast('' as varchar)                                                          Name4, 
+										 cast('' as varchar)                                                          Street4, 
+										 cast('' as varchar)                                                          HouseNumber4, 
+										 cast('' as varchar)                                                          PostalCode4, 
+										 cast('' as varchar)                                                          City4, 
+										 cast('' as varchar)                                                          Country4, 
+										 (SELECT Count(*) 
+											FROM   mtrlines 
+											WHERE  findoc = A.findoc 
+														 AND sodtype = 51)                                   NumberOfLines, 
+										 convert(varchar(36),cast(round(A.NETAMNT,2) 
+																					as numeric(36,2)))                     NetValue, 
+										 convert(varchar(36),cast(round(A.VATAMNT,2) 
+																					as numeric(36,2)))                     TaxValue, 
+										 convert(varchar(36),cast(round(A.NETAMNT,2) 
+																					as numeric(36,2)))                     TaxableValue, 
+										 convert(varchar(36),cast(round(A.SUMAMNT,2) 
+																					as numeric(36,2)))                     GrossValue 
+							FROM   findoc A 
+										 LEFT OUTER JOIN mtrdoc B 
+																	ON A.findoc = B.findoc 
+										 LEFT OUTER JOIN trdr C 
+																	ON A.trdr = C.trdr 
+										 LEFT OUTER JOIN country D 
+																	ON C.country = D.country 
+										 LEFT OUTER JOIN trdbranch E 
+																	ON A.trdbranch = E.trdbranch 
+										 LEFT OUTER JOIN country F 
+																	ON E.country = F.country 
+										 LEFT OUTER JOIN company G 
+																	ON A.company = G.company 
+										 LEFT OUTER JOIN country H 
+																	ON G.country = H.country 
+							WHERE  A.expn = 0 
+										 AND A.fprms = 712 
+										 AND A.findoc = :$ImpTable.vFindoc  ;
+										 
+	dsHeaderTax = SELECT cast('S' as varchar)                                              TaxCategoryCoded, 
+											 convert(varchar(36),cast(round(B.percnt,2) 
+																					as numeric(36,2)))            TaxPercent, 
+											 convert(varchar(36),cast(round(A.SUBVAL,2) 
+																					as numeric(36,2)))            TaxNettoAmount, 
+											 convert(varchar(36),cast(round(A.SUBVAL,2) 
+																					as numeric(36,2)))            TaxableAmount, 
+											 convert(varchar(36),cast(round(A.VATVAL,2) 
+																					as numeric(36,2)))            TaxAmount, 
+											 convert(varchar(36),cast(round(A.SUBVAL 
+														+ A.VATVAL,2) as numeric(36,2)))            TaxGrossAmount 
+								FROM   vatanal A 
+											 LEFT OUTER JOIN vat B 
+																		ON A.vat = B.vat 
+								WHERE  A.findoc = :$ImpTable.vFindoc  ;
+								
+	dsLinii = SELECT A.linenum                                       ItemNum, 
+									 isnull(B.code1 ,cast('' as varchar))                             EAN, 
+									 isnull(D.code ,cast('' as varchar))                              BuyerItemID, 
+									 isnull(B.code ,cast('' as varchar))                              SellerItemID, 
+									 isnull(E.CODE ,cast('' as varchar))                              CustomTariffNumber, 
+									 cast('CU' as varchar)                                            ProductIdentifierExt, 
+									 isnull(D.UnitPack ,cast('' as varchar))                          PacketContentQuantity, 
+									 cast('CT' as varchar)                                            PackageType, 
+									 convert(varchar(36),cast(round(A.QTY1,2) 
+															as numeric(36,2)))                   QuantityValue, 
+									 cast('S' as varchar)                                             TaxCategoryCoded, 
+									 isnull(F.percnt ,cast('' as varchar))                            TaxPercent, 
+									 convert(varchar(36),cast(round(A.VATAMNT,2) 
+																					as numeric(36,2)))       TaxAmount, 
+									 convert(varchar(36),cast(round(A.TRNLINEVAL 
+												+ A.VATAMNT ,2) as numeric(36,2)))         MonetaryGrossValue, 
+									 convert(varchar(36),cast(round(A.TRNLINEVAL,2) 
+																						 as numeric(36,2)))    MonetaryNetValue, 
+									 convert(varchar(36),cast(round(A.TRNLINEVAL 
+												+ A.VATAMNT,2) as numeric(36,2)))          MonetaryAmountPayable, 
+									 isnull(G.SHORTCUT ,cast('' as varchar))                          UnitOfMeasure, 
+									 cast('' as varchar)                                              UnitOfMeasureXCBL, 
+									 isnull(G.SHORTCUT ,cast('' as varchar))                          PackUnitOfMeasure, 
+									 convert(varchar(36),cast(Round(A.TRNLINEVAL 
+												/ A.QTY1, 3) as numeric(36,3)))            UnitPriceValue, 
+									 convert(varchar(36),cast(Round(( A.TRNLINEVAL 
+												+ A.VATAMNT)/A.QTY1, 2) as numeric(36,2))) UnitPriceValueGross, 
+									 B.NAME                                          Name 
+						FROM   mtrlines A 
+									 LEFT OUTER JOIN mtrl B 
+																ON A.mtrl = B.mtrl 
+									 LEFT OUTER JOIN findoc C 
+																ON A.findoc = C.findoc 
+									 LEFT OUTER JOIN cccs1dxtrdrmtrl D 
+																ON A.mtrl = D.mtrl 
+																	 AND C.trdr = D.trdr 
+									 LEFT OUTER JOIN intrastat E 
+																ON B.intrastat = E.intrastat 
+									 LEFT OUTER JOIN vat F 
+																ON A.vat = F.vat 
+									 LEFT OUTER JOIN mtrunit G 
+																ON B.MTRUNIT1 = G.MTRUNIT 
+						WHERE  A.findoc = :$ImpTable.vFindoc   ;
+
+}
+
+var
+   vTmp, vFileName, fTextFile, nLuna, nAn, sNodInAng, sNodInAngA411, sNodFinAng;
+var
+   x,UserResp, TxtRead, SQL, sDist,vLine, lcSepar, vRow, sXMLHeader, sFinal, sNodInitial , sNodFinal ,vRowCancel, vLabelText, nContor;
+	 
+var sInvoiceHeaderI, sInvoiceHeaderF, sPaymentMethodI,sPaymentMethodF, sInvoicePartyI, sInvoicePartyF ,
+sOrderPartyI, sOrderPartyF, sDeliveryPartyI, sDeliveryPartyF, sBuyerPartyI, sBuyerPartyF, sInvoiceePartyI, sInvoiceePartyF,
+sShipToPartyI,sShipToPartyF, sSellerPartyI, sSellerPartyF, sContactI, sContactF, sShipFromPartyI, sShipFromPartyF,
+sInvoiceDetailI, sInvoiceDetailF, sItemI, sItemF, sInvoiceSummaryI, sInvoiceSummaryF, sTaxSummaryI, sTaxSummaryF, sTaxI, sTaxF,
+			
+			sInvoiceNumber,sData, sInvoiceDueDate, sPaymentTermsQualifier,sDescription, sCode, sInvoiceCurrencyCoded,
+			sInvoicePurposeCoded,  sDocumentRole,  sComment,	sBuyerOrderNumber,	sBuyerOrderDate, sDeliveryDate, sDeliveryDocumentNumber, 
+			sDeliveryDocumentDate, sILN, sTaxID, sName, sStreet, sHouseNumber,sPostalCode, sCity, sCountry,	sILN1, 	sName1,	sStreet1, 
+			sHouseNumber1, sPostalCode1,sCity1, sCountry1, sILN2,	sName2, sStreet2,	sHouseNumber2,sPostalCode2, sCity2,	sCountry2, 
+			sILN3, sBuyerSellerID,sTaxID3, sBankAccount,	sBankAccountOwner,sBankName,sName3, sStreet3, sHouseNumber3,sPostalCode3, 
+			sCity3, sCountry3, sPerson,	sTel, sILN4, sName4, sStreet4, sHouseNumber4,	sPostalCode4,	sCity4, sCountry4,	sNumberOfLines, 
+			sNetValue, sTaxValue,	sTaxableValue,sGrossValue,
+			
+			stTaxCategoryCoded, stTaxPercent, stTaxNettoAmount, stTaxableAmount, stTaxAmount, stTaxGrossAmount ,
+			
+			sItemNum, sEAN, sBuyerItemID, sSellerItemID, sCustomTariffNumber, sProductIdentifierExt, sPacketContentQuantity, 
+			sPackageType, sQuantityValue, sTaxCategoryCoded, sTaxPercent, sTaxAmount, sMonetaryGrossValue, sMonetaryNetValue, 
+			sMonetaryAmountPayable, sUnitOfMeasure, sUnitOfMeasureXCBL, sPackUnitOfMeasure, sUnitPriceValue, sUnitPriceValueGross, 
+			sNameL;	 
+
+
+
+{
+
+	if (:ImpTable.vImpOK = 0)
+	{
+			UserResp=SendResponse('Confirmati executarea exportului...', 'RESULTS.LABELTEXT');
+			vLabelText =vLabelText +  'Confirmati executarea exportului...'+ #10;
+			UserResp = SendResponse( vLabelText,' ImpTable.vMess');
+	}
+	else
+	{
+		
+				if (:ImpTable.vPath = Null)
+				{
+					UserResp=SendResponse('Alegeti calea de export...', 'RESULTS.LABELTEXT');
+					vLabelText =vLabelText +  'Alegeti calea de export...'+ #10;
+					UserResp = SendResponse( vLabelText,' ImpTable.vMess');
+				}
+				else
+				{
+					UserResp = SendResponse('Start export...', 'RESULTS.LABELTEXT');
+					vLabelText =vLabelText +  'Start export...'+ #10;
+					UserResp = SendResponse( vLabelText,' ImpTable.vMess');				
+					
+					sDist = ' ';
+					fetch dsHeader
+					{
+						//creaza xml in calea specificata cu numele specificat
+						vFileName =VartoStr(dsHeader.InvoiceNumber)+'_'+VartoStr(dsHeader.Data)+'.xml';
+						fTextFile=CallPublished('PILib.CreateText', :ImpTable.vPath + vFileName);
+					
+						// Header of the XML file
+						sXMLHeader = '<?xml version="1.0" encoding="iso-8859-2"?>';
+						sXMLHeader = CallPublished('PILib.AnsiToUTF8', sXMLHeader);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sXMLHeader, 2));
+						
+						// Root node
+						sNodInitial = '<Invoice Version="1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.infinite.pl/pub/doc/fmt/xml/invoice/1.0/invoice.xsd">';
+						sNodInitial = CallPublished('PILib.AnsiToUTF8', sNodInitial);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sNodInitial, 2));
+						
+						//Invoice Header
+						sInvoiceHeaderI = '<InvoiceHeader>';
+						sInvoiceHeaderI = CallPublished('PILib.AnsiToUTF8', sInvoiceHeaderI);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceHeaderI, 2));
+						
+						sInvoiceNumber = sDist + sDist +'<InvoiceNumber>'+vartostr(dsHeader.InvoiceNumber)+'</InvoiceNumber>';
+						sInvoiceNumber = CallPublished('PILib.AnsiToUTF8', sInvoiceNumber);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceNumber, 2));
+						
+						sData = sDist + sDist +'<Date>'+vartostr(dsHeader.Data)+'</Date>';
+						sData = CallPublished('PILib.AnsiToUTF8', sData);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sData, 2));
+						
+						sInvoiceDueDate = sDist + sDist +'<InvoiceDueDate>'+vartostr(dsHeader.InvoiceDueDate)+'</InvoiceDueDate>';
+						sInvoiceDueDate = CallPublished('PILib.AnsiToUTF8', sInvoiceDueDate);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceDueDate, 2));
+						
+						sPaymentTermsQualifier = sDist + sDist +'<PaymentTermsQualifier>'+vartostr(dsHeader.PaymentTermsQualifier)+'</PaymentTermsQualifier>';
+						sPaymentTermsQualifier = CallPublished('PILib.AnsiToUTF8', sPaymentTermsQualifier);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPaymentTermsQualifier, 2));
+						
+						sPaymentMethodI = sDist + sDist +'<PaymentMethod>';
+						sPaymentMethodI = CallPublished('PILib.AnsiToUTF8', sPaymentMethodI);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPaymentMethodI, 2));
+						
+						sCode = sDist + sDist +sDist + sDist +'<Code>'+vartostr(dsHeader.Code)+'</Code>';
+						sCode = CallPublished('PILib.AnsiToUTF8', sCode);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCode, 2));
+						
+						sDescription = sDist + sDist +sDist + sDist +'<Description>'+vartostr(dsHeader.Description)+'</Description>';
+						sDescription = CallPublished('PILib.AnsiToUTF8', sDescription);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDescription, 2));
+						
+						sPaymentMethodF = sDist + sDist +'</PaymentMethod>';
+						sPaymentMethodF = CallPublished('PILib.AnsiToUTF8', sPaymentMethodF);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPaymentMethodF, 2));
+						
+						sInvoiceCurrencyCoded = sDist + sDist +'<InvoiceCurrencyCoded>'+vartostr(dsHeader.InvoiceCurrencyCoded)+'</InvoiceCurrencyCoded>';
+						sInvoiceCurrencyCoded = CallPublished('PILib.AnsiToUTF8', sInvoiceCurrencyCoded);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceCurrencyCoded, 2));
+						
+						sInvoicePurposeCoded = sDist + sDist +'<InvoicePurposeCoded>'+vartostr(dsHeader.InvoicePurposeCoded)+'</InvoicePurposeCoded>';
+						sInvoicePurposeCoded = CallPublished('PILib.AnsiToUTF8', sInvoicePurposeCoded);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoicePurposeCoded, 2));
+						
+						sDocumentRole = sDist + sDist +'<DocumentRole>'+vartostr(dsHeader.DocumentRole)+'</DocumentRole>';
+						sDocumentRole = CallPublished('PILib.AnsiToUTF8', sDocumentRole);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDocumentRole, 2));
+						
+						sComment = sDist + sDist +'<Comment>'+vartostr(dsHeader.Comment)+'</Comment>';
+						sComment = CallPublished('PILib.AnsiToUTF8', sComment);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sComment, 2));
+
+						sInvoiceHeaderF = '</InvoiceHeader>';
+						sInvoiceHeaderF = CallPublished('PILib.AnsiToUTF8', sInvoiceHeaderF);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceHeaderF, 2));
+						
+						//Invoice Party
+						sInvoicePartyI = '<InvoiceParty>';
+						sInvoicePartyI = CallPublished('PILib.AnsiToUTF8', sInvoicePartyI);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoicePartyI, 2));
+						
+							//Order Party
+							sOrderPartyI = sDist + sDist +'<OrderParty>';
+							sOrderPartyI = CallPublished('PILib.AnsiToUTF8', sOrderPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sOrderPartyI, 2));
+							
+							sBuyerOrderNumber = sDist + sDist +sDist + sDist +'<BuyerOrderNumber>'+vartostr(dsHeader.BuyerOrderNumber)+'</BuyerOrderNumber>';
+							sBuyerOrderNumber = CallPublished('PILib.AnsiToUTF8', sBuyerOrderNumber);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerOrderNumber, 2));
+
+							sBuyerOrderDate = sDist + sDist +sDist + sDist +'<BuyerOrderDate>'+vartostr(dsHeader.BuyerOrderDate)+'</BuyerOrderDate>';
+							sBuyerOrderDate = CallPublished('PILib.AnsiToUTF8', sBuyerOrderDate);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerOrderDate, 2));
+		
+							sOrderPartyF = sDist + sDist +'</OrderParty>';
+							sOrderPartyF = CallPublished('PILib.AnsiToUTF8', sOrderPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sOrderPartyF, 2));
+							
+							//Delivery Party
+							sDeliveryPartyI = sDist + sDist +'<DeliveryParty>';
+							sDeliveryPartyI = CallPublished('PILib.AnsiToUTF8', sDeliveryPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDeliveryPartyI, 2));
+							
+							sDeliveryDate = sDist + sDist +sDist + sDist +'<DeliveryDate>'+vartostr(dsHeader.DeliveryDate)+'</DeliveryDate>';
+							sDeliveryDate = CallPublished('PILib.AnsiToUTF8', sDeliveryDate);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDeliveryDate, 2));
+
+							sDeliveryDocumentNumber = sDist + sDist +sDist + sDist +'<DeliveryDocumentNumber>'+vartostr(dsHeader.DeliveryDocumentNumber)+'</DeliveryDocumentNumber>';
+							sDeliveryDocumentNumber = CallPublished('PILib.AnsiToUTF8', sDeliveryDocumentNumber);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDeliveryDocumentNumber, 2));
+							
+							sDeliveryDocumentDate = sDist + sDist +sDist + sDist +'<DeliveryDocumentDate>'+vartostr(dsHeader.DeliveryDocumentDate)+'</DeliveryDocumentDate>';
+							sDeliveryDocumentDate = CallPublished('PILib.AnsiToUTF8', sDeliveryDocumentDate);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDeliveryDocumentDate, 2));
+		
+							sDeliveryPartyF = sDist + sDist +'</DeliveryParty>';
+							sDeliveryPartyF = CallPublished('PILib.AnsiToUTF8', sDeliveryPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sDeliveryPartyF, 2));
+						
+							//Buyer Party
+							sBuyerPartyI = sDist + sDist +'<BuyerParty>';
+							sBuyerPartyI = CallPublished('PILib.AnsiToUTF8', sBuyerPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerPartyI, 2));
+							
+							sILN = sDist + sDist +sDist + sDist +'<ILN>'+vartostr(dsHeader.ILN)+'</ILN>';
+							sILN = CallPublished('PILib.AnsiToUTF8', sILN);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sILN, 2));
+
+							sTaxID = sDist + sDist +sDist + sDist +'<TaxID>'+vartostr(dsHeader.TaxID)+'</TaxID>';
+							sTaxID = CallPublished('PILib.AnsiToUTF8', sTaxID);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxID, 2));
+							
+							sName = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsHeader.Name)+'</Name>';
+							sName = CallPublished('PILib.AnsiToUTF8', sName);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sName, 2));
+							
+							sStreet = sDist + sDist +sDist + sDist +'<Street>'+vartostr(dsHeader.Street)+'</Street>';
+							sStreet = CallPublished('PILib.AnsiToUTF8', sStreet);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sStreet, 2));
+
+							sHouseNumber = sDist + sDist +sDist + sDist +'<HouseNumber>'+vartostr(dsHeader.HouseNumber)+'</HouseNumber>';
+							sHouseNumber = CallPublished('PILib.AnsiToUTF8', sHouseNumber);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sHouseNumber, 2));
+							
+							sPostalCode = sDist + sDist +sDist + sDist +'<PostalCode>'+vartostr(dsHeader.PostalCode)+'</PostalCode>';
+							sPostalCode = CallPublished('PILib.AnsiToUTF8', sPostalCode);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPostalCode, 2));
+							
+							sCity = sDist + sDist +sDist + sDist +'<City>'+vartostr(dsHeader.City)+'</City>';
+							sCity = CallPublished('PILib.AnsiToUTF8', sCity);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCity, 2));
+
+							sCountry = sDist + sDist +sDist + sDist +'<Country>'+vartostr(dsHeader.Country)+'</Country>';
+							sCountry = CallPublished('PILib.AnsiToUTF8', sCountry);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCountry, 2));
+		
+							sBuyerPartyF = sDist + sDist +'</BuyerParty>';
+							sBuyerPartyF = CallPublished('PILib.AnsiToUTF8', sBuyerPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerPartyF, 2));
+					
+							//Invoicee Party
+							sInvoiceePartyI = sDist + sDist +'<InvoiceeParty>';
+							sInvoiceePartyI = CallPublished('PILib.AnsiToUTF8', sInvoiceePartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceePartyI, 2));
+							
+							sILN1 = sDist + sDist +sDist + sDist +'<ILN>'+vartostr(dsHeader.ILN1)+'</ILN>';
+							sILN1 = CallPublished('PILib.AnsiToUTF8', sILN1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sILN1, 2));
+							
+							sName1 = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsHeader.Name1)+'</Name>';
+							sName1 = CallPublished('PILib.AnsiToUTF8', sName1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sName1, 2));
+							
+							sStreet1 = sDist + sDist +sDist + sDist +'<Street>'+vartostr(dsHeader.Street1)+'</Street>';
+							sStreet1 = CallPublished('PILib.AnsiToUTF8', sStreet1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sStreet1, 2));
+
+							sHouseNumber1 = sDist + sDist +sDist + sDist +'<HouseNumber>'+vartostr(dsHeader.HouseNumber1)+'</HouseNumber>';
+							sHouseNumber1 = CallPublished('PILib.AnsiToUTF8', sHouseNumber1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sHouseNumber1, 2));
+							
+							sPostalCode1 = sDist + sDist +sDist + sDist +'<PostalCode>'+vartostr(dsHeader.PostalCode1)+'</PostalCode>';
+							sPostalCode1 = CallPublished('PILib.AnsiToUTF8', sPostalCode1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPostalCode1, 2));
+							
+							sCity1 = sDist + sDist +sDist + sDist +'<City>'+vartostr(dsHeader.City1)+'</City>';
+							sCity1 = CallPublished('PILib.AnsiToUTF8', sCity1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCity1, 2));
+
+							sCountry1 = sDist + sDist +sDist + sDist +'<Country>'+vartostr(dsHeader.Country1)+'</Country>';
+							sCountry1 = CallPublished('PILib.AnsiToUTF8', sCountry1);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCountry1, 2));
+		
+							sInvoiceePartyF = sDist + sDist +'</InvoiceeParty>';
+							sInvoiceePartyF = CallPublished('PILib.AnsiToUTF8', sInvoiceePartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceePartyF, 2));
+						
+							//Ship to Party
+							sShipToPartyI = sDist + sDist +'<ShipToParty>';
+							sShipToPartyI = CallPublished('PILib.AnsiToUTF8', sShipToPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sShipToPartyI, 2));
+							
+							sILN2 = sDist + sDist +sDist + sDist +'<ILN>'+vartostr(dsHeader.ILN2)+'</ILN>';
+							sILN2 = CallPublished('PILib.AnsiToUTF8', sILN2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sILN2, 2));
+							
+							sName2 = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsHeader.Name2)+'</Name>';
+							sName2 = CallPublished('PILib.AnsiToUTF8', sName2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sName2, 2));
+							
+							sStreet2 = sDist + sDist +sDist + sDist +'<Street>'+vartostr(dsHeader.Street2)+'</Street>';
+							sStreet2 = CallPublished('PILib.AnsiToUTF8', sStreet2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sStreet2, 2));
+
+							sHouseNumber2 = sDist + sDist +sDist + sDist +'<HouseNumber>'+vartostr(dsHeader.HouseNumber2)+'</HouseNumber>';
+							sHouseNumber2 = CallPublished('PILib.AnsiToUTF8', sHouseNumber2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sHouseNumber2, 2));
+							
+							sPostalCode2 = sDist + sDist +sDist + sDist +'<PostalCode>'+vartostr(dsHeader.PostalCode2)+'</PostalCode>';
+							sPostalCode2 = CallPublished('PILib.AnsiToUTF8', sPostalCode2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPostalCode2, 2));
+							
+							sCity2 = sDist + sDist +sDist + sDist +'<City>'+vartostr(dsHeader.City2)+'</City>';
+							sCity2 = CallPublished('PILib.AnsiToUTF8', sCity2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCity2, 2));
+
+							sCountry2 = sDist + sDist +sDist + sDist +'<Country>'+vartostr(dsHeader.Country2)+'</Country>';
+							sCountry2 = CallPublished('PILib.AnsiToUTF8', sCountry2);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCountry2, 2));
+		
+							sShipToPartyF = sDist + sDist +'</ShipToParty>';
+							sShipToPartyF = CallPublished('PILib.AnsiToUTF8', sShipToPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sShipToPartyF, 2));
+							
+							
+							//Seller Party
+							sSellerPartyI = sDist + sDist +'<SellerParty>';
+							sSellerPartyI = CallPublished('PILib.AnsiToUTF8', sSellerPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sSellerPartyI, 2));
+							
+							sILN3 = sDist + sDist +sDist + sDist +'<ILN>'+vartostr(dsHeader.ILN3)+'</ILN>';
+							sILN3 = CallPublished('PILib.AnsiToUTF8', sILN3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sILN3, 2));
+							
+							sBuyerSellerID = sDist + sDist +sDist + sDist +'<BuyerSellerID>'+vartostr(dsHeader.BuyerSellerID)+'</BuyerSellerID> ';
+							sBuyerSellerID = CallPublished('PILib.AnsiToUTF8', sBuyerSellerID);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerSellerID, 2));
+							
+							sTaxID3 = sDist + sDist +sDist + sDist +'<TaxID>'+vartostr(dsHeader.TaxID3)+'</TaxID>';
+							sTaxID3 = CallPublished('PILib.AnsiToUTF8', sTaxID3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxID3, 2));
+
+							sBankAccount = sDist + sDist +sDist + sDist +'<BankAccount>'+vartostr(dsHeader.BankAccount)+'</BankAccount>';
+							sBankAccount = CallPublished('PILib.AnsiToUTF8', sBankAccount);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBankAccount, 2));
+							
+							sBankAccountOwner = sDist + sDist +sDist + sDist +'<BankAccountOwner>'+vartostr(dsHeader.BankAccountOwner)+'</BankAccountOwner>';
+							sBankAccountOwner = CallPublished('PILib.AnsiToUTF8', sBankAccountOwner);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBankAccountOwner, 2));
+							
+							sBankName = sDist + sDist +sDist + sDist +'<BankName>'+vartostr(dsHeader.BankName)+'</BankName>';
+							sBankName = CallPublished('PILib.AnsiToUTF8', sBankName);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBankName, 2));
+							
+							sName3 = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsHeader.Name3)+'</Name>';
+							sName3 = CallPublished('PILib.AnsiToUTF8', sName3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sName3, 2));
+							
+							sStreet3 = sDist + sDist +sDist + sDist +'<Street>'+vartostr(dsHeader.Street3)+'</Street>';
+							sStreet3 = CallPublished('PILib.AnsiToUTF8', sStreet3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sStreet3, 2));
+
+							sHouseNumber3 = sDist + sDist +sDist + sDist +'<HouseNumber>'+vartostr(dsHeader.HouseNumber3)+'</HouseNumber>';
+							sHouseNumber3 = CallPublished('PILib.AnsiToUTF8', sHouseNumber3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sHouseNumber3, 2));
+							
+							sPostalCode3 = sDist + sDist +sDist + sDist +'<PostalCode>'+vartostr(dsHeader.PostalCode3)+'</PostalCode>';
+							sPostalCode3 = CallPublished('PILib.AnsiToUTF8', sPostalCode3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPostalCode3, 2));
+							
+							sCity3 = sDist + sDist +sDist + sDist +'<City>'+vartostr(dsHeader.City3)+'</City>';
+							sCity3 = CallPublished('PILib.AnsiToUTF8', sCity3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCity3, 2));
+
+							sCountry3 = sDist + sDist +sDist + sDist +'<Country>'+vartostr(dsHeader.Country3)+'</Country>';
+							sCountry3 = CallPublished('PILib.AnsiToUTF8', sCountry3);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCountry3, 2));
+							
+								//Contact
+								sContactI = sDist + sDist +sDist + sDist +'<Contact>';
+								sContactI = CallPublished('PILib.AnsiToUTF8', sContactI);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sContactI, 2));
+								
+								sPerson = sDist + sDist +sDist + sDist +sDist + sDist +'<Person>'+vartostr(dsHeader.Person)+'</Person>';
+								sPerson = CallPublished('PILib.AnsiToUTF8', sPerson);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPerson, 2));
+
+								sTel = sDist + sDist +sDist + sDist +sDist + sDist +'<Tel>'+vartostr(dsHeader.Tel)+'</Tel>';
+								sTel = CallPublished('PILib.AnsiToUTF8', sTel);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTel, 2));
+			
+								sContactF = sDist + sDist +sDist + sDist +'</Contact>';
+								sContactF = CallPublished('PILib.AnsiToUTF8', sContactF);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sContactF, 2));
+		
+							sSellerPartyF = sDist + sDist +'</SellerParty>';
+							sSellerPartyF = CallPublished('PILib.AnsiToUTF8', sSellerPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sSellerPartyF, 2));
+						
+							//Ship from Party
+							sShipFromPartyI = sDist + sDist +'<ShipFromParty>';
+							sShipFromPartyI = CallPublished('PILib.AnsiToUTF8', sShipFromPartyI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sShipFromPartyI, 2));
+							
+							sILN4 = sDist + sDist +sDist + sDist +'<ILN>'+vartostr(dsHeader.ILN4)+'</ILN>';
+							sILN4 = CallPublished('PILib.AnsiToUTF8', sILN4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sILN4, 2));
+							
+							sName4 = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsHeader.Name4)+'</Name>';
+							sName4 = CallPublished('PILib.AnsiToUTF8', sName4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sName4, 2));
+							
+							sStreet4 = sDist + sDist +sDist + sDist +'<Street>'+vartostr(dsHeader.Street4)+'</Street>';
+							sStreet4 = CallPublished('PILib.AnsiToUTF8', sStreet4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sStreet4, 2));
+
+							sHouseNumber4 = sDist + sDist +sDist + sDist +'<HouseNumber>'+vartostr(dsHeader.HouseNumber4)+'</HouseNumber>';
+							sHouseNumber4 = CallPublished('PILib.AnsiToUTF8', sHouseNumber4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sHouseNumber4, 2));
+							
+							sPostalCode4 = sDist + sDist +sDist + sDist +'<PostalCode>'+vartostr(dsHeader.PostalCode4)+'</PostalCode>';
+							sPostalCode4 = CallPublished('PILib.AnsiToUTF8', sPostalCode4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPostalCode4, 2));
+							
+							sCity4 = sDist + sDist +sDist + sDist +'<City>'+vartostr(dsHeader.City4)+'</City>';
+							sCity4 = CallPublished('PILib.AnsiToUTF8', sCity4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCity4, 2));
+
+							sCountry4 = sDist + sDist +sDist + sDist +'<Country>'+vartostr(dsHeader.Country4)+'</Country>';
+							sCountry4 = CallPublished('PILib.AnsiToUTF8', sCountry4);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCountry4, 2));
+		
+							sShipFromPartyF = sDist + sDist +'</ShipFromParty>';
+							sShipFromPartyF = CallPublished('PILib.AnsiToUTF8', sShipFromPartyF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sShipFromPartyF, 2));					
+						
+						sInvoicePartyF = '</InvoiceParty>';
+						sInvoicePartyF = CallPublished('PILib.AnsiToUTF8', sInvoicePartyF);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoicePartyF, 2));
+						
+						
+						//-----------------------------------LINII DOCUMENT---------------------------------------------------//
+						sInvoiceDetailI = '<InvoiceDetail>';
+						sInvoiceDetailI = CallPublished('PILib.AnsiToUTF8', sInvoiceDetailI);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceDetailI, 2));
+						
+						nContor=0;
+						fetch dsLinii
+						{
+							nContor=nContor+1;
+							
+							sItemI = sDist + sDist +'<Item>';
+							sItemI = CallPublished('PILib.AnsiToUTF8', sItemI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sItemI, 2));
+							
+							sItemNum = sDist + sDist +sDist + sDist +'<ItemNum>'+vartostr(nContor)+'</ItemNum>';
+							sItemNum = CallPublished('PILib.AnsiToUTF8', sItemNum);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sItemNum, 2));
+							
+							sEAN = sDist + sDist +sDist + sDist +'<EAN>'+vartostr(dsLinii.EAN)+'</EAN>';
+							sEAN = CallPublished('PILib.AnsiToUTF8', sEAN);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sEAN, 2));
+							
+							sBuyerItemID = sDist + sDist +sDist + sDist +'<BuyerItemID>'+vartostr(dsLinii.BuyerItemID)+'</BuyerItemID>';
+							sBuyerItemID = CallPublished('PILib.AnsiToUTF8', sBuyerItemID);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sBuyerItemID, 2));
+
+							sSellerItemID = sDist + sDist +sDist + sDist +'<SellerItemID>'+vartostr(dsLinii.SellerItemID)+'</SellerItemID>';
+							sSellerItemID = CallPublished('PILib.AnsiToUTF8', sSellerItemID);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sSellerItemID, 2));
+							
+							sCustomTariffNumber = sDist + sDist +sDist + sDist +'<CustomTariffNumber>'+vartostr(dsLinii.CustomTariffNumber)+'</CustomTariffNumber>';
+							sCustomTariffNumber = CallPublished('PILib.AnsiToUTF8', sCustomTariffNumber);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sCustomTariffNumber, 2));
+							
+							sProductIdentifierExt = sDist + sDist +sDist + sDist +'<ProductIdentifierExt>'+vartostr(dsLinii.ProductIdentifierExt)+'</ProductIdentifierExt>';
+							sProductIdentifierExt = CallPublished('PILib.AnsiToUTF8', sProductIdentifierExt);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sProductIdentifierExt, 2));
+
+							sPacketContentQuantity = sDist + sDist +sDist + sDist +'<PacketContentQuantity>'+vartostr(dsLinii.PacketContentQuantity)+'</PacketContentQuantity>';
+							sPacketContentQuantity = CallPublished('PILib.AnsiToUTF8', sPacketContentQuantity);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPacketContentQuantity, 2));
+							
+							sPackageType = sDist + sDist +sDist + sDist +'<PackageType>'+vartostr(dsLinii.PackageType)+'</PackageType>';
+							sPackageType = CallPublished('PILib.AnsiToUTF8', sPackageType);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPackageType, 2));
+							
+							sQuantityValue = sDist + sDist +sDist + sDist +'<QuantityValue>'+vartostr(dsLinii.QuantityValue)+'</QuantityValue>';
+							sQuantityValue = CallPublished('PILib.AnsiToUTF8', sQuantityValue);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sQuantityValue, 2));
+							
+							sTaxCategoryCoded = sDist + sDist +sDist + sDist +'<TaxCategoryCoded>'+vartostr(dsLinii.TaxCategoryCoded)+'</TaxCategoryCoded>';
+							sTaxCategoryCoded = CallPublished('PILib.AnsiToUTF8', sTaxCategoryCoded);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxCategoryCoded, 2));
+
+							sTaxPercent = sDist + sDist +sDist + sDist +'<TaxPercent>'+vartostr(dsLinii.TaxPercent)+'</TaxPercent>';
+							sTaxPercent = CallPublished('PILib.AnsiToUTF8', sTaxPercent);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxPercent, 2));
+							
+							sTaxAmount = sDist + sDist +sDist + sDist +'<TaxAmount>'+vartostr(dsLinii.TaxAmount)+'</TaxAmount>';
+							sTaxAmount = CallPublished('PILib.AnsiToUTF8', sTaxAmount);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxAmount, 2));
+							
+							sMonetaryGrossValue = sDist + sDist +sDist + sDist +'<MonetaryGrossValue>'+vartostr(dsLinii.MonetaryGrossValue)+'</MonetaryGrossValue>';
+							sMonetaryGrossValue = CallPublished('PILib.AnsiToUTF8', sMonetaryGrossValue);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sMonetaryGrossValue, 2));
+
+							sMonetaryNetValue = sDist + sDist +sDist + sDist +'<MonetaryNetValue>'+vartostr(dsLinii.MonetaryNetValue)+'</MonetaryNetValue>';
+							sMonetaryNetValue = CallPublished('PILib.AnsiToUTF8', sMonetaryNetValue);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sMonetaryNetValue, 2));
+							
+							sMonetaryAmountPayable = sDist + sDist +sDist + sDist +'<MonetaryAmountPayable>'+vartostr(dsLinii.MonetaryAmountPayable)+'</MonetaryAmountPayable>';
+							sMonetaryAmountPayable = CallPublished('PILib.AnsiToUTF8', sMonetaryAmountPayable);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sMonetaryAmountPayable, 2));
+							
+							sUnitOfMeasure = sDist + sDist +sDist + sDist +'<UnitOfMeasure>'+vartostr(dsLinii.UnitOfMeasure)+'</UnitOfMeasure>';
+							sUnitOfMeasure = CallPublished('PILib.AnsiToUTF8', sUnitOfMeasure);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sUnitOfMeasure, 2));
+							
+							sUnitOfMeasureXCBL = sDist + sDist +sDist + sDist +'<UnitOfMeasureXCBL>'+vartostr(dsLinii.UnitOfMeasureXCBL)+'</UnitOfMeasureXCBL>';
+							sUnitOfMeasureXCBL = CallPublished('PILib.AnsiToUTF8', sUnitOfMeasureXCBL);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sUnitOfMeasureXCBL, 2));
+
+							sPackUnitOfMeasure = sDist + sDist +sDist + sDist +'<PackUnitOfMeasure>'+vartostr(dsLinii.PackUnitOfMeasure)+'</PackUnitOfMeasure>';
+							sPackUnitOfMeasure = CallPublished('PILib.AnsiToUTF8', sPackUnitOfMeasure);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sPackUnitOfMeasure, 2));
+							
+							sUnitPriceValue = sDist + sDist +sDist + sDist +'<UnitPriceValue>'+vartostr(dsLinii.UnitPriceValue)+'</UnitPriceValue>';
+							sUnitPriceValue = CallPublished('PILib.AnsiToUTF8', sUnitPriceValue);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sUnitPriceValue, 2));
+							
+							sUnitPriceValueGross = sDist + sDist +sDist + sDist +'<UnitPriceValueGross>'+vartostr(dsLinii.UnitPriceValueGross)+'</UnitPriceValueGross> ';
+							sUnitPriceValueGross = CallPublished('PILib.AnsiToUTF8', sUnitPriceValueGross);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sUnitPriceValueGross, 2));
+
+							sNameL = sDist + sDist +sDist + sDist +'<Name>'+vartostr(dsLinii.Name)+'</Name>';
+							sNameL = CallPublished('PILib.AnsiToUTF8', sNameL);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sNameL, 2));
+							
+							
+							sItemF = sDist + sDist +'</Item> ';
+							sItemF = CallPublished('PILib.AnsiToUTF8', sItemF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sItemF, 2));
+							
+							
+						}
+						
+						sInvoiceDetailF = '</InvoiceDetail>';
+						sInvoiceDetailF = CallPublished('PILib.AnsiToUTF8', sInvoiceDetailF);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceDetailF, 2));
+						//-----------------------------------LINII DOCUMENT--END----------------------------------------------//
+						
+						//Invoice Summary
+						sInvoiceSummaryI = '<InvoiceSummary>';
+						sInvoiceSummaryI = CallPublished('PILib.AnsiToUTF8', sInvoiceSummaryI);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceSummaryI, 2));
+							
+						sNumberOfLines = sDist + sDist +'<NumberOfLines>'+vartostr(dsHeader.NumberOfLines)+'</NumberOfLines>';
+						sNumberOfLines = CallPublished('PILib.AnsiToUTF8', sNumberOfLines);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sNumberOfLines, 2));
+						
+						sNetValue = sDist + sDist +'<NetValue>'+vartostr(dsHeader.NetValue)+'</NetValue>';
+						sNetValue = CallPublished('PILib.AnsiToUTF8', sNetValue);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sNetValue, 2));
+						
+						sTaxValue = sDist + sDist +'<TaxValue>'+vartostr(dsHeader.TaxValue)+'</TaxValue>';
+						sTaxValue = CallPublished('PILib.AnsiToUTF8', sTaxValue);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxValue, 2));
+
+						sTaxableValue = sDist + sDist +'<TaxableValue>'+vartostr(dsHeader.TaxableValue)+'</TaxableValue>';
+						sTaxableValue = CallPublished('PILib.AnsiToUTF8', sTaxableValue);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxableValue, 2));
+							
+						sGrossValue = sDist + sDist +'<GrossValue>'+vartostr(dsHeader.GrossValue)+'</GrossValue>';
+						sGrossValue = CallPublished('PILib.AnsiToUTF8', sGrossValue);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sGrossValue, 2));
+							
+						  //Tax Summary
+							sTaxSummaryI = sDist + sDist +'<TaxSummary>';
+							sTaxSummaryI = CallPublished('PILib.AnsiToUTF8', sTaxSummaryI);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxSummaryI, 2));
+								
+							fetch dsHeaderTax
+							{
+								sTaxI = sDist + sDist +sDist + sDist +'<Tax>';
+								sTaxI = CallPublished('PILib.AnsiToUTF8', sTaxI);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxI, 2));
+									
+								stTaxCategoryCoded = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxCategoryCoded>'+vartostr(dsHeaderTax.TaxCategoryCoded)+'</TaxCategoryCoded>';
+								stTaxCategoryCoded = CallPublished('PILib.AnsiToUTF8', stTaxCategoryCoded);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxCategoryCoded, 2));
+								
+								stTaxPercent = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxPercent>'+vartostr(dsHeaderTax.TaxPercent)+'</TaxPercent>';
+								stTaxPercent = CallPublished('PILib.AnsiToUTF8', stTaxPercent);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxPercent, 2));
+								
+								stTaxNettoAmount = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxNettoAmount>'+vartostr(dsHeaderTax.TaxNettoAmount)+'</TaxNettoAmount> ';
+								stTaxNettoAmount = CallPublished('PILib.AnsiToUTF8', stTaxNettoAmount);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxNettoAmount, 2));
+
+								stTaxableAmount = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxableAmount>'+vartostr(dsHeaderTax.TaxableAmount)+'</TaxableAmount>';
+								stTaxableAmount = CallPublished('PILib.AnsiToUTF8', stTaxableAmount);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxableAmount, 2));
+									
+								stTaxAmount = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxAmount>'+vartostr(dsHeaderTax.TaxAmount)+'</TaxAmount>';
+								stTaxAmount = CallPublished('PILib.AnsiToUTF8', stTaxAmount);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxAmount, 2));
+								
+								stTaxGrossAmount = sDist + sDist +sDist + sDist +sDist + sDist +'<TaxGrossAmount>'+vartostr(dsHeaderTax.TaxGrossAmount)+'</TaxGrossAmount>';
+								stTaxGrossAmount = CallPublished('PILib.AnsiToUTF8', stTaxGrossAmount);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, stTaxGrossAmount, 2));
+								
+								sTaxF = sDist + sDist +sDist + sDist +'</Tax>';
+								sTaxF = CallPublished('PILib.AnsiToUTF8', sTaxF);
+								x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxF, 2));
+							}
+							
+							sTaxSummaryF = sDist + sDist +'</TaxSummary>';
+							sTaxSummaryF = CallPublished('PILib.AnsiToUTF8', sTaxSummaryF);
+							x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sTaxSummaryF, 2));
+		
+		
+		
+						sInvoiceSummaryF = '</InvoiceSummary>';
+						sInvoiceSummaryF = CallPublished('PILib.AnsiToUTF8', sInvoiceSummaryF);
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sInvoiceSummaryF, 2));
+						
+						
+						
+						// Close root node
+						sNodFinal = '</Invoice>';
+						sNodFinal = CallPublished('PILib.AnsiToUTF8', sNodFinal);																								 
+						x=CallPublished('PILib.WriteLine', VarArray(fTextFile, sNodFinal, 2));
+						
+					}
+												
+					x=CallPublished('PILib.CloseText', fTextFile);
+				}
+		
+		
+		UserResp = SendResponse('Export finalizat.', 'RESULTS.LABELTEXT');
+		vLabelText =vLabelText +  'Export finalizat.'+ #10;
+		UserResp = SendResponse( vLabelText,' ImpTable.vMess');
+		
+	
+	}
+}
+

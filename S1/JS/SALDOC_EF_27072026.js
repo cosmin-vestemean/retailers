@@ -2419,7 +2419,8 @@ function preiaDateAviz() {
     ITELINES.FIRST;
     if (ITELINES.FINDOCS) {
       var dataset = X.GETSQLDATASET(
-        "SELECT FINDOC, FPRMS, TRNDATE, FINCODE FROM FINDOC WHERE FINDOC=" +
+        "SELECT F.FINDOC, F.FPRMS, F.TRNDATE, F.FINCODE, M.DELIVDATE FROM FINDOC F " +
+        "LEFT JOIN MTRDOC M ON M.FINDOC=F.FINDOC WHERE F.FINDOC=" +
         ITELINES.FINDOCS,
         null
       );
@@ -2429,6 +2430,11 @@ function preiaDateAviz() {
           //factura provenita din aviz livrare
           MTRDOC.CCCDispatcheDate = dataset.TRNDATE;
           MTRDOC.CCCDispatcheDoc = dataset.FINCODE;
+          // 27.08.2026 - nu se mai face conversia manuala din Soft1; preluam DELIVDATE de pe avizul
+          // sursa (fara sa il fabricam daca nici avizul nu il are - vezi lectia docDate()/pnl-b10)
+          if (dataset.ISNULL('DELIVDATE') == 0) {
+            MTRDOC.DELIVDATE = dataset.DELIVDATE;
+          }
         }
       }
     }
