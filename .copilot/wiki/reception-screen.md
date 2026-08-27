@@ -5,8 +5,11 @@ sections honest about what is analysis-only vs. implemented, don't present unfin
 
 ## Status overview (as of 2026-08-27)
 - **Model change (score every advice line, incl. omitted ones): IMPLEMENTED** 2026-08-05.
-- **Item A ("Trimite" button): IMPLEMENTED. Backend send-path bug found and fixed 2026-08-27** —
-  see the dated note at the end of section A.
+- **Item A ("Trimite" button): DONE for DocProcess, BLOCKED for Infinite.** UI implemented;
+  backend send-path bugs (transport, signing, credentials, series) fixed 2026-08-27 — see the
+  dated notes in section A. Infinite sending needs a new dedicated invoice-XML builder (wrong
+  schema entirely, not a field-validation issue) — full plan:
+  [infinite-invoice-format.md](infinite-invoice-format.md).
 - **Item B ("Facturează" button): IMPLEMENTED and verified live 2026-08-27.** See the dated note
   inside section B for the conversion-only series fix that unblocked it.
 - **Item C (invoice identity column): approved, spec below, NOT yet implemented.**
@@ -104,8 +107,26 @@ backend `src/services/edi-invoices/edi-invoices.class.js` hardcoded `ssh2-sftp-c
   keystore is provisioned, Infinite sends fail closed with a clear "S/MIME signing failed" error
   instead of silently uploading unsigned/wrong-transport XML. DocProcess is unaffected and works
   today. Full test suite (91 tests) passing after the change.
+- **UPDATE same day: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` and `S1_USERNAME`/`S1_PASSWORD`
+  (a separate, also-missing config gap that blocked `getInvoiceDom`'s `connectToS1` call) are now
+  both set on `retailers4`.** Also patched `runCmd20210915.js` to recognize series 7122/7123 as
+  "tur" invoices (it only knew legacy 7121/7531). Retesting `FAEX1-PF-40689` got all the way down
+  to 4 remaining field-validation errors — and chasing those uncovered the real blocker below.
+
+### SUPERSEDED 2026-08-27: wrong invoice XML schema entirely for Infinite — see dedicated page
+
+**`runCmd20210915.js` generates DocProcess's `DXInvoice` schema; Infinite requires its own native
+`Invoice v1.0.1` schema** (confirmed against the official spec `documentatie/dedeman/
+XML_INVOICE_v4.pdf` and real archived files on the live FTP, `/invoice/archive/*.xml`, which use
+`InvoiceHeader`/`InvoiceParty`/`InvoiceeParty` — nothing like `DXInvoice`/`AccountingSupplierParty`).
+No amount of further field-binding fixes to the legacy script would have produced a document
+Infinite accepts. Full analysis, complete field spec, known data gaps, and a step-by-step
+implementation plan for a **new dedicated builder** (decided: pragmatic/contained fix now, generic
+data-driven engine deferred as acknowledged debt) are in
+**[infinite-invoice-format.md](infinite-invoice-format.md)**. Do this in a fresh session, not a
+continuation of this one.
 - **Still true from the original spec, unchanged:** first real Infinite send is still a TEST, not
-  a routine — validate on one invoice once the P12 cert is provisioned, and check whether it lands
+  a routine — validate on one invoice once the new builder ships, and check whether it lands
   in `/invoice/confirm` (accepted) vs `/invoice/error`/`/invoice/omit` (rejected) on the remote end.
 
 ## B. "Facturează" button in the Recepții actions column (analysis-only, not implemented)
@@ -360,6 +381,8 @@ Inserted rows are harmless (`INGESTED` is terminal); remove with
   the bulk `Trimite toate`. Per-invoice send IS the manual action the beneficiary asked for.
 
 ## See also
+- [infinite-invoice-format.md](infinite-invoice-format.md) — the wrong-schema finding + full
+  implementation plan for Item A's remaining Infinite send work.
 - [recadv-xml-format.md](recadv-xml-format.md) — the RECADV parsing/reconciliation rules this screen
   is built on.
 - [soft1-schema-facts.md](soft1-schema-facts.md) — FINDOC chain, FPRMS/series map, FULLYTRANSF.

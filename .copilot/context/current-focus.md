@@ -1,8 +1,10 @@
 # Current Focus
 
 ## Last Updated
-- 2026-08-27 (session: reception screen Item A — "Trimite" button send-path bug found and
-  fixed. UI was already implemented; the backend send was silently broken for Infinite.)
+- 2026-08-27 (session: reception screen Item A — "Trimite" button. Fixed transport/signing/
+  credentials bugs, then discovered the real blocker: `runCmd20210915.js` generates the wrong
+  invoice XML schema entirely for Infinite retailers. Full handoff plan written for a fresh
+  session — see [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
 
 ## Current Goal
 RECADV ingestion/reconciliation is **live in production** on `retailers4` since 2026-08-05.
@@ -10,23 +12,23 @@ Active work is finishing the Recepții screen's remaining approved UI items — 
 [reception-screen.md](../wiki/reception-screen.md).
 - **Item B ("Facturează")**: DONE, verified live. See Confirmed Decisions below and the wiki
   page section B ("RESOLVED 2026-08-27") for the full fix chain.
-- **Item A ("Trimite")**: UI (`reception-table.js`) was already implemented, sharing
-  `sendInvoiceXml()` with the Facturi tab — contradicting the stale "not yet implemented" spec
-  note. Found and fixed a real backend bug instead: `edi-invoices.class.js` hardcoded an SFTP
-  client for every retailer, ignoring `CCCEDIPROVIDER.CONNTYPE`. DocProcess (CONNTYPE=1, SFTP)
-  worked (125/410 invoices sent via app in 60d); Infinite (CONNTYPE=4, plain FTP on
-  `ftp.infinite.pl:21`) always failed — confirmed 0/616 Infinite invoices ever sent via app.
-  Fixed 2026-08-27: `edi-invoices.class.js` now resolves the transport via `buildTransport()`/
-  `getProvider()` (same as `scanner.js`), uses `provider.remoteSubdir('invoice')` for the
-  correct remote dir, and signs the XML with `signSmime()` (was dead code) for Infinite before
-  upload. Verified read-only against live `ftp.infinite.pl` and `dx.doc-process.com`: both
-  CCCSFTP rows are structurally correct (host/port/dirs match reality) — the bug was code-only.
-  **Not yet done: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` are not set anywhere (checked Heroku
-  config on `retailers4` — absent)**, so Infinite sends will fail closed with a clear "S/MIME
-  signing failed" error until that PKCS#12 keystore is provisioned. DocProcess unaffected.
+- **Item A ("Trimite")**: UI was already implemented. Backend send-path bugs (transport ignoring
+  `CONNTYPE`, dead S/MIME signing code, missing `S1_USERNAME`/`S1_PASSWORD`/`EDINET_P12_*`
+  config, missing 7122/7123 series recognition in the legacy invoice binder) are all fixed —
+  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite sending is still
+  blocked on a bigger problem, not yet started: `runCmd20210915.js` builds DocProcess's
+  `DXInvoice` schema, but Infinite requires its own native `Invoice v1.0.1` schema** (confirmed
+  against the official spec PDF and real archived files on the live FTP). A dedicated new
+  builder is needed — full field-by-field spec, known data gaps, and a step-by-step
+  implementation plan are written up in
+  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md). **Do this in a fresh session**
+  (per user request 2026-08-27) rather than continuing in an already-long one.
+  Acknowledged as expedient-not-ideal: the correct long-term fix is a generic outbound
+  XML-generation engine (mirroring `order-builder.js`'s inbound one) — recorded as deferred
+  debt in that same wiki page, not forgotten.
 - **Item C (invoice identity column)**: approved, spec written, not yet implemented.
-Active area: all files below are deployed and working; nothing pending here until Item A's
-remaining P12-provisioning step or Item C starts.
+Active area: nothing pending here until the new session picks up
+[infinite-invoice-format.md](../wiki/infinite-invoice-format.md) or Item C starts.
 
 ## Relevant Files
 - `S1/JS/AJS/RECADV.js` — `createInvoiceFromReception` (`X.CreateObj('SALDOC;EF')`).
@@ -59,11 +61,14 @@ remaining P12-provisioning step or Item C starts.
   Faza 2 (destroy) + Faza 3 (firewall) pending — `documentatie/retailers1-shutdown-runbook.md`.
 
 ## Next Step
-Implement Item A ("Trimite" button + invoice identity column) per
-[reception-screen.md](../wiki/reception-screen.md).
+Start a fresh session on
+[infinite-invoice-format.md](../wiki/infinite-invoice-format.md) — build the dedicated Infinite
+invoice XML builder per its step-by-step plan. Item C ("Trimite" invoice identity column) is the
+other pending small item — [reception-screen.md](../wiki/reception-screen.md).
 
 ## See also — wiki
-[reception-screen.md](../wiki/reception-screen.md) · [recadv-pipeline.md](../wiki/recadv-pipeline.md) ·
+[reception-screen.md](../wiki/reception-screen.md) · [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) ·
+[recadv-pipeline.md](../wiki/recadv-pipeline.md) ·
 [recadv-xml-format.md](../wiki/recadv-xml-format.md) · [retann.md](../wiki/retann.md) ·
 [soft1-schema-facts.md](../wiki/soft1-schema-facts.md) · [soft1-text-encoding-mojibake.md](../wiki/soft1-text-encoding-mojibake.md) ·
 [edi-pipeline-architecture.md](../wiki/edi-pipeline-architecture.md) · [frontend-architecture.md](../wiki/frontend-architecture.md) ·

@@ -30,15 +30,37 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
 - id: reception-screen-invoice-and-send-buttons
   status: open
   source: session-N+16
-  priority: medium
+  priority: high
   summary: >
     Both approved by Sorin, agreed order A then B: A. „Trimite" button (send an existing invoice,
-    same as Facturi tab) + invoice identity column (item C) — not yet implemented. B. „Facturează"
-    button (create the 7122/7123 invoice from a clean reception) — **IMPLEMENTED and verified live
-    2026-08-27** for Auchan/Dedeman/legacy (7121/7122/7123), including logging. Full detail:
-    [reception-screen.md](../wiki/reception-screen.md).
-  next: Implement A (small, tests the never-exercised Infinite SFTP send path) + item C (invoice
-    identity column).
+    same as Facturi tab) + invoice identity column (item C). B. „Facturează" button (create the
+    7122/7123 invoice from a clean reception) — **IMPLEMENTED and verified live 2026-08-27** for
+    Auchan/Dedeman/legacy (7121/7122/7123), including logging. A's UI was already implemented;
+    fixed several real backend send-path bugs 2026-08-27 (transport ignoring CONNTYPE, dead S/MIME
+    signing, missing S1_USERNAME/EDINET_P12_* config, missing 7122/7123 series recognition) —
+    then discovered the real blocker: `runCmd20210915.js` emits DocProcess's XML schema, but
+    Infinite requires its own native `Invoice v1.0.1` schema. Full plan:
+    [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
+  next: Fresh session picks up infinite-invoice-format.md's step-by-step plan (new dedicated
+    builder for Infinite invoices). Item C (invoice identity column) still separately pending.
+
+- id: invoice-xml-generic-engine-debt
+  status: open
+  source: session-N+16 (2026-08-27)
+  priority: low
+  summary: >
+    Acknowledged technical debt, recorded per explicit user request: the Infinite invoice builder
+    being written now (see infinite-invoice-format.md) is a dedicated one-off, same time-pressure
+    pattern that produced runCmd20210915.js in 2021. The correct long-term architecture is a
+    generic outbound XML-generation engine symmetric to order-builder.js's existing inbound one
+    (XML -> SALDOC via CCCXMLS1MAPPINGS). Nothing today reads CCCXMLS1MAPPINGS for outbound
+    generation — Carrefour's DXInvoice mapping row (doc id 38) is pure documentation of the
+    legacy script, not a live generator (confirmed by reading every consumer this session).
+  next: Not urgent — revisit once the dedicated Infinite builder is shipped and stable. Build
+    src/edi/invoice-builder.js (SALDOC + CCCXMLS1MAPPINGS -> XML), populate real field mappings
+    for both DXInvoice (Dedeman's own INVIOCE row, id 45, currently has 0 child rows) and
+    Infinite's Invoice v1.0.1, then retire the dedicated builders. Full detail in
+    infinite-invoice-format.md's "Deferred: the correct architecture" section.
 
 - id: edinet-duplicate-document-number-families
   status: open
