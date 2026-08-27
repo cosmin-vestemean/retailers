@@ -1,15 +1,17 @@
 # Infinite invoice XML — real format, gap analysis, implementation plan
 
-**Status: IMPLEMENTED 2026-08-27, not yet deployed/tested live.** `S1/JS/AJS/InfiniteInvoice.js`
+**Status: VERIFIED LIVE 2026-08-27 — Infinite accepted both test invoices.** `S1/JS/AJS/InfiniteInvoice.js`
 (new AJS module, ported field-for-field from the two proven SOIMPORT scripts, see "The proven
 reference implementation" below) + `src/services/get-invoice-dom/get-invoice-dom.class.js`
 (routes to it for `provider.code === 'infinite'`, logs validation failures to `orders-log`) +
 frontend `trdr` threading (`api.js` `sendInvoiceXml`, `invoice-table.js` `_createXml`) so the
 routing decision has a retailer to look up. Covered by
 `test/services/get-invoice-dom/get-invoice-dom.test.js` (routing + logging); full `npm test`
-96 passing. **Remaining before this is truly done**: (1) deploy `InfiniteInvoice.js` to the ERP's
-Advanced JavaScript Editor (same manual step as every other AJS file in this repo), (2) one live
-test end-to-end per the "Test plan" section below — this has never run against real Soft1 data.
+101 passing (also added `edi-invoices.test.js` — post-upload FTP verification + `sendInvoice`
+logging, see "Already correct" below). **Deployed and live-tested 2026-08-27**: `FAEX1-PF-40689`
+and `FAEX1-PF-40690` (Auchan) both sent successfully through the app; `FAEX1-PF-40689` has a
+positive `MessageAcknowledgement` from Infinite (see "Live verification" section below) —
+confirms the new native schema is genuinely accepted, not just structurally plausible.
 
 ## Why this page exists
 
@@ -275,18 +277,22 @@ flow) fetches — for the new Infinite builder use `TRDR.ADDRESS`/`TRDBRANCH.ADD
    "Confirmed reusable data" below); `SellerParty` = `COMPANY.ADDRESS`/`ZIP`/`CITY`. `HouseNumber`
    is hardcoded empty on **every** party in both proven scripts — never split out, ever. See the
    reference table above ("The proven reference implementation").
-2. **Fix written, deployed 2026-08-27 — needs a fresh post-deploy test to confirm.** `MTRDOC.DELIVDATE`
-   was frequently NULL (73% of 7111 avize) because the app's `createInvoiceFromReception`
-   (`RECADV.js`) bypasses the native Soft1 "Conversie" mechanism that used to fill it. Per user:
-   *"nu se mai face conversia manual din soft, trebuie sa asiguram noi ceea ce se transfera prin
-   ON_RESTOREEVENTS"* — `preiaDateAviz()` in `S1/JS/SALDOC_EF_27072026.js` now copies
-   `MTRDOC.DELIVDATE` from the source aviz's own `MTRDOC` row (same join as
-   `CCCDispatcheDate`/`CCCDispatcheDoc`), without fabricating a value when the source itself has
-   none (anti-silent-fallback rule — see `/memories/repo` docDate() lesson). **Deployed to the ERP
-   script editor by the user 2026-08-27.** Existing invoices created before the deploy
-   (`FAEX1-PF-40689`/`40690`, checked live) still show `DELIVDATE IS NULL` as expected — that's
-   pre-deploy data, not a sign the fix failed. Verify by creating a **new** invoice from a
-   reception now and checking `MTRDOC.DELIVDATE` populates.
+2. **RESOLVED 2026-08-27.** `MTRDOC.DELIVDATE` was frequently NULL (73% of 7111 avize) because the
+   app's `createInvoiceFromReception` (`RECADV.js`) bypasses the native Soft1 "Conversie"
+   mechanism that used to fill it. Per user: *"nu se mai face conversia manual din soft, trebuie
+   sa asiguram noi ceea ce se transfera prin ON_RESTOREEVENTS"* — `preiaDateAviz()` in
+   `S1/JS/SALDOC_EF_27072026.js` now copies `MTRDOC.DELIVDATE` from the source aviz's own
+   `MTRDOC` row (same join as `CCCDispatcheDate`/`CCCDispatcheDoc`), without fabricating a value
+   when the source itself has none (anti-silent-fallback rule). **Deployed to the ERP script
+   editor by the user 2026-08-27, going forward for new invoices.** `FAEX1-PF-40689`/`40690` were
+   created BEFORE that deploy, so their `DELIVDATE` (and their source avize's `DELIVDATE`, both
+   confirmed NULL live) had nothing to copy from — one-time manually backfilled from the source
+   aviz's own `TRNDATE` as the closest available proxy (`2026-08-25`/`2026-08-24` respectively),
+   not retroactively fixed by the code. New invoices going forward get it automatically.
+   `<SellerParty><Contact><Tel>` also needed a source correction: `COMPANY.PHONE2` is NULL and has
+   apparently never been populated at Pet Factory — switched `InfiniteInvoice.js` to source
+   `SellerTel` from `COMPANY.PHONE1` only (confirmed populated: `'0723.319.834'`), not
+   `ISNULL(PHONE2, PHONE1)` — per user, PHONE1 only, no fallback chain.
 3. **RESOLVED 2026-08-27, retailer-specific — see the reference table above.** Auchan:
    `PacketContentQuantity` = `CCCS1DXTRDRMTRL.UnitPack`, `PackageType` hardcoded `'CT'`. Dedeman:
    both hardcoded `''`. `PackUnitOfMeasure` = `MTRUNIT.SHORTCUT` (same as `UnitOfMeasure`) for
@@ -321,6 +327,14 @@ flow) fetches — for the new Infinite builder use `TRDR.ADDRESS`/`TRDBRANCH.ADD
   provider.remoteSubdir('invoice'))` — confirmed correct against the live FTP directory listing
   (`/invoice/` root, with `archive/confirm/duplicate/error/logs/omit/temp` subfolders). No change
   needed here regardless of which generator produces the XML.
+- **Post-upload verification + logging (added 2026-08-27, per explicit user request)**: same file
+  now lists the remote dir right after `uploadBuffer()` and confirms the filename is actually
+  there before returning `success:true` — a clean `uploadBuffer()` alone isn't trusted anymore (a
+  silent partial write/drop is possible). Every outcome (success or failure) is logged to
+  `orders-log` (`OPERATION: 'sendInvoice'`), not just the XML-build validation failures logged by
+  `get-invoice-dom.class.js`. Covered by `test/services/edi-invoices/edi-invoices.test.js` (5
+  cases). Both new `OPERATION` values (`buildInvoiceXml`, `sendInvoice`) were added to the Logs
+  screen's filter dropdown (`orders-log-table.js`).
 - **S/MIME signing**: wired in the same file (`signSmime()` called when `provider.code ===
   'infinite'`). Stays valid — it signs whatever XML payload is handed to it.
 - **Config**: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` and `S1_USERNAME`/`S1_PASSWORD` are now
@@ -376,18 +390,54 @@ flow) fetches — for the new Infinite builder use `TRDR.ADDRESS`/`TRDBRANCH.ADD
    field-by-field text (not a raw bind-error dump) for any future UI surface to use.
    Test coverage: `test/services/get-invoice-dom/get-invoice-dom.test.js` (5 cases — Infinite
    routing, DocProcess routing, missing-`trdr` fallback, failure logging, no logging on success).
-6. **NOT YET DONE — needs the ERP deploy + a live document.** Test plan unchanged from the
-   original spec: single invoice (`FAEX1-PF-40689` / FINDOC 2208760, or a fresh clean reception)
-   end to end: generate → validate against the real schema informally (compare structure to a
-   real archived file, and/or diff against what `AR_ORIGINAL_INVOICE`/`ExpFactDedeman_ButonNew`
-   would have produced for the same `FINDOC`) → sign → upload to `/invoice/` → **check
-   `/invoice/confirm` vs `/invoice/error`/`/invoice/omit` on the FTP afterwards** (read-only LIST,
-   credentials from `CCCSFTP` via `mcp_s1-api_s1_query_dataset`, same safe pattern used this
-   session) before declaring it works. Requires: (a) copy `InfiniteInvoice.js` into ERP →
-   Customization tools → Advanced JavaScript Editor, (b) deploy this session's Node changes to
-   `retailers4` (Heroku auto-deploy from `git push origin <branch>`).
+6. **DONE 2026-08-27 — see "Live verification" section below for the full result.** Sent
+   `FAEX1-PF-40689` and `FAEX1-PF-40690` (Auchan) through the app end to end: generate → sign →
+   upload → confirmed on FTP → `FAEX1-PF-40689` got a positive `MessageAcknowledgement` from
+   Infinite (processed into `/invoice/archive/`, zero entries in `/invoice/logs/err/`).
 7. **Do NOT enable bulk/automatic sending** — this remains a deliberate one-invoice-at-a-time
    manual action per the beneficiary's existing `manualSend` decision, unchanged by this work.
+
+## Live verification (2026-08-27) — Infinite actually accepted the new schema
+
+Sent both Auchan test invoices through the live app (`https://retailers4-4617928ecd76.herokuapp.com`,
+logged in as Admin) via the Recepții screen's "Trimite" button:
+
+- **`FAEX1-PF-40689`** (FINDOC 2208760): `MTRDOC.CCCXMLSendDate` set (15:03:27), file uploaded to
+  `/invoice/FAEX1-PF-40689_2026-08-27.xml` (18061 bytes). A few minutes later Infinite's own batch
+  job picked it up: the file moved from `/invoice/` into **`/invoice/archive/`** (their
+  success/processed location, alongside 113 other real archived invoices), and a
+  `MessageAcknowledgement_FAEX1-PF-40689_2026-08-27.xml` landed in **`/invoice/logs/ok/`**:
+  ```xml
+  <MessageAcknowledgement><AcknowledgementLocation>INFINITE</AcknowledgementLocation>
+  <AcknowledgementReferenceNumber>FAEX1-PF-40689_2026-08-27.xml</AcknowledgementReferenceNumber>
+  <AcknowledgementNote></AcknowledgementNote>
+  </MessageAcknowledgement>
+  ```
+  Empty `AcknowledgementNote` = clean acceptance, no error. `/invoice/logs/err/` was empty (0
+  entries) the whole time — this is the definitive proof the new native `<Invoice Version="1.0.1">`
+  schema is valid and accepted by Infinite in production, not just structurally plausible.
+- **`FAEX1-PF-40690`** (FINDOC 2208761): same flow, sent successfully (`CCCXMLSendDate` 15:12:44,
+  file uploaded, 31294 bytes) — uploaded just after Infinite's batch cycle ran, so at verification
+  time it was still sitting in `/invoice/` awaiting their next processing pass, not yet archived/
+  acknowledged. Same schema as `40689`, no reason to expect a different outcome.
+
+**Discovered along the way — Infinite's real directory layout under `/invoice/`** (not previously
+documented, useful for any future work here): `archive/` (processed/sent, keeps history),
+`confirm/send/` + `confirm/failed/` (currently both empty — purpose unconfirmed, possibly a
+legacy/alternate ack path), `duplicate/`, `error/`, `omit/` (all empty in this account), `logs/ok/`
+(per-invoice `MessageAcknowledgement_<filename>.xml` on success) and `logs/err/` (presumably the
+failure counterpart, empty so far), `temp/`.
+
+**Idea for later (not implemented, noted per user 2026-08-27): poll `/invoice/logs/ok/` +
+`/invoice/logs/err/` for `MessageAcknowledgement` files and surface them in the app** — symmetric
+to how DocProcess's APERAK flow already closes the loop for that side (`CCCAPERAK`,
+`downloadAperaks`, `invoice-table.js`). Would need: (1) a scanner/service that lists+downloads new
+`MessageAcknowledgement_*.xml` files (same read-only-LIST-then-RETR pattern already used for
+RECADV), (2) parse `AcknowledgementReferenceNumber`/`AcknowledgementNote` to match back to a
+FINDOC by filename, (3) a place to store/show the result (new column on the Facturi/Recepții
+screen, or a dedicated log entry). Out of scope for this session — the manual FTP check done here
+was sufficient to validate the schema; only worth building if the beneficiary wants automated
+confirmation instead of an occasional manual FTP check.
 
 ## Deferred: the correct architecture (mostly moot for Infinite — see scope directive above)
 

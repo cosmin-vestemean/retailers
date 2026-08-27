@@ -3,10 +3,11 @@
 ## Last Updated
 - 2026-08-27 (session: reception screen Item A — "Trimite" button. Fixed transport/signing/
   credentials bugs, discovered `runCmd20210915.js` generates the wrong invoice XML schema for
-  Infinite retailers, specced the fix, then **implemented it the same day**: new
-  `S1/JS/AJS/InfiniteInvoice.js` builder + `get-invoice-dom.class.js` routing/logging + frontend
-  `trdr` threading. `npm test` 96 passing. Not yet deployed/tested live — see
-  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
+  Infinite retailers, specced the fix, implemented it (`InfiniteInvoice.js` builder), deployed it,
+  and **live-verified it**: sent 2 real Auchan invoices through the app, one got a positive
+  `MessageAcknowledgement` from Infinite. Also added post-upload FTP verification + `sendInvoice`
+  logging to `edi-invoices.class.js` (not yet deployed — needs `git push`). `npm test` 101
+  passing. See [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).)
 
 ## Current Goal
 RECADV ingestion/reconciliation is **live in production** on `retailers4` since 2026-08-05.
@@ -18,19 +19,29 @@ Active work is finishing the Recepții screen's remaining approved UI items — 
   `CONNTYPE`, dead S/MIME signing code, missing `S1_USERNAME`/`S1_PASSWORD`/`EDINET_P12_*`
   config, missing 7122/7123 series recognition in the legacy invoice binder) are all fixed —
   DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite's schema problem is
-  now IMPLEMENTED (2026-08-27), not yet deployed/tested live**: `runCmd20210915.js` built
-  DocProcess's `DXInvoice` schema; Infinite needs its own native `Invoice v1.0.1` schema, ported
-  field-for-field from the two proven `SOIMPORT` scripts (`AR_ORIGINAL_INVOICE` Auchan,
-  `ExpFactDedeman_ButonNew` Dedeman) into a new `S1/JS/AJS/InfiniteInvoice.js` AJS module.
-  `get-invoice-dom.class.js` now routes to it by looking up the retailer's `CCCSFTP` provider
-  (`provider.code === 'infinite'`), logs pre-validation failures to `orders-log`, and falls back
-  to the legacy DocProcess endpoint otherwise. Frontend (`api.js` `sendInvoiceXml`,
-  `invoice-table.js` `_createXml`) now threads `trdr` through so that lookup has a retailer id.
-  Covered by `test/services/get-invoice-dom/get-invoice-dom.test.js`; full `npm test` 96 passing.
-  **Two things remain, both require the ERP/live environment**: (1) paste `InfiniteInvoice.js`
-  into ERP → Advanced JavaScript Editor (2) one live end-to-end test (generate → sign → upload →
-  check `/invoice/confirm` vs `/error`/`/omit`). Full detail:
-  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
+  DONE AND LIVE-VERIFIED (2026-08-27)**: `runCmd20210915.js` built DocProcess's `DXInvoice`
+  schema; Infinite needs its own native `Invoice v1.0.1` schema, ported field-for-field from the
+  two proven `SOIMPORT` scripts (`AR_ORIGINAL_INVOICE` Auchan, `ExpFactDedeman_ButonNew` Dedeman)
+  into a new `S1/JS/AJS/InfiniteInvoice.js` AJS module (deployed to the ERP, `SellerTel` sourced
+  from `COMPANY.PHONE1` only per user — `PHONE2` is never populated at Pet Factory).
+  `get-invoice-dom.class.js` routes to it by looking up the retailer's `CCCSFTP` provider
+  (`provider.code === 'infinite'`), logs pre-validation failures to `orders-log`
+  (`OPERATION:'buildInvoiceXml'`), falls back to the legacy DocProcess endpoint otherwise.
+  **Sent 2 real Auchan invoices through the live app** (`FAEX1-PF-40689`/`40690`, after a one-time
+  manual `DELIVDATE` backfill for these pre-fix documents — new invoices get it automatically via
+  the already-deployed `preiaDateAviz()` fix): both uploaded successfully, and `FAEX1-PF-40689`
+  got a positive `MessageAcknowledgement` from Infinite (moved to their `/invoice/archive/`, zero
+  entries in `/invoice/logs/err/`) — **definitive proof the new schema is accepted in production**.
+  Also added (per user request, **not yet deployed — needs `git push`**): `edi-invoices.class.js`
+  now verifies the file is actually listed on the FTP after upload before reporting success, and
+  logs every send outcome to `orders-log` (`OPERATION:'sendInvoice'`) — previously only XML-build
+  failures were logged, not the actual send. `npm test` 101 passing
+  (`get-invoice-dom.test.js` + new `edi-invoices.test.js`).
+  **Idea for later, not implemented** (noted per user 2026-08-27): poll Infinite's
+  `/invoice/logs/ok|err/` for `MessageAcknowledgement` files and surface them in the app,
+  symmetric to the DocProcess APERAK flow — see wiki page's "Live verification" section for the
+  full directory-layout discovery and what building this would take.
+  Full detail: [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
   The generic outbound XML-generation engine idea (mirroring `order-builder.js`'s inbound one)
   stays de-prioritized for Infinite (closed set of 2 retailers, hardcoded branches per the scope
   directive) — only relevant if DocProcess-side mapping work is ever scheduled.
