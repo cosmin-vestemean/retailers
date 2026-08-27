@@ -27,6 +27,12 @@ const STATUS_EXPLANATION = {
   not_received: 'Nu a sosit încă niciun fișier RECADV de la retailer pentru acest aviz.'
 }
 
+function formatDateOnly(value) {
+  if (!value) return ''
+  const match = String(value).trim().match(/^(\d{4}-\d{2}-\d{2})/)
+  return match ? match[1] : String(value)
+}
+
 export class ReceptionTable extends LightElement {
   static properties = {
     trdr:        { type: String },
@@ -303,7 +309,7 @@ export class ReceptionTable extends LightElement {
                 const files = reception.files || []
                 return html`
                   <tr>
-                    <td>${row.TRNDATE}</td>
+                    <td>${formatDateOnly(row.TRNDATE)}</td>
                     <td>${row.FINCODE}</td>
                     <td>${row.NUM04 || ''}</td>
                     <td>${(reception.documentNumbers || []).join(', ') || '—'}</td>
@@ -316,7 +322,7 @@ export class ReceptionTable extends LightElement {
                     </td>
                     <td>
                       ${row.INVOICE_FINCODE ? html`
-                        <span class="badge bg-success">${row.INVOICE_FINCODE} - ${row.INVOICE_TRNDATE}</span>
+                        <span class="badge bg-success">${row.INVOICE_FINCODE} - ${formatDateOnly(row.INVOICE_TRNDATE)}</span>
                         ${row.INVOICE_COUNT > 1 ? html`<span class="badge bg-secondary ms-1">+${row.INVOICE_COUNT - 1}</span>` : ''}
                         ${row.INVOICE_SENT_DATE ? html`
                           <button class="btn btn-sm btn-warning ms-1" title=${row.INVOICE_SENT_DATE}
