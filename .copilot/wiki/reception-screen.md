@@ -86,32 +86,26 @@ backend `src/services/edi-invoices/edi-invoices.class.js` hardcoded `ssh2-sftp-c
   The code tried an SSH2 handshake against an FTP-only port. Measured: **0/616** Infinite
   invoices ever sent via the app in 60 days — matches the earlier "0 of 521 in 60 days" finding,
   now root-caused instead of just observed.
-- Two more stacked bugs on the Infinite path: (1) it uploaded to raw `CCCSFTP.INITIALDIROUT`
-  (`/` for Infinite) instead of the provider's real `/invoice/` subdirectory; (2) `signSmime()` in
-  `src/edi/sign-smime.js` — whose own doc comment says S/MIME is "required by Infinite Edinet for
-  invoices" — was dead code, never called.
+- One more stacked bug on the Infinite path: it uploaded to raw `CCCSFTP.INITIALDIROUT`
+  (`/` for Infinite) instead of the provider's real `/invoice/` subdirectory.
 - **Verified read-only against both live servers** (LIST only, no writes) before fixing: both
   `CCCSFTP` rows are structurally correct (`ftp.infinite.pl` really has `/invoice/` with
   `archive/confirm/duplicate/error/logs/omit/temp` subfolders and files land directly under
   `/invoice/`; `dx.doc-process.com` `INITIALDIRIN`/`INITIALDIROUT` really are the DocProcess
   `out`/`in` folders). The bug was 100% code, not config.
 - **Fix**: `edi-invoices.class.js` now resolves the transport the same way `scanner.js` does —
-  `getProvider()` + `buildTransport(row, row.PROVIDER_CONNTYPE)` — builds the remote path via
-  `joinRemote(sftpRow.INITIALDIROUT, provider.remoteSubdir('invoice'))`, and signs the payload
-  with `signSmime()` when `provider.code === 'infinite'` before upload. Added `uploadBuffer()` to
+  `getProvider()` + `buildTransport(row, row.PROVIDER_CONNTYPE)` — and builds the remote path via
+  `joinRemote(sftpRow.INITIALDIROUT, provider.remoteSubdir('invoice'))`. Added `uploadBuffer()` to
   both `SftpTransport` and `FtpTransport` (upload an in-memory XML string without touching disk;
   the existing `upload()` only took a local file path). `joinRemote` exported from `scanner.js`
   instead of duplicated.
-- **Known remaining gap, not a code bug: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` are not set
-  anywhere** (checked `retailers4` Heroku config vars 2026-08-27 — absent). Until that PKCS#12
-  keystore is provisioned, Infinite sends fail closed with a clear "S/MIME signing failed" error
-  instead of silently uploading unsigned/wrong-transport XML. DocProcess is unaffected and works
-  today. Full test suite (91 tests) passing after the change.
-- **UPDATE same day: `EDINET_P12_BASE64`/`EDINET_P12_PASSWORD` and `S1_USERNAME`/`S1_PASSWORD`
-  (a separate, also-missing config gap that blocked `getInvoiceDom`'s `connectToS1` call) are now
-  both set on `retailers4`.** Also patched `runCmd20210915.js` to recognize series 7122/7123 as
-  "tur" invoices (it only knew legacy 7121/7531). Retesting `FAEX1-PF-40689` got all the way down
-  to 4 remaining field-validation errors — and chasing those uncovered the real blocker below.
+- **The `signSmime()` part of that fix was a mistake and has been reverted.**
+  `src/edi/sign-smime.js` was dead code whose doc comment claimed S/MIME is "required by Infinite
+  Edinet for invoices" — never verified. Wiring it in made every Infinite upload a MIME envelope
+  instead of an XML file, which Infinite rejected as "Invalid file structure". Signing is off
+  again, `EDINET_P12_*` is irrelevant to this flow, and invoices are now **accepted live on both
+  retailers**. Full evidence: [infinite-invoice-format.md](infinite-invoice-format.md) →
+  "ROOT CAUSE, PROVEN".
 
 ### SUPERSEDED 2026-08-27: wrong invoice XML schema entirely for Infinite — see dedicated page
 

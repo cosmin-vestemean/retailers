@@ -1,6 +1,21 @@
 # Current Focus
 
 ## Last Updated
+- 2026-08-27 (later session: Infinite invoice send-path — **RESOLVED**). Item A ("Trimite") is
+  **done and verified live: invoices are accepted by Infinite EDInet for BOTH Auchan and
+  Dedeman.** Root cause of the 100% rejection rate was **not** the XML: `edi-invoices.class.js`
+  had S/MIME signing wired in earlier the same day, so the file landing on Infinite's FTP began
+  with `Content-Type: multipart/signed` instead of `<?xml`. Proven by pulling an accepted file
+  (button-generated, 16 225 B, starts `<?xml`) and a rejected one (ours, 18 072 B, starts
+  `Content-Type:`) off `/invoice/archive/` with the project's own `FtpTransport`. Signing removed;
+  `sign-smime.js` kept in the repo for the day Infinite switches the relation to `Key storage`.
+  Along the way three genuine but non-fatal defects were fixed (`DATE01` and `CCCSELLERID` never
+  copied in `RECADV.js`; `SellerTel` read `PHONE1` instead of `PHONE2`), and one wrong "fix" of
+  mine was retracted (`BuyerOrderDate` is `xsd:dateTime` — the `T00:00:00` form was correct all
+  along). Full narrative, XSD findings and method lessons:
+  [infinite-invoice-format.md](../wiki/infinite-invoice-format.md). `npm test` 101 passing.
+
+## Previous Update
 - 2026-08-27 (session: Infinite invoice send-path, reception screen Item A — "Trimite" button).
   Built the native Infinite `<Invoice Version="1.0.1">` XML schema (`InfiniteInvoice.js`), wired
   routing/logging, sent 6 real test invoices — **all 6 were rejected** by the Infinite EDInet web

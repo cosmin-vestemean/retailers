@@ -41,8 +41,12 @@ Firele **pe obiectiv** rămân în `current-focus.md`.
     then discovered the real blocker: `runCmd20210915.js` emits DocProcess's XML schema, but
     Infinite requires its own native `Invoice v1.0.1` schema. Full plan:
     [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
-  next: Fresh session picks up infinite-invoice-format.md's step-by-step plan (new dedicated
-    builder for Infinite invoices). Item C (invoice identity column) still separately pending.
+    **CLOSED for A 2026-08-27**: the dedicated Infinite builder shipped and invoices are accepted
+    live on both retailers. The blocker was never the XML — S/MIME signing wired in the same day
+    made the uploaded file a MIME envelope rather than an XML document. See
+    [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) → "ROOT CAUSE, PROVEN".
+  next: Items A and B are done. **Item C (invoice identity column on the Recepții screen) is the
+    only part of this thread still open** — approved and specced, not implemented.
 
 - id: invoice-xml-generic-engine-debt
   status: open
