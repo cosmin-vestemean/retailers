@@ -137,7 +137,7 @@ function auchanHeader(findoc) {
     "isnull(G.ZIP,'') SellerPostalCode," +
     "isnull(G.CITY,'') SellerCity," +
     "isnull(H.SHORTCUT,'') SellerCountry," +
-    "isnull(G.PHONE2,'') SellerTel," +
+    "isnull(G.PHONE1,'') SellerTel," +
     "(SELECT Count(*) FROM mtrlines WHERE findoc=A.findoc AND sodtype=51) NumberOfLines," +
     "convert(varchar(36),cast(round(A.NETAMNT,2) as numeric(36,2))) NetValue," +
     "convert(varchar(36),cast(round(A.VATAMNT,2) as numeric(36,2))) TaxValue," +
@@ -190,7 +190,7 @@ function dedemanHeader(findoc) {
     "isnull(G.ZIP,'') SellerPostalCode," +
     "isnull(G.CITY,'') SellerCity," +
     "isnull(H.SHORTCUT,'') SellerCountry," +
-    "isnull(G.PHONE2,'') SellerTel," +
+    "isnull(G.PHONE1,'') SellerTel," +
     "(SELECT Count(*) FROM mtrlines WHERE findoc=A.findoc AND sodtype=51) NumberOfLines," +
     "convert(varchar(36),cast(round(A.NETAMNT,2) as numeric(36,2))) NetValue," +
     "convert(varchar(36),cast(round(A.VATAMNT,2) as numeric(36,2))) TaxValue," +
@@ -321,7 +321,7 @@ function validate(dsHeader, dsLinii) {
   need(dsHeader.SellerStreet, '<SellerParty><Street> lipsa');
   need(dsHeader.SellerPostalCode, '<SellerParty><PostalCode> lipsa');
   need(dsHeader.SellerCity, '<SellerParty><City> lipsa');
-  need(dsHeader.SellerTel, '<SellerParty><Contact><Tel> lipsa - verificati PHONE2 pe companie');
+  need(dsHeader.SellerTel, '<SellerParty><Contact><Tel> lipsa - verificati PHONE1 pe companie');
 
   dsLinii.FIRST;
   var n = 0;

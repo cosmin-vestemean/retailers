@@ -11,6 +11,8 @@ const OP_OPTIONS = [
   { value: 'processOrder', label: 'Process order' },
   { value: 'createDocument', label: 'Create document' },
   { value: 'createInvoice', label: 'Facturare recepție' },
+  { value: 'buildInvoiceXml', label: 'Generare XML factură' },
+  { value: 'sendInvoice', label: 'Trimitere factură' },
   { value: 'duplicateGuard', label: 'Duplicate guard' },
   { value: 'pastDeliveryGuard', label: 'Past delivery guard' },
   { value: 'mappingError', label: 'Mapping error' },
