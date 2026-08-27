@@ -110,6 +110,8 @@ function auchanHeader(findoc) {
     "(SELECT TOP 1 isnull(CONVERT(VARCHAR(10),finaldate,120),'') FROM finpayterms WHERE findoc=A.findoc) InvoiceDueDate," +
     "isnull(C.REMARKS,'') Comment," +
     "isnull(A.num04,'') BuyerOrderNumber," +
+    // dateTime with the 'T', unlike every other date here. Proven correct: the accepted
+    // FAEX1-PF-40689 carries 2026-08-21T00:00:00. Do not "normalize" this to varchar(10).
     "isnull(replace(convert(varchar(50),A.date01,120),' ','T'),'') BuyerOrderDate," +
     "isnull(convert(varchar(10),B.delivdate,120),'') DeliveryDate," +
     "(SELECT TOP 1 isnull(b1.fincode,'') FROM mtrlines a1 LEFT OUTER JOIN findoc b1 ON a1.findocs=b1.findoc WHERE a1.findoc=A.findoc AND a1.findocs IS NOT NULL) DeliveryDocumentNumber," +
@@ -137,7 +139,9 @@ function auchanHeader(findoc) {
     "isnull(G.ZIP,'') SellerPostalCode," +
     "isnull(G.CITY,'') SellerCity," +
     "isnull(H.SHORTCUT,'') SellerCountry," +
-    "isnull(G.PHONE1,'') SellerTel," +
+    // PHONE2, not PHONE1 - both proven scripts read PHONE2, which is empty on this company, so
+    // every accepted invoice carries <Tel></Tel>. PHONE1 ('0723.319.834') is a deviation.
+    "isnull(G.PHONE2,'') SellerTel," +
     "(SELECT Count(*) FROM mtrlines WHERE findoc=A.findoc AND sodtype=51) NumberOfLines," +
     "convert(varchar(36),cast(round(A.NETAMNT,2) as numeric(36,2))) NetValue," +
     "convert(varchar(36),cast(round(A.VATAMNT,2) as numeric(36,2))) TaxValue," +
@@ -190,7 +194,7 @@ function dedemanHeader(findoc) {
     "isnull(G.ZIP,'') SellerPostalCode," +
     "isnull(G.CITY,'') SellerCity," +
     "isnull(H.SHORTCUT,'') SellerCountry," +
-    "isnull(G.PHONE1,'') SellerTel," +
+    "isnull(G.PHONE2,'') SellerTel," +
     "(SELECT Count(*) FROM mtrlines WHERE findoc=A.findoc AND sodtype=51) NumberOfLines," +
     "convert(varchar(36),cast(round(A.NETAMNT,2) as numeric(36,2))) NetValue," +
     "convert(varchar(36),cast(round(A.VATAMNT,2) as numeric(36,2))) TaxValue," +
@@ -294,7 +298,8 @@ function dedemanLines(findoc) {
 // data shows TRDR.ZIP/TRDBRANCH.ZIP is NULL for the large majority of real invoices (measured
 // 2026-08-27: 84% of the last 90 days, both retailers), and the proven scripts never gated on it
 // either. Same "spec says M, real practice is lenient" pattern as HouseNumber - still emitted
-// blank in the XML when absent, just not treated as a blocking error.
+// blank in the XML when absent, just not treated as a blocking error. <Contact><Tel> is not
+// checked for the same reason: COMPANY.PHONE2 is empty, so every accepted invoice has it blank.
 
 function validate(dsHeader, dsLinii) {
   var erori = [];
@@ -324,7 +329,6 @@ function validate(dsHeader, dsLinii) {
   need(dsHeader.SellerStreet, '<SellerParty><Street> lipsa');
   need(dsHeader.SellerPostalCode, '<SellerParty><PostalCode> lipsa');
   need(dsHeader.SellerCity, '<SellerParty><City> lipsa');
-  need(dsHeader.SellerTel, '<SellerParty><Contact><Tel> lipsa - verificati PHONE1 pe companie');
 
   dsLinii.FIRST;
   var n = 0;

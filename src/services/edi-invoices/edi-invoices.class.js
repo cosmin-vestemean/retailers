@@ -1,7 +1,6 @@
 import { buildTransport } from '../../edi/transports/factory.js'
 import { getProvider } from '../../edi/providers/factory.js'
 import { joinRemote } from '../../edi/scanner.js'
-import { signSmime } from '../../edi/sign-smime.js'
 
 export class EdiInvoicesService {
   constructor(options) {
@@ -27,15 +26,12 @@ export class EdiInvoicesService {
     const remoteDir = joinRemote(sftpRow.INITIALDIROUT, provider.remoteSubdir('invoice'))
     if (!remoteDir || remoteDir === '/') return this.fail(retailer, findoc, filename, `Missing invoice upload directory for retailer ${retailer}`)
 
-    // Infinite requires a detached S/MIME signature over the raw XML; DocProcess does not.
-    let payload = xml
-    if (provider.code === 'infinite') {
-      try {
-        payload = signSmime(xml)
-      } catch (error) {
-        return this.fail(retailer, findoc, filename, `S/MIME signing failed: ${error.message}`)
-      }
-    }
+    // Infinite expects the plain XML file - do NOT S/MIME-sign it. Proven 2026-08-27 by reading
+    // both files back off their own FTP: the accepted button-generated FAEXD-PF-40697 starts with
+    // "<?xml" (16225 B), our signed FAEX1-PF-40689 starts with "Content-Type: multipart/signed"
+    // (18072 B) and was rejected as "Invalid file structure". The EDInet Connector product can
+    // sign, but this account's channel takes unsigned XML.
+    const payload = xml
 
     let transport
     try {

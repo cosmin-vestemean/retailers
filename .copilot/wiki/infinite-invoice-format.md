@@ -451,12 +451,93 @@ rejected by Infinite, so this is not proof the DATE01 fix was pointless — but 
 defect (if the resend is still rejected) may lie elsewhere. If the 6 resent invoices are rejected
 again, diff the full generated XML byte-for-byte against this specific Auchan reference file
 (not the Dedeman `FAEXD-*` ones used for the original diff) instead of assuming BuyerOrderDate.
-Separately confirmed as *not* a formatting bug: the header `BuyerOrderDate` value now renders as
-`2026-08-19T00:00:00` (datetime with `T`, seen live in the app's XML preview after resend) — this
-exactly matches Auchan's own proven script (`AR_ORIGINAL_INVOICE.soimport.txt` line 54:
-`CONVERT(varchar(50), A.date01, 120)` + `replace(' ','T')`), unlike Dedeman's script which uses
-`VARCHAR(10)` (date-only, no time). Do not "fix" this to a plain date — it already matches the
-proven per-retailer format documented in the field-mapping table above.
+
+### ROOT CAUSE (2026-08-27, high confidence): `<BuyerOrderDate>` was emitted as a **dateTime**
+
+**An earlier revision of this page claimed the `2026-08-19T00:00:00` form was correct because it
+matches Auchan's proven script. That claim was WRONG — this section supersedes it.**
+
+### The decisive A/B test (2026-08-27) — same document, button version accepted, ours rejected
+
+The beneficiary produced the **button** (`SOIMPORT`) version of **the exact same invoice** our
+builder had generated — `FAEXD-PF-40697` / FINDOC 2209230 — and **EDInet accepted it**
+(`d:\XML Dedeman\FAEXD-PF-40697_2026-08-27.xml`). That turns a guessing game into a controlled
+experiment: one document, two generators, one accepted and one rejected.
+
+A mechanical element-by-element value diff (throwaway `_abdiff.mjs`) over **372 elements** found
+exactly **one** real value difference, plus 43 trailing-whitespace-only differences:
+
+```
+DIFF  InvoiceParty/SellerParty/Contact/Tel[0]
+      ours     = "0723.319.834"
+      accepted = ""
+```
+
+**Important scoping caveat**: that diff compared our *current* output (generated after
+`CCCSELLERID` had already been backfilled in the data) against the accepted file. The version
+actually **sent and rejected** had **two** differences — an empty `<BuyerSellerID>` *and* the
+`Tel`. Do not read "only one difference" as "only one suspect for the rejection".
+
+**Cause of the `Tel` difference**: both proven scripts read `COMPANY.PHONE2`
+(`AR_ORIGINAL_INVOICE` line 103, `ExpFactDedeman_ButonNew` line 106), which is **empty** on this
+company — hence `<Tel></Tel>` in every accepted invoice, for both retailers. `InfiniteInvoice.js`
+read `PHONE1` instead (`0723.319.834`). **Fixed 2026-08-27**: both header queries now use
+`isnull(G.PHONE2,'')`, and `validate()` no longer requires `SellerTel` (requiring it would
+fail-closed on every invoice, since the proven behaviour is an empty value).
+
+**But `Tel` is probably NOT the rejection cause** — counter-evidence: the official Infinite sample
+`invoice_return_example.xml` carries `<Tel>362341212</Tel>`, a *populated* Tel, so a non-empty
+value is definitely schema-valid. The only unverified part is whether the XSD restricts the
+format (ours had dots, the official sample is digits-only). Weigh that against the fact that,
+after the beneficiary supplied accepted files for **both** retailers, `Tel` is the **only**
+remaining difference on both — so it is now the last standing candidate, not a long shot.
+
+**Final state after both accepted references arrived (2026-08-27)** — our live output vs the
+accepted button output, same documents:
+
+| Retailer | Document | Elements compared | Real value diffs |
+|---|---|---|---|
+| Auchan | `FAEX1-PF-40689` (FINDOC 2208760) | 393 | **1** — `Tel` only |
+| Dedeman | `FAEXD-PF-40697` (FINDOC 2209230) | 372 | **1** — `Tel` only |
+
+(plus 26 / 43 trailing-whitespace-only differences, which the accepted files themselves contain).
+
+**What the rejected sends actually differed by** (both retailers): `<BuyerSellerID>` empty **and**
+`Tel` from `PHONE1`. `BuyerSellerID` is now fixed in data and in `RECADV.js`; `Tel` is fixed in
+`InfiniteInvoice.js` pending redeploy. After that redeploy the generated XML should be
+value-identical to a known-accepted document on both retailers — if a resend still fails, the XML
+content is exonerated and the investigation moves to transport/signing/upload encoding.
+
+**Ranking of the defects found this session, by likelihood of being the actual cause:**
+1. **`<BuyerSellerID>` empty** (both retailers) — a required supplier identifier emitted empty is
+   exactly what gets reported as a generic "Invalid file structure".
+2. **`Tel` from `PHONE1`** — the only other difference; low prior (populated Tel is provably
+   valid) but it is now the last one standing.
+3. ~~`<BuyerOrderDate>` as dateTime~~ — **retracted, was never a defect.** See below.
+
+**This also means the builder has no structural problem.** 372/372 elements matched in path,
+order and nesting. Do not look for missing/extra/misordered elements — there are none.
+
+### Second real defect (Auchan only): `<BuyerOrderDate>` — RETRACTED, this was NOT a defect
+
+**This section previously claimed `<BuyerOrderDate>` had to be date-only and that our
+`2026-08-19T00:00:00` was an XSD type violation. That was WRONG, and the "fix" was reverted.**
+
+The reasoning error, recorded because it is worth not repeating: every accepted sample available
+at the time (`FAEXD-PF-38344`, `FAEXD-PF-38349`, `FAEXD-PF-40697`, `FAEX1-PF-22065`) showed
+date-only values, so "all dates are date-only" looked like a solid measured rule. But **none of
+those samples was an accepted Auchan invoice with a populated `BuyerOrderDate`** — the Auchan one
+had it empty. Absence of a counter-example was treated as evidence of a rule.
+
+The beneficiary then supplied the accepted **Auchan** `FAEX1-PF-40689_2026-08-27.xml`, which
+carries `<BuyerOrderDate>2026-08-21T00:00:00</BuyerOrderDate>`. **Infinite accepts the dateTime
+form for Auchan.** `AR_ORIGINAL_INVOICE`'s `replace(convert(varchar(50), ...), ' ', 'T')` was
+right all along, and the per-retailer asymmetry (Auchan dateTime, Dedeman date-only) is real.
+`InfiniteInvoice.js` was reverted to the dateTime form with a comment marking it as verified.
+
+**Rule for this workstream**: only a *positive* sample proves a format. A field that is empty in
+every reference file proves nothing about how a populated value must look — get an accepted
+document that actually contains a value before changing the format.
 
 ## Deeper root cause (2026-08-27) — GETSQLDATASET's WS bridge corrupts null-date SQL expressions
 
@@ -527,28 +608,30 @@ isolation.
    line was premature.
 
 **Third gap found 2026-08-27, same category as `DATE01` — `CCCSELLERID` also never copied.**
-User pasted the app's XML preview for the resent `FAEX1-PF-40696` and asked to review it field by
-field against the real Auchan reference (`FAEX1-PF-22065_2024-06-26.xml`). The preview's
-per-line-indented look was a red herring — confirmed (user: "Este de aici") to be purely
-`frontend/src/components/xml-viewer.js`'s `_formatXml()` display pretty-printer, not the actual
-bytes sent (`InfiniteInvoice.js`'s own `tag()` helper emits compact `<Tag>value</Tag>`, one line
-per field, matching the real reference exactly). But one real value WAS wrong: `<SellerParty>
-<BuyerSellerID>` was empty, while the reference file has `02219`. Both proven scripts
-(`AR_ORIGINAL_INVOICE.soimport.txt`, `ExpFactDedeman_ButonNew.soimport.txt`) read this from
-`FINDOC.CCCSELLERID` — same column `InfiniteInvoice.js` already reads correctly (line ~131/184).
-Confirmed live via SQL: source advice `AEX-AE-054960` (FINDOC 2202772) has `CCCSELLERID='05613'`,
-but the created invoice `FAEX1-PF-40696` (FINDOC 2209183) has it `NULL` — **`RECADV.js`'s
-`createInvoiceFromReception` never copied it**, same class of bug as the `DATE01` miss. **Fixed
-2026-08-27** (added to the SELECT + `tblFINDOC.CCCSELLERID = adv.CCCSELLERID`, same place as the
-`DATE01` assignment) — **needs ERP redeploy + backfill for the 6 test invoices before the next
-resend**, same as `DATE01` above (`CCCSELLERID` backfill can reuse the identical
-`CROSS APPLY`-on-`MTRLINES.FINDOCS` pattern).
+`<SellerParty><BuyerSellerID>` came out empty while every real accepted invoice has it populated
+(Auchan `02219`, Dedeman `0000003419`). Both proven scripts read it from `FINDOC.CCCSELLERID`, and
+`InfiniteInvoice.js` already read it correctly — the gap was that **`RECADV.js`'s
+`createInvoiceFromReception` never copied it from the source aviz**, same class of bug as the
+`DATE01` miss. **Fixed 2026-08-27** (added to the SELECT + `tblFINDOC.CCCSELLERID = adv.CCCSELLERID`).
+Verified live afterwards: all 7 test invoices now carry a real value, and calling the deployed
+`/JS/InfiniteInvoice/buildInvoiceXml` returns `<BuyerSellerID>05613</BuyerSellerID>` (Auchan
+2209183) and `0000003419` (Dedeman 2209230). Note the Auchan value is **per delivery location**
+(`02219`/`03837`/`05613` all occur across the 6 test invoices), not a single company constant.
 
 **Also observed, likely NOT a bug**: `<CustomTariffNumber>` was empty on 2 of 4 lines
 (`PF.00031`/`PF.00030`). Traced to `InfiniteInvoice.js`'s `LEFT OUTER JOIN intrastat E ON
 B.intrastat=E.intrastat` — those two `MTRL` rows simply have no `INTRASTAT` set, a per-product
-master-data gap, not something `createInvoiceFromReception`/`InfiniteInvoice.js` can fix. Lower
-priority than `CCCSELLERID`; revisit only if the portal flags it as fatal.
+master-data gap, not something `createInvoiceFromReception`/`InfiniteInvoice.js` can fix. The real
+accepted Auchan reference has it populated on all 51 lines, so it is worth fixing in master data,
+but it is a *value* gap, not a structure violation. Lower priority than the `BuyerOrderDate` type
+error above; revisit only if the portal still complains after that fix ships.
+
+**Red herring, ruled out**: the app's XML preview renders each element's value on its own indented
+line, which looked like whitespace pollution inside the tags. That is purely
+`frontend/src/components/xml-viewer.js`'s `_formatXml()` display pretty-printer — the bytes
+actually sent are compact `<Tag>value</Tag>`, one line per field (`InfiniteInvoice.js`'s `tag()`
+helper + `xml.join('\r\n')`), confirmed by byte-level inspection of a saved generated file.
+Do not chase this again.
 
 **Still true / not affected by this correction**: the Infinite directory layout discovered
 (`archive/`, `confirm/send`, `confirm/failed`, `duplicate/`, `error/`, `logs/ok/`, `logs/err/`,
