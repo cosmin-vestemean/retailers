@@ -3,8 +3,13 @@ todos/
 .vscode/
 .main-worktree
 
-# public/dist/ ramane versionat intentionat: Procfile ruleaza doar `npm start`,
-# nu exista build la deploy, deci bundle-ul commitat este frontend-ul din productie.
+# public/dist/ ramane versionat intentionat ca fallback, desi de la introducerea
+# `heroku-postbuild` (2026-08-27) Heroku ruleaza `vite build` proaspat la fiecare deploy.
+
+# Generat pe Windows: contine binary-uri opționale (native rolldown) specifice platformei,
+# ceea ce sparge instalarea pe dyno-ul Linux al Heroku (npm/cli#4828). npm install (nu ci)
+# rezolva dependentele corect per-platforma daca lockfile-ul lipseste.
+frontend/package-lock.json
 
 # Secrete - nu commita niciodata
 .env
