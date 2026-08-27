@@ -10,6 +10,7 @@ const OP_OPTIONS = [
   { value: 'createOrders', label: 'Create orders' },
   { value: 'processOrder', label: 'Process order' },
   { value: 'createDocument', label: 'Create document' },
+  { value: 'createInvoice', label: 'Facturare recepție' },
   { value: 'duplicateGuard', label: 'Duplicate guard' },
   { value: 'pastDeliveryGuard', label: 'Past delivery guard' },
   { value: 'mappingError', label: 'Mapping error' },

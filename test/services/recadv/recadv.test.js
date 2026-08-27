@@ -91,22 +91,67 @@ describe('recadv service', () => {
     assert.match(result.error, /trdr/i)
   })
 
-  it('create() forwards the advice FINDOC to createInvoiceFromReception', async () => {
+  it('create() forwards the advice FINDOC to createInvoiceFromReception and logs success', async () => {
     const calls = []
+    const logs = []
     const service = new RecadvService({
-      app: { get: () => 'https://s1.example/s1services' },
+      app: {
+        get: () => 'https://s1.example/s1services',
+        service: (name) => {
+          assert.strictEqual(name, 'orders-log')
+          return { create: async (data) => { logs.push(data); return { success: true } } }
+        }
+      },
       async fetch(url, options) {
         calls.push({ url, body: JSON.parse(options.body) })
         return jsonResponse({ success: true, findoc: 999, fincode: 'FAEX1-PF-40999', trndate: '2026-08-24 00:00:00' })
       }
     })
 
-    const result = await service.create({ findoc: '2203231' })
+    const result = await service.create({ findoc: '2203231', trdr: 13248, fincode: 'AEX-AE-055138' })
     assert.strictEqual(result.success, true)
     assert.strictEqual(result.fincode, 'FAEX1-PF-40999')
     assert.strictEqual(calls.length, 1)
     assert.ok(calls[0].url.endsWith('/JS/RECADV/createInvoiceFromReception'))
     assert.strictEqual(calls[0].body.findoc, 2203231)
+
+    assert.strictEqual(logs.length, 1)
+    assert.strictEqual(logs[0].TRDR_RETAILER, 13248)
+    assert.strictEqual(logs[0].OPERATION, 'createInvoice')
+    assert.strictEqual(logs[0].LEVEL, 'success')
+    assert.match(logs[0].MESSAGETEXT, /AEX-AE-055138.*FINCODE=FAEX1-PF-40999.*FINDOC=999/)
+  })
+
+  it('create() logs an error entry when createInvoiceFromReception fails', async () => {
+    const logs = []
+    const service = new RecadvService({
+      app: {
+        get: () => 'https://s1.example/s1services',
+        service: () => ({ create: async (data) => { logs.push(data); return { success: true } } })
+      },
+      async fetch() {
+        return jsonResponse({ success: false, error: 'No active invoice series mapped for TRDR 13248 in CCCDOCUMENTES1MAPPINGS.' })
+      }
+    })
+
+    const result = await service.create({ findoc: '2203231', trdr: 13248 })
+    assert.strictEqual(result.success, false)
+    assert.strictEqual(logs.length, 1)
+    assert.strictEqual(logs[0].LEVEL, 'error')
+    assert.match(logs[0].MESSAGETEXT, /FINDOC=2203231/)
+    assert.match(logs[0].MESSAGETEXT, /No active invoice series mapped/)
+  })
+
+  it('create() does not throw when the orders-log service is unavailable', async () => {
+    const service = new RecadvService({
+      app: { get: () => 'https://s1.example/s1services' }, // no .service()
+      async fetch() {
+        return jsonResponse({ success: true, findoc: 999, fincode: 'FAEX1-PF-40999', trndate: '2026-08-24 00:00:00' })
+      }
+    })
+
+    const result = await service.create({ findoc: '2203231' })
+    assert.strictEqual(result.success, true)
   })
 
   it('create() rejects a missing/invalid findoc without calling AJS', async () => {

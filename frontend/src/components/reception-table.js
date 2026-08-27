@@ -155,7 +155,7 @@ export class ReceptionTable extends LightElement {
     const findoc = row.FINDOC
     this._invoicing = new Set([...this._invoicing, findoc])
     try {
-      const res = await createReceptionInvoice(findoc)
+      const res = await createReceptionInvoice(findoc, this.trdr, row.FINCODE)
       if (res?.success) {
         this._receptions = this._receptions.map((r) => r.FINDOC === findoc ? {
           ...r,

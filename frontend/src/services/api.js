@@ -345,8 +345,8 @@ export async function getReceptionsPaged(trdr, { page = 1, pageSize = 25, daysOl
 }
 
 /** Create the invoice for one clean reception (Item B) — never automatic, one explicit click. */
-export async function createReceptionInvoice(findoc) {
-  return client.service('recadv').create({ findoc })
+export async function createReceptionInvoice(findoc, trdr, fincode) {
+  return client.service('recadv').create({ findoc, trdr, fincode })
 }
 
 // --------------- Scan operations ---------------

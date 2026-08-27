@@ -21,7 +21,30 @@ export class RecadvService {
   async create(data) {
     const findoc = parseInt(data?.findoc, 10)
     if (!findoc) return { success: false, error: 'Invalid advice FINDOC provided.' }
-    return this.callAjs('createInvoiceFromReception', { findoc })
+    const result = await this.callAjs('createInvoiceFromReception', { findoc })
+    await this.logInvoiceResult({ trdr: data?.trdr, findoc, adviceFincode: data?.fincode, result })
+    return result
+  }
+
+  // Own OPERATION value ('createInvoice') in CCCORDERSLOG, kept distinct from the automated
+  // order-intake pipeline's 'createDocument' — this is a manual, user-triggered action.
+  async logInvoiceResult({ trdr, findoc, adviceFincode, result }) {
+    const adviceRef = adviceFincode || `FINDOC=${findoc}`
+    const message = result?.success
+      ? `Factură creată din recepția ${adviceRef}: FINCODE=${result.fincode} FINDOC=${result.findoc}`
+      : `Facturare eșuată pentru recepția ${adviceRef}: ${result?.error || 'Eroare necunoscută'}`
+    try {
+      await this.options.app.service('orders-log').create({
+        TRDR_CLIENT: 1,
+        TRDR_RETAILER: parseInt(trdr, 10) || -1,
+        ORDERID: adviceRef,
+        OPERATION: 'createInvoice',
+        LEVEL: result?.success ? 'success' : 'error',
+        MESSAGETEXT: message
+      })
+    } catch (e) {
+      console.error('[recadv] orders-log insert failed:', e.message)
+    }
   }
 
   async find(params) {
