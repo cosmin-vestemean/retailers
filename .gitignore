@@ -18,6 +18,9 @@ frontend/package-lock.json
 privateKey.txt
 *.pem
 *.key
+*.p12
+documentatie/PET_FACTORY_EC_KIT/pass.txt
+documentatie/dedeman/PET_FACTORY_EC_KIT/pass.txt
 
 # Dump-uri de log Heroku: contin credentiale de productie si date de client
 heroku-logs/
