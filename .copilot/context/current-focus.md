@@ -46,72 +46,49 @@ Active work is finishing the Recepții screen's remaining approved UI items — 
   first). **Not yet re-verified**: create/check one NEW invoice via the button and confirm the
   source advice's `FULLYTRANSF` flips to 1 automatically post-deploy. Detail: wiki page section B,
   "FOUND + FIXED 2026-08-27".
-- **Item A ("Trimite")**: UI was already implemented. Backend send-path bugs (transport ignoring
-  `CONNTYPE`, dead S/MIME signing code, missing `S1_USERNAME`/`S1_PASSWORD`/`EDINET_P12_*`
-  config, missing 7122/7123 series recognition in the legacy invoice binder) are all fixed —
-  DocProcess sending is confirmed working (125/410 sent in 60d). **Infinite's schema builder is
-  written, deployed, structurally correct (confirmed by direct diff against a real historic
-  archived invoice) — but genuine end-to-end acceptance by Infinite is NOT YET confirmed
-  (2026-08-27), and this is the single open item blocking Item A.**
+- **Item A ("Trimite")**: **DONE — verified live 2026-08-27, invoices accepted by Infinite EDInet
+  for both Auchan and Dedeman.** All backend send-path bugs are fixed: transport now honours
+  `CONNTYPE`, uploads go to the provider's real `/invoice/` subdir, `S1_USERNAME`/`S1_PASSWORD`
+  config added, 7122/7123 recognized by the legacy binder, and `InfiniteInvoice.js` builds the
+  native `Invoice v1.0.1` schema. DocProcess sending also confirmed working (125/410 in 60d).
 
-  **PRECISE CURRENT STATE (read this before doing anything else on this item):**
-  1. `S1/JS/AJS/RECADV.js` `createInvoiceFromReception`: now copies `DATE01` from the source
-     aviz (previously copied `NUM04`/`TRDBRANCH`/`CCCORDERDOC` but not this field, leaving
-     `<OrderParty><BuyerOrderDate>` empty on every Infinite invoice). **Redeployed to ERP,
-     confirmed live** — `DATE01` is now populated on all 6 test FINDOCs
-     (2208760/2208761/2209180/2209181/2209182/2209183, i.e. `FAEX1-PF-40689/90/93/94/95/96`).
-  2. `S1/JS/AJS/InfiniteInvoice.js`: a SEPARATE, deeper bug was found mid-session —
-     `X.GETSQLDATASET`'s web-service bridge corrupts a nested `isnull(replace(convert(...)))`
-     SQL expression built on a NULL date into a stray control byte (renders as `?` in a text
-     viewer), confirmed by direct reproduction via `mcp_s1-api_s1_query_dataset`. An attempted
-     fix (select the raw date column, format via `X.FORMATDATE` in JS) was deployed and
-     **regressed live** — every date field came back empty on every invoice, even ones with a
-     confirmed non-null underlying value. **Reverted** back to the original SQL-side
-     `CONVERT`/`ISNULL` string formatting (safe now that `DATE01`/`DELIVDATE` are fixed at the
-     source — the corruption only triggers on an actually-NULL date). The reverted file has just
-     been redeployed to the ERP (user confirmed) but **has not been re-tested yet**.
-  3. **Next step, first thing in a fresh session**: click "Retrimite" on all 6 test invoices again
-     (Auchan retailer page, Recepții tab: `FAEX1-PF-40689/90/93/94/95/96`). The versions currently
-     sitting in Infinite's `/invoice/archive/` for these 6 were sent **during the broken
-     `fmtDate`/regressed window** — they are stale and not representative of the current
-     (reverted) code, so a fresh resend is required. Then check the **EDInet web portal**
-     (this repo/session has no credentials for it — ask the user to check directly and share the
-     result) for a genuinely clean "processed" outcome, not just the FTP
-     `MessageAcknowledgement`/`archive` move (proven unreliable as a success signal this session).
-     Only when the portal itself shows success is Item A genuinely done.
-  4. **Do not reattempt the raw-date-column + `X.FORMATDATE` pattern** without first proving in
-     isolation that `X.FORMATDATE` works on a field read from an ad-hoc `X.GETSQLDATASET`
-     dataset (as opposed to a real object-bound field like `SALDOC.TRNDATE`, where this pattern is
-     already known to work elsewhere in the codebase) — see `/memories/debugging.md` for the full
-     writeup of this dead end.
+  The long rejection streak was caused by **S/MIME signing**, wired in the same day on the
+  strength of an unverified code comment: it made the uploaded file a MIME envelope
+  (`Content-Type: multipart/signed`) instead of an XML document. Removed. `sign-smime.js` stays in
+  the repo for the day Infinite switches the relation from `Not sign` to `Key storage` — if that
+  happens, align the digest to `SHA1withRSA` and add the missing `MIME-Version: 1.0` header first,
+  and **only on written confirmation from Infinite**.
 
-  Also added (per user request, **written but NOT yet deployed — needs `git push`**):
-  `edi-invoices.class.js` now verifies the file is actually listed on the FTP after upload before
-  reporting success, and logs every send outcome to `orders-log` (`OPERATION:'sendInvoice'`) —
-  previously only XML-build validation failures were logged, not the actual send.
-  Covered by `test/services/get-invoice-dom/get-invoice-dom.test.js` +
-  `test/services/edi-invoices/edi-invoices.test.js`; `npm test` 101 passing.
-  **Idea for later, not implemented** (noted per user 2026-08-27): poll Infinite's
-  `/invoice/logs/ok|err/` for `MessageAcknowledgement` files and surface them in the app,
-  symmetric to the DocProcess APERAK flow — see wiki page's "Live verification" section for the
-  full directory-layout discovery and what building this would take.
+  Genuine defects fixed along the way (real, but none of them caused the rejections): `RECADV.js`
+  `createInvoiceFromReception` never copied `DATE01` or `CCCSELLERID` from the source aviz; the
+  header query read `COMPANY.PHONE1` where both proven scripts read `PHONE2`. One retracted
+  mistake of mine: `BuyerOrderDate` is `xsd:dateTime`, so the `T00:00:00` form was correct all
+  along — do not "normalize" it to a plain date.
+
+  Two reusable lessons, both expensive: (1) the FTP `MessageAcknowledgement` and the move into
+  `/invoice/archive/` are **not** acceptance signals — only the EDInet portal is; (2) when a
+  document is rejected as malformed, **read the first bytes of the artefact actually uploaded**
+  before auditing the content that produced it.
+
+  **Idea for later, not implemented**: poll Infinite's `/invoice/logs/ok|err/` for
+  `MessageAcknowledgement` files and surface them in the app, symmetric to the DocProcess APERAK
+  flow — but recalibrated now that "ok" is known to mean "received and parsed", not "accepted".
   Full detail: [infinite-invoice-format.md](../wiki/infinite-invoice-format.md).
   The generic outbound XML-generation engine idea (mirroring `order-builder.js`'s inbound one)
   stays de-prioritized for Infinite (closed set of 2 retailers, hardcoded branches per the scope
   directive) — only relevant if DocProcess-side mapping work is ever scheduled.
 - **Item C (invoice identity column)**: approved, spec written, not yet implemented.
-Active area: **resume [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) — resend
-the 6 test invoices and check the EDInet portal** (see step 3 above). Item C starts only after
-Item A is confirmed genuinely working end to end.
+Active area: **Item C is the only remaining approved Recepții item** —
+[reception-screen.md](../wiki/reception-screen.md).
 
 ## Relevant Files
 - `S1/JS/AJS/InfiniteInvoice.js` — native Infinite invoice XML builder (Auchan/Dedeman only).
 - `S1/JS/AJS/RECADV.js` — `createInvoiceFromReception` (`X.CreateObj('SALDOC;EF')`), now also
-  copies `DATE01`.
+  copies `DATE01` and `CCCSELLERID`.
 - `S1/JS/SALDOC_EF_27072026.js` — `ON_SALDOC_SERIES` guard (7121/7122/7123, `X.SYS.USER==1002`).
 - `src/services/get-invoice-dom/get-invoice-dom.class.js` — routes Infinite vs DocProcess.
-- `src/services/edi-invoices/edi-invoices.class.js` — upload + post-upload FTP verification +
-  `sendInvoice` logging (written, not yet deployed).
+- `src/services/edi-invoices/edi-invoices.class.js` — upload (plain XML, no signing) +
+  post-upload FTP verification + `sendInvoice` logging.
 - `src/s1-response.js` — `parseS1Json` charset-aware decoding.
 - `src/services/recadv/recadv.class.js` — `create()` + `createInvoice` operation logging.
 - `frontend/src/components/{reception-table,orders-log-table,invoice-table}.js` — button + Logs UI.
@@ -140,10 +117,12 @@ Item A is confirmed genuinely working end to end.
   Faza 2 (destroy) + Faza 3 (firewall) pending — `documentatie/retailers1-shutdown-runbook.md`.
 
 ## Next Step
-Start a fresh session on
-[infinite-invoice-format.md](../wiki/infinite-invoice-format.md) — build the dedicated Infinite
-invoice XML builder per its step-by-step plan. Item C ("Trimite" invoice identity column) is the
-other pending small item — [reception-screen.md](../wiki/reception-screen.md).
+Item C ("Trimite" invoice identity column) is the last approved Recepții item —
+[reception-screen.md](../wiki/reception-screen.md). Two small follow-ups also worth closing:
+re-verify that a NEW invoice created via the "Facturează" button flips the source advice's
+`FULLYTRANSF` to 1 automatically post-deploy, and delete the stray root-level file
+`documentatieFAEX1-PF-40689_2026-08-27.xml` accidentally committed in `66e59c42` (a missing path
+separator — the intended copy is already in `documentatie/Fluxuri complete EDInet Auchan-Dedeman/`).
 
 ## See also — wiki
 [reception-screen.md](../wiki/reception-screen.md) · [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) ·

@@ -15,11 +15,11 @@ Rolurile sunt stabile; modelele concrete se schimbă DOAR în acest tabel. Array
 
 | Rol | Model | Folosit de |
 |-----|-------|-----------|
-| `planning` | Claude Opus 4.8 | agent `Plan` |
-| `implementation` | Claude Sonnet 4.6 | agent `Implement` |
-| `db-explore` | Claude Sonnet 4.6 | agent `DB Explore` |
-| `mechanical` | Claude Haiku 4.5 | agent `Mechanical` |
-| `review` | Claude Opus 4.8 (context mic) | agent `Review` |
+| `planning` | Claude Opus 5 | agent `Plan` |
+| `implementation` | Claude Sonnet 5 | agent `Implement` |
+| `db-explore` | Claude Sonnet 5 | agent `DB Explore` |
+| `mechanical` | qwen3.8:27b-q4_K_M | agent `Mechanical` |
+| `review` | Claude Opus 5 (context mic) | agent `Review` |
 
 ## Maparea sarcină → rol
 
@@ -45,6 +45,6 @@ Rolurile sunt stabile; modelele concrete se schimbă DOAR în acest tabel. Array
 
 ## Plan mode
 
-- Când produci un plan de execuție (todo list), clasifică fiecare pas pe rol (`planning` / `implementation` / `mechanical` / `review`) și adnotează-l cu modelul din Model Map, ex: `- [ ] Refactor modul X (model: Claude Sonnet 4.6)`.
+- Când produci un plan de execuție (todo list), clasifică fiecare pas pe rol (`planning` / `implementation` / `db-explore` / `mechanical` / `review`) și adnotează-l cu modelul din Model Map, ex: `- [ ] Refactor modul X (model: Claude Sonnet 5)`.
 - **Grupează pașii pe model**, în loc să intercalezi roluri — minimizezi numărul de comutări. Emite explicit secvența de handoff-uri pe grupuri, ex: „Grup 1 — Implement (pași 1-4); Grup 2 — Mechanical (pași 5-6); Grup 3 — Review (pas 7)".
 - Secvența de grupuri devine sursa de adevăr pentru comutările de model în execuție: fiecare grup = un handoff către agentul cu modelul potrivit.

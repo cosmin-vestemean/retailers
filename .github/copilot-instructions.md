@@ -677,5 +677,5 @@ Type `/graphify` in Copilot Chat to build or update the graph.
 ## Phase Agents
 
 - Phase agents bind the recommended model to the workflow stage (switching agent switches model). They live in `.github/agents/`.
-- `Plan` (Opus) → architecture and a model-annotated todo list; `Implement` (Sonnet) → multi-file work; `Mechanical` (Haiku) → isolated/boilerplate edits; `Review` (Opus, fresh small context) → validation/diff, read-only; `DB Explore` (Sonnet) → S1 schema exploration and dry-run `setData`/SQL testing against the TEST environment only.
+- `Plan` (Opus) → architecture and a model-annotated todo list; `Implement` (Sonnet) → multi-file work; `Mechanical` (Qwen local) → isolated/boilerplate edits; `Review` (Opus, fresh small context) → validation/diff, read-only; `DB Explore` (Sonnet) → S1 schema exploration and dry-run `setData`/SQL testing against the TEST environment only.
 - The always-on model policy is the safety net when working in the default agent; the phase agents are the low-friction path that switches the model for you.

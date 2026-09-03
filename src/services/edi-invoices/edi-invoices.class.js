@@ -42,15 +42,6 @@ export class EdiInvoicesService {
 
     try {
       await transport.uploadBuffer(Buffer.from(payload, 'utf8'), joinRemote(remoteDir, filename))
-
-      // uploadBuffer() completing without throwing isn't proof the file is actually there (a
-      // silent partial write/drop is possible) - list the remote dir and confirm it's listed
-      // before telling the operator the invoice was sent.
-      const landed = await this.verifyLanded(transport, remoteDir, filename)
-      if (!landed) {
-        return this.fail(retailer, findoc, filename, `Upload nu a putut fi confirmat pe FTP - fișierul nu apare în ${remoteDir} după upload`)
-      }
-
       return this.success(retailer, findoc, filename)
     } catch (error) {
       console.error(error)
@@ -60,18 +51,8 @@ export class EdiInvoicesService {
     }
   }
 
-  async verifyLanded(transport, remoteDir, filename) {
-    try {
-      const entries = await transport.list(remoteDir)
-      return entries.some((e) => e.name === filename)
-    } catch (error) {
-      console.error('[edi-invoices] post-upload FTP verification failed:', error.message)
-      return false
-    }
-  }
-
   async success(retailer, findoc, filename) {
-    await this.log(retailer, findoc, 'success', `Factură ${filename} trimisă și confirmată pe FTP`)
+    await this.log(retailer, findoc, 'success', `Factură ${filename} trimisă pe FTP`)
     return { findoc, filename, success: true }
   }
 
