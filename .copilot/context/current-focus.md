@@ -1,6 +1,10 @@
 # Current Focus
 
 ## Last Updated
+- 2026-09-11: `retailers1` retirement re-verified live. It is legacy/dead code replaced by
+  `retailers4`; `maintenance=on`, zero dynos, only the default `*.herokuapp.com` domain, and no
+  deploy since the 2026-06-09 cutover. It remains on heroku-22 intentionally and must **not** be
+  migrated. The only remaining Heroku resource is Fixie Socks (`saddle`, up to $29/month).
 - 2026-09-11: Hornbach onboarding split by user decision: Phase 1 imports DocProcess ORDER into
   S1; Phase 2 adds DESADV and INVOIC. Live evidence shows no Hornbach XML/routing error in the
   entire `CCCSFTPXML` history and all 3,509 current Hornbach 7012 orders were entered by human
@@ -122,8 +126,11 @@ Active area: **Item C is the only remaining approved Recepții item** —
   [legacy-tables-cleanup.md](../wiki/legacy-tables-cleanup.md).
 - Soft1 web-service password/RSA key rotation still pending —
   [security-secrets.md](../wiki/security-secrets.md).
-- retailers1 decommissioning: Faza 0-1 done (dynos scaled to 0), grace period until ~2026-09-07/21,
-  Faza 2 (destroy) + Faza 3 (firewall) pending — `documentatie/retailers1-shutdown-runbook.md`.
+- retailers1 decommissioning: Faza 0-1 done and live-verified 2026-09-11 (`maintenance=on`, zero
+  dynos, no custom domain). It is replaced by `retailers4`; do **not** upgrade its stack. Grace
+  period is now due/near due (~2026-09-07/21). Faza 2 remains: destroy the Fixie Socks add-on and
+  app after explicit confirmation; Faza 3: remove its fixed IP from the client firewall and rotate
+  the legacy SQL credentials. Runbook: `documentatie/retailers1-shutdown-runbook.md`.
 
 ## Next Step
 Implement and test the Hornbach ORDER mapping first with the `Implement` agent (Claude Sonnet 5),
