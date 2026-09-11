@@ -1,6 +1,13 @@
 # Current Focus
 
 ## Last Updated
+- 2026-09-11: Hornbach onboarding split by user decision: Phase 1 imports DocProcess ORDER into
+  S1; Phase 2 adds DESADV and INVOIC. Live evidence shows no Hornbach XML/routing error in the
+  entire `CCCSFTPXML` history and all 3,509 current Hornbach 7012 orders were entered by human
+  users. The scanner is healthy for other retailers, so this means DocProcess has not delivered
+  Hornbach ORDER files to this scanner, not that routing is already approved. Available specs
+  require no per-order ORDRSP/APERAK from Pet Factory; after Phase 1 is tested, Pet Factory must
+  explicitly confirm readiness and coordinate activation with DocProcess. No DB writes/uploads.
 - 2026-08-27 (later session: Infinite invoice send-path — **RESOLVED**). Item A ("Trimite") is
   **done and verified live: invoices are accepted by Infinite EDInet for BOTH Auchan and
   Dedeman.** Root cause of the 100% rejection rate was **not** the XML: `edi-invoices.class.js`
@@ -32,9 +39,11 @@
   section). `npm test` 101 passing.
 
 ## Current Goal
-RECADV ingestion/reconciliation is **live in production** on `retailers4` since 2026-08-05.
-Active work is finishing the Recepții screen's remaining approved UI items — see
-[reception-screen.md](../wiki/reception-screen.md).
+Implement Hornbach DocProcess onboarding in two phases: first ORDER ingestion into S1, then
+DESADV + INVOIC after the inbound flow is stable. Phase 1 needs a tested mapping and duplicate
+guard before a controlled DocProcess activation; it does not require a per-order response message.
+See [hornbach-docprocess.md](../wiki/hornbach-docprocess.md).
+RECADV remains live; its invoice-identity column is temporarily the previous active item.
 - **Item B ("Facturează")**: DONE, verified live. See Confirmed Decisions below and the wiki
   page section B ("RESOLVED 2026-08-27") for the full fix chain. **Follow-up fixed same day**:
   `RECADV.js` now also hand-sets the source advice's `FINDOC.FULLYTRANSF=1` after invoicing
@@ -117,12 +126,10 @@ Active area: **Item C is the only remaining approved Recepții item** —
   Faza 2 (destroy) + Faza 3 (firewall) pending — `documentatie/retailers1-shutdown-runbook.md`.
 
 ## Next Step
-Item C ("Trimite" invoice identity column) is the last approved Recepții item —
-[reception-screen.md](../wiki/reception-screen.md). Two small follow-ups also worth closing:
-re-verify that a NEW invoice created via the "Facturează" button flips the source advice's
-`FULLYTRANSF` to 1 automatically post-deploy, and delete the stray root-level file
-`documentatieFAEX1-PF-40689_2026-08-27.xml` accidentally committed in `66e59c42` (a missing path
-separator — the intended copy is already in `documentatie/Fluxuri complete EDInet Auchan-Dedeman/`).
+Implement and test the Hornbach ORDER mapping first with the `Implement` agent (Claude Sonnet 5),
+without touching the production inbox. Then coordinate a controlled activation with DocProcess and
+monitor the first imported orders. Start DESADV/INVOIC only after Phase 1 is stable; keep outbound
+production upload disabled during the later four-file email test sequence.
 
 ## See also — wiki
 [reception-screen.md](../wiki/reception-screen.md) · [infinite-invoice-format.md](../wiki/infinite-invoice-format.md) ·

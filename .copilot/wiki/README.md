@@ -31,6 +31,8 @@ facts change, never appended to as a chronological log. See
   dash get mangled round-tripping through SoftOne, and the `sanitizeForS1()` fix.
 - [onboard-new-docprocess-retailer.md](onboard-new-docprocess-retailer.md) — runbook for wiring up
   a new DocProcess retailer, plus the "never auto-add a GLN" business rule.
+- [hornbach-docprocess.md](hornbach-docprocess.md) — live S1 inventory, Hornbach invoice/DESADV
+  requirements, current application gaps, test-document selection, and implementation sequence.
 
 ## Repo/ops conventions
 - [graphify-workflow.md](graphify-workflow.md) — graph-as-index operating model: query first,
