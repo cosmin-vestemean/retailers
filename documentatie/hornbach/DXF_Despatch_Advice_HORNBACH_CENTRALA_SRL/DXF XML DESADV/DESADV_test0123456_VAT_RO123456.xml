@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ubl:DespatchAdvice xmlns:ns16="http://uri.etsi.org/01903/v1.4.1#" xmlns:ns18="http://www.doc-process.com/schema/extended/invoice" xmlns:ns19="http://www.doc-process.com/dx-profile" xmlns:ns20="urn:com:docprocess:lrm:model:specification:schema:xsd:InvoiceExtension-1" xmlns:ns21="urn:com:docprocess:internal:model:specification:schema:xsd:Invoice-2" xmlns:ns22="urn:oasis:names:specification:ubl:schema:xsd:Order-2" xmlns:ns23="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:ns24="urn:oasis:names:specification:ubl:schema:xsd:Forecast-2" xmlns:ns25="urn:oasis:names:specification:ubl:schema:xsd:ReceiptAdvice-2" xmlns:ns26="urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2" xmlns:fex="urn:com:docprocess:drx:model:specification:schema:xsd:ForecastExtension-2" xmlns:csc="urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2" xmlns:n0="urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2" xmlns:sac="urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2" xmlns:sbc="urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:ccts-cct="urn:un:unece:uncefact:data:specification:CoreComponentTypeSchemaModule:2" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns="http://uri.etsi.org/01903/v1.4.1#" xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2 file:///C:/Shared/xsd/UBL-2.1/xsd/maindoc/UBL-DespatchAdvice-2.1.xsd">
+	<cbc:ID>H1234</cbc:ID>
+	<cbc:CopyIndicator>false</cbc:CopyIndicator>
+	<cbc:IssueDate>2016-01-26</cbc:IssueDate>
+	<cbc:IssueTime>00:00:00</cbc:IssueTime>
+	<cbc:DocumentStatusCode>351</cbc:DocumentStatusCode>
+	<cbc:LineCountNumeric>1</cbc:LineCountNumeric>
+	<cac:OrderReference>
+		<cbc:ID>50602233</cbc:ID>
+	</cac:OrderReference>
+	<cac:DespatchSupplierParty>
+		<cac:Party>
+			<cbc:EndpointID schemeID="GLN">5940475000111</cbc:EndpointID>
+			<cac:PartyIdentification>
+				<cbc:ID>RO123456</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>EXEMPLU SRL</cbc:Name>
+			</cac:PartyName>
+			<cac:PostalAddress>
+				<cbc:StreetName>STRADA EXEMPLULUI</cbc:StreetName>
+				<cbc:AdditionalStreetName>-</cbc:AdditionalStreetName>
+				<cbc:BuildingNumber>12</cbc:BuildingNumber>
+				<cbc:CityName>BUCURESTI</cbc:CityName>
+				<cbc:PostalZone>123456</cbc:PostalZone>
+			</cac:PostalAddress>
+		</cac:Party>
+	</cac:DespatchSupplierParty>
+	<cac:DeliveryCustomerParty>
+		<cac:Party>
+			<cbc:EndpointID schemeID="GLN">5940475048013</cbc:EndpointID>
+			<cac:PartyIdentification>
+				<cbc:ID>RO17777320</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>781 HORNBACH MILITARI</cbc:Name>
+			</cac:PartyName>
+			<cac:PostalAddress>
+				<cbc:StreetName>TURNU MAGURELE</cbc:StreetName>
+				<cbc:AdditionalStreetName>-</cbc:AdditionalStreetName>
+				<cbc:BuildingNumber>92-108</cbc:BuildingNumber>
+				<cbc:CityName>BUCURESTI</cbc:CityName>
+				<cbc:PostalZone></cbc:PostalZone>
+			</cac:PostalAddress>
+		</cac:Party>
+	</cac:DeliveryCustomerParty>
+	<cac:BuyerCustomerParty>
+		<cac:Party>
+			<cbc:EndpointID schemeID="GLN">5940010999999</cbc:EndpointID>
+			<cac:PartyIdentification>
+				<cbc:ID>RO17777320</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>HORNBACH CENTRALA SRL</cbc:Name>
+			</cac:PartyName>
+			<cac:PostalAddress>
+				<cbc:StreetName>STRADA HORNBACH</cbc:StreetName>
+				<cbc:AdditionalStreetName>-</cbc:AdditionalStreetName>
+				<cbc:BuildingNumber>17-21</cbc:BuildingNumber>
+				<cbc:CityName>DOMNESTI, ILFOV</cbc:CityName>
+				<cbc:PostalZone>77090</cbc:PostalZone>
+			</cac:PostalAddress>
+		</cac:Party>
+	</cac:BuyerCustomerParty>
+	<cac:SellerSupplierParty>
+		<cac:Party>
+			<cbc:EndpointID schemeID="GLN">5940475000111</cbc:EndpointID>
+			<cac:PartyIdentification>
+				<cbc:ID>RO123456</cbc:ID>
+			</cac:PartyIdentification>
+			<cac:PartyName>
+				<cbc:Name>EXEMPLU SRL</cbc:Name>
+			</cac:PartyName>
+			<cac:PostalAddress>
+				<cbc:StreetName>STRADA EXEMPLULUI</cbc:StreetName>
+				<cbc:AdditionalStreetName>-</cbc:AdditionalStreetName>
+				<cbc:BuildingNumber>12</cbc:BuildingNumber>
+				<cbc:CityName>BUCURESTI</cbc:CityName>
+				<cbc:PostalZone>123456</cbc:PostalZone>
+			</cac:PostalAddress>
+		</cac:Party>
+	</cac:SellerSupplierParty>
+	<cac:Shipment>
+	<cbc:ID>1</cbc:ID>
+	<cac:Delivery>
+	<cbc:ActualDeliveryDate>2016-03-20</cbc:ActualDeliveryDate>
+	<cac:RequestedDeliveryPeriod>
+	<cbc:StartDate>2016-03-20</cbc:StartDate>
+	</cac:RequestedDeliveryPeriod>
+	</cac:Delivery>
+	</cac:Shipment>
+	<cac:DespatchLine>
+		<cbc:ID>1</cbc:ID>
+		<cbc:DeliveredQuantity unitCode="BUC">80</cbc:DeliveredQuantity>
+		<cac:OrderLineReference>
+		<cbc:LineID>5</cbc:LineID>
+			<cac:OrderReference>
+				<cbc:ID>123456</cbc:ID>
+			</cac:OrderReference>
+		</cac:OrderLineReference>
+		<cac:Item>
+			<cbc:Description>Produs</cbc:Description>
+			<cac:BuyersItemIdentification>
+				<cbc:ID>B0903785</cbc:ID>
+			</cac:BuyersItemIdentification>
+			<cac:SellersItemIdentification>
+			<cbc:ID>123456</cbc:ID>
+			</cac:SellersItemIdentification>
+			<cac:StandardItemIdentification>
+				<cbc:ID>5940475010203</cbc:ID>
+			</cac:StandardItemIdentification>			
+		</cac:Item>
+	</cac:DespatchLine>
+</ubl:DespatchAdvice>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DXMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="C:/Shared/xsd/docxchange-message.xsd">
+   <MessageDate>2015-10-28</MessageDate>
+   <MessageTime>02:06:17</MessageTime>
+   <MessageOrigin>RO17275880</MessageOrigin>
+   <DocumentReference>0090615254</DocumentReference>
+   <DocumentUID>DX01_099_20151028_01003030</DocumentUID>
+   <SupplierReceiverCode>12465</SupplierReceiverCode>
+   <DocumentResponse>RECEPTIONAT</DocumentResponse>
+   <DocumentDetail>The invoice is received by the DocXchange Platform</DocumentDetail>
+</DXMessage>

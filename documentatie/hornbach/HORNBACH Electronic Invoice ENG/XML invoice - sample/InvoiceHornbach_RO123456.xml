@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DXInvoice xmlns="http://www.doc-process.com/schema/extended/invoice">
+    <Invoice xmlns="">
+        <ID>123456</ID>
+        <CopyIndicator>FALSE</CopyIndicator>
+        <IssueDate>2015-08-21</IssueDate>
+        <InvoiceTypeCode>380</InvoiceTypeCode>
+        <DocumentCurrencyCode>RON</DocumentCurrencyCode>
+        <TaxCurrencyCode>RON</TaxCurrencyCode>
+        <PricingCurrencyCode>RON</PricingCurrencyCode>
+        <PaymentCurrencyCode>RON</PaymentCurrencyCode>
+        <PaymentAlternativeCurrencyCode>RON</PaymentAlternativeCurrencyCode>
+        <LineCountNumeric>2</LineCountNumeric>
+        <OrderReference>
+            <ID>6543</ID>
+            <IssueDate>2015-08-20</IssueDate>
+        </OrderReference>
+        <DespatchDocumentReference>
+            <ID>DES1234</ID>
+            <IssueDate>2015-08-21</IssueDate>
+        </DespatchDocumentReference>
+        <AccountingSupplierParty>
+            <Party>
+                <PartyIdentification>RO123456</PartyIdentification>
+                <PartyName>EXEMPLU SA</PartyName>
+                <PostalAddress>
+                    <StreetName>STR. EXEMPLU</StreetName>
+                    <AdditionalStreetName>-</AdditionalStreetName>
+                    <BuildingNumber>1</BuildingNumber>
+                    <CityName>BUCURESTI</CityName>
+                    <PostalZone>520036</PostalZone>
+                    <LocationCoordinate>5940475123456</LocationCoordinate>
+                </PostalAddress>
+            </Party>
+        </AccountingSupplierParty>
+        <AccountingCustomerParty>
+            <Party>
+                <PartyIdentification>RO17777320</PartyIdentification>
+                <PartyName>HORNBACH CENTRALA SA</PartyName>
+                <PostalAddress>
+                    <StreetName>STR. HORNBACH</StreetName>
+                    <BuildingNumber>17-21</BuildingNumber>
+                    <CityName>DOMNEST, ILFOV</CityName>
+                    <PostalZone>077090</PostalZone>
+                    <LocationCoordinate>5940475048006</LocationCoordinate>
+                </PostalAddress>
+            </Party>
+        </AccountingCustomerParty>
+        <Delivery>
+            <ActualDeliveryDate>2015-08-21</ActualDeliveryDate>
+            <DeliveryLocation>
+                <ID>5940475048044</ID>
+                <LocationAddress>
+                    <LocationCoordinate>5940475048044</LocationCoordinate>
+                </LocationAddress>
+            </DeliveryLocation>
+        </Delivery>
+        <TaxTotal>
+            <TaxAmount>189.36</TaxAmount>
+            <TaxSubtotal>
+                <TaxableAmount>789.00</TaxableAmount>
+                <TaxAmount>189.36</TaxAmount>
+                <Percent>24.00</Percent>
+                <TaxCategory>
+                    <TaxScheme>
+                        <ID>7</ID>
+                        <Name>S</Name>
+                        <TaxTypeCode>VAT</TaxTypeCode>
+                    </TaxScheme>
+                </TaxCategory>
+            </TaxSubtotal>
+        </TaxTotal>
+        <LegalMonetaryTotal>
+            <TaxExclusiveAmount>789.00</TaxExclusiveAmount>
+            <TaxInclusiveAmount>978.36</TaxInclusiveAmount>
+        </LegalMonetaryTotal>
+    </Invoice>
+    <InvoiceLine xmlns="">
+        <ID>1</ID>
+        <InvoicedQuantity unitCode="PCE">120.000</InvoicedQuantity>
+        <LineExtensionAmount>540.00</LineExtensionAmount>
+        <TaxTotal>
+            <TaxAmount>129.60</TaxAmount>
+            <TaxSubtotal>
+                <TaxAmount>129.60</TaxAmount>
+                <Percent>24.00</Percent>
+                <TaxCategory>
+                    <TaxScheme>
+                        <ID>7</ID>
+                        <Name>S</Name>
+                        <TaxTypeCode>VAT</TaxTypeCode>
+                    </TaxScheme>
+                </TaxCategory>
+            </TaxSubtotal>
+        </TaxTotal>
+        <Item>
+            <Description>PRODUS TEST 1</Description>
+            <BuyersItemIdentification>
+                <ID>5641235</ID>
+            </BuyersItemIdentification>
+            <SellersItemIdentification>
+                <ID>SUP2354</ID>
+            </SellersItemIdentification>
+            <StandardItemIdentification>
+                <ID>5941173000143</ID>
+            </StandardItemIdentification>
+        </Item>
+        <Price>
+            <PriceAmount>4.50</PriceAmount>
+        </Price>
+    </InvoiceLine>
+    <InvoiceLine xmlns="">
+        <ID>2 </ID>
+        <InvoicedQuantity unitCode="PCE">60.000</InvoicedQuantity>
+        <LineExtensionAmount>249.00</LineExtensionAmount>
+        <TaxTotal>
+            <TaxAmount>59.76</TaxAmount>
+            <TaxSubtotal>
+                <TaxAmount>59.76</TaxAmount>
+                <Percent>24.00</Percent>
+                <TaxCategory>
+                    <TaxScheme>
+                        <ID>7</ID>
+                        <Name>S</Name>
+                        <TaxTypeCode>VAT</TaxTypeCode>
+                    </TaxScheme>
+                </TaxCategory>
+            </TaxSubtotal>
+        </TaxTotal>
+        <Item>
+            <Description>PRODUS TEST 2</Description>
+            <BuyersItemIdentification>
+                <ID>123445</ID>
+            </BuyersItemIdentification>
+            <SellersItemIdentification>
+                <ID>SUP700062</ID>
+            </SellersItemIdentification>
+            <StandardItemIdentification>
+                <ID>5941221001191</ID>
+            </StandardItemIdentification>
+        </Item>
+        <Price>
+            <PriceAmount>4.15</PriceAmount>
+        </Price>
+    </InvoiceLine>
+</DXInvoice>
