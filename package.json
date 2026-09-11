@@ -16,7 +16,7 @@
   "bugs": {},
   "engines": {
     "node": ">=22.12.0 <23.0.0",
-    "npm": "11.5.1"
+    "npm": "11.19.1"
   },
   "feathers": {
     "language": "js",
@@ -47,7 +47,7 @@
     "mocha": "cross-env NODE_ENV=test mocha test/ --recursive --exit",
     "test": "cross-env NODE_ENV=test npm run mocha",
     "bundle:client": "npm pack --pack-destination ./public",
-    "heroku-postbuild": "npm --prefix frontend ci --include=dev && npm --prefix frontend run build"
+    "heroku-postbuild": "npm --prefix frontend install --include=dev && npm --prefix frontend run build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1064.0",
